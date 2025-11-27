@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mô phỏng Phản ứng Hóa học</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+            height: 100vh;
+            overflow: auto;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        .chemicals {
+            margin: 20px;
+        }
+        .chemicals button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .chemicals button:hover {
+            background-color: #27ae60;
+        }
+        .reaction-container {
+            position: relative;
+            width: 80%;
+            height: 500px;
+            margin-top: 50px;
+            background-color: #ecf0f1;
+            border: 2px solid #bdc3c7;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .chemical-box {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background-color: #3498db;
+            color: white;
+            text-align: center;
+            line-height: 60px;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+        #reaction-result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #27ae60;
+        }
+        #equation {
+            margin-top: 15px;
+            font-size: 20px;
+            color: #2c3e50;
+        }
+        .menu-btn, .theory-btn, .reset-btn {
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .menu-btn:hover, .theory-btn:hover, .reset-btn:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mô phỏng Phản ứng Hóa học</h1>
+
+    <button class="menu-btn" onclick="window.location.href='index.html';">Quay về Menu</button>
+    <button class="theory-btn" onclick="window.location.href='lthoa.html';">Xem Lý thuyết</button>
+    <button class="reset-btn" onclick="resetChemicals();">Reset Các Chất</button>
+
+    <div class="chemicals">
+        <button class="chemical" data-chemical="HCl" style="background-color: #f39c12;">HCl (Axit clohiđric)</button>
+        <button class="chemical" data-chemical="NaOH" style="background-color: #2ecc71;">NaOH (Natri hydroxide)</button>
+        <button class="chemical" data-chemical="CaO" style="background-color: #9b59b6;">CaO (Canxi oxit)</button>
+        <button class="chemical" data-chemical="H2O" style="background-color: #3498db;">H2O (Nước)</button>
+        <button class="chemical" data-chemical="CO2" style="background-color: #e74c3c;">CO2 (Cacbonic)</button>
+        <button class="chemical" data-chemical="NaCl" style="background-color: #16a085;">NaCl (Muối ăn)</button>
+        <button class="chemical" data-chemical="Na2CO3" style="background-color: #8e44ad;">Na2CO3 (Natri cacbonat)</button>
+        <button class="chemical" data-chemical="H2SO4" style="background-color: #c0392b;">H2SO4 (Axit sulfuric)</button>
+        <button class="chemical" data-chemical="NH3" style="background-color: #1abc9c;">NH3 (Amoniac)</button>
+        <button class="chemical" data-chemical="MgO" style="background-color: #f1c40f;">MgO (Magie oxit)</button>
+        <button class="chemical" data-chemical="KOH" style="background-color: #e67e22;">KOH (Kali hydroxide)</button>
+    </div>
+
+    <div class="reaction-container" id="reaction-container"></div>
+
+    <div id="reaction-result"></div>
+    <div id="equation"></div>
+
+    <script>
+        let selectedChemicals = [];
+        let createdChemicals = [];
+
+        // Lắng nghe sự kiện cho các nút chất
+        document.querySelectorAll('.chemical').forEach(button => {
+            button.addEventListener('click', function() {
+                const chemical = this.getAttribute('data-chemical');
+                createChemicalBox(chemical);
+            });
+        });
+
+        // Tạo khối chứa chất hóa học và cho phép di chuyển
+        function createChemicalBox(chemical) {
+            const box = document.createElement('div');
+            box.classList.add('chemical-box');
+            box.innerText = chemical;
+            box.setAttribute("draggable", "true");
+            box.style.left = `${Math.random() * 80 + 10}%`; // Vị trí ngẫu nhiên
+            box.style.top = `${Math.random() * 70 + 10}%`;  // Vị trí ngẫu nhiên
+            document.getElementById('reaction-container').appendChild(box);
+            createdChemicals.push(box);
+
+            // Di chuyển khối theo trỏ chuột
+            box.addEventListener('mousedown', function(e) {
+                const offsetX = e.clientX - box.offsetLeft;
+                const offsetY = e.clientY - box.offsetTop;
+
+                function mouseMoveHandler(e) {
+                    box.style.left = `${e.clientX - offsetX}px`;
+                    box.style.top = `${e.clientY - offsetY}px`;
+                }
+
+                document.addEventListener('mousemove', mouseMoveHandler);
+
+                // Ngừng di chuyển khi thả chuột
+                box.addEventListener('mouseup', function() {
+                    document.removeEventListener('mousemove', mouseMoveHandler);
+                    checkCollision(); // Kiểm tra va chạm sau khi di chuyển
+                });
+            });
+        }
+
+        // Kiểm tra sự tương tác khi hai khối chạm vào nhau
+        function checkCollision() {
+            const boxes = document.querySelectorAll('.chemical-box');
+            for (let i = 0; i < boxes.length; i++) {
+                for (let j = i + 1; j < boxes.length; j++) {
+                    const box1 = boxes[i];
+                    const box2 = boxes[j];
+                    const rect1 = box1.getBoundingClientRect();
+                    const rect2 = box2.getBoundingClientRect();
+
+                    // Kiểm tra xem hai khối có va chạm không
+                    if (rect1.left < rect2.right && rect1.right > rect2.left &&
+                        rect1.top < rect2.bottom && rect1.bottom > rect2.top) {
+                        // Xử lý phản ứng khi các khối chạm vào nhau
+                        createReactionResult(box1.innerText, box2.innerText, box1, box2);
+                    }
+                }
+            }
+        }
+
+        // Xử lý khi các khối phản ứng với nhau
+        function createReactionResult(first, second, box1, box2) {
+            let resultText = '';
+            let equationText = '';
+            let newChemical = '';
+
+            // Kiểm tra các phản ứng hợp lệ và tạo sản phẩm
+            if ((first === 'HCl' && second === 'NaOH') || (first === 'NaOH' && second === 'HCl')) {
+                resultText = 'Phản ứng xảy ra: Axit + Bazơ → Muối + Nước';
+                equationText = 'HCl + NaOH → NaCl + H2O';
+                newChemical = 'NaCl + H2O';
+            } else if ((first === 'CaO' && second === 'H2O') || (first === 'H2O' && second === 'CaO')) {
+                resultText = 'Phản ứng xảy ra: Oxit kim loại + Nước → Kiềm';
+                equationText = 'CaO + H2O → Ca(OH)2';
+                newChemical = 'Ca(OH)2';
+            } else if ((first === 'CO2' && second === 'H2O') || (first === 'H2O' && second === 'CO2')) {
+                resultText = 'Phản ứng xảy ra: Cacbonic + Nước → Axit cacbonic';
+                equationText = 'CO2 + H2O → H2CO3';
+                newChemical = 'H2CO3';
+            } else if ((first === 'NaOH' && second === 'CO2') || (first === 'CO2' && second === 'NaOH')) {
+                resultText = 'Phản ứng xảy ra: Kiềm + Cacbonic → Cacbonat';
+                equationText = 'NaOH + CO2 → Na2CO3 + H2O';
+                newChemical = 'Na2CO3';
+            } else if ((first === 'H2SO4' && second === 'NaOH') || (first === 'NaOH' && second === 'H2SO4')) {
+                resultText = 'Phản ứng xảy ra: Axit + Bazơ → Muối + Nước';
+                equationText = 'H2SO4 + NaOH → Na2SO4 + H2O';
+                newChemical = 'Na2SO4 + H2O';
+            } else if ((first === 'NaCl' && second === 'H2O') || (first === 'H2O' && second === 'NaCl')) {
+                resultText = 'Phản ứng xảy ra: Muối + Nước → Không có phản ứng đáng kể';
+                equationText = 'NaCl + H2O → Không có sản phẩm';
+                newChemical = '';
+            } else if ((first === 'CaO' && second === 'CO2') || (first === 'CO2' && second === 'CaO')) {
+                resultText = 'Phản ứng xảy ra: Oxit kim loại + Cacbonic → Cacbonat';
+                equationText = 'CaO + CO2 → CaCO3';
+                newChemical = 'CaCO3';
+            } else if ((first === 'Na2CO3' && second === 'H2SO4') || (first === 'H2SO4' && second === 'Na2CO3')) {
+                resultText = 'Phản ứng xảy ra: Cacbonat + Axit → Muối + Nước + Cacbonic';
+                equationText = 'Na2CO3 + H2SO4 → Na2SO4 + H2O + CO2';
+                newChemical = 'Na2SO4 + H2O + CO2';
+            } else if ((first === 'NH3' && second === 'HCl') || (first === 'HCl' && second === 'NH3')) {
+                resultText = 'Phản ứng xảy ra: Amoniac + Axit → Muối amoni';
+                equationText = 'NH3 + HCl → NH4Cl';
+                newChemical = 'NH4Cl';
+            } else if ((first === 'MgO' && second === 'H2O') || (first === 'H2O' && second === 'MgO')) {
+                resultText = 'Phản ứng xảy ra: Oxit kim loại + Nước → Kiềm';
+                equationText = 'MgO + H2O → Mg(OH)2';
+                newChemical = 'Mg(OH)2';
+            } else if ((first === 'HCl' && second === 'NaOH') || (first === 'NaOH' && second === 'HCl')) {
+              resultText = 'Phản ứng xảy ra: Axit + Bazơ → Muối + Nước';
+                equationText = 'HCl + NaOH → NaCl + H2O';
+                 newChemical = 'NaCl + H2O';
+            } else if ((first === 'CaO' && second === 'H2O') || (first === 'H2O' && second === 'CaO')) {
+                resultText = 'Phản ứng xảy ra: Oxit kim loại + Nước → Kiềm';
+                equationText = 'CaO + H2O → Ca(OH)2';
+                 newChemical = 'Ca(OH)2';
+            } else if ((first === 'CO2' && second === 'H2O') || (first === 'H2O' && second === 'CO2')) {
+                resultText = 'Phản ứng xảy ra: Cacbonic + Nước → Axit cacbonic';
+                equationText = 'CO2 + H2O → H2CO3';
+                 newChemical = 'H2CO3';
+            } else if ((first === 'NaOH' && second === 'CO2') || (first === 'CO2' && second === 'NaOH')) {
+                resultText = 'Phản ứng xảy ra: Kiềm + Cacbonic → Cacbonat';
+                equationText = 'NaOH + CO2 → Na2CO3 + H2O';
+                 newChemical = 'Na2CO3';
+            } else if ((first === 'H2SO4' && second === 'NaOH') || (first === 'NaOH' && second === 'H2SO4')) {
+                resultText = 'Phản ứng xảy ra: Axit + Bazơ → Muối + Nước';
+                equationText = 'H2SO4 + NaOH → Na2SO4 + H2O';
+                 newChemical = 'Na2SO4 + H2O';
+            } else if ((first === 'NaCl' && second === 'H2O') || (first === 'H2O' && second === 'NaCl')) {
+                resultText = 'Phản ứng xảy ra: Muối + Nước → Không có phản ứng đáng kể';
+                equationText = 'NaCl + H2O → Không có sản phẩm';
+                 newChemical = '';
+            } else if ((first === 'CaO' && second === 'CO2') || (first === 'CO2' && second === 'CaO')) {
+                resultText = 'Phản ứng xảy ra: Oxit kim loại + Cacbonic → Cacbonat';
+                equationText = 'CaO + CO2 → CaCO3';
+                 newChemical = 'CaCO3';
+} else if ((first === 'Na2CO3' && second === 'H2SO4') || (first === 'H2SO4' && second === 'Na2CO3')) {
+    resultText = 'Phản ứng xảy ra: Cacbonat + Axit → Muối + Nước + Cacbonic';
+    equationText = 'Na2CO3 + H2SO4 → Na2SO4 + H2O + CO2';
+    newChemical = 'Na2SO4 + H2O + CO2';
+} else if ((first === 'NH3' && second === 'HCl') || (first === 'HCl' && second === 'NH3')) {
+    resultText = 'Phản ứng xảy ra: Amoniac + Axit → Muối amoni';
+    equationText = 'NH3 + HCl → NH4Cl';
+    newChemical = 'NH4Cl';
+} else if ((first === 'MgO' && second === 'H2O') || (first === 'H2O' && second === 'MgO')) {
+    resultText = 'Phản ứng xảy ra: Oxit kim loại + Nước → Kiềm';
+    equationText = 'MgO + H2O → Mg(OH)2';
+    newChemical = 'Mg(OH)2';
+} else if ((first === 'NaOH' && second === 'H2SO4') || (first === 'H2SO4' && second === 'NaOH')) {
+    resultText = 'Phản ứng xảy ra: Kiềm + Axit → Muối + Nước';
+    equationText = 'NaOH + H2SO4 → Na2SO4 + H2O';
+    newChemical = 'Na2SO4 + H2O';
+} else if ((first === 'CaO' && second === 'HCl') || (first === 'HCl' && second === 'CaO')) {
+    resultText = 'Phản ứng xảy ra: Oxit kim loại + Axit → Muối + Nước';
+    equationText = 'CaO + HCl → CaCl2 + H2O';
+    newChemical = 'CaCl2 + H2O';
+} else if ((first === 'NaOH' && second === 'Na2CO3') || (first === 'Na2CO3' && second === 'NaOH')) {
+    resultText = 'Phản ứng xảy ra: Kiềm + Cacbonat → Muối + Nước + Cacbonic';
+    equationText = 'NaOH + Na2CO3 → Na2CO3 + H2O + CO2';
+    newChemical = 'Na2CO3';
+} else if ((first === 'NaOH' && second === 'H2CO3') || (first === 'H2CO3' && second === 'NaOH')) {
+    resultText = 'Phản ứng xảy ra: Kiềm + Axit cacbonic → Muối + Nước';
+    equationText = 'NaOH + H2CO3 → Na2CO3 + H2O';
+    newChemical = 'Na2CO3 + H2O';
+} else if ((first === 'CO2' && second === 'Na2CO3') || (first === 'Na2CO3' && second === 'CO2')) {
+    resultText = 'Phản ứng xảy ra: Cacbonat + Cacbonic → Cacbonat';
+    equationText = 'CO2 + Na2CO3 → Na2CO3 + CO2';
+    newChemical = 'Na2CO3 + CO2';
+} else if ((first === 'NaOH' && second === 'H2O') || (first === 'H2O' && second === 'NaOH')) {
+    resultText = 'Phản ứng xảy ra: Kiềm + Nước → Không có phản ứng';
+    equationText = 'NaOH + H2O → Không có sản phẩm';
+    newChemical = '';
+} else if ((first === 'K2O' && second === 'H2O') || (first === 'H2O' && second === 'K2O')) {
+    resultText = 'Phản ứng xảy ra: Oxit kim loại kiềm + Nước → Kiềm';
+    equationText = 'K2O + H2O → 2KOH';
+    newChemical = '2KOH';
+} else if ((first === 'SO3' && second === 'H2O') || (first === 'H2O' && second === 'SO3')) {
+    resultText = 'Phản ứng xảy ra: Oxit axit + Nước → Axit';
+    equationText = 'SO3 + H2O → H2SO4';
+    newChemical = 'H2SO4';
+} else if ((first === 'MgO' && second === 'H2O') || (first === 'H2O' && second === 'MgO')) {
+    resultText = 'Phản ứng xảy ra: Oxit kim loại + Nước → Bazơ (Kiềm yếu).';
+    equationText = 'MgO + H2O → Mg(OH)2';
+    newChemical = 'Mg(OH)2';
+} else if ((first === 'CO2' && second === 'H2O') || (first === 'H2O' && second === 'CO2')) {
+    resultText = 'Phản ứng xảy ra: Oxit axit + Nước → Axit yếu.';
+    equationText = 'CO2 + H2O → H2CO3->H2O+CO2';
+    newChemical = 'H2O+CO2';
+} else if ((first === 'Na2O' && second === 'H2O') || (first === 'H2O' && second === 'Na2O')) {
+    resultText = 'Phản ứng xảy ra: Oxit kim loại + Nước → Kiềm mạnh.';
+    equationText = 'Na2O + H2O → 2NaOH';
+    newChemical = 'NaOH';
+} else if ((first === 'CaO' && second === 'H2O') || (first === 'H2O' && second === 'CaO')) {
+    resultText = 'Phản ứng xảy ra: Oxit kim loại + Nước → Bazơ.';
+    equationText = 'CaO + H2O → Ca(OH)2';
+    newChemical = 'Ca(OH)2';
+} else if ((first === 'HCl' && second === 'NaOH') || (first === 'NaOH' && second === 'HCl')) {
+    resultText = 'Phản ứng xảy ra: Axit + Bazơ → Muối + Nước.';
+    equationText = 'HCl + NaOH → NaCl + H2O';
+    newChemical = 'NaCl';
+} else if ((first === 'CaCO3' && second === 'HCl') || (first === 'HCl' && second === 'CaCO3')) {
+    resultText = 'Phản ứng xảy ra: Muối cacbonat + Axit → Muối mới + CO2 + H2O.';
+    equationText = 'CaCO3 + 2HCl → CaCl2 + CO2 + H2O';
+    newChemical = 'CaCl2';
+} else if ((first === 'KOH' && second === 'H2SO4') || (first === 'H2SO4' && second === 'KOH')) {
+    resultText = 'Phản ứng xảy ra: Bazơ + Axit → Muối + Nước.';
+    equationText = '2KOH + H2SO4 → K2SO4 + 2H2O';
+    newChemical = 'K2SO4';
+} else if ((first === 'NaOH' && second === 'CO2') || (first === 'CO2' && second === 'NaOH')) {
+    resultText = 'Phản ứng xảy ra: Kiềm + Oxit axit → Muối trung hòa hoặc muối axit.';
+    equationText = '2NaOH + CO2 → Na2CO3 + H2O';
+    newChemical = 'Na2CO3';
+} else if ((first === 'NaOH' && second === 'H2CO3') || (first === 'H2CO3' && second === 'NaOH')) {
+    resultText = 'Phản ứng xảy ra: Bazơ + Axit yếu → Muối + Nước.';
+    equationText = 'NaOH + H2CO3 → NaHCO3 + H2O';
+    newChemical = 'NaHCO3';
+} else if ((first === 'Ca(OH)2' && second === 'CO2') || (first === 'CO2' && second === 'Ca(OH)2')) {
+    resultText = 'Phản ứng xảy ra: Kiềm + Oxit axit → Muối kết tủa.';
+    equationText = 'Ca(OH)2 + CO2 → CaCO3 + H2O';
+    newChemical = 'CaCO3 (kết tủa trắng)';
+} else if ((first === 'Na2CO3' && second === 'HCl') || (first === 'HCl' && second === 'Na2CO3')) {
+    resultText = 'Phản ứng xảy ra: Muối + Axit → Muối mới + CO2 + H2O.';
+    equationText = 'Na2CO3 + 2HCl → 2NaCl + CO2 + H2O';
+    newChemical = 'NaCl';
+} else if ((first === 'BaCl2' && second === 'H2SO4') || (first === 'H2SO4' && second === 'BaCl2')) {
+    resultText = 'Phản ứng xảy ra: Muối + Axit → Muối mới + Kết tủa.';
+    equationText = 'BaCl2 + H2SO4 → BaSO4 (kết tủa trắng) + 2HCl';
+    newChemical = 'BaSO4';
+} else if ((first === 'NaOH' && second === 'NH4Cl') || (first === 'NH4Cl' && second === 'NaOH')) {
+    resultText = 'Phản ứng xảy ra: Kiềm + Muối amoni → Muối mới + Amoniac + Nước.';
+    equationText = 'NaOH + NH4Cl → NaCl + NH3 + H2O';
+    newChemical = 'NH3 (amoniac)';
+} else if ((first === 'Fe' && second === 'H2SO4') || (first === 'H2SO4' && second === 'Fe')) {
+    resultText = 'Phản ứng xảy ra: Kim loại + Axit → Muối + Khí hidro.';
+    equationText = 'Fe + H2SO4 → FeSO4 + H2↑';
+    newChemical = 'FeSO4';
+            } else {
+                resultText = 'Không có phản ứng phù hợp với các chất này';
+                equationText = '';
+                newChemical = '';
+            }
+
+            // Hiển thị kết quả phản ứng và phương trình hóa học
+            document.getElementById('reaction-result').innerText = resultText;
+            document.getElementById('equation').innerText = equationText;
+
+            if (newChemical) {
+                createChemicalBox(newChemical); // Tạo chất mới từ phản ứng
+            }
+
+            // Xóa các chất cũ sau phản ứng
+            box1.remove();
+            box2.remove();
+        }
+
+        // Reset lại các chất trong khu vực phản ứng
+        function resetChemicals() {
+            createdChemicals.forEach(chemical => chemical.remove());
+            createdChemicals = [];
+            document.getElementById('reaction-result').innerText = '';
+            document.getElementById('equation').innerText = '';
+        }
+    </script>
+</body>
+<script>
+    let content = document.getElementById("content");
+    let startX, startY;
+
+    content.addEventListener("touchstart", function(event) {
+        startX = event.touches[0].clientX;
+        startY = event.touches[0].clientY;
+    });
+
+    content.addEventListener("touchmove", function(event) {
+        let moveX = event.touches[0].clientX - startX;
+        let moveY = event.touches[0].clientY - startY;
+
+        // Cập nhật vị trí di chuyển
+        document.body.style.transform = `translate(${moveX}px, ${moveY}px)`;
+    });
+
+    content.addEventListener("touchend", function() {
+        // Reset vị trí sau khi kết thúc cảm ứng
+        startX = startY = 0;
+    });
+</script>
+</body>
+</html>
