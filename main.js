@@ -1,139 +1,193 @@
-/* =============================
-    CARD CLICK
-============================= */
-document.querySelectorAll(".card").forEach((card) => {
-  card.addEventListener("click", () => {
-    window.location.href = card.dataset.link;
-  });
-});
+/* ================================
+        HELPER SHORTCUTS
+================================ */
+const qs = (s) => document.querySelector(s);
+const qsa = (s) => [...document.querySelectorAll(s)];
 
-/* =============================
-    CARD HOVER DISTANCE
-============================= */
-document.addEventListener("mousemove", (e) => {
-  document.querySelectorAll(".card").forEach((card) => {
-    const rect = card.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
+/* ================================
+        DOM ELEMENTS
+================================ */
+const header = qs("#header");
+const themeBtn = qs("#themeToggle");
+const menuBtn = qs("#menuToggle");
+const footer = qs("#footer");
+const sidebar = qs("#sidebar");
 
-    const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
+/* ================================
+        1. GRADIENT HEADER
+================================ */
+const randomHSL = () => `hsl(${Math.random() * 360}, 85%, 55%)`;
 
-    if (dist < 170) {
-      card.classList.add("active-hover");
-      card.style.setProperty("--subject-color", card.dataset.color);
-    } else {
-      card.classList.remove("active-hover");
-    }
-  });
-});
+function shadeColor(hex, percent) {
+  let f = parseInt(hex.slice(1), 16),
+    t = percent < 0 ? 0 : 255,
+    p = Math.abs(percent),
+    R = f >> 16,
+    G = (f >> 8) & 0xff,
+    B = f & 0xff;
 
-/* =============================
-    RANDOM HEADER GRADIENT
-============================= */
-const header = document.getElementById("header");
-
-const subjectColors = [
-  "#3b82f6",
-  "#ef4444",
-  "#f472b6",
-  "#22c55e",
-  "#facc15",
-  "#4ade80",
-  "#60a5fa",
-];
-
-function randomGradient() {
-  const c1 = subjectColors[Math.floor(Math.random() * subjectColors.length)];
-  const c2 = subjectColors[Math.floor(Math.random() * subjectColors.length)];
-  const c3 = subjectColors[Math.floor(Math.random() * subjectColors.length)];
-
-  header.style.background = `linear-gradient(45deg, ${c1}, ${c2}, ${c3})`;
+  return (
+    "#" +
+    (
+      0x1000000 +
+      (Math.round((t - R) * p) + R) * 0x10000 +
+      (Math.round((t - G) * p) + G) * 0x100 +
+      (Math.round((t - B) * p) + B)
+    )
+      .toString(16)
+      .slice(1)
+  );
 }
-randomGradient();
 
-/* =============================
-    HEADER GLOW FOLLOW MOUSE
-============================= */
-header.addEventListener("mousemove", (e) => {
-  const r = header.getBoundingClientRect();
-  header.style.setProperty("--x", `${e.clientX - r.left}px`);
-  header.style.setProperty("--y", `${e.clientY - r.top}px`);
-});
+function setRandomHeader() {
+  header.style.background = `linear-gradient(135deg, ${randomHSL()}, ${randomHSL()}, ${randomHSL()})`;
+  header.style.backgroundSize = "300% 300%";
+}
 
-/* =============================
-    FOOTER GLOW
-============================= */
-const footer = document.getElementById("footer");
-footer.addEventListener("mousemove", (e) => {
-  const r = footer.getBoundingClientRect();
-  footer.style.setProperty("--fx", `${e.clientX - r.left}px`);
-  footer.style.setProperty("--fy", `${e.clientY - r.top}px`);
-});
+function setHeaderBySubject() {
+  const base = document.body.dataset.subject;
+  if (!header) return;
 
-/* =============================
-    SIDEBAR
-============================= */
-const menuBtn = document.getElementById("menuToggle");
-const sidebar = document.getElementById("sidebar");
+  if (!base) return setRandomHeader();
 
-menuBtn.addEventListener("click", () => {
-  sidebar.classList.toggle("open");
-});
+  const hex = base.startsWith("#") ? base : `#${base}`;
 
-/* =============================
-    SIDEBAR → CLICK LINK
-============================= */
-document.querySelectorAll(".sidebar-item").forEach((item) => {
-  item.onclick = () => {
-    if (item.dataset.link) location.href = item.dataset.link;
-  };
-});
+  const g1 = hex;
+  const g2 = shadeColor(hex, 0.25);
+  const g3 = shadeColor(hex, -0.2);
 
-/* =============================
-    THEME SWITCH
-============================= */
-const themeToggle = document.getElementById("themeToggle");
+  const gradient = `linear-gradient(135deg, ${g1}, ${g2}, ${g3})`;
 
-themeToggle.onclick = () => {
-  document.body.classList.toggle("dark-mode");
-  document.body.classList.toggle("light-mode");
+  header.style.background = gradient;
+  header.style.backgroundSize = "300% 300%";
+}
 
-  themeToggle.innerHTML = document.body.classList.contains("dark-mode")
-    ? `<i class="fas fa-sun"></i>`
-    : `<i class="fas fa-moon"></i>`;
-};
+/* ================================
+        2. HEADER GLOW
+================================ */
+function enableHeaderGlow() {
+  if (!header) return;
+  header.addEventListener("mousemove", (e) => {
+    const r = header.getBoundingClientRect();
+    header.style.setProperty("--hx", e.clientX - r.left + "px");
+    header.style.setProperty("--hy", e.clientY - r.top + "px");
+  });
+}
 
-/* =============================
-    SEARCH
-============================= */
-const subjectMap = {
-  hoá: "educhem/educhem.html",
-  hóa: "educhem/educhem.html",
-  educhem: "educhem/educhem.html",
+function animateSiteTitle() {
+  const t = qs(".site-title");
+  if (t) t.classList.add("scan-animate");
+}
 
-  toán: "edualge/edualge.html",
-  "đại số": "edualge/edualge.html",
-  edualge: "edualge/edualge.html",
+/* ================================
+        3. SIDEBAR TOGGLE
+================================ */
+function toggleSidebar() {
+  if (!menuBtn || !sidebar) return;
+  menuBtn.onclick = () => sidebar.classList.toggle("open");
+}
 
-  lý: "eduphys/eduphys.html",
-  "vật lý": "eduphys/eduphys.html",
+/* ================================
+        4. THEME MODE (LIGHT/DARK)
+================================ */
+function setupTheme() {
+  const body = document.body;
+  const saved = localStorage.getItem("theme");
 
-  sinh: "edubiol/edubiol.html",
+  body.classList.add(saved || "light");
 
-  hình: "edugeom/edugeom.html",
-  "hình học": "edugeom/edugeom.html",
+  themeBtn?.addEventListener("click", () => {
+    body.classList.toggle("dark");
+    body.classList.toggle("light");
 
-  "công nghệ": "edutech/edutech.html",
-  tin: "eduinfortech/eduinformtech.html",
-};
+    const mode = body.classList.contains("dark") ? "dark" : "light";
+    localStorage.setItem("theme", mode);
 
-const search = document.getElementById("searchBox");
-search.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    const text = search.value.toLowerCase();
-    for (let key in subjectMap) {
-      if (text.includes(key)) return (location.href = subjectMap[key]);
-    }
-    alert("Không tìm thấy môn này!");
-  }
-});
+    setHeaderBySubject();
+  });
+}
+
+/* ================================
+        5. CARD EFFECTS
+================================ */
+function setupCards() {
+  const cards = qsa(".card");
+
+  cards.forEach((card) => {
+    const color = card.dataset.color || "#3b82f6";
+    card.style.setProperty("--accent", color);
+
+    /* spotlight */
+    card.addEventListener("mousemove", (e) => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty("--mx", e.clientX - r.left + "px");
+      card.style.setProperty("--my", e.clientY - r.top + "px");
+      card.classList.add("hovering");
+    });
+
+    /* on enter */
+    card.addEventListener("mouseenter", () => {
+      card.classList.add("active");
+      cards.forEach(
+        (c) => c !== card && c.classList.remove("active", "hovering")
+      );
+    });
+
+    /* leave */
+    card.addEventListener("mouseleave", () =>
+      card.classList.remove("active", "hovering")
+    );
+
+    /* click */
+    card.addEventListener("click", () => {
+      if (card.dataset.link) window.location.href = card.dataset.link;
+      document.body.dataset.subject = color;
+      setHeaderBySubject();
+    });
+  });
+}
+
+/* ================================
+        6. COLLAPSIBLE SECTION
+================================ */
+function setupSectionToggle() {
+  qsa(".section").forEach((sec) => {
+    const head = sec.querySelector(".section-header");
+    if (!head) return;
+
+    head.addEventListener("click", () => sec.classList.toggle("closed"));
+  });
+}
+
+/* ================================
+        7. FOOTER GLOW
+================================ */
+function enableFooterGlow() {
+  if (!footer) return;
+
+  footer.addEventListener("mousemove", (e) => {
+    const r = footer.getBoundingClientRect();
+    footer.style.setProperty("--fx", e.clientX - r.left + "px");
+    footer.style.setProperty("--fy", e.clientY - r.top + "px");
+  });
+}
+
+/* ================================
+        INIT
+================================ */
+function init() {
+  setHeaderBySubject();
+  enableHeaderGlow();
+  animateSiteTitle();
+  toggleSidebar();
+  setupTheme();
+  setupCards();
+  setupSectionToggle();
+  enableFooterGlow();
+
+  if (header) header.style.animation = "headerFlow 12s linear infinite";
+}
+
+document.readyState === "loading"
+  ? document.addEventListener("DOMContentLoaded", init)
+  : init();
