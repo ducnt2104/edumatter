@@ -41,3 +41,30 @@ document.querySelectorAll("[data-link]").forEach((el) => {
     if (link) window.location.href = link;
   });
 });
+// load footer
+fetch("../component/footer.html")
+  .then((res) => res.text())
+  .then((html) => {
+    document.getElementById("footer-container").innerHTML = html;
+    startFooterParticles();
+  });
+const toggleBtn = document.getElementById("theme-toggle");
+
+toggleBtn.onclick = () => {
+  document.body.classList.toggle("light");
+
+  if (document.body.classList.contains("light")) {
+    toggleBtn.innerHTML = `<i class="fas fa-sun"></i>`;
+  } else {
+    toggleBtn.innerHTML = `<i class="fas fa-moon"></i>`;
+  }
+};
+// Dark mode
+document.getElementById("theme-toggle").onclick = () => {
+    document.body.classList.toggle("dark");
+};
+
+// Toggle menu
+document.getElementById("menu-toggle").onclick = () => {
+    document.querySelector(".sidebar").classList.toggle("active");
+};
