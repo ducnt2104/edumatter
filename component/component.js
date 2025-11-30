@@ -159,4 +159,3 @@ modeBtn.onclick = () => {
   modeBtn.textContent = body.classList.contains("light-mode") ? "☀️" : "🌙";
 };
 const toggle = document.getElementById("toggleTheme");
-
