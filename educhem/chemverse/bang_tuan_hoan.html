@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bảng Tuần Hoàn Hóa Học Hiện Đại</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Các style bổ sung cho giao diện Bảng Tuần Hoàn */
+      .periodic-table {
+        display: grid;
+        /* 18 cột theo cấu trúc bảng tuần hoàn */
+        grid-template-columns: repeat(18, minmax(0, 1fr));
+        gap: 4px; /* Khoảng cách giữa các ô */
+      }
+      #atom-3d-container {
+        width: 100%;
+        height: 300px; /* Chiều cao cố định cho mô hình 3D */
+        border-radius: 8px;
+        overflow: hidden;
+        background-color: #1f2937; /* Màu nền tối */
+      }
+      .element-cell {
+        /* Đảm bảo ô vuông và vị trí được xác định bởi JS */
+        aspect-ratio: 1 / 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        font-size: 0.75rem; /* text-xs */
+        font-weight: bold;
+        border-width: 2px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -2px rgba(0, 0, 0, 0.1);
+      }
+
+      .element-cell:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2),
+          0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+      }
+
+      /* Định vị bằng CSS Grid */
+      /* JS sẽ đặt style grid-column và grid-row cho từng ô */
+      .grid-col-1 {
+        grid-column: 1;
+      }
+      .grid-col-18 {
+        grid-column: 18;
+      }
+      /* ... và các giá trị khác ... */
+
+      /* Modal backdrop mờ */
+      .modal-backdrop {
+        background-color: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(5px);
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-50 dark:bg-gray-900 min-h-screen p-4 md:p-8">
+    <h1
+      class="text-3xl md:text-5xl font-extrabold text-center mb-8 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600"
+    >
+      ✨ Bảng Tuần Hoàn Hóa Học Hiện Đại
+    </h1>
+
+    <div
+      id="periodic-table-container"
+      class="periodic-table max-w-7xl mx-auto"
+    ></div>
+
+    <div
+      id="element-modal"
+      class="fixed inset-0 hidden modal-backdrop items-center justify-center p-4 z-50"
+    >
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-lg p-6 relative border-t-8 border-blue-500 transform transition-all duration-300 scale-95 opacity-0"
+        id="modal-content"
+      >
+        <button
+          class="absolute top-3 right-3 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white text-3xl font-bold"
+          onclick="closeModal()"
+        >
+          &times;
+        </button>
+        <h2
+          id="modal-name"
+          class="text-3xl font-bold mb-2 text-blue-600 dark:text-blue-400"
+        ></h2>
+        <p class="text-sm font-mono text-gray-500 dark:text-gray-400 mb-4">
+          #<span id="modal-number"></span> | Khối lượng:
+          <span id="modal-mass"></span>
+        </p>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <h3 class="font-semibold text-lg text-gray-700 dark:text-gray-200">
+              Thông tin cơ bản
+            </h3>
+            <p>
+              <strong>Ký hiệu:</strong>
+              <span
+                id="modal-symbol"
+                class="text-4xl font-black text-red-500"
+              ></span>
+            </p>
+            <p>
+              <strong>Chu kỳ/Nhóm:</strong> <span id="modal-position"></span>
+            </p>
+            <p>
+              <strong>Nguyên tố khối:</strong> <span id="modal-block"></span>
+            </p>
+          </div>
+          <div>
+            <h3 class="font-semibold text-lg text-gray-700 dark:text-gray-200">
+              Cấu hình electron
+            </h3>
+            <p
+              class="text-xl font-mono bg-yellow-100 dark:bg-yellow-900 p-2 rounded-md shadow-inner text-yellow-800 dark:text-yellow-300"
+            >
+              <span id="modal-e-config"></span>
+            </p>
+            <p class="mt-2">
+              <strong>Số lớp:</strong> <span id="modal-e-layers"></span>
+            </p>
+            <p><strong>p/n/e:</strong> <span id="modal-parts"></span></p>
+          </div>
+        </div>
+
+        <h3 class="font-semibold text-lg text-gray-700 dark:text-gray-200 mt-4">
+          Ứng dụng chính
+        </h3>
+        <p
+          id="modal-application"
+          class="text-gray-600 dark:text-gray-300 italic border-l-4 border-teal-500 pl-3 py-1 bg-teal-50 dark:bg-teal-900/30 rounded-r"
+        ></p>
+      </div>
+    </div>
+    <div
+      id="element-modal"
+      class="fixed inset-0 hidden modal-backdrop items-center justify-center p-4 z-50"
+    >
+      <div id="modal-content" class="... (các class cũ) ...">
+        <h3 class="font-semibold text-lg text-gray-700 dark:text-gray-200 mt-6">
+          ⚛️ Mô hình Nguyên tử 3D
+        </h3>
+        <div id="atom-3d-container" class="mb-4"></div>
+      </div>
+    </div>
+    <script src="element.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

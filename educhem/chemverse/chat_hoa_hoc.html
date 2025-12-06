@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thư Viện Hợp Chất Hóa Học</title>
+    <!-- Tải Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* Thiết lập font Inter làm font chính */
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f7f7f7;
+        color: #1f2937;
+        min-height: 100vh;
+      }
+      /* Style cho công thức hóa học để subscript hiển thị tốt hơn */
+      .formula-display {
+        font-size: 1.5rem;
+        line-height: 1.75rem;
+        font-weight: 700;
+      }
+      .formula-display sub {
+        vertical-align: sub;
+        font-size: 0.75em;
+      }
+      /* Custom scrollbar cho đẹp hơn */
+      .mission-list::-webkit-scrollbar {
+        width: 8px;
+      }
+      .mission-list::-webkit-scrollbar-thumb {
+        background-color: #d1d5db;
+        border-radius: 10px;
+      }
+      .mission-list::-webkit-scrollbar-track {
+        background: #f3f4f6;
+      }
+    </style>
+  </head>
+  <body class="p-4 md:p-8">
+    <div class="max-w-6xl mx-auto">
+      <h1 class="text-4xl font-bold text-center text-blue-700 mb-6">
+        Thư Viện Hợp Chất (Missions)
+      </h1>
+      <p class="text-center text-gray-600 mb-8">
+        Khám phá các nguyên tố và hợp chất trong hệ thống.
+      </p>
+
+      <!-- Thanh tìm kiếm và bộ lọc -->
+      <div
+        class="mb-8 p-4 bg-white rounded-xl shadow-lg flex flex-col md:flex-row gap-4"
+      >
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Tìm kiếm theo Tên, Công thức, hoặc Mô tả..."
+          class="flex-grow p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+        />
+        <select
+          id="type-filter"
+          class="p-3 border border-gray-300 rounded-lg bg-white"
+        >
+          <option value="all">Tất cả Loại Chất</option>
+          <option value="Hợp chất">Hợp chất</option>
+          <option value="Đơn chất">Đơn chất</option>
+        </select>
+      </div>
+      <div
+        id="mission-list"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mission-list"
+      ></div>
+
+      <div
+        id="pagination-controls"
+        class="flex justify-center items-center space-x-4 mt-8"
+      ></div>
+
+      <div id="no-results" class="text-center text-gray-500 mt-12 hidden"></div>
+      <!-- Khu vực hiển thị danh sách chất -->
+      <div
+        id="mission-list"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mission-list"
+      >
+        <!-- Nội dung sẽ được render bởi JavaScript -->
+      </div>
+
+      <!-- Thông báo không tìm thấy -->
+      <div id="no-results" class="text-center text-gray-500 mt-12 hidden">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-10 w-10 mx-auto mb-2"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <p class="text-xl">
+          Không tìm thấy chất nào phù hợp với tiêu chí tìm kiếm.
+        </p>
+      </div>
+    </div>
+
+    <script>
+      // Dữ liệu ATOMS (Tương đương atom.js)
+
+      const missionListEl = document.getElementById("mission-list");
+      const searchInputEl = document.getElementById("search-input");
+      const typeFilterEl = document.getElementById("type-filter");
+      const noResultsEl = document.getElementById("no-results");
+      // Thêm element điều khiển phân trang
+      const paginationControlsEl = document.getElementById(
+        "pagination-controls"
+      );
+
+      // --- Các Biến Phân Trang ---
+      const ITEMS_PER_PAGE = 12; // Số lượng chất hiển thị mỗi trang
+      let currentPage = 1;
+      let currentFilteredMissions = []; // Danh sách chất sau khi lọc/tìm kiếm
+      // --------------------------
+
+      /**
+       * Chuyển đổi công thức với subscript Unicode thành HTML <sub>
+       * Ví dụ: H₂O -> H<sub>2</sub>O
+       * @param {string} formula
+       * @returns {string} HTML string
+       */
+      function formatFormula(formula) {
+        let htmlFormula = formula
+          .replace(/₀/g, "<sub>0</sub>")
+          .replace(/₁/g, "<sub>1</sub>")
+          .replace(/₂/g, "<sub>2</sub>")
+          .replace(/₃/g, "<sub>3</sub>")
+          .replace(/₄/g, "<sub>4</sub>")
+          .replace(/₅/g, "<sub>5</sub>")
+          .replace(/₆/g, "<sub>6</sub>")
+          .replace(/₇/g, "<sub>7</sub>")
+          .replace(/₈/g, "<sub>8</sub>")
+          .replace(/₉/g, "<sub>9</sub>");
+
+        htmlFormula = htmlFormula.replace(
+          /([A-Za-z])(\d+)/g,
+          (match, p1, p2) => {
+            return p1 + `<sub>${p2}</sub>`;
+          }
+        );
+
+        return htmlFormula;
+      }
+
+      /**
+       * Tính Khối lượng Mol (Molar Mass) của hợp chất.
+       * @param {object} recipe - Công thức dưới dạng { Ký hiệu: Số lượng }
+       * @returns {number} Khối lượng mol
+       */
+      function calculateMolarMass(recipe) {
+        let totalMass = 0;
+        for (const symbol in recipe) {
+          if (ATOMS[symbol]) {
+            totalMass += ATOMS[symbol].mass * recipe[symbol];
+          }
+        }
+        return totalMass.toFixed(3); // Làm tròn 3 chữ số thập phân
+      }
+
+      /**
+       * Render thông tin nguyên tố (các mảnh ghép) của hợp chất.
+       * @param {object} recipe - Công thức dưới dạng { Ký hiệu: Số lượng }
+       * @returns {string} HTML string của các mảnh ghép nguyên tố
+       */
+      function renderAtomPieces(recipe) {
+        let html = "";
+        for (const symbol in recipe) {
+          const count = recipe[symbol];
+          const atom = ATOMS[symbol];
+
+          if (atom) {
+            html += `
+            <div class="flex items-center space-x-1">
+              <span title="${
+                atom.name
+              }" class="text-xs font-semibold px-2 py-0.5 rounded-full ${
+              atom.color
+            } ${atom.text} border ${atom.border}">
+                ${symbol}${
+              count > 1 ? `<span class="text-xs ml-0.5">${count}</span>` : ""
+            }
+              </span>
+            </div>
+          `;
+          }
+        }
+        return html;
+      }
+
+      /**
+       * Render danh sách các nhiệm vụ/chất hóa học cho trang hiện tại.
+       * @param {Array} missionsToRender - Danh sách các chất cần hiển thị
+       */
+      function renderMissions(missionsToRender) {
+        missionListEl.innerHTML = "";
+
+        // 1. Tính toán phần dữ liệu cho trang hiện tại
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        const endIndex = startIndex + ITEMS_PER_PAGE;
+        const missionsOnPage = missionsToRender.slice(startIndex, endIndex);
+
+        if (missionsOnPage.length === 0 && missionsToRender.length === 0) {
+          noResultsEl.classList.remove("hidden");
+          paginationControlsEl.innerHTML = "";
+          return;
+        } else {
+          noResultsEl.classList.add("hidden");
+        }
+
+        missionsOnPage.forEach((mission) => {
+          const molarMass = calculateMolarMass(mission.recipe);
+          const formulaHtml = formatFormula(mission.formula);
+          const atomPiecesHtml = renderAtomPieces(mission.recipe);
+
+          const cardHtml = `
+            <div class="mission-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300 border-t-4 ${
+              mission.type === "Hợp chất"
+                ? "border-blue-500"
+                : "border-green-500"
+            }">
+              <div class="flex justify-between items-start mb-3">
+                <h2 class="text-2xl font-bold text-gray-800">${
+                  mission.name
+                }</h2>
+                <span class="text-xs font-medium px-3 py-1 rounded-full ${
+                  mission.type === "Hợp chất"
+                    ? "bg-blue-100 text-blue-800"
+                    : "bg-green-100 text-green-800"
+                }">
+                  ${mission.type}
+                </span>
+              </div>
+              
+              <p class="formula-display text-gray-900 mb-3" data-formula="${
+                mission.formula
+              }">${formulaHtml}</p>
+
+              <p class="text-sm text-gray-500 mb-4 h-12 overflow-hidden">${
+                mission.desc
+              }</p>
+
+              <div class="space-y-3">
+                <div class="flex justify-between items-center text-sm font-medium border-t pt-3">
+                  <span class="text-gray-600">Khối lượng Mol:</span>
+                  <span class="text-lg text-red-600 font-extrabold">${molarMass} g/mol</span>
+                </div>
+                <div class="flex flex-wrap gap-2 text-sm">
+                  <span class="text-gray-600">Thành phần:</span>
+                  ${atomPiecesHtml}
+                </div>
+              </div>
+            </div>
+          `;
+          missionListEl.innerHTML += cardHtml;
+        });
+
+        // 2. Cập nhật Điều hướng Trang
+        renderPagination(missionsToRender.length);
+      }
+
+      /**
+       * Render các nút điều hướng trang.
+       * @param {number} totalItems - Tổng số chất sau khi lọc
+       */
+      function renderPagination(totalItems) {
+        const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+        paginationControlsEl.innerHTML = "";
+
+        if (totalPages <= 1) return;
+
+        // Nút Trước
+        paginationControlsEl.innerHTML += `
+      <button 
+        id="prev-page" 
+        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 ${
+          currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+        }"
+        ${currentPage === 1 ? "disabled" : ""}
+      >
+        Trang Trước
+      </button>
+    `;
+
+        // Hiển thị Trang hiện tại / Tổng số trang
+        paginationControlsEl.innerHTML += `
+      <span class="text-base font-semibold text-blue-700">
+        Trang ${currentPage} / ${totalPages}
+      </span>
+    `;
+
+        // Nút Sau
+        paginationControlsEl.innerHTML += `
+      <button 
+        id="next-page" 
+        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 ${
+          currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""
+        }"
+        ${currentPage === totalPages ? "disabled" : ""}
+      >
+        Trang Sau
+      </button>
+    `;
+
+        // Gắn sự kiện cho các nút điều hướng
+        document.getElementById("prev-page")?.addEventListener("click", () => {
+          if (currentPage > 1) {
+            currentPage--;
+            renderMissions(currentFilteredMissions);
+            window.scrollTo(0, 0); // Cuộn lên đầu trang
+          }
+        });
+
+        document.getElementById("next-page")?.addEventListener("click", () => {
+          if (currentPage < totalPages) {
+            currentPage++;
+            renderMissions(currentFilteredMissions);
+            window.scrollTo(0, 0); // Cuộn lên đầu trang
+          }
+        });
+      }
+
+      /**
+       * Xử lý tìm kiếm và lọc.
+       */
+      function filterMissions() {
+        const searchTerm = searchInputEl.value.toLowerCase().trim();
+        const selectedType = typeFilterEl.value;
+
+        const filtered = MISSIONS.filter((mission) => {
+          const matchesSearch =
+            mission.name.toLowerCase().includes(searchTerm) ||
+            mission.formula.toLowerCase().includes(searchTerm) ||
+            mission.desc.toLowerCase().includes(searchTerm);
+
+          const matchesType =
+            selectedType === "all" || mission.type === selectedType;
+
+          return matchesSearch && matchesType;
+        });
+
+        // Cập nhật danh sách lọc và reset về trang đầu tiên
+        currentFilteredMissions = filtered;
+        currentPage = 1;
+
+        renderMissions(currentFilteredMissions);
+      }
+
+      // Ứng dụng khởi tạo khi DOM đã load
+      document.addEventListener("DOMContentLoaded", () => {
+        // Khởi tạo danh sách lọc ban đầu
+        currentFilteredMissions = MISSIONS;
+
+        // Lần đầu tiên render trang đầu tiên của tất cả chất
+        renderMissions(currentFilteredMissions);
+
+        // Gắn sự kiện lắng nghe cho input và select
+        searchInputEl.addEventListener("input", filterMissions);
+        typeFilterEl.addEventListener("change", filterMissions);
+      });
+    </script>
+    <script src="atom.js"></script>
+    <script src="misson.js"></script>
+  </body>
+</html>

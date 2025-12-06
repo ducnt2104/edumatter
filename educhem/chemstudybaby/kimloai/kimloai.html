@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hóa Học 9: Kim Loại & Phi Kim - Interactive Master</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../../component/component.css" />
+    <script src="../../component/component.js"></script>
+    <style>
+      :root {
+        --primary: #6366f1;
+        --secondary: #ec4899;
+        --dark: #0f172a;
+      }
+      body {
+        font-family: "Be Vietnam Pro", sans-serif;
+        background-color: var(--dark);
+        color: white;
+        overflow-x: hidden;
+      }
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #1e293b;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #475569;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #64748b;
+      }
+      /* Glassmorphism Panel */
+      .glass-panel {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      /* Animations */
+      @keyframes float {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+      .animate-float {
+        animation: float 6s ease-in-out infinite;
+      }
+      @keyframes pulse-glow {
+        0%,
+        100% {
+          box-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
+        }
+        50% {
+          box-shadow: 0 0 25px rgba(99, 102, 241, 0.6);
+        }
+      }
+      /* 3D Flip Card */
+      .perspective-1000 {
+        perspective: 1000px;
+      }
+      .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+      }
+      .flip-card.flipped .flip-card-inner {
+        transform: rotateY(180deg);
+      }
+      .flip-card-front,
+      .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      }
+      .flip-card-back {
+        transform: rotateY(180deg);
+        background: linear-gradient(135deg, #4f46e5, #9333ea);
+      }
+      /* Custom Range Slider for Activity Series */
+      .metal-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: #facc15;
+        cursor: pointer;
+        box-shadow: 0 0 10px #facc15;
+      }
+    </style>
+  </head>
+  <body
+    class="h-screen flex overflow-hidden bg-[url('https://images.unsplash.com/photo-1532094349884-543bc11b234d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')] bg-cover bg-center bg-no-repeat bg-blend-multiply"
+  >
+    <aside
+      class="w-20 lg:w-64 glass-panel flex flex-col z-20 transition-all duration-300"
+    >
+      <div
+        class="h-20 flex items-center justify-center border-b border-gray-700"
+      >
+        <i
+          class="fa-solid fa-atom text-3xl text-indigo-400 animate-spin-slow"
+          style="animation-duration: 10s"
+        ></i>
+        <span
+          class="hidden lg:block ml-3 font-bold text-xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-400"
+          >CHEM 9</span
+        >
+      </div>
+      <nav class="flex-1 overflow-y-auto py-4 space-y-2 px-2">
+        <button
+          onclick="switchTab('metals')"
+          class="nav-btn group w-full flex items-center p-3 rounded-xl hover:bg-white/10 transition text-gray-300 hover:text-white active-tab bg-white/10 text-white shadow-lg border-l-4 border-indigo-500"
+        >
+          <i
+            class="fa-solid fa-cube w-8 text-center text-lg group-hover:text-indigo-400"
+          ></i>
+          <span class="hidden lg:block font-medium">I. Tính chất KL</span>
+        </button>
+        <button
+          onclick="switchTab('series')"
+          class="nav-btn group w-full flex items-center p-3 rounded-xl hover:bg-white/10 transition text-gray-300 hover:text-white border-l-4 border-transparent"
+        >
+          <i
+            class="fa-solid fa-arrow-down-wide-short w-8 text-center text-lg group-hover:text-yellow-400"
+          ></i>
+          <span class="hidden lg:block font-medium">II. Dãy hoạt động</span>
+        </button>
+        <button
+          onclick="switchTab('production')"
+          class="nav-btn group w-full flex items-center p-3 rounded-xl hover:bg-white/10 transition text-gray-300 hover:text-white border-l-4 border-transparent"
+        >
+          <i
+            class="fa-solid fa-industry w-8 text-center text-lg group-hover:text-orange-400"
+          ></i>
+          <span class="hidden lg:block font-medium">III-IV. Gang & Thép</span>
+        </button>
+        <button
+          onclick="switchTab('nonmetals')"
+          class="nav-btn group w-full flex items-center p-3 rounded-xl hover:bg-white/10 transition text-gray-300 hover:text-white border-l-4 border-transparent"
+        >
+          <i
+            class="fa-solid fa-vial w-8 text-center text-lg group-hover:text-green-400"
+          ></i>
+          <span class="hidden lg:block font-medium">V. Phi kim</span>
+        </button>
+        <div class="border-t border-gray-700 my-2"></div>
+        <button
+          onclick="switchTab('flashcards')"
+          class="nav-btn group w-full flex items-center p-3 rounded-xl hover:bg-white/10 transition text-gray-300 hover:text-white border-l-4 border-transparent"
+        >
+          <i
+            class="fa-solid fa-layer-group w-8 text-center text-lg group-hover:text-cyan-400"
+          ></i>
+          <span class="hidden lg:block font-medium">Luyện trí nhớ</span>
+        </button>
+        <button
+          onclick="switchTab('game')"
+          class="nav-btn group w-full flex items-center p-3 rounded-xl hover:bg-gradient-to-r hover:from-pink-500 hover:to-rose-500 transition text-gray-300 hover:text-white border-l-4 border-transparent"
+        >
+          <i
+            class="fa-solid fa-gamepad w-8 text-center text-lg text-pink-500 group-hover:text-white"
+          ></i>
+          <span class="hidden lg:block font-bold">Đua Tốc Độ</span>
+        </button>
+        <a href="../chemstudybaby.html">Quay về trang chủ</a>
+      </nav>
+      <div class="p-4 border-t border-gray-700 hidden lg:block">
+        <div
+          class="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl p-4 text-center shadow-lg"
+        >
+          <h4 class="font-bold text-sm mb-1">Cấp độ của bạn</h4>
+          <div class="text-xs text-indigo-200 mb-2" id="levelText">
+            Tập sự hóa học
+          </div>
+          <div class="w-full bg-black/30 rounded-full h-2">
+            <div
+              class="bg-yellow-400 h-2 rounded-full transition-all duration-1000"
+              style="width: 0%"
+              id="xpBar"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </aside>
+    <main class="flex-1 relative overflow-hidden flex flex-col">
+      <header
+        class="h-20 glass-panel flex items-center justify-between px-8 z-10"
+      >
+        <div>
+          <h1 class="text-2xl font-bold text-white" id="pageTitle">
+            Tính chất chung của Kim loại
+          </h1>
+          <p class="text-gray-400 text-sm" id="pageSubtitle">
+            Khám phá tính dẫn điện, dẫn nhiệt và ánh kim
+          </p>
+        </div>
+        <div class="flex items-center gap-4">
+          <button
+            onclick="playSound('click')"
+            class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition"
+          >
+            <i class="fa-regular fa-bell"></i>
+          </button>
+          <div
+            class="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full"
+          >
+            <i class="fa-solid fa-trophy text-yellow-400"></i>
+            <span class="font-bold" id="totalScore">0</span>
+          </div>
+        </div>
+      </header>
+      <div
+        class="flex-1 overflow-y-auto p-4 lg:p-8 relative scroll-smooth"
+        id="contentArea"
+      >
+        <section
+          id="metals"
+          class="tab-content max-w-5xl mx-auto space-y-8 animate-float"
+        >
+          <div class="grid md:grid-cols-2 gap-6">
+            <div
+              class="glass-panel p-6 rounded-2xl hover:bg-white/5 transition duration-300"
+            >
+              <div class="flex items-center gap-4 mb-4">
+                <div
+                  class="w-12 h-12 rounded-xl bg-yellow-500/20 text-yellow-400 flex items-center justify-center text-2xl"
+                >
+                  <i class="fa-regular fa-sun"></i>
+                </div>
+                <h3 class="text-xl font-bold">1. Tính chất Vật lý</h3>
+              </div>
+              <ul class="space-y-3 text-gray-300">
+                <li class="flex items-start gap-3">
+                  <i class="fa-solid fa-check text-green-400 mt-1"></i
+                  ><span><b>Ánh kim:</b> Sáng bóng (Vàng, Bạc, Nhôm).</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <i class="fa-solid fa-bolt text-yellow-400 mt-1"></i
+                  ><span><b>Dẫn điện:</b> Ag > Cu > Au > Al > Fe.</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <i class="fa-solid fa-fire text-orange-400 mt-1"></i
+                  ><span><b>Dẫn nhiệt:</b> Thường đi đôi với dẫn điện.</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <i class="fa-solid fa-layer-group text-blue-400 mt-1"></i
+                  ><span
+                    ><b>Tính dẻo:</b> Dát mỏng, kéo sợi (Vàng dẻo nhất).</span
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="glass-panel p-6 rounded-2xl relative overflow-hidden">
+              <div
+                class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl"
+              ></div>
+              <h3 class="text-xl font-bold mb-4">
+                2. Tính chất Hóa học (Tính Khử)
+              </h3>
+              <div class="space-y-4">
+                <div
+                  class="bg-white/5 p-3 rounded-lg border-l-4 border-red-500"
+                >
+                  <div class="font-bold text-red-400 text-sm">
+                    Tác dụng với Oxi
+                  </div>
+                  <div class="font-mono text-xs mt-1">
+                    3Fe + 2O₂ → Fe₃O₄ (Gỉ sắt)
+                  </div>
+                </div>
+                <div
+                  class="bg-white/5 p-3 rounded-lg border-l-4 border-green-500"
+                >
+                  <div class="font-bold text-green-400 text-sm">
+                    Tác dụng với Phi kim (Cl₂, S...)
+                  </div>
+                  <div class="font-mono text-xs mt-1">
+                    2Na + Cl₂ → 2NaCl (Muối ăn)
+                  </div>
+                </div>
+                <div
+                  class="bg-white/5 p-3 rounded-lg border-l-4 border-blue-500"
+                >
+                  <div class="font-bold text-blue-400 text-sm">
+                    Tác dụng với Axit loãng
+                  </div>
+                  <div class="font-mono text-xs mt-1">
+                    Zn + 2HCl → ZnCl₂ + H₂↑
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="glass-panel p-6 rounded-2xl">
+            <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-table"></i> So sánh thông số Kim loại
+            </h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-sm">
+                <thead class="bg-white/10 text-indigo-300">
+                  <tr>
+                    <th class="p-3">Kim loại</th>
+                    <th>Màu</th>
+                    <th>Nhiệt độ NC (°C)</th>
+                    <th>Đặc điểm nổi bật</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-700">
+                  <tr>
+                    <td class="p-3 font-bold">Al (Nhôm)</td>
+                    <td>Trắng bạc</td>
+                    <td>660</td>
+                    <td>Nhẹ, dẫn điện tốt</td>
+                  </tr>
+                  <tr>
+                    <td class="p-3 font-bold">Fe (Sắt)</td>
+                    <td>Trắng xám</td>
+                    <td>1535</td>
+                    <td>Có từ tính, nặng</td>
+                  </tr>
+                  <tr>
+                    <td class="p-3 font-bold">Cu (Đồng)</td>
+                    <td>Đỏ</td>
+                    <td>1085</td>
+                    <td>Dẫn điện cực tốt</td>
+                  </tr>
+                  <tr>
+                    <td class="p-3 font-bold">Au (Vàng)</td>
+                    <td>Vàng</td>
+                    <td>1065</td>
+                    <td>Mềm, không bị ăn mòn</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+        <section id="series" class="tab-content hidden max-w-5xl mx-auto">
+          <div
+            class="glass-panel p-8 rounded-3xl text-center mb-8 relative overflow-hidden"
+          >
+            <div
+              class="absolute inset-0 bg-gradient-to-r from-red-500/20 via-yellow-500/20 to-blue-500/20 blur-xl"
+            ></div>
+            <h2 class="text-3xl font-extrabold mb-2 relative z-10">
+              DÃY HOẠT ĐỘNG HÓA HỌC
+            </h2>
+            <p class="text-gray-300 mb-6 relative z-10">
+              Kéo thanh trượt để xem độ mạnh của kim loại
+            </p>
+            <div
+              class="flex justify-between font-mono font-black text-xl md:text-3xl mb-4 text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-yellow-400 to-blue-400"
+            >
+              <span>K</span><span>Na</span><span>Mg</span><span>Al</span
+              ><span>Zn</span><span>Fe</span><span>Pb</span><span>(H)</span
+              ><span>Cu</span><span>Ag</span><span>Au</span>
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="10"
+              value="5"
+              class="w-full h-3 bg-gray-700 rounded-lg appearance-none cursor-pointer metal-slider relative z-10"
+              id="activitySlider"
+            />
+            <div
+              class="mt-8 p-6 bg-black/40 rounded-xl backdrop-blur-md text-left transition-all duration-300"
+              id="activityInfo"
+            >
+              <h4 class="text-xl font-bold text-yellow-400 mb-2" id="metalName">
+                Sắt (Fe)
+              </h4>
+              <ul class="space-y-2 text-sm text-gray-300" id="metalProps">
+                <li>• Đứng sau Mg: Không phản ứng nước ở nhiệt độ thường.</li>
+                <li>• Đứng trước H: Tác dụng axit giải phóng H₂.</li>
+                <li>• Đẩy được Cu, Ag ra khỏi muối.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="grid md:grid-cols-3 gap-6">
+            <div
+              class="glass-panel p-5 rounded-2xl text-center hover:scale-105 transition"
+            >
+              <div class="text-4xl mb-3">⚡</div>
+              <h4 class="font-bold text-red-400">Điện phân nóng chảy</h4>
+              <p class="text-xs text-gray-400 mt-2">
+                Dùng cho K, Na, Ca, Mg, Al (Rất mạnh)
+              </p>
+            </div>
+            <div
+              class="glass-panel p-5 rounded-2xl text-center hover:scale-105 transition"
+            >
+              <div class="text-4xl mb-3">🔥</div>
+              <h4 class="font-bold text-yellow-400">Nhiệt luyện</h4>
+              <p class="text-xs text-gray-400 mt-2">
+                Dùng C, CO khử oxit: Zn, Fe, Pb... (Trung bình)
+              </p>
+            </div>
+            <div
+              class="glass-panel p-5 rounded-2xl text-center hover:scale-105 transition"
+            >
+              <div class="text-4xl mb-3">💧</div>
+              <h4 class="font-bold text-blue-400">Thủy luyện</h4>
+              <p class="text-xs text-gray-400 mt-2">
+                Dùng kim loại mạnh đẩy yếu: Cu, Ag, Au (Yếu)
+              </p>
+            </div>
+          </div>
+        </section>
+        <section
+          id="production"
+          class="tab-content hidden max-w-5xl mx-auto space-y-8"
+        >
+          <div class="grid md:grid-cols-2 gap-8">
+            <div class="glass-panel p-6 rounded-2xl border-t-4 border-gray-500">
+              <h3
+                class="text-2xl font-bold text-gray-300 mb-4 flex items-center gap-3"
+              >
+                <i class="fa-solid fa-cubes-stacked"></i> GANG
+              </h3>
+              <div class="text-sm space-y-2 mb-4">
+                <p><b>Thành phần:</b> Fe + Carbon (2-5%)</p>
+                <p><b>Tính chất:</b> Cứng nhưng Giòn.</p>
+                <p><b>Sản xuất (Lò cao):</b></p>
+              </div>
+              <div
+                class="bg-black/30 p-4 rounded-lg font-mono text-xs text-orange-300"
+              >
+                1. Tạo CO: C + O₂ → CO₂ → 2CO<br />
+                2. Khử sắt: Fe₂O₃ + 3CO → 2Fe + 3CO₂<br />
+                3. Tạo xỉ: CaO + SiO₂ → CaSiO₃
+              </div>
+            </div>
+            <div
+              class="glass-panel p-6 rounded-2xl border-t-4 border-indigo-500"
+            >
+              <h3
+                class="text-2xl font-bold text-indigo-300 mb-4 flex items-center gap-3"
+              >
+                <i class="fa-solid fa-building"></i> THÉP
+              </h3>
+              <div class="text-sm space-y-2 mb-4">
+                <p><b>Thành phần:</b> Fe + Carbon (< 2%)</p>
+                <p><b>Tính chất:</b> Dẻo, đàn hồi, bền.</p>
+                <p><b>Sản xuất (Lò thổi):</b></p>
+              </div>
+              <div
+                class="bg-black/30 p-4 rounded-lg font-mono text-xs text-cyan-300"
+              >
+                Nguyên tắc: Oxi hóa tạp chất trong gang.<br />
+                C + O₂ → CO₂<br />
+                Si + O₂ → SiO₂...
+              </div>
+            </div>
+          </div>
+          <div
+            class="glass-panel p-6 rounded-2xl flex flex-col items-center text-center"
+          >
+            <h3 class="text-xl font-bold mb-2">Hợp kim là gì?</h3>
+            <p class="text-gray-400 max-w-2xl">
+              Là chất rắn thu được sau khi làm nguội hỗn hợp nóng chảy của nhiều
+              kim loại (hoặc kim loại + phi kim).
+            </p>
+            <div class="flex gap-4 mt-6">
+              <div class="bg-white/10 px-6 py-3 rounded-full">
+                Dural (Al-Cu) - Máy bay
+              </div>
+              <div class="bg-white/10 px-6 py-3 rounded-full">
+                Inox (Fe-Cr-Ni) - Gia dụng
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="nonmetals" class="tab-content hidden max-w-5xl mx-auto">
+          <div class="glass-panel p-8 rounded-3xl mb-8">
+            <h2 class="text-3xl font-bold text-green-400 mb-6">
+              Kim loại vs Phi kim
+            </h2>
+            <div
+              class="grid md:grid-cols-2 gap-px bg-gray-600 rounded-xl overflow-hidden border border-gray-600"
+            >
+              <div class="bg-gray-800 p-6">
+                <h4 class="text-xl font-bold text-indigo-400 mb-4 text-center">
+                  KIM LOẠI
+                </h4>
+                <ul class="space-y-3 text-sm">
+                  <li>✅ Dẫn điện, nhiệt tốt</li>
+                  <li>✅ Có ánh kim</li>
+                  <li>✅ Chỉ tồn tại thể Rắn (trừ Hg)</li>
+                  <li>✅ Hóa học: Dễ mất e (Tính khử)</li>
+                  <li>✅ Tác dụng O₂ → Oxit Bazơ</li>
+                </ul>
+              </div>
+              <div class="bg-gray-800 p-6">
+                <h4 class="text-xl font-bold text-green-400 mb-4 text-center">
+                  PHI KIM
+                </h4>
+                <ul class="space-y-3 text-sm">
+                  <li>❌ Không dẫn điện (trừ than chì)</li>
+                  <li>❌ Không có ánh kim</li>
+                  <li>⚠️ Rắn, Lỏng (Br₂), Khí (O₂, Cl₂)</li>
+                  <li>✅ Hóa học: Dễ nhận e (Oxi hóa)</li>
+                  <li>✅ Tác dụng O₂ → Oxit Axit</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <h3 class="text-xl font-bold mb-4">Ứng dụng tiêu biểu</h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="glass-panel p-4 rounded-xl text-center">
+              <div class="text-3xl mb-2">🏊</div>
+              <div class="font-bold text-green-300">Clo (Cl₂)</div>
+              <div class="text-xs text-gray-400">Khử trùng nước, PVC</div>
+            </div>
+            <div class="glass-panel p-4 rounded-xl text-center">
+              <div class="text-3xl mb-2">✏️</div>
+              <div class="font-bold text-gray-300">Carbon (C)</div>
+              <div class="text-xs text-gray-400">Than chì, Kim cương</div>
+            </div>
+            <div class="glass-panel p-4 rounded-xl text-center">
+              <div class="text-3xl mb-2">🎆</div>
+              <div class="font-bold text-yellow-300">Lưu huỳnh (S)</div>
+              <div class="text-xs text-gray-400">Thuốc súng, H₂SO₄</div>
+            </div>
+            <div class="glass-panel p-4 rounded-xl text-center">
+              <div class="text-3xl mb-2">🌱</div>
+              <div class="font-bold text-blue-300">Nitơ (N₂)</div>
+              <div class="text-xs text-gray-400">Phân đạm, bảo quản</div>
+            </div>
+          </div>
+        </section>
+        <section
+          id="flashcards"
+          class="tab-content hidden max-w-5xl mx-auto h-full flex flex-col items-center justify-center min-h-[500px]"
+        >
+          <h2 class="text-3xl font-bold mb-8 text-center">Luyện Tập Nhanh</h2>
+          <div
+            class="relative w-80 h-96 perspective-1000 cursor-pointer group"
+            onclick="flipCard()"
+          >
+            <div
+              id="flashCardInner"
+              class="flip-card-inner shadow-2xl rounded-2xl"
+            >
+              <div class="flip-card-front glass-panel border border-white/20">
+                <div
+                  class="text-sm text-indigo-300 uppercase tracking-widest mb-4"
+                >
+                  Câu hỏi
+                </div>
+                <div class="text-2xl font-bold text-white px-4" id="fcFront">
+                  Kim loại nào dẫn điện tốt nhất?
+                </div>
+                <div class="absolute bottom-4 text-xs text-gray-500">
+                  Chạm để lật
+                </div>
+              </div>
+              <div class="flip-card-back">
+                <div
+                  class="text-sm text-indigo-200 uppercase tracking-widest mb-4"
+                >
+                  Đáp án
+                </div>
+                <div class="text-3xl font-bold text-white px-4" id="fcBack">
+                  Bạc (Ag)
+                </div>
+                <div class="mt-4 text-xs text-white/80 px-6" id="fcNote">
+                  Ag > Cu > Au > Al > Fe
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex gap-6 mt-10">
+            <button
+              onclick="nextCard(-1)"
+              class="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition"
+            >
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="text-xl font-bold self-center" id="cardCounter">
+              1/5
+            </div>
+            <button
+              onclick="nextCard(1)"
+              class="w-12 h-12 rounded-full bg-indigo-500 hover:bg-indigo-600 shadow-lg shadow-indigo-500/50 flex items-center justify-center transition"
+            >
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </section>
+        <section
+          id="game"
+          class="tab-content hidden max-w-5xl mx-auto h-full relative"
+        >
+          <div
+            id="gameStart"
+            class="absolute inset-0 flex flex-col items-center justify-center z-20"
+          >
+            <div
+              class="w-24 h-24 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 flex items-center justify-center text-4xl mb-6 shadow-2xl shadow-pink-500/50 animate-bounce"
+            >
+              🚀
+            </div>
+            <h2
+              class="text-4xl font-black mb-2 text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-indigo-400"
+            >
+              THỬ THÁCH 60 GIÂY
+            </h2>
+            <p class="text-gray-400 mb-8 text-center max-w-md">
+              Trả lời đúng càng nhiều câu hỏi càng tốt. Chuỗi combo sẽ nhân đôi
+              điểm số!
+            </p>
+            <button
+              onclick="startGame()"
+              class="px-10 py-4 bg-white text-indigo-900 font-bold rounded-full hover:scale-105 transition shadow-xl"
+            >
+              BẮT ĐẦU NGAY
+            </button>
+          </div>
+          <div id="gameUI" class="hidden flex flex-col h-full py-4">
+            <div
+              class="flex justify-between items-center mb-6 bg-black/20 p-4 rounded-xl"
+            >
+              <div>
+                <div class="text-xs text-gray-400">ĐIỂM SỐ</div>
+                <div class="text-2xl font-bold text-yellow-400" id="gameScore">
+                  0
+                </div>
+              </div>
+              <div class="flex-1 mx-6">
+                <div class="flex justify-between text-xs mb-1">
+                  <span>Thời gian</span>
+                  <span id="timeText" class="font-bold text-red-400">60s</span>
+                </div>
+                <div
+                  class="w-full bg-gray-700 h-3 rounded-full overflow-hidden"
+                >
+                  <div
+                    id="timeBar"
+                    class="bg-red-500 h-full transition-all duration-1000 ease-linear"
+                    style="width: 100%"
+                  ></div>
+                </div>
+              </div>
+            </div>
+            <div class="flex-1 flex flex-col justify-center items-center">
+              <div
+                class="glass-panel p-8 rounded-2xl w-full max-w-2xl text-center mb-6"
+              >
+                <h3 class="text-2xl font-bold leading-relaxed" id="qText">
+                  Câu hỏi ở đây?
+                </h3>
+              </div>
+              <div
+                class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl"
+                id="ansGrid"
+              ></div>
+              <div
+                id="comboText"
+                class="h-8 mt-4 text-orange-400 font-bold font-mono text-xl tracking-widest"
+              ></div>
+            </div>
+          </div>
+          <div
+            id="gameEnd"
+            class="hidden absolute inset-0 bg-dark/90 backdrop-blur-md flex flex-col items-center justify-center z-30"
+          >
+            <h2 class="text-5xl font-black text-white mb-2">HẾT GIỜ!</h2>
+            <div class="text-xl text-gray-300 mb-6">Tổng điểm của bạn</div>
+            <div
+              class="text-7xl font-bold text-yellow-400 mb-8 text-shadow-glow"
+              id="finalScore"
+            >
+              1500
+            </div>
+            <button
+              onclick="startGame()"
+              class="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition"
+            >
+              Chơi Lại
+            </button>
+          </div>
+        </section>
+      </div>
+    </main>
+    <script>
+      /* --- SOUND ENGINE (No external files needed) --- */
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      function playSound(type) {
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        const now = audioCtx.currentTime;
+        if (type === "click") {
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(600, now);
+          gain.gain.setValueAtTime(0.05, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+          osc.start(now);
+          osc.stop(now + 0.1);
+        } else if (type === "correct") {
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(400, now);
+          osc.frequency.exponentialRampToValueAtTime(800, now + 0.1);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+          osc.start(now);
+          osc.stop(now + 0.3);
+        } else if (type === "wrong") {
+          osc.type = "sawtooth";
+          osc.frequency.setValueAtTime(150, now);
+          osc.frequency.linearRampToValueAtTime(100, now + 0.2);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+          osc.start(now);
+          osc.stop(now + 0.3);
+        }
+      }
+
+      /* --- DATA BỔ SUNG VÀ HOÀN THIỆN --- */
+      const flashcardsData = [
+        {
+          f: "Kim loại dẫn điện tốt nhất?",
+          b: "Bạc (Ag)",
+          n: "Ag > Cu > Au > Al > Fe",
+        },
+        {
+          f: "Thành phần chính của Thép?",
+          b: "Fe và C (< 2%)",
+          n: "Dẻo, đàn hồi, ít bị ăn mòn",
+        },
+        {
+          f: "Phương pháp sản xuất Nhôm (Al)?",
+          b: "Điện phân nóng chảy",
+          n: "Từ quặng Bauxite (Al₂O₃)",
+        },
+        {
+          f: "Kim loại lỏng ở điều kiện thường?",
+          b: "Thủy ngân (Hg)",
+          n: "Rất độc, dùng trong nhiệt kế",
+        },
+        {
+          f: "Phi kim nào dùng khử trùng nước?",
+          b: "Clo (Cl₂)",
+          n: "Khí màu vàng lục, mùi hắc",
+        },
+        {
+          f: "Fe + CuSO₄ → ?",
+          b: "FeSO₄ + Cu",
+          n: "Sắt mạnh hơn Đồng nên đẩy Đồng ra",
+        },
+        {
+          f: "Gang khác Thép chỗ nào?",
+          b: "Hàm lượng Carbon",
+          n: "Gang (2-5% C) > Thép (< 2% C)",
+        },
+        {
+          f: "Chất khử oxit sắt trong lò cao?",
+          b: "Khí Carbon monoxide (CO)",
+          n: "Fe₂O₃ + 3CO → 2Fe + 3CO₂",
+        },
+        {
+          f: "Kim loại phản ứng được với dung dịch kiềm (NaOH)?",
+          b: "Nhôm (Al)",
+          n: "2Al + 2NaOH + 2H₂O → 2NaAlO₂ + 3H₂↑",
+        },
+        {
+          f: "Thành phần chính của quặng Boxit?",
+          b: "Nhôm oxit (Al₂O₃)",
+          n: "Nguyên liệu chính để sản xuất Nhôm",
+        },
+      ];
+
+      const quizData = [
+        {
+          q: "Kim loại nào có nhiệt độ nóng chảy cao nhất (làm dây tóc bóng đèn)?",
+          a: ["Vonfram (W)", "Sắt (Fe)", "Đồng (Cu)", "Nhôm (Al)"],
+          c: 0,
+        },
+        {
+          q: "Để bảo vệ vỏ tàu biển bằng thép, người ta gắn tấm kim loại nào?",
+          a: ["Kẽm (Zn)", "Đồng (Cu)", "Bạc (Ag)", "Chì (Pb)"],
+          c: 0,
+        },
+        {
+          q: "Kim loại nào KHÔNG phản ứng với H₂SO₄ loãng?",
+          a: ["Đồng (Cu)", "Sắt (Fe)", "Nhôm (Al)", "Kẽm (Zn)"],
+          c: 0,
+        },
+        {
+          q: "Trong dãy hoạt động hóa học, kim loại đứng sau H sẽ...?",
+          a: [
+            "Không tác dụng axit loãng",
+            "Tác dụng mạnh với nước",
+            "Đẩy được kim loại trước nó",
+            "Tan trong kiềm",
+          ],
+          c: 0,
+        },
+        {
+          q: "Quặng Boxit là nguyên liệu sản xuất kim loại nào?",
+          a: ["Nhôm (Al)", "Sắt (Fe)", "Đồng (Cu)", "Chì (Pb)"],
+          c: 0,
+        },
+        {
+          q: "Phi kim nào dẫn điện được?",
+          a: ["Than chì", "Lưu huỳnh", "Photpho", "Clo"],
+          c: 0,
+        },
+        {
+          q: "Phản ứng nhiệt luyện dùng chất khử nào?",
+          a: ["CO, C, H₂", "O₂", "Cl₂", "Dung dịch axit"],
+          c: 0,
+        },
+        {
+          q: "Đơn chất nào sau đây ở thể lỏng?",
+          a: ["Br₂", "Cl₂", "I₂", "C"],
+          c: 0,
+        },
+        {
+          q: "Quá trình nào được sử dụng để loại bỏ Carbon ra khỏi Gang để tạo thành Thép?",
+          a: ["Oxi hóa", "Khử", "Thủy phân", "Điện phân"],
+          c: 0,
+        },
+        {
+          q: "Chất nào được tạo thành khi Lưu huỳnh tác dụng với Oxi?",
+          a: [
+            "Lưu huỳnh đioxit (SO₂)",
+            "Axit sunfuric (H₂SO₄)",
+            "Lưu huỳnh trioxit (SO₃)",
+            "Hidro sunfua (H₂S)",
+          ],
+          c: 0,
+        },
+        {
+          q: "Kim loại nào có tính dẻo nhất?",
+          a: ["Vàng (Au)", "Bạc (Ag)", "Đồng (Cu)", "Sắt (Fe)"],
+          c: 0,
+        },
+        {
+          q: "Phương pháp Thủy luyện phù hợp để điều chế kim loại nào?",
+          a: ["Đồng (Cu)", "Kali (K)", "Magie (Mg)", "Nhôm (Al)"],
+          c: 0,
+        },
+      ];
+
+      const metalActivityInfo = [
+        {
+          name: "Kali (K)",
+          info: "Rất mạnh. Nổ khi gặp nước. Đẩy mọi kim loại sau nó.",
+        },
+        {
+          name: "Natri (Na)",
+          info: "Mạnh. Phản ứng mãnh liệt với nước tạo Bazơ + H₂.",
+        },
+        {
+          name: "Magie (Mg)",
+          info: "Mạnh. Cháy sáng rực trong Oxi. Không tan trong nước thường.",
+        },
+        {
+          name: "Nhôm (Al)",
+          info: "Mạnh trung bình. Bền nhờ lớp Oxit bảo vệ. Phản ứng với cả Axit và Kiềm.",
+        },
+        {
+          name: "Kẽm (Zn)",
+          info: "Trung bình. Dùng để tráng tôn (chống gỉ). Tác dụng axit tạo H₂.",
+        },
+        {
+          name: "Sắt (Fe)",
+          info: "Trung bình. Có nhiều hóa trị (II, III). Bị nam châm hút.",
+        },
+        {
+          name: "Chì (Pb)",
+          info: "Yếu. Rất nặng, độc. Ngăn cản tia phóng xạ.",
+        },
+        {
+          name: "Hydro (H)",
+          info: "Mốc so sánh. Kim loại đứng trước H tan trong axit loãng.",
+        },
+        {
+          name: "Đồng (Cu)",
+          info: "Yếu. Dẫn điện tốt thứ 2. Không tan trong HCl, H₂SO₄ loãng.",
+        },
+        {
+          name: "Bạc (Ag)",
+          info: "Yếu. Dẫn điện tốt nhất. Dùng làm đồ trang sức, gương.",
+        },
+        {
+          name: "Vàng (Au)",
+          info: "Rất yếu. Không bị oxi hóa. Tan trong nước cường toan.",
+        },
+      ];
+
+      /* --- LOGIC: NAVIGATION --- */
+      function switchTab(id) {
+        playSound("click"); // Hide all tabs
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((el) => el.classList.add("hidden"));
+        // Show selected
+        document.getElementById(id).classList.remove("hidden");
+        // Update sidebar active state
+        document.querySelectorAll(".nav-btn").forEach((btn) => {
+          btn.classList.remove(
+            "active-tab",
+            "bg-white/10",
+            "text-white",
+            "shadow-lg",
+            "border-indigo-500"
+          );
+          btn.classList.add("border-transparent");
+          const span = btn.querySelector("span");
+          if (span) span.classList.remove("font-bold");
+        });
+
+        // Lấy button được click thông qua event.currentTarget nếu có
+        const currentBtn =
+          event.currentTarget ||
+          document.querySelector(`.nav-btn[onclick*="'${id}'"]`);
+        if (currentBtn) {
+          currentBtn.classList.add(
+            "active-tab",
+            "bg-white/10",
+            "text-white",
+            "shadow-lg",
+            "border-indigo-500"
+          );
+          currentBtn.classList.remove("border-transparent");
+          const span = currentBtn.querySelector("span");
+          if (span) span.classList.add("font-bold");
+        }
+
+        // Title Update
+        const titles = {
+          metals: "Tính chất Kim loại",
+          series: "Dãy hoạt động Hóa học",
+          production: "Sản xuất Gang & Thép",
+          nonmetals: "Phi kim & So sánh",
+          flashcards: "Flashcards Ôn tập",
+          game: "Đấu trường Hóa học",
+        };
+        document.getElementById("pageTitle").innerText = titles[id];
+      }
+
+      /* --- LOGIC: ACTIVITY SLIDER --- */
+      const slider = document.getElementById("activitySlider");
+      // Đảm bảo slider tồn tại trước khi thêm event listener
+      if (slider) {
+        slider.addEventListener("input", (e) => {
+          const idx = parseInt(e.target.value);
+          const data = metalActivityInfo[idx];
+          document.getElementById("metalName").innerText = data.name;
+          document.getElementById(
+            "metalProps"
+          ).innerHTML = `<li>• ${data.info}</li>`;
+          // Color change logic
+          const colors = [
+            "#ef4444",
+            "#f97316",
+            "#eab308",
+            "#84cc16",
+            "#22c55e",
+            "#06b6d4",
+            "#3b82f6",
+            "#6366f1",
+            "#8b5cf6",
+            "#d946ef",
+            "#f43f5e",
+          ];
+          document.getElementById("metalName").style.color = colors[idx];
+          playSound("click");
+        });
+      }
+
+      /* --- LOGIC: FLASHCARDS --- */
+      let fcIndex = 0;
+      let isFlipped = false;
+      function updateCard() {
+        const data = flashcardsData[fcIndex];
+        const cardInner = document.querySelector("#flashCardInner");
+
+        if (document.getElementById("fcFront"))
+          document.getElementById("fcFront").innerText = data.f;
+        if (document.getElementById("fcBack"))
+          document.getElementById("fcBack").innerText = data.b;
+        if (document.getElementById("fcNote"))
+          document.getElementById("fcNote").innerText = data.n;
+        if (document.getElementById("cardCounter"))
+          document.getElementById("cardCounter").innerText = `${fcIndex + 1}/${
+            flashcardsData.length
+          }`;
+
+        if (cardInner) {
+          const cardParent = cardInner.parentNode;
+          if (cardParent.classList.contains("flipped")) {
+            cardParent.classList.remove("flipped");
+            isFlipped = false;
+          }
+        }
+      }
+
+      function flipCard() {
+        const cardInner = document.querySelector("#flashCardInner");
+        if (!cardInner) return;
+
+        const card = cardInner.parentNode;
+        card.classList.toggle("flipped");
+        isFlipped = !isFlipped;
+        playSound("click");
+      }
+
+      function nextCard(dir) {
+        fcIndex =
+          (fcIndex + dir + flashcardsData.length) % flashcardsData.length;
+        updateCard();
+        playSound("click");
+      }
+
+      /* --- LOGIC: GAME --- */
+      let score = 0,
+        timer,
+        timeLeft = 60,
+        combo = 0;
+      function startGame() {
+        playSound("click");
+        document.getElementById("gameStart").classList.add("hidden");
+        document.getElementById("gameEnd").classList.add("hidden");
+        document.getElementById("gameUI").classList.remove("hidden");
+        score = 0;
+        timeLeft = 60;
+        combo = 0;
+        updateScoreUI();
+        timer = setInterval(() => {
+          timeLeft--;
+          if (document.getElementById("timeText"))
+            document.getElementById("timeText").innerText = timeLeft + "s";
+          if (document.getElementById("timeBar"))
+            document.getElementById("timeBar").style.width =
+              (timeLeft / 60) * 100 + "%";
+          if (timeLeft <= 0) endGame();
+        }, 1000);
+        nextQuestion();
+      }
+
+      function nextQuestion() {
+        const q = quizData[Math.floor(Math.random() * quizData.length)];
+        if (document.getElementById("qText"))
+          document.getElementById("qText").innerText = q.q;
+        const grid = document.getElementById("ansGrid");
+        if (!grid) return;
+
+        grid.innerHTML = "";
+        // Shuffle answers
+        let indices = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
+        indices.forEach((i) => {
+          const btn = document.createElement("button");
+          btn.className =
+            "p-4 bg-white/10 rounded-xl hover:bg-white/20 font-bold text-gray-200 transition border border-white/5";
+          btn.innerText = q.a[i];
+          btn.onclick = () => checkAnswer(i === q.c, btn);
+          grid.appendChild(btn);
+        });
+      }
+
+      function checkAnswer(isCorrect, btn) {
+        const grid = document.getElementById("ansGrid");
+        if (grid) Array.from(grid.children).forEach((b) => (b.disabled = true));
+
+        if (isCorrect) {
+          playSound("correct");
+          btn.className =
+            "p-4 bg-green-500 rounded-xl font-bold text-white shadow-lg shadow-green-500/50 scale-105 transition";
+          combo++;
+          let points = 100 + (combo > 1 ? combo * 20 : 0);
+          score += points;
+          if (document.getElementById("comboText"))
+            document.getElementById("comboText").innerText =
+              combo > 1 ? `COMBO x${combo} 🔥` : "";
+          confetti({ particleCount: 30, spread: 50, origin: { y: 0.7 } });
+        } else {
+          playSound("wrong");
+          btn.className =
+            "p-4 bg-red-500 rounded-xl font-bold text-white opacity-80";
+          combo = 0;
+          if (document.getElementById("comboText"))
+            document.getElementById("comboText").innerText = "";
+        }
+        updateScoreUI();
+        setTimeout(() => {
+          if (timeLeft > 0) nextQuestion();
+        }, 1000);
+      }
+
+      function updateScoreUI() {
+        if (document.getElementById("gameScore"))
+          document.getElementById("gameScore").innerText = score;
+      }
+
+      function endGame() {
+        clearInterval(timer);
+        if (document.getElementById("gameUI"))
+          document.getElementById("gameUI").classList.add("hidden");
+        if (document.getElementById("gameEnd"))
+          document.getElementById("gameEnd").classList.remove("hidden");
+        if (document.getElementById("finalScore"))
+          document.getElementById("finalScore").innerText = score;
+        if (document.getElementById("totalScore"))
+          document.getElementById("totalScore").innerText = score; // Update top header
+        // XP Bar Logic (Fake Level Up)
+        let width = (score / 2000) * 100;
+        if (width > 100) width = 100;
+        if (document.getElementById("xpBar"))
+          document.getElementById("xpBar").style.width = width + "%";
+        if (score > 1000 && document.getElementById("levelText"))
+          document.getElementById("levelText").innerText =
+            "Chuyên gia Luyện kim 🧪";
+        confetti({ particleCount: 150, spread: 100 });
+        playSound("correct");
+      }
+
+      // Init function
+      document.addEventListener("DOMContentLoaded", () => {
+        // Khởi tạo tab mặc định
+        switchTab("metals");
+
+        // Khởi tạo Activity Slider Info
+        if (slider) {
+          const initialSliderIdx = parseInt(slider.value);
+          const initialData = metalActivityInfo[initialSliderIdx];
+          if (document.getElementById("metalName"))
+            document.getElementById("metalName").innerText = initialData.name;
+          if (document.getElementById("metalProps"))
+            document.getElementById(
+              "metalProps"
+            ).innerHTML = `<li>• ${initialData.info}</li>`;
+        }
+
+        // Khởi tạo Flashcard
+        updateCard();
+      });
+    </script>
+  </body>
+</html>

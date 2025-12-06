@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#ef4444" />
+    <title>PomodoroKios — Ultra Focus v4.0</title>
+
+    <!-- Fonts / Icons / Libs -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      src="https://kit.fontawesome.com/2e8e1a6b8f.js"
+      crossorigin="anonymous"
+      defer
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+
+    <!-- Core Styles -->
+    <link rel="stylesheet" href="css/core.css" />
+    <link rel="stylesheet" href="css/ultra.css" />
+  </head>
+
+  <body data-theme="light">
+    <div
+      id="app"
+      class="app"
+      role="application"
+      aria-label="PomodoroKios Ultra Focus"
+    >
+      <!-- ===== MAIN CARD ===== -->
+      <main class="main-card" role="main">
+        <header class="app-header" role="banner">
+          <div class="title-row center">
+            <h1>PomodoroKios <span class="ver">v4.0</span></h1>
+            <small class="beta" aria-hidden="true">Ultra</small>
+          </div>
+          <p class="subtitle" data-lang="subtitle">
+            Tập trung thông minh — Học hiệu quả — Giao diện nhẹ và đẹp
+          </p>
+        </header>
+
+        <!-- TIMER SECTION -->
+        <section class="timer" aria-labelledby="timerLabel">
+          <h2 id="timerLabel" class="sr-only">Bộ đếm Pomodoro</h2>
+
+          <!-- Progress ring -->
+          <div class="progress-wrap column-center">
+            <div class="progress-ring" aria-hidden="true">
+              <svg
+                width="200"
+                height="200"
+                viewBox="0 0 200 200"
+                role="img"
+                aria-hidden="true"
+              >
+                <circle
+                  class="ring-bg"
+                  cx="100"
+                  cy="100"
+                  r="90"
+                  stroke-width="10"
+                  fill="none"
+                ></circle>
+                <circle
+                  id="ringProgress"
+                  class="ring-progress"
+                  cx="100"
+                  cy="100"
+                  r="90"
+                  stroke-width="10"
+                  fill="none"
+                ></circle>
+              </svg>
+              <div class="time-overlay">
+                <div id="time" class="time-display" aria-live="polite">
+                  25:00
+                </div>
+                <div
+                  id="sessionDesc"
+                  class="session-desc"
+                  data-lang="sessionFocus"
+                  aria-atomic="true"
+                >
+                  Đang làm việc: 25 phút
+                </div>
+              </div>
+            </div>
+
+            <!-- Linear progress -->
+            <div
+              class="progress"
+              role="progressbar"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            >
+              <i id="progressBar" style="width: 0%"></i>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div class="controls toolbar">
+            <button
+              id="startBtn"
+              class="btn primary"
+              data-lang="start"
+              title="Bắt đầu"
+            >
+              ▶️ Bắt đầu
+            </button>
+            <button
+              id="pauseBtn"
+              class="btn"
+              data-lang="pause"
+              title="Tạm dừng"
+            >
+              ⏸️ Tạm dừng
+            </button>
+            <button
+              id="skipBtn"
+              class="btn ghost"
+              data-lang="skip"
+              title="Bỏ qua"
+            >
+              ⏭️ Bỏ qua
+            </button>
+            <button
+              id="resetBtn"
+              class="btn ghost"
+              data-lang="reset"
+              title="Đặt lại"
+            >
+              🔁 Đặt lại
+            </button>
+            <button
+              id="hardcoreBtn"
+              class="btn small ghost"
+              title="Chế độ Hardcore"
+            >
+              🔒 Hardcore
+            </button>
+          </div>
+
+          <!-- Config -->
+          <div class="config" aria-hidden="false">
+            <label
+              >Work
+              <input
+                id="workMins"
+                type="number"
+                min="5"
+                value="25"
+                aria-label="Số phút làm việc"
+            /></label>
+            <label
+              >Short
+              <input
+                id="shortMins"
+                type="number"
+                min="1"
+                value="5"
+                aria-label="Nghỉ ngắn"
+            /></label>
+            <label
+              >Long
+              <input
+                id="longMins"
+                type="number"
+                min="5"
+                value="15"
+                aria-label="Nghỉ dài"
+            /></label>
+            <label
+              >Long every
+              <input
+                id="cyclesBeforeLong"
+                type="number"
+                min="1"
+                value="4"
+                aria-label="Số chu kỳ trước khi nghỉ dài"
+              />
+              cycles</label
+            >
+          </div>
+        </section>
+
+        <!-- TODO SECTION -->
+        <section class="todo-section" aria-labelledby="todoLabel">
+          <h3 id="todoLabel" data-lang="todoTitle">Nhiệm vụ hôm nay</h3>
+          <div class="todo-add">
+            <input
+              id="newTask"
+              type="text"
+              placeholder="Thêm nhiệm vụ..."
+              aria-label="Thêm nhiệm vụ mới"
+            />
+            <button id="addTask" class="btn small" data-lang="add">
+              ➕ Thêm
+            </button>
+          </div>
+          <div
+            id="todoList"
+            class="todo-list"
+            role="list"
+            aria-live="polite"
+          ></div>
+        </section>
+
+        <!-- STATS SECTION -->
+        <section class="stats" aria-labelledby="statsLabel">
+          <h3 id="statsLabel" data-lang="statsTitle">Thống kê học tập</h3>
+          <canvas id="chart" aria-label="Biểu đồ thống kê" role="img"></canvas>
+        </section>
+      </main>
+
+      <!-- ===== SIDEBAR ===== -->
+      <aside class="side-card" role="complementary" aria-label="Cài đặt nhanh">
+        <h3 data-lang="quickSettings">⚙️ Cài đặt nhanh</h3>
+
+        <div class="settings-list">
+          <label
+            ><input type="checkbox" id="pauseOnBlur" checked />
+            <span data-lang="pauseOnBlur">Tự dừng khi rời tab</span></label
+          >
+          <label
+            ><input type="checkbox" id="blockRefresh" checked />
+            <span data-lang="blockRefresh">Chặn F5 / Ctrl+R</span></label
+          >
+          <label
+            ><input type="checkbox" id="autoFull" />
+            <span data-lang="autoFull">Toàn màn hình khi bắt đầu</span></label
+          >
+          <label
+            ><input type="checkbox" id="vibrateOnEnd" checked />
+            <span data-lang="vibrate">Rung khi kết thúc</span></label
+          >
+        </div>
+
+        <hr />
+
+        <div class="progress-summary">
+          <p>📈 <span data-lang="progress">Tiến trình</span></p>
+          <p>
+            <span data-lang="completed">Hoàn thành:</span>
+            <strong id="completed">0</strong>
+          </p>
+          <p>
+            <span data-lang="violations">Vi phạm:</span>
+            <strong id="violations">0</strong>
+          </p>
+        </div>
+
+        <hr />
+
+        <div class="theme-lang">
+          <h4 data-lang="appearance">🎨 Giao diện & Ngôn ngữ</h4>
+          <div class="button-group">
+            <button id="toggleTheme" class="btn small" title="Đổi giao diện">
+              🌗
+            </button>
+            <button id="toggleLang" class="btn small" title="Đổi ngôn ngữ">
+              🇻🇳
+            </button>
+            <button id="exportBtn" class="btn small ghost" title="Xuất dữ liệu">
+              ⬇️ Export
+            </button>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- ===== OVERLAY / MODALS ===== -->
+    <div id="ultraChallengeMount" aria-hidden="true"></div>
+
+    <div id="overlay" class="overlay" aria-hidden="true">
+      <div class="overlay-box" role="dialog" aria-modal="true">
+        <h3 data-lang="overlayTitle">🚫 Bạn rời khỏi cửa sổ học tập</h3>
+        <p data-lang="overlayMsg">
+          Hệ thống đã tạm dừng. Quay lại để tiếp tục nhé!
+        </p>
+        <div class="overlay-actions">
+          <button id="resumeBtn" class="btn primary" data-lang="resume">
+            ▶️ Tiếp tục
+          </button>
+          <button id="cancelOverlayBtn" class="btn ghost" data-lang="cancel">
+            Hủy
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer role="contentinfo" class="footer">
+      <div class="social-links">
+        <a href="https://m.me/100075597477910" target="_blank" rel="noopener"
+          ><i class="fab fa-facebook-messenger"></i> Facebook</a
+        >
+        <a href="mailto:ducnt21042010@gmail.com" target="_blank" rel="noopener"
+          ><i class="fas fa-envelope"></i> Gmail</a
+        >
+        <a href="tel:0342266204"><i class="fas fa-phone"></i> 0342266204</a>
+      </div>
+      <p class="footer-note">© 2025 PomodoroKios — Designed by Đức</p>
+    </footer>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="js/lang-theme.v3.js" defer></script>
+    <script src="js/app.ultra.v4.0.js" defer></script>
+  </body>
+</html>

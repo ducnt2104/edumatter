@@ -1,38 +1,34 @@
 /* =========================================================
-   CONFIG PATH – CHUẨN 2 CẤP
-   chemstudybaby → chemstudy → educhem → component
+   HÀM LOAD COMPONENT
 ========================================================= */
-function componentPath(file) {
-  return "../../../component/" + file;
+function getRelativePath(path) {
+  const current = window.location.pathname.split("/").length - 1;
+  const target = path.split("/").length - 1;
+  let back = "";
+
+  for (let i = 0; i < current - target; i++) back += "../";
+  return back + path;
 }
 
-/* =========================================================
-   LOAD COMPONENT
-========================================================= */
-function loadComponent(containerId, file, callback) {
-  const box = document.getElementById(containerId);
-  if (!box) return;
-
-  fetch(componentPath(file))
+function loadComponent(path, container, callback) {
+  fetch(getRelativePath(path))
     .then((res) => res.text())
     .then((html) => {
-      box.innerHTML = html;
+      document.getElementById(container).innerHTML = html;
       if (callback) callback();
     })
-    .catch((err) => console.error(`Lỗi load component: ${file}`, err));
+    .catch((err) => console.error("Lỗi load component:", err));
 }
-
 /* =========================================================
    LOAD TOPBAR
 ========================================================= */
-loadComponent("topbar-container", "chemtopbar.html", () => {
+loadComponent("component/chemtopbar.html", "topbar-container", () => {
   document.querySelectorAll(".nav-btn").forEach((btn) => {
     const link = btn.dataset.link;
     if (link)
       btn.addEventListener("click", () => (window.location.href = link));
   });
 });
-
 /* =========================================================
    LOAD SIDEBAR
 ========================================================= */
@@ -53,23 +49,79 @@ loadComponent("component/sidebar.html", "sidebar-container", () => {
     });
   });
 });
+/* =========================================================
+   LOAD CHEM SUPPORT PANEL
+========================================================= */
+loadComponent("component/chemsupport.html", "chem-support-container", () => {
+  const panel = document.querySelector("#chem-support-container #support-chem");
+  if (!panel) return;
+
+  const areaA = panel.querySelector("#supportAreaA");
+  const areaATitle = areaA.querySelector(".area-title");
+  const areaAContent = areaA.querySelector(".area-content");
+
+  const contentMap = {
+    question: {
+      title: "Hỏi đáp – Giải thích bài học",
+      content: "Bạn có thể gửi câu hỏi, bài tập, hoặc nội dung cần giải thích.",
+    },
+    teacher: {
+      title: "Liên hệ giáo viên / Admin",
+      content:
+        "Gửi yêu cầu hỗ trợ trực tiếp cho giáo viên hoặc Admin hệ thống.",
+    },
+    document: {
+      title: "Yêu cầu tài liệu / bài tập",
+      content: "Gửi yêu cầu tài liệu PDF, bài tập, sách hoặc đề kiểm tra.",
+    },
+    other: {
+      title: "Khác",
+      content: "Nhập nội dung mô tả vấn đề bạn đang gặp phải.",
+    },
+  };
+
+  panel.querySelectorAll(".support-item[data-type]").forEach((item) => {
+    item.onclick = () => {
+      const type = item.dataset.type;
+      const data = contentMap[type];
+
+      areaATitle.textContent = data.title;
+      areaAContent.textContent = data.content;
+
+      panel
+        .querySelectorAll(".support-item")
+        .forEach((i) => i.classList.remove("active"));
+      item.classList.add("active");
+    };
+  });
+
+  const closeBtn = panel.querySelector("#supportClose");
+  if (closeBtn) {
+    closeBtn.onclick = () => {
+      panel.style.display = "none";
+    };
+  }
+});
 
 /* =========================================================
    LOAD FOOTER
 ========================================================= */
-loadComponent("footer-container", "footer.html", () => {
+loadComponent("component/footer.html", "footer-container", () => {
   initFooterParticles();
-  if (window.AOS) AOS.refreshHard();
+
+  // FIX AOS CHO FOOTER LOAD SAU
+  if (AOS) AOS.refreshHard();
 });
 
 /* =========================================================
-   FOOTER PARTICLES
+   FOOTER PARTICLES (bản chuẩn, không trùng)
 ========================================================= */
 function initFooterParticles() {
   const canvas = document.getElementById("footerCanvas");
   if (!canvas) return;
 
   const ctx = canvas.getContext("2d");
+
   canvas.width = canvas.offsetWidth;
   canvas.height = canvas.offsetHeight;
 
@@ -83,8 +135,8 @@ function initFooterParticles() {
 
   function loop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     ctx.fillStyle = "rgba(255,255,255,0.8)";
+
     particles.forEach((p) => {
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
@@ -106,7 +158,7 @@ function initFooterParticles() {
 }
 
 /* =========================================================
-   THEME
+   THEME TOGGLE
 ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
   const body = document.body;
@@ -129,7 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* =========================================================
-   CARD EFFECT
+   CARD EFFECTS
 ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".card").forEach((card) => {
@@ -143,66 +195,29 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     card.addEventListener("click", () => {
-      const link = card.dataset.link;
-      if (link) window.location.href = link;
+      if (card.dataset.link) window.location.href = card.dataset.link;
     });
   });
 });
 
 /* =========================================================
-   ROTATE WARNING
+   YÊU CẦU XOAY NGANG
 ========================================================= */
 function checkOrientation() {
   const warn = document.getElementById("rotate-warning");
-  if (warn) {
-    warn.style.display =
-      window.innerHeight > window.innerWidth ? "flex" : "none";
-  }
+  if (!warn) return;
+
+  warn.style.display = window.innerHeight > window.innerWidth ? "flex" : "none";
 }
 
 window.addEventListener("load", checkOrientation);
 window.addEventListener("resize", checkOrientation);
 window.addEventListener("orientationchange", checkOrientation);
-/* =========================================================
-   LOAD SUPPORT PANEL
-========================================================= */
-loadComponent("chem-support-container", "chemsupport.html", () => {
-  // nếu bên trong có nút đóng/mở thì add ở đây
-  const closeBtn = document.getElementById("supportClose");
-  const panel = document.getElementById("chemSupport");
+const body = document.body;
+const modeBtn = document.getElementById("modeToggle");
 
-  if (closeBtn && panel) {
-    closeBtn.addEventListener("click", () => {
-      panel.classList.remove("open");
-    });
-  }
-});
-/* =========================================================
-   LOAD SUPPORT PANEL
-========================================================= */
-loadComponent("chem-support-container", "chemsupport.html", () => {
-  const panel = document.getElementById("support-chem"); // CHUẨN ID
-  const closeBtn = document.getElementById("supportClose");
-  const openBtn = document.getElementById("btnSupport");
-
-  if (closeBtn) {
-    closeBtn.addEventListener("click", () => panel.classList.remove("open"));
-  }
-  if (openBtn) {
-    openBtn.addEventListener("click", () => panel.classList.toggle("open"));
-  }
-});
-
-/* =========================================================
-   CLICK OUTSIDE TO CLOSE
-========================================================= */
-document.addEventListener("click", (e) => {
-  const panel = document.getElementById("support-chem");
-  const btn = document.getElementById("btnSupport");
-
-  if (!panel) return;
-
-  if (!panel.contains(e.target) && e.target !== btn) {
-    panel.classList.remove("open");
-  }
-});
+modeBtn.onclick = () => {
+  body.classList.toggle("light-mode");
+  modeBtn.textContent = body.classList.contains("light-mode") ? "☀️" : "🌙";
+};
+const toggle = document.getElementById("toggleTheme");

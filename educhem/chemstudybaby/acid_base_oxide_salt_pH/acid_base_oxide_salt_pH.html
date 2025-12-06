@@ -1,181 +1,877 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lý Thuyết Acid - Base - Oxide - Muối</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hóa Học 8 - Chủ Đề 2: Hợp Chất Vô Cơ</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(to right, #e0f7fa, #e1bee7);
-            box-sizing: border-box;
-        }
+      :root {
+        --primary: #8b5cf6; /* Violet */
+        --secondary: #06b6d4; /* Cyan */
+        --success: #22c55e;
+        --danger: #ef4444;
+        --dark-bg: #0f172a;
+        --panel-bg: rgba(30, 41, 59, 0.7);
+      }
 
-        header {
-            text-align: center;
-            color: #4a148c;
-            margin-top: 20px;
-            font-size: 2.5rem;
-            text-shadow: 2px 2px 5px #000;
-        }
+      body {
+        font-family: "Be Vietnam Pro", sans-serif;
+        background-color: var(--dark-bg);
+        background-image: radial-gradient(
+            at 0% 0%,
+            rgba(139, 92, 246, 0.2) 0px,
+            transparent 50%
+          ),
+          radial-gradient(
+            at 100% 100%,
+            rgba(6, 182, 212, 0.2) 0px,
+            transparent 50%
+          );
+        color: #f1f5f9;
+        height: 100vh;
+        overflow: hidden;
+        user-select: none;
+      }
 
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+      /* Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #475569;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #64748b;
+      }
 
-        .theory-content {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: space-between;
-        }
+      /* Effects */
+      .glass {
+        background: var(--panel-bg);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+      }
 
-        .theory-section {
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            flex: 1 1 45%;
-            box-sizing: border-box;
-            margin-bottom: 20px;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
+      .nav-item.active {
+        background: linear-gradient(
+          90deg,
+          rgba(139, 92, 246, 0.3),
+          transparent
+        );
+        border-left: 4px solid var(--secondary);
+        color: white;
+      }
 
-        .theory-section:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      .fade-in {
+        animation: fadeIn 0.5s ease-out;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
         }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-        h2 {
-            color: #6a1b9a;
-            margin-bottom: 10px;
-        }
+      /* Interactive Elements */
+      .formula-box {
+        font-family: "Courier New", monospace;
+        background: rgba(0, 0, 0, 0.3);
+        padding: 2px 6px;
+        border-radius: 4px;
+        color: var(--secondary);
+        font-weight: bold;
+      }
 
-        ul {
-            list-style: none;
-            padding: 0;
-        }
+      /* Drag & Drop */
+      .draggable {
+        cursor: grab;
+        transition: transform 0.2s;
+      }
+      .draggable:active {
+        cursor: grabbing;
+        transform: scale(1.1);
+      }
+      .drop-zone {
+        border: 2px dashed #475569;
+        transition: all 0.3s;
+      }
+      .drop-zone.drag-over {
+        border-color: var(--success);
+        background: rgba(34, 197, 94, 0.1);
+        transform: scale(1.02);
+      }
 
-        ul li {
-            padding: 5px 0;
-            color: #424242;
-        }
-
-        video {
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
-            margin-top: 10px;
-        }
-
-        .navigation-buttons {
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        .navigation-buttons button {
-            background-color: #8e24aa;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            margin: 5px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.3s;
-        }
-
-        .navigation-buttons button:hover {
-            background-color: #6a1b9a;
-            transform: scale(1.1);
-        }
-
-        @media (max-width: 768px) {
-            .theory-section {
-                flex: 1 1 100%; /* Mỗi phần chiếm 100% chiều rộng khi màn hình nhỏ */
-            }
-        }
+      /* Quiz */
+      .quiz-opt:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      .quiz-opt.correct {
+        background: rgba(34, 197, 94, 0.2);
+        border-color: var(--success);
+      }
+      .quiz-opt.wrong {
+        background: rgba(239, 68, 68, 0.2);
+        border-color: var(--danger);
+      }
     </style>
-</head>
-<body>
-
-    <header>
-        <h1>Lý Thuyết Acid - Base - Oxide - Muối</h1>
-    </header>
-
-    <div class="container">
-        <div class="theory-content">
-            <!-- Section: Acid -->
-            <div class="theory-section">
-                <h2>Acid</h2>
-                <ul>
-                    <li>Acid có vị chua và làm quỳ tím chuyển sang màu đỏ.</li>
-                    <li>Phản ứng với kim loại như Zn, Mg, giải phóng khí H<sub>2</sub>.</li>
-                    <li>Phản ứng với base tạo muối và nước.</li>
-                    <li>pH < 7, thể hiện tính acid.</li>
-                </ul>
-                <video controls>
-                    <source src="acid.mp4" type="video/mp4">
-                    Trình duyệt không hỗ trợ video.
-                </video>
-            </div>
-
-            <!-- Section: Base -->
-            <div class="theory-section">
-                <h2>Base</h2>
-                <ul>
-                    <li>Base có vị đắng, làm quỳ tím chuyển xanh.</li>
-                    <li>Tan trong nước giải phóng ion OH<sup>-</sup>.</li>
-                    <li>Phản ứng với acid tạo muối và nước.</li>
-                    <li>pH > 7, thể hiện tính base.</li>
-                </ul>
-                <video controls>
-                    <source src="base.mp4" type="video/mp4">
-                    Trình duyệt không hỗ trợ video.
-                </video>
-            </div>
-
-            <!-- Section: Oxide -->
-            <div class="theory-section">
-                <h2>Oxide</h2>
-                <ul>
-                    <li>Oxide là hợp chất giữa oxy và nguyên tố khác.</li>
-                    <li>Phân loại: oxide bazơ, oxide acid, oxide trung tính.</li>
-                    <li>Phản ứng với acid hoặc base tùy loại oxide.</li>
-                </ul>
-                <video controls>
-                    <source src="oxide.mp4" type="video/mp4">
-                    Trình duyệt không hỗ trợ video.
-                </video>
-            </div>
-
-            <!-- Section: Muối -->
-            <div class="theory-section">
-                <h2>Muối</h2>
-                <ul>
-                    <li>Muối là sản phẩm từ phản ứng giữa acid và base.</li>
-                    <li>Tham gia nhiều phản ứng hóa học khác nhau.</li>
-                    <li>Ví dụ: NaCl, KNO<sub>3</sub>, CaCO<sub>3</sub>.</li>
-                </ul>
-                <video controls>
-                    <source src="salt.mp4" type="video/mp4">
-                    Trình duyệt không hỗ trợ video.
-                </video>
-            </div>
+    <link rel="stylesheet" href="../../component/component.css">
+    <script src="../../component/component.js"></script>
+  </head>
+  <body class="flex flex-col md:flex-row h-screen">
+    <aside
+      class="w-full md:w-64 glass flex-shrink-0 flex flex-col z-20 md:h-full border-r border-slate-700/50"
+    >
+      <div class="p-6 flex items-center gap-3 border-b border-slate-700/50">
+        <div
+          class="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center shadow-lg animate-pulse"
+        >
+          <i class="fa-solid fa-flask text-white"></i>
         </div>
-
-        <!-- Navigation Buttons -->
-        <div class="navigation-buttons">
-            <button onclick="window.location.href='index.html'">Quay về Menu</button>
-            <button onclick="window.location.href='btacid.html'">Bài Tập</button>
-            <button onclick="window.location.href='hoa.html'">Mô phỏng phản ứng hoá học</button>
+        <div>
+          <h1
+            class="font-black text-lg tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-400"
+          >
+            E - Chem
+          </h1>
+          <p class="text-xs text-slate-400">Chủ đề 2: Vô cơ</p>
         </div>
-    </div>
+      </div>
 
-</body>
+      <nav class="flex-1 overflow-y-auto p-4 space-y-1" id="nav-menu"></nav>
+
+      <div class="p-4 border-t border-slate-700/50">
+        <div class="glass p-3 rounded-xl flex justify-between items-center">
+          <span class="text-xs text-slate-400">Điểm số</span>
+          <span id="total-score" class="font-black text-xl text-green-400"
+            >0</span
+          >
+        </div>
+      </div>
+    </aside>
+
+    <main class="flex-1 relative overflow-hidden flex flex-col">
+      <div class="md:hidden h-14 glass flex items-center px-4 justify-between">
+        <span class="font-bold">Hóa Học 8</span>
+
+      </div>
+        <a href="../chemstudybaby.html">quay về trang chủ</a>
+      <div
+        id="content-area"
+        class="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth relative"
+      ></div>
+    </main>
+
+    <script>
+      /* --- DỮ LIỆU BÀI HỌC --- */
+      const lessons = [
+        {
+          id: "intro",
+          title: "Tổng quan",
+          icon: "fa-house",
+          render: () => `
+                    <div class="flex flex-col items-center justify-center min-h-[60vh] text-center fade-in">
+                        <div class="mb-6 relative">
+                            <i class="fa-solid fa-atom text-8xl text-slate-700 absolute top-0 left-0 animate-spin-slow" style="animation-duration: 10s"></i>
+                            <i class="fa-solid fa-flask-vial text-7xl text-cyan-400 relative z-10 drop-shadow-[0_0_15px_rgba(6,182,212,0.5)]"></i>
+                        </div>
+                        <h1 class="text-4xl md:text-5xl font-black mb-4 bg-clip-text text-transparent bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400">
+                            HỢP CHẤT VÔ CƠ
+                        </h1>
+                        <p class="text-slate-400 max-w-lg text-lg mb-8">
+                            Khám phá thế giới của <span class="text-red-400 font-bold">Acid</span>, <span class="text-blue-400 font-bold">Base</span>, 
+                            <span class="text-green-400 font-bold">Muối</span> và <span class="text-orange-400 font-bold">Phân bón</span> thông qua các thí nghiệm ảo và bài tập tương tác.
+                        </p>
+                        <button onclick="app.load('acid')" class="group px-8 py-3 bg-gradient-to-r from-violet-600 to-cyan-600 rounded-full font-bold text-white shadow-lg hover:shadow-cyan-500/50 transition-all transform hover:-translate-y-1">
+                            Bắt đầu học ngay <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
+                        </button>
+                    </div>
+                `,
+        },
+        {
+          id: "acid",
+          title: "I. Acid (Axit)",
+          icon: "fa-lemon", // Sour
+          render: () => `
+                    <div class="max-w-4xl mx-auto space-y-6 fade-in">
+                        <h2 class="text-3xl font-black text-red-400 border-b border-red-500/30 pb-2">I. ACID (AXIT)</h2>
+                        
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="glass p-6 rounded-2xl">
+                                <h3 class="text-xl font-bold text-slate-200 mb-3"><i class="fa-solid fa-dna text-red-500 mr-2"></i> 1. Khái niệm</h3>
+                                <ul class="list-disc pl-5 space-y-2 text-slate-300">
+                                    <li>Phân tử có nguyên tử <b>H</b> liên kết với gốc axit.</li>
+                                    <li>Tan trong nước phân li ra ion <span class="formula-box">H⁺</span>.</li>
+                                    <li>Công thức chung: <span class="formula-box">HₙA</span>.</li>
+                                </ul>
+                            </div>
+                            <div class="glass p-6 rounded-2xl">
+                                <h3 class="text-xl font-bold text-slate-200 mb-3"><i class="fa-solid fa-filter text-red-500 mr-2"></i> 4. Phân loại</h3>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between border-b border-slate-700 pb-1">
+                                        <span>Mạnh</span>
+                                        <span class="text-red-300">HCl, HNO₃, H₂SO₄</span>
+                                    </div>
+                                    <div class="flex justify-between border-b border-slate-700 pb-1">
+                                        <span>Yếu</span>
+                                        <span class="text-red-300">H₂S, H₂CO₃</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Hữu cơ</span>
+                                        <span class="text-red-300">CH₃COOH</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass p-6 rounded-2xl border-l-4 border-red-500">
+                            <h3 class="text-xl font-bold text-slate-200 mb-4">3. Tính chất hóa học</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-slate-800/50 p-3 rounded-lg flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded bg-red-500/20 text-red-500 flex items-center justify-center font-bold">1</div>
+                                    <div>Làm quỳ tím hóa <b class="text-red-400">ĐỎ</b></div>
+                                </div>
+                                <div class="bg-slate-800/50 p-3 rounded-lg flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded bg-red-500/20 text-red-500 flex items-center justify-center font-bold">2</div>
+                                    <div>Tác dụng Kim loại (trước H) → Muối + H₂</div>
+                                </div>
+                                <div class="bg-slate-800/50 p-3 rounded-lg flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded bg-red-500/20 text-red-500 flex items-center justify-center font-bold">3</div>
+                                    <div>Tác dụng Bazơ → Muối + Nước</div>
+                                </div>
+                                <div class="bg-slate-800/50 p-3 rounded-lg flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded bg-red-500/20 text-red-500 flex items-center justify-center font-bold">4</div>
+                                    <div>Tác dụng Oxit Bazơ → Muối + Nước</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `,
+        },
+        {
+          id: "base",
+          title: "II. Base (Bazơ)",
+          icon: "fa-soap",
+          render: () => `
+                    <div class="max-w-4xl mx-auto space-y-6 fade-in">
+                        <h2 class="text-3xl font-black text-blue-400 border-b border-blue-500/30 pb-2">II. BASE (BAZƠ)</h2>
+                        
+                        <div class="glass p-6 rounded-2xl">
+                            <h3 class="text-xl font-bold text-slate-200 mb-3">1. Khái niệm & Phân loại</h3>
+                            <p class="mb-4 text-slate-300">Hợp chất gồm kim loại liên kết với nhóm <span class="formula-box">OH</span>. Dung dịch tạo ion <span class="formula-box">OH⁻</span>.</p>
+                            
+                            <div class="grid grid-cols-2 gap-4 text-center">
+                                <div class="bg-blue-500/10 p-4 rounded-xl border border-blue-500/30">
+                                    <div class="font-bold text-blue-400 text-lg mb-1">Kiềm (Tan)</div>
+                                    <div class="text-sm text-slate-400">NaOH, KOH, Ba(OH)₂, Ca(OH)₂</div>
+                                    <div class="text-xs text-slate-500 mt-1 italic">"Khi Nào Ba Cần"</div>
+                                </div>
+                                <div class="bg-slate-700/30 p-4 rounded-xl border border-slate-600">
+                                    <div class="font-bold text-slate-300 text-lg mb-1">Không Tan</div>
+                                    <div class="text-sm text-slate-400">Cu(OH)₂, Fe(OH)₃, Mg(OH)₂</div>
+                                    <div class="text-xs text-slate-500 mt-1">Bị nhiệt phân hủy</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass p-6 rounded-2xl border-l-4 border-blue-500">
+                            <h3 class="text-xl font-bold text-slate-200 mb-4">3. Tính chất hóa học đặc trưng</h3>
+                            <ul class="space-y-3">
+                                <li class="flex items-center gap-3">
+                                    <span class="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-xs">A</span>
+                                    <span>Làm quỳ tím hóa <b class="text-blue-400">XANH</b>.</span>
+                                </li>
+                                <li class="flex items-center gap-3">
+                                    <span class="w-6 h-6 rounded-full bg-pink-500 flex items-center justify-center text-xs">B</span>
+                                    <span>Phenolphthalein không màu → <b class="text-pink-400">HỒNG</b> (chỉ với Kiềm).</span>
+                                </li>
+                                <li class="flex items-center gap-3">
+                                    <span class="w-6 h-6 rounded-full bg-slate-600 flex items-center justify-center text-xs">C</span>
+                                    <span>Tác dụng với Axit (Phản ứng trung hòa) → Muối + Nước.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                `,
+        },
+        {
+          id: "ph_sim",
+          title: "III. Mô phỏng pH",
+          icon: "fa-eye-dropper",
+          script: "initPhSim",
+          render: () => `
+                    <div class="max-w-4xl mx-auto fade-in">
+                         <h2 class="text-3xl font-black text-purple-400 mb-6">III. THANG ĐO pH</h2>
+                         
+                         <div class="grid md:grid-cols-2 gap-8 items-center glass p-8 rounded-3xl">
+                            <div class="space-y-6">
+                                <div>
+                                    <label class="block text-sm font-bold mb-4 text-slate-300">Kéo thanh trượt để thay đổi độ pH:</label>
+                                    <input type="range" min="0" max="14" value="7" step="0.5" id="ph-slider" class="w-full h-3 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-purple-500">
+                                    <div class="flex justify-between text-xs text-slate-500 mt-2 font-mono">
+                                        <span class="text-red-500">0 (Acid)</span>
+                                        <span class="text-green-500">7 (Trung tính)</span>
+                                        <span class="text-blue-500">14 (Base)</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-slate-900/80 p-6 rounded-2xl border border-slate-700 text-center relative overflow-hidden">
+                                    <div class="text-xs text-slate-500 uppercase tracking-widest mb-1">Giá trị pH</div>
+                                    <div id="ph-val" class="text-6xl font-black text-white z-10 relative">7.0</div>
+                                    <div id="ph-env" class="mt-2 inline-block px-4 py-1 rounded-full text-sm font-bold bg-green-500/20 text-green-400">Trung tính</div>
+                                    <div class="mt-4 pt-4 border-t border-slate-700">
+                                        <span class="text-slate-400 text-sm italic block mb-1">Ví dụ thực tế:</span>
+                                        <span id="ph-ex" class="font-bold text-white text-lg">Nước tinh khiết</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="relative flex justify-center items-end h-[350px]">
+                                <canvas id="ph-canvas" width="250" height="300" class="relative z-10"></canvas>
+                                <div class="absolute top-10 right-10 text-4xl animate-bounce text-slate-600"><i class="fa-solid fa-flask"></i></div>
+                            </div>
+                         </div>
+
+                         <div class="mt-6 grid grid-cols-3 gap-4 text-center text-sm">
+                             <div class="glass p-3 rounded-lg"><span class="text-red-400 font-bold">pH < 7</span>: Môi trường Acid</div>
+                             <div class="glass p-3 rounded-lg"><span class="text-green-400 font-bold">pH = 7</span>: Trung tính</div>
+                             <div class="glass p-3 rounded-lg"><span class="text-blue-400 font-bold">pH > 7</span>: Môi trường Bazơ</div>
+                         </div>
+                    </div>
+                `,
+        },
+        {
+          id: "oxide_game",
+          title: "IV. Oxide (Game)",
+          icon: "fa-cubes-stacked",
+          script: "initDragDrop",
+          render: () => `
+                    <div class="h-full flex flex-col fade-in">
+                        <div class="text-center mb-6">
+                            <h2 class="text-3xl font-black text-orange-400">IV. PHÂN LOẠI OXIDE</h2>
+                            <p class="text-slate-400">Kéo các công thức hóa học vào đúng giỏ phân loại!</p>
+                        </div>
+
+                        <div class="glass p-4 rounded-xl mb-8 min-h-[80px] flex flex-wrap gap-4 justify-center items-center" id="drag-source">
+                            </div>
+
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 flex-1">
+                            <div class="drop-zone glass rounded-2xl p-4 flex flex-col items-center justify-start relative group" data-type="acid">
+                                <i class="fa-solid fa-cloud text-4xl text-red-500/30 mb-2 group-hover:text-red-500 transition"></i>
+                                <h3 class="font-bold text-red-400">Oxit Axit</h3>
+                                <p class="text-xs text-slate-500 mb-4 text-center">(Thường là phi kim)</p>
+                                <div class="dropped-items w-full space-y-2"></div>
+                            </div>
+                            
+                            <div class="drop-zone glass rounded-2xl p-4 flex flex-col items-center justify-start relative group" data-type="base">
+                                <i class="fa-solid fa-gem text-4xl text-blue-500/30 mb-2 group-hover:text-blue-500 transition"></i>
+                                <h3 class="font-bold text-blue-400">Oxit Bazơ</h3>
+                                <p class="text-xs text-slate-500 mb-4 text-center">(Thường là kim loại)</p>
+                                <div class="dropped-items w-full space-y-2"></div>
+                            </div>
+
+                            <div class="drop-zone glass rounded-2xl p-4 flex flex-col items-center justify-start relative group" data-type="ampho">
+                                <i class="fa-solid fa-scale-balanced text-4xl text-purple-500/30 mb-2 group-hover:text-purple-500 transition"></i>
+                                <h3 class="font-bold text-purple-400">Lưỡng tính</h3>
+                                <p class="text-xs text-slate-500 mb-4 text-center">(Tác dụng cả 2)</p>
+                                <div class="dropped-items w-full space-y-2"></div>
+                            </div>
+
+                            <div class="drop-zone glass rounded-2xl p-4 flex flex-col items-center justify-start relative group" data-type="neutral">
+                                <i class="fa-solid fa-ban text-4xl text-slate-500/30 mb-2 group-hover:text-slate-400 transition"></i>
+                                <h3 class="font-bold text-slate-400">Trung tính</h3>
+                                <p class="text-xs text-slate-500 mb-4 text-center">(Không tác dụng)</p>
+                                <div class="dropped-items w-full space-y-2"></div>
+                            </div>
+                        </div>
+
+                        <div id="game-feedback" class="h-10 text-center font-bold text-lg mt-4"></div>
+                    </div>
+                `,
+        },
+        {
+          id: "salt_fert",
+          title: "V-VI. Muối & Phân bón",
+          icon: "fa-seedling",
+          render: () => `
+                    <div class="max-w-4xl mx-auto space-y-8 fade-in">
+                        <div class="glass p-6 rounded-2xl border-l-4 border-green-500">
+                            <h2 class="text-2xl font-black text-green-400 mb-4">V. MUỐI</h2>
+                            <p class="mb-4 text-slate-300">Hợp chất gồm cation kim loại (hoặc NH₄⁺) và anion gốc axit.</p>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="bg-slate-800 p-3 rounded border border-slate-700">
+                                    <div class="font-bold text-green-300">Phản ứng tạo muối</div>
+                                    <ul class="list-disc pl-5 text-sm text-slate-400 mt-2 space-y-1">
+                                        <li>Axit + Bazơ</li>
+                                        <li>Axit + Oxit bazơ</li>
+                                        <li>Bazơ + Oxit axit</li>
+                                        <li>Muối + Muối (trao đổi)</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-slate-800 p-3 rounded border border-slate-700">
+                                    <div class="font-bold text-green-300">Ví dụ</div>
+                                    <div class="flex flex-wrap gap-2 mt-2">
+                                        <span class="px-2 py-1 bg-white/10 rounded text-xs font-mono">NaCl</span>
+                                        <span class="px-2 py-1 bg-white/10 rounded text-xs font-mono">CaCO₃</span>
+                                        <span class="px-2 py-1 bg-white/10 rounded text-xs font-mono">KNO₃</span>
+                                        <span class="px-2 py-1 bg-white/10 rounded text-xs font-mono">BaSO₄ (↓)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h2 class="text-2xl font-black text-yellow-400 mb-4">VI. PHÂN BÓN HÓA HỌC</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="glass p-4 rounded-xl text-center hover:bg-slate-800 transition cursor-help relative group">
+                                    <div class="text-4xl font-black text-white mb-2">N</div>
+                                    <div class="font-bold text-yellow-400">Phân Đạm</div>
+                                    <p class="text-sm text-slate-400 mt-2">Kích thích lá, sinh trưởng.</p>
+                                    <div class="absolute inset-0 border-2 border-yellow-400 rounded-xl opacity-0 group-hover:opacity-100 transition"></div>
+                                </div>
+                                <div class="glass p-4 rounded-xl text-center hover:bg-slate-800 transition cursor-help relative group">
+                                    <div class="text-4xl font-black text-white mb-2">P</div>
+                                    <div class="font-bold text-orange-400">Phân Lân</div>
+                                    <p class="text-sm text-slate-400 mt-2">Kích thích rễ, củ, quả.</p>
+                                    <div class="absolute inset-0 border-2 border-orange-400 rounded-xl opacity-0 group-hover:opacity-100 transition"></div>
+                                </div>
+                                <div class="glass p-4 rounded-xl text-center hover:bg-slate-800 transition cursor-help relative group">
+                                    <div class="text-4xl font-black text-white mb-2">K</div>
+                                    <div class="font-bold text-purple-400">Phân Kali</div>
+                                    <p class="text-sm text-slate-400 mt-2">Tăng sức đề kháng, cứng cây.</p>
+                                    <div class="absolute inset-0 border-2 border-purple-400 rounded-xl opacity-0 group-hover:opacity-100 transition"></div>
+                                </div>
+                            </div>
+                            <div class="mt-4 text-center text-slate-500 text-sm">
+                                <i class="fa-solid fa-triangle-exclamation mr-1"></i> Nguyên tắc: Đúng loại - Đúng liều - Đúng lúc - Đúng cách.
+                            </div>
+                        </div>
+                    </div>
+                `,
+        },
+        {
+          id: "quiz",
+          title: "Luyện tập",
+          icon: "fa-clipboard-question",
+          script: "initQuiz",
+          render: () => `
+                    <div class="max-w-3xl mx-auto fade-in pb-20">
+                        <div class="text-center mb-8">
+                            <h2 class="text-3xl font-black text-white mb-2">BÀI KIỂM TRA NHANH</h2>
+                            <p class="text-slate-400">Hãy chọn đáp án đúng nhất cho các câu hỏi sau.</p>
+                        </div>
+                        <div id="quiz-container" class="space-y-6">
+                            </div>
+                        <div class="mt-8 text-center">
+                            <button onclick="submitQuiz()" class="px-10 py-3 bg-green-600 hover:bg-green-500 text-white font-bold rounded-xl shadow-lg transition transform active:scale-95">
+                                Nộp bài & Xem điểm
+                            </button>
+                        </div>
+                        <div id="quiz-result" class="hidden mt-6 text-center glass p-6 rounded-xl animate-bounce"></div>
+                    </div>
+                `,
+        },
+      ];
+
+      /* --- APP ENGINE --- */
+      const app = {
+        activeSim: null,
+        score: 0,
+        load: (id) => {
+          // Clear animation frames
+          if (app.activeSim) cancelAnimationFrame(app.activeSim);
+
+          const lesson = lessons.find((l) => l.id === id);
+          if (!lesson) return;
+
+          // Render Content
+          document.getElementById("content-area").innerHTML = lesson.render();
+
+          // Update Nav UI
+          document.querySelectorAll(".nav-item").forEach((el) => {
+            el.classList.remove("active");
+            el.classList.add("text-slate-400", "hover:bg-slate-800");
+          });
+          const activeNav = document.getElementById(`nav-${id}`);
+          if (activeNav) {
+            activeNav.classList.add("active");
+            activeNav.classList.remove("text-slate-400", "hover:bg-slate-800");
+          }
+
+          // Run Scripts
+          if (lesson.script && window[lesson.script]) {
+            setTimeout(() => window[lesson.script](), 100);
+          }
+
+          playSound("pop");
+        },
+        init: () => {
+          const nav = document.getElementById("nav-menu");
+          nav.innerHTML = lessons
+            .map(
+              (l) => `
+                    <button id="nav-${l.id}" onclick="app.load('${l.id}')" 
+                        class="nav-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 text-slate-400 hover:bg-slate-800">
+                        <div class="w-8 flex justify-center"><i class="fa-solid ${l.icon}"></i></div>
+                        <span class="font-semibold text-sm">${l.title}</span>
+                    </button>
+                `
+            )
+            .join("");
+
+          // Start at Intro
+          app.load("intro");
+        },
+        addScore: (points) => {
+          app.score += points;
+          const el = document.getElementById("total-score");
+          el.innerText = app.score;
+          el.parentElement.classList.add("bg-slate-700");
+          setTimeout(
+            () => el.parentElement.classList.remove("bg-slate-700"),
+            200
+          );
+        },
+      };
+
+      /* --- SOUND EFFECTS --- */
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      function playSound(type) {
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        const now = audioCtx.currentTime;
+        if (type === "pop") {
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(600, now);
+          osc.frequency.exponentialRampToValueAtTime(100, now + 0.1);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.linearRampToValueAtTime(0, now + 0.1);
+          osc.start(now);
+          osc.stop(now + 0.1);
+        } else if (type === "correct") {
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(400, now);
+          osc.frequency.linearRampToValueAtTime(800, now + 0.1);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.linearRampToValueAtTime(0, now + 0.3);
+          osc.start(now);
+          osc.stop(now + 0.3);
+        } else if (type === "wrong") {
+          osc.type = "sawtooth";
+          osc.frequency.setValueAtTime(150, now);
+          osc.frequency.linearRampToValueAtTime(100, now + 0.2);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.linearRampToValueAtTime(0, now + 0.3);
+          osc.start(now);
+          osc.stop(now + 0.3);
+        }
+      }
+
+      /* --- SCRIPT: pH SIMULATION --- */
+      function initPhSim() {
+        const canvas = document.getElementById("ph-canvas");
+        const ctx = canvas.getContext("2d");
+        const slider = document.getElementById("ph-slider");
+        const valDisplay = document.getElementById("ph-val");
+        const envDisplay = document.getElementById("ph-env");
+        const exDisplay = document.getElementById("ph-ex");
+
+        let bubbles = [];
+        for (let i = 0; i < 15; i++)
+          bubbles.push({
+            x: Math.random() * 200 + 25,
+            y: Math.random() * 300,
+            r: Math.random() * 4 + 1,
+            s: Math.random() + 0.5,
+          });
+
+        function getInfo(ph) {
+          if (ph < 3)
+            return { c: "#ef4444", t: "Acid Mạnh", e: "Axit trong ắc quy" };
+          if (ph < 7)
+            return { c: "#f97316", t: "Acid Yếu", e: "Nước chanh, Cà phê" };
+          if (ph == 7)
+            return { c: "#22c55e", t: "Trung tính", e: "Nước tinh khiết" };
+          if (ph < 11)
+            return { c: "#3b82f6", t: "Base Yếu", e: "Xà phòng, Baking soda" };
+          return { c: "#8b5cf6", t: "Base Mạnh", e: "Thuốc tẩy, Thông cống" };
+        }
+
+        function draw() {
+          const ph = parseFloat(slider.value);
+          const info = getInfo(ph);
+
+          // Update Text
+          valDisplay.innerText = ph;
+          envDisplay.innerText = info.t;
+          envDisplay.style.color = info.c;
+          envDisplay.style.backgroundColor = info.c + "33"; // 20% opacity
+          exDisplay.innerText = info.e;
+
+          // Draw Beaker
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          // Liquid
+          ctx.fillStyle = info.c + "cc"; // 80% opacity
+          const liquidH = 220;
+          ctx.fillRect(25, 300 - liquidH, 200, liquidH);
+
+          // Bubbles
+          ctx.fillStyle = "rgba(255,255,255,0.3)";
+          bubbles.forEach((b) => {
+            b.y -= b.s;
+            if (b.y < 300 - liquidH) b.y = 290;
+            ctx.beginPath();
+            ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+            ctx.fill();
+          });
+
+          // Glass Container
+          ctx.strokeStyle = "rgba(255,255,255,0.5)";
+          ctx.lineWidth = 5;
+          ctx.strokeRect(25, 50, 200, 250);
+
+          // Ticks
+          ctx.fillStyle = "rgba(255,255,255,0.5)";
+          for (let i = 1; i <= 4; i++) {
+            ctx.fillRect(180, 300 - i * 40, 45, 2);
+          }
+
+          app.activeSim = requestAnimationFrame(draw);
+        }
+        draw();
+        slider.oninput = () => playSound("pop");
+      }
+
+      /* --- SCRIPT: DRAG & DROP GAME --- */
+      function initDragDrop() {
+        const items = [
+          { id: "i1", txt: "CO₂", type: "acid" },
+          { id: "i2", txt: "SO₂", type: "acid" },
+          { id: "i3", txt: "Na₂O", type: "base" },
+          { id: "i4", txt: "CaO", type: "base" },
+          { id: "i5", txt: "ZnO", type: "ampho" },
+          { id: "i6", txt: "Al₂O₃", type: "ampho" },
+          { id: "i7", txt: "NO", type: "neutral" },
+          { id: "i8", txt: "CO", type: "neutral" },
+        ];
+
+        const source = document.getElementById("drag-source");
+        const zones = document.querySelectorAll(".drop-zone");
+        const feedback = document.getElementById("game-feedback");
+
+        // Render Draggables
+        source.innerHTML = items
+          .map(
+            (i) => `
+                <div draggable="true" id="${i.id}" data-type="${i.type}" 
+                     class="draggable px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded shadow border border-slate-500 text-white font-bold cursor-grab">
+                    ${i.txt}
+                </div>
+            `
+          )
+          .join("");
+
+        // Add Event Listeners
+        const draggables = document.querySelectorAll(".draggable");
+        draggables.forEach((d) => {
+          d.addEventListener("dragstart", (e) => {
+            e.dataTransfer.setData(
+              "text/plain",
+              JSON.stringify({
+                id: d.id,
+                type: d.dataset.type,
+                txt: d.innerText,
+              })
+            );
+            d.classList.add("opacity-50");
+          });
+          d.addEventListener("dragend", () => d.classList.remove("opacity-50"));
+        });
+
+        zones.forEach((zone) => {
+          zone.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            zone.classList.add("drag-over");
+          });
+          zone.addEventListener("dragleave", () =>
+            zone.classList.remove("drag-over")
+          );
+          zone.addEventListener("drop", (e) => {
+            e.preventDefault();
+            zone.classList.remove("drag-over");
+            const data = JSON.parse(e.dataTransfer.getData("text/plain"));
+
+            if (zone.dataset.type === data.type) {
+              // Correct
+              const el = document.getElementById(data.id);
+              if (el) {
+                el.parentNode.removeChild(el);
+                const newEl = document.createElement("div");
+                newEl.className =
+                  "px-3 py-1 bg-green-500/20 text-green-400 border border-green-500 rounded text-sm font-bold text-center";
+                newEl.innerText = data.txt;
+                zone.querySelector(".dropped-items").appendChild(newEl);
+
+                app.addScore(10);
+                playSound("correct");
+                feedback.innerHTML =
+                  '<span class="text-green-400">Chính xác! +10 điểm</span>';
+                confetti({ particleCount: 30, spread: 50, origin: { y: 0.7 } });
+              }
+            } else {
+              playSound("wrong");
+              feedback.innerHTML =
+                '<span class="text-red-400">Sai rồi! Thử lại nhé.</span>';
+            }
+          });
+        });
+      }
+
+      /* --- SCRIPT: QUIZ --- */
+      const quizData = [
+        {
+          q: "Dung dịch nào làm quỳ tím hóa đỏ?",
+          a: ["NaOH", "HCl", "NaCl", "H₂O"],
+          correct: 1,
+        },
+        {
+          q: "Bazơ nào sau đây KHÔNG tan trong nước?",
+          a: ["NaOH", "KOH", "Cu(OH)₂", "Ba(OH)₂"],
+          correct: 2,
+        },
+        {
+          q: "pH = 12 thể hiện môi trường gì?",
+          a: ["Acid mạnh", "Trung tính", "Base mạnh", "Acid yếu"],
+          correct: 2,
+        },
+        {
+          q: "Oxit nào tác dụng được với cả Acid và Base?",
+          a: ["ZnO", "CaO", "SO₂", "CO"],
+          correct: 0,
+        },
+        {
+          q: "Phân Đạm cung cấp nguyên tố dinh dưỡng nào?",
+          a: ["Nitơ (N)", "Photpho (P)", "Kali (K)", "Lưu huỳnh (S)"],
+          correct: 0,
+        },
+      ];
+
+      function initQuiz() {
+        const container = document.getElementById("quiz-container");
+        container.innerHTML = quizData
+          .map(
+            (item, idx) => `
+                <div class="glass p-6 rounded-xl border border-slate-700">
+                    <p class="font-bold text-lg mb-4 text-white"><span class="text-cyan-400">Câu ${
+                      idx + 1
+                    }:</span> ${item.q}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        ${item.a
+                          .map(
+                            (opt, optIdx) => `
+                            <button class="quiz-opt p-3 rounded-lg border border-slate-600 text-left text-slate-300 transition" 
+                                onclick="selectOpt(${idx}, ${optIdx}, this)">${String.fromCharCode(
+                              65 + optIdx
+                            )}. ${opt}</button>
+                        `
+                          )
+                          .join("")}
+                    </div>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      let userAnswers = {};
+      window.selectOpt = (qIdx, optIdx, btn) => {
+        userAnswers[qIdx] = optIdx;
+        // Visual selection
+        const parent = btn.parentElement;
+        Array.from(parent.children).forEach((c) => {
+          c.classList.remove(
+            "bg-violet-600",
+            "border-violet-400",
+            "text-white"
+          );
+          c.classList.add("border-slate-600");
+        });
+        btn.classList.add("bg-violet-600", "border-violet-400", "text-white");
+        btn.classList.remove("border-slate-600");
+        playSound("pop");
+      };
+
+      window.submitQuiz = () => {
+        let score = 0;
+        const resultDiv = document.getElementById("quiz-result");
+
+        quizData.forEach((item, idx) => {
+          const buttons = document.querySelectorAll(
+            `#quiz-container > div:nth-child(${idx + 1}) button`
+          );
+
+          // Reset styles
+          buttons.forEach((b) =>
+            b.classList.remove("correct", "wrong", "bg-violet-600")
+          );
+
+          if (userAnswers[idx] === item.correct) {
+            score++;
+            buttons[item.correct].classList.add("correct");
+          } else {
+            if (userAnswers[idx] !== undefined)
+              buttons[userAnswers[idx]].classList.add("wrong");
+            buttons[item.correct].classList.add("correct"); // Show right answer
+          }
+        });
+
+        app.addScore(score * 20); // 20 points per question
+
+        resultDiv.classList.remove("hidden");
+        resultDiv.innerHTML = `
+                <h3 class="text-2xl font-black mb-2 text-white">Kết quả: ${score}/${
+          quizData.length
+        }</h3>
+                <p class="text-slate-300">${
+                  score === 5
+                    ? "Tuyệt vời! Bạn là thiên tài hóa học! 🏆"
+                    : "Hãy cố gắng hơn lần sau nhé!"
+                }</p>
+            `;
+
+        if (score >= 4) {
+          playSound("correct");
+          confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        } else {
+          playSound("pop");
+        }
+      };
+
+      // START APP
+      window.onload = app.init;
+    </script>
+  </body>
 </html>

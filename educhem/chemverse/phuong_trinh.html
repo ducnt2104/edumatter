@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Phương trình hóa học — Mô phỏng nâng cao</title>
+
+    <!-- Fonts & Icons -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <!-- MathJax for beautiful formulas -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+
+    <style>
+      /* ===========================================
+     EDUCHEM — Phương trình Hóa học (Nâng cao)
+     File duy nhất, responsive, animations, touch support.
+     =========================================== */
+
+      :root {
+        --bg1: #f3fbff;
+        --card: #ffffff;
+        --muted: #6e7b86;
+        --accentA: #1f8ef1;
+        --accentB: #7d3ff0;
+        --good: #2ecc71;
+        --bad: #ff5252;
+        --glass: rgba(255, 255, 255, 0.7);
+        --radius: 12px;
+        --shadow: 0 10px 30px rgba(11, 24, 40, 0.08);
+        --maxw: 1300px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto,
+          Arial;
+        background: linear-gradient(180deg, var(--bg1), #eaf5ff 60%);
+        color: #052031;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      header {
+        background: linear-gradient(90deg, var(--accentA), var(--accentB));
+        color: white;
+        padding: 28px 18px;
+        text-align: center;
+        box-shadow: 0 12px 40px rgba(31, 142, 241, 0.08);
+      }
+      header h1 {
+        margin: 0;
+        font-size: clamp(20px, 3.8vw, 36px);
+        font-weight: 800;
+        letter-spacing: -0.6px;
+      }
+      header p {
+        margin: 6px 0 0;
+        opacity: 0.94;
+      }
+
+      .container {
+        max-width: var(--maxw);
+        margin: 18px auto;
+        padding: 0 18px 60px;
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 20px;
+        align-items: start;
+      }
+
+      /* Left simulation card */
+      .panel {
+        background: linear-gradient(180deg, #ffffff, #f6fbff);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 16px;
+      }
+
+      .controls {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .btn {
+        background: #fff;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 700;
+        color: var(--accentA);
+        box-shadow: 0 8px 26px rgba(11, 24, 40, 0.06);
+      }
+      .btn.ghost {
+        background: transparent;
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+      .btn.warn {
+        background: var(--bad);
+        color: white;
+      }
+
+      .chem-list {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+
+      .chem-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border-radius: 10px;
+        color: white;
+        font-weight: 700;
+        cursor: pointer;
+        user-select: none;
+        box-shadow: 0 8px 26px rgba(11, 24, 40, 0.06);
+        transition: transform 0.14s ease;
+      }
+      .chem-btn:active {
+        transform: translateY(2px);
+      }
+
+      /* reaction area */
+      .reaction-area {
+        border-radius: 10px;
+        height: 540px;
+        border: 2px dashed rgba(11, 24, 40, 0.06);
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.6),
+          rgba(243, 249, 255, 0.95)
+        );
+      }
+
+      .chemical-box {
+        position: absolute;
+        min-width: 84px;
+        height: 56px;
+        padding: 6px 12px;
+        border-radius: 10px;
+        color: #fff;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 10px 28px rgba(11, 24, 40, 0.12);
+        cursor: grab;
+        z-index: 30;
+        transition: transform 0.14s ease, opacity 0.14s ease,
+          box-shadow 0.14s ease;
+        white-space: nowrap;
+      }
+      .chemical-box:active {
+        cursor: grabbing;
+      }
+      .chemical-box.product {
+        border: 2px dotted rgba(255, 255, 255, 0.18);
+      }
+
+      /* product + gas + precipitate visual classes */
+      .gas {
+        filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.06));
+      }
+      .precip {
+        box-shadow: 0 14px 36px rgba(0, 0, 0, 0.12);
+        border: 2px solid rgba(255, 255, 255, 0.06);
+      }
+
+      /* styles for many chemicals (we use class by id c-HCl etc) */
+      .c-HCl {
+        background: #e74c3c;
+      }
+      .c-NaOH {
+        background: #16a085;
+      }
+      .c-CaO {
+        background: #9b59b6;
+      }
+      .c-H2O {
+        background: #3498db;
+      }
+      .c-CO2 {
+        background: #e67e22;
+      }
+      .c-NaCl {
+        background: #0fb3a3;
+      }
+      .c-Na2CO3 {
+        background: #8e44ad;
+      }
+      .c-H2SO4 {
+        background: #c0392b;
+      }
+      .c-NH3 {
+        background: #1abc9c;
+      }
+      .c-MgO {
+        background: #f1c40f;
+      }
+      .c-KOH {
+        background: #ff8a00;
+      }
+
+      /* extra chemicals added */
+      .c-K2O {
+        background: #ff6b6b;
+      }
+      .c-SO3 {
+        background: #b03a2e;
+      }
+      .c-NaHCO3 {
+        background: #6c5ce7;
+      }
+      .c-CaCO3 {
+        background: #95a5a6;
+      }
+      .c-BaCl2 {
+        background: #2d98da;
+      }
+      .c-CaCl2 {
+        background: #6ab04c;
+      }
+      .c-Na2SO4 {
+        background: #2ecc71;
+      }
+      .c-K2SO4 {
+        background: #ff9f1a;
+      }
+      .c-Fe {
+        background: #7f8c8d;
+      }
+      .c-FeSO4 {
+        background: #27ae60;
+      }
+      .c-BaSO4 {
+        background: #f7b731;
+      }
+      .c-NH4Cl {
+        background: #ff7675;
+      }
+      .c-NaHCO3 {
+        background: #00b894;
+      }
+      .c-NaOH {
+        background: #16a085;
+      }
+
+      /* right info panel */
+      .right {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .card {
+        background: linear-gradient(180deg, #fff, #f8fdff);
+        border-radius: 10px;
+        padding: 12px;
+        box-shadow: var(--shadow);
+      }
+      .equation {
+        font-weight: 800;
+        font-size: 16px;
+        color: var(--accentA);
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .equation .token {
+        padding: 6px 10px;
+        border-radius: 8px;
+        background: linear-gradient(
+          90deg,
+          rgba(31, 142, 241, 0.06),
+          rgba(125, 63, 240, 0.04)
+        );
+      }
+      .result {
+        color: var(--muted);
+        margin-top: 8px;
+        font-weight: 700;
+      }
+
+      .rx-list {
+        max-height: 420px;
+        overflow: auto;
+        padding-right: 6px;
+      }
+      .rx-item {
+        padding: 8px 6px;
+        border-bottom: 1px dashed rgba(11, 24, 40, 0.04);
+        font-size: 0.95rem;
+      }
+      .rx-item strong {
+        color: #0b2433;
+      }
+
+      /* flash animation when equation appears */
+      .flash {
+        animation: popfade 0.6s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+      }
+      @keyframes popfade {
+        0% {
+          transform: translateY(8px) scale(0.98);
+          opacity: 0;
+        }
+        60% {
+          transform: translateY(-6px) scale(1.02);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      /* tiny helpers */
+      .muted {
+        color: var(--muted);
+      }
+      .small {
+        font-size: 0.9rem;
+      }
+
+      footer {
+        text-align: center;
+        color: var(--muted);
+        padding: 22px 0 60px;
+      }
+
+      /* responsive */
+      @media (max-width: 1100px) {
+        .container {
+          grid-template-columns: 1fr;
+          padding-bottom: 40px;
+        }
+        .reaction-area {
+          height: 420px;
+        }
+      }
+
+      /* long file note: end of CSS (file intentionally long in content) */
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Phương trình Hóa học — Mô phỏng NÂNG CAO</h1>
+      <p>
+        Kéo thả, chạm để phản ứng — Database lớn, MathJax hiển thị công thức
+        đẹp.
+      </p>
+      <div style="margin-top: 12px">
+        <button class="btn" id="btnSeed">Seed (ví dụ)</button>
+        <button class="btn" id="btnReset">Reset</button>
+        <button class="btn" id="btnExport">Export Log (CSV)</button>
+        <button class="btn" id="btnUndo">Undo Last</button>
+      </div>
+    </header>
+
+    <div class="container">
+      <!-- left simulation -->
+      <div class="panel">
+        <div
+          style="
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+          "
+        >
+          <div class="controls">
+            <div style="font-weight: 700; color: var(--accentA)">
+              Thêm chất:
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center">
+            <input
+              id="customChem"
+              placeholder="Nhập mã chất (VD: CaCl2)"
+              style="
+                padding: 8px;
+                border-radius: 8px;
+                border: 1px solid rgba(0, 0, 0, 0.06);
+              "
+            />
+            <button class="btn" id="addCustom">Thêm</button>
+          </div>
+        </div>
+
+        <div class="chem-list" id="chemList"><!-- rendered by JS --></div>
+
+        <div class="panel small muted" style="margin-bottom: 10px">
+          Hướng dẫn: Nhấn vào chất để tạo 1 khối, hoặc kéo thả để di chuyển. Khi
+          hai khối chạm nhau, hệ thống sẽ kiểm tra DB để hiển thị phương trình.
+          Nếu chưa định nghĩa — sẽ báo "Có thể phản ứng nhưng chưa có dữ liệu".
+        </div>
+
+        <div
+          id="reactionArea"
+          class="reaction-area"
+          aria-label="Vùng phản ứng"
+        ></div>
+      </div>
+
+      <!-- right info -->
+      <div class="right">
+        <div class="card">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <div style="font-weight: 800">Kết quả</div>
+            <div class="small muted">MathJax hỗ trợ công thức đẹp</div>
+          </div>
+          <div style="margin-top: 10px" id="equationBox">
+            <div class="equation" id="equationBoxInner">
+              Phương trình sẽ hiển thị ở đây
+            </div>
+            <div class="result small muted" id="resultBox">—</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 8px;
+            "
+          >
+            <div style="font-weight: 800">Lịch sử / Reaction log</div>
+            <div class="small muted">Click để xoá hoặc export</div>
+          </div>
+          <div id="rxList" class="rx-list"></div>
+        </div>
+
+        <div class="card">
+          <div style="font-weight: 800; margin-bottom: 8px">
+            Danh sách Phản ứng (tách theo chất)
+          </div>
+          <div
+            id="reactionCatalog"
+            class="rx-list small muted"
+            style="max-height: 300px"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      Lưu file thành <strong>phuong_trinh_hoa_hoc.html</strong>. File này là bản
+      nâng cao — bạn có thể mở rộng object REACTIONS bên dưới.
+    </footer>
+
+    <script>
+      /* ===========================================
+   DATA: CHEMICALS + REACTIONS
+   - REACTIONS key: sorted pair 'A+B'
+   - each reaction: { eq: string (LaTeX or text), text: description, products: [..], status: 'defined'|'possible'|'unknown', tags:[] }
+   =========================================== */
+
+      /* base chemicals (extended) */
+      const CHEMICALS = [
+        "HCl",
+        "NaOH",
+        "CaO",
+        "H2O",
+        "CO2",
+        "NaCl",
+        "Na2CO3",
+        "H2SO4",
+        "NH3",
+        "MgO",
+        "KOH",
+        /* added */
+        "K2O",
+        "SO3",
+        "NaHCO3",
+        "CaCO3",
+        "BaCl2",
+        "CaCl2",
+        "Na2SO4",
+        "K2SO4",
+        "Fe",
+        "FeSO4",
+        "BaSO4",
+        "NH4Cl",
+        "NaNO3",
+        "HNO3",
+        "Cu",
+        "CuSO4",
+        "AgNO3",
+        "AgCl",
+        "Zn",
+        "ZnSO4",
+        "KCl",
+        "Ca(OH)2",
+        "Na2O",
+        "NaH",
+        "H2" /* expand later */,
+      ];
+
+      /* utility to canonicalize key */
+      function pairKey(a, b) {
+        const list = [String(a), String(b)];
+        list.sort();
+        return list.join("+");
+      }
+
+      /* Reactions dataset (many common ones). Expand as needed.
+   status:
+     - 'defined': reaction fully defined and will create products
+     - 'possible': reaction is possible but omitted details (author not finished)
+     - 'unknown': not defined or depends on conditions
+*/
+      const REACTIONS = {
+        // acid-base neutralization
+        [pairKey("HCl", "NaOH")]: {
+          eq: "HCl + NaOH \\rightarrow NaCl + H_2O",
+          text: "Axít + Bazơ → Muối + Nước",
+          products: ["NaCl", "H2O"],
+          status: "defined",
+          tags: ["neutralization"],
+        },
+        [pairKey("HCl", "NH3")]: {
+          eq: "NH_3 + HCl \\rightarrow NH_4Cl",
+          text: "Amoniac + Axit → Muối amoni",
+          products: ["NH4Cl"],
+          status: "defined",
+          tags: ["salt"],
+        },
+
+        // oxides + water
+        [pairKey("CaO", "H2O")]: {
+          eq: "CaO + H_2O \\rightarrow Ca(OH)_2",
+          text: "Oxit kiềm + Nước → Bazơ",
+          products: ["Ca(OH)2"],
+          status: "defined",
+          tags: ["oxide", "hydroxide"],
+        },
+        [pairKey("MgO", "H2O")]: {
+          eq: "MgO + H_2O \\rightarrow Mg(OH)_2",
+          text: "Oxit kim loại + Nước → Bazơ yếu",
+          products: ["Mg(OH)2"],
+          status: "defined",
+          tags: ["oxide"],
+        },
+
+        // CO2 and water / bases
+        [pairKey("CO2", "H2O")]: {
+          eq: "CO_2 + H_2O \\rightarrowse H_2CO_3",
+          text: "CO2 hòa tan → Axit cacbonic (không bền)",
+          products: ["H2CO3"],
+          status: "defined",
+          tags: ["acid"],
+        },
+        [pairKey("CO2", "NaOH")]: {
+          eq: "2NaOH + CO_2 \\rightarrow Na_2CO_3 + H_2O",
+          text: "Kiềm + CO2 → Cacbonat",
+          products: ["Na2CO3", "H2O"],
+          status: "defined",
+          tags: ["carbonate"],
+        },
+
+        // carbonate + acid
+        [pairKey("Na2CO3", "H2SO4")]: {
+          eq: "Na_2CO_3 + H_2SO_4 \\rightarrow Na_2SO_4 + CO_2 \\uparrow + H_2O",
+          text: "Cacbonat + Axit → Muối + CO2 + H2O",
+          products: ["Na2SO4", "CO2", "H2O"],
+          status: "defined",
+          tags: ["gas", "carbonate"],
+        },
+        [pairKey("Na2CO3", "HCl")]: {
+          eq: "Na_2CO_3 + 2HCl \\rightarrow 2NaCl + CO_2 \\uparrow + H_2O",
+          text: "Cacbonat + Axit → Muối + CO2 + H2O",
+          products: ["NaCl", "CO2", "H2O"],
+          status: "defined",
+          tags: ["acid", "gas"],
+        },
+
+        // strong acid + strong base
+        [pairKey("H2SO4", "NaOH")]: {
+          eq: "H_2SO_4 + 2NaOH \\rightarrow Na_2SO_4 + 2H_2O",
+          text: "Axít + Bazơ → Muối + Nước",
+          products: ["Na2SO4", "H2O"],
+          status: "defined",
+          tags: ["neutralization"],
+        },
+        [pairKey("H2SO4", "KOH")]: {
+          eq: "H_2SO_4 + 2KOH \\rightarrow K_2SO_4 + 2H_2O",
+          text: "Axít + Bazơ → Muối + Nước",
+          products: ["K2SO4", "H2O"],
+          status: "defined",
+          tags: ["neutralization"],
+        },
+
+        // precipitation / double displacement
+        [pairKey("BaCl2", "H2SO4")]: {
+          eq: "BaCl_2 + H_2SO_4 \\rightarrow BaSO_4 \\downarrow + 2HCl",
+          text: "Tạo kết tủa BaSO4",
+          products: ["BaSO4", "HCl"],
+          status: "defined",
+          tags: ["precipitate"],
+        },
+        [pairKey("AgNO3", "NaCl")]: {
+          eq: "AgNO_3 + NaCl \\rightarrow AgCl \\downarrow + NaNO_3",
+          text: "Tạo kết tủa bạc clorua",
+          products: ["AgCl", "NaNO3"],
+          status: "defined",
+          tags: ["precipitate"],
+        },
+
+        // metal + acid (hydrogen evolution)
+        [pairKey("Fe", "H2SO4")]: {
+          eq: "Fe + H_2SO_4 \\rightarrow FeSO_4 + H_2 \\uparrow",
+          text: "Kim loại tác dụng với axit → muối + khí H2",
+          products: ["FeSO4", "H2"],
+          status: "possible",
+          tags: ["redox"],
+        },
+
+        // sodium oxide + water
+        [pairKey("Na2O", "H2O")]: {
+          eq: "Na_2O + H_2O \\rightarrow 2NaOH",
+          text: "Oxit kim loại kiềm + Nước → Kiềm mạnh",
+          products: ["NaOH"],
+          status: "defined",
+          tags: ["oxide"],
+        },
+
+        // NaOH with ammonium salts
+        [pairKey("NaOH", "NH4Cl")]: {
+          eq: "NaOH + NH_4Cl \\rightarrow NaCl + NH_3 \\uparrow + H_2O",
+          text: "Kiềm + Muối amoni → Amoniac + Muối + Nước",
+          products: ["NaCl", "NH3", "H2O"],
+          status: "defined",
+          tags: ["gas"],
+        },
+
+        // acid + carbonate (general)
+        [pairKey("CaCO3", "HCl")]: {
+          eq: "CaCO_3 + 2HCl \\rightarrow CaCl_2 + CO_2 \\uparrow + H_2O",
+          text: "Muối cacbonat + Axit → Muối mới + CO2 + H2O",
+          products: ["CaCl2", "CO2", "H2O"],
+          status: "defined",
+          tags: ["gas"],
+        },
+
+        // many more defined reactions (examples)
+        [pairKey("NaCl", "H2O")]: {
+          eq: "NaCl \\rightarrow Na^+ + Cl^- \\text{(ion hóa trong nước)}",
+          text: "Muối hòa tan → Ion",
+          products: [],
+          status: "defined",
+          tags: ["solution"],
+        },
+
+        /* --- a bunch of extra sample entries to expand DB ---
+     (Note: in real chem, some require heat / catalyst / concentration; we mark as 'possible' or 'unknown')
+  */
+        [pairKey("SO3", "H2O")]: {
+          eq: "SO_3 + H_2O \\rightarrow H_2SO_4",
+          text: "Oxit axit + Nước → Axit mạnh",
+          products: ["H2SO4"],
+          status: "defined",
+        },
+        [pairKey("K2O", "H2O")]: {
+          eq: "K_2O + H_2O \\rightarrow 2KOH",
+          text: "Oxit kiềm + Nước → Kiềm",
+          products: ["KOH"],
+          status: "defined",
+        },
+        [pairKey("NaOH", "CO2")]: {
+          eq: "2NaOH + CO_2 \\rightarrow Na_2CO_3 + H_2O",
+          text: "NaOH + CO2 → Na2CO3",
+          products: ["Na2CO3", "H2O"],
+          status: "defined",
+        },
+        [pairKey("Ca(OH)2", "CO2")]: {
+          eq: "Ca(OH)_2 + CO_2 \\rightarrow CaCO_3 \\downarrow + H_2O",
+          text: "Hydroxide + CO2 → Cacbonat kết tủa",
+          products: ["CaCO3", "H2O"],
+          status: "defined",
+        },
+        [pairKey("H2SO4", "NaCl")]: {
+          eq: "2NaCl + H_2SO_4 \\rightarrow Na_2SO_4 + 2HCl",
+          text: "Muối + Axit (nồng) → Muối mới + axit bay hơi",
+          products: ["Na2SO4", "HCl"],
+          status: "possible",
+        },
+
+        // fallback: if absent -> 'possible' message will be shown
+      };
+
+      /* Reaction log, undo stack */
+      let reactionLog = [];
+      let undoStack = [];
+
+      /* UI Elements */
+      const chemListDiv = document.getElementById("chemList");
+      const reactionArea = document.getElementById("reactionArea");
+      const eqBoxInner = document.getElementById("equationBoxInner");
+      const resultBox = document.getElementById("resultBox");
+      const rxListDiv = document.getElementById("rxList");
+      const catalogDiv = document.getElementById("reactionCatalog");
+
+      /* Render chemical buttons (with colors) */
+      function renderChemButtons() {
+        chemListDiv.innerHTML = "";
+        CHEMICALS.forEach((id) => {
+          const btn = document.createElement("button");
+          btn.className = "chem-btn c-" + id.replace(/[^0-9A-Za-z\(\)]/g, "");
+          btn.innerHTML = `<i class="fa fa-circle-dot"></i> ${id}`;
+          btn.title = id;
+          btn.addEventListener("click", () => createBox(id));
+          chemListDiv.appendChild(btn);
+        });
+      }
+      renderChemButtons();
+
+      /* create a draggable box in reaction area */
+      let createdBoxes = [];
+      function createBox(id, x = null, y = null, options = { product: false }) {
+        const box = document.createElement("div");
+        box.className = "chemical-box" + (options.product ? " product" : "");
+        box.textContent = id;
+        box.classList.add("c-" + id.replace(/[^0-9A-Za-z\(\)]/g, ""));
+        reactionArea.appendChild(box);
+
+        // position
+        const ar = reactionArea.getBoundingClientRect();
+        if (x === null || y === null) {
+          const left = Math.random() * (ar.width - 140) + 20;
+          const top = Math.random() * (ar.height - 90) + 10;
+          box.style.left = left + "px";
+          box.style.top = top + "px";
+        } else {
+          box.style.left = x + "px";
+          box.style.top = y + "px";
+        }
+
+        enableDrag(box);
+        createdBoxes.push(box);
+        return box;
+      }
+
+      /* Dragging (mouse + touch) */
+      function enableDrag(el) {
+        let dragging = false;
+        let shiftX = 0,
+          shiftY = 0;
+
+        function down(e) {
+          e.preventDefault();
+          dragging = true;
+          const rect = el.getBoundingClientRect();
+          const areaRect = reactionArea.getBoundingClientRect();
+          const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+          const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+          shiftX = clientX - rect.left;
+          shiftY = clientY - rect.top;
+          el.style.transition = "none";
+          el.style.zIndex = 100;
+        }
+
+        function move(e) {
+          if (!dragging) return;
+          const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+          const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+          const ar = reactionArea.getBoundingClientRect();
+          let left = clientX - ar.left - shiftX;
+          let top = clientY - ar.top - shiftY;
+          left = Math.max(4, Math.min(left, ar.width - el.offsetWidth - 4));
+          top = Math.max(4, Math.min(top, ar.height - el.offsetHeight - 4));
+          el.style.left = left + "px";
+          el.style.top = top + "px";
+          // detect collisions visually while moving (optional)
+        }
+
+        function up(e) {
+          if (!dragging) return;
+          dragging = false;
+          el.style.transition = "";
+          el.style.zIndex = 30;
+          checkCollisionFor(el);
+        }
+
+        el.addEventListener("mousedown", down);
+        document.addEventListener("mousemove", move);
+        document.addEventListener("mouseup", up);
+        el.addEventListener("touchstart", down, { passive: false });
+        document.addEventListener("touchmove", move, { passive: false });
+        document.addEventListener("touchend", up);
+        el.ondragstart = () => false;
+      }
+
+      /* collision detection for moved element */
+      function checkCollisionFor(el) {
+        const boxes = Array.from(document.querySelectorAll(".chemical-box"));
+        const r1 = el.getBoundingClientRect();
+        for (const b of boxes) {
+          if (b === el) continue;
+          const r2 = b.getBoundingClientRect();
+          if (
+            r1.left < r2.right &&
+            r1.right > r2.left &&
+            r1.top < r2.bottom &&
+            r1.bottom > r2.top
+          ) {
+            // collided
+            const a = el.textContent.trim();
+            const btxt = b.textContent.trim();
+            performReaction(a, btxt, el, b);
+            return;
+          }
+        }
+      }
+
+      /* perform reaction lookup */
+      function performReaction(a, b, elA, elB) {
+        const key = pairKey(a, b);
+        const reaction = REACTIONS[key];
+        if (reaction) {
+          displayReaction(reaction.eq, reaction.text, reaction.status);
+          // create products if defined
+          if (reaction.products && reaction.products.length) {
+            const r1 = elA.getBoundingClientRect();
+            const r2 = elB.getBoundingClientRect();
+            const areaRect = reactionArea.getBoundingClientRect();
+            const x =
+              ((r1.left + r1.right) / 2 + (r2.left + r2.right) / 2) / 2 -
+              areaRect.left;
+            const y =
+              ((r1.top + r1.bottom) / 2 + (r2.top + r2.bottom) / 2) / 2 -
+              areaRect.top;
+            reaction.products.forEach((p, idx) => {
+              const offset = (idx - (reaction.products.length - 1) / 2) * 18;
+              createBox(p, x + offset, y + 6, { product: true });
+            });
+            // special effects for tags
+            if (reaction.tags && reaction.tags.includes("gas")) {
+              // create gas effect near location
+              spawnGasAt(
+                (r1.left + r2.left) / 2 - areaRect.left,
+                (r1.top + r2.top) / 2 - areaRect.top
+              );
+            }
+            if (reaction.tags && reaction.tags.includes("precipitate")) {
+              spawnPrecipitation(
+                (r1.left + r2.left) / 2 - areaRect.left,
+                (r1.top + r2.top) / 2 - areaRect.top
+              );
+            }
+          }
+          // remove reagents (animate)
+          animateRemove(elA);
+          animateRemove(elB);
+          // log
+          addLog(a, b, reaction.eq, reaction.text, reaction.status);
+        } else {
+          // Not in DB: show possible reaction message (author not finished)
+          displayReaction(
+            "\\text{Có thể phản ứng -- chưa định nghĩa trong DB}",
+            "Có thể phản ứng nhưng dữ liệu phương trình chưa được nhập (tác giả chưa hoàn thiện)",
+            "possible"
+          );
+          addLog(
+            a,
+            b,
+            "(chưa định nghĩa)",
+            "Có thể phản ứng nhưng chưa có phương trình",
+            "possible"
+          );
+          // gentle shake
+          [elA, elB].forEach((el) => {
+            el.style.transform = "translateY(-8px)";
+            setTimeout(() => (el.style.transform = ""), 260);
+          });
+        }
+      }
+
+      /* display reaction using MathJax */
+      function displayReaction(eq, text, status = "defined") {
+        // use MathJax to render LaTeX if present
+        eqBoxInner.classList.add("flash");
+        // clear content
+        eqBoxInner.innerHTML = "";
+        // split by arrows/plus (we still render full LaTeX block)
+        const wrapper = document.createElement("div");
+        wrapper.textContent = "";
+        // Insert LaTeX inline
+        const mathSpan = document.createElement("span");
+        mathSpan.className = "token";
+        mathSpan.innerHTML = `\\(${eq}\\)`;
+        wrapper.appendChild(mathSpan);
+        eqBoxInner.appendChild(wrapper);
+        resultBox.textContent =
+          text + (status === "possible" ? " (possible / chưa hoàn thiện)" : "");
+        // typeset MathJax
+        if (window.MathJax) {
+          MathJax.typesetPromise([mathSpan]).catch((err) =>
+            console.log(err.message)
+          );
+        }
+        setTimeout(() => eqBoxInner.classList.remove("flash"), 700);
+      }
+
+      /* animate removal */
+      function animateRemove(el) {
+        el.style.transition = "transform .28s ease, opacity .28s ease";
+        el.style.transform = "scale(.84) translateY(-10px)";
+        el.style.opacity = "0";
+        setTimeout(() => {
+          try {
+            el.remove();
+          } catch (e) {}
+        }, 320);
+      }
+
+      /* spawn gas animation */
+      function spawnGasAt(x, y) {
+        const gas = document.createElement("div");
+        gas.style.position = "absolute";
+        gas.style.left = x + 10 + "px";
+        gas.style.top = y + 10 + "px";
+        gas.style.width = "20px";
+        gas.style.height = "20px";
+        gas.style.borderRadius = "50%";
+        gas.style.background =
+          "radial-gradient(circle, rgba(255,255,255,0.9), rgba(200,200,200,0.2))";
+        gas.style.opacity = "0.9";
+        gas.style.zIndex = 25;
+        reactionArea.appendChild(gas);
+        // animate upward fade
+        gas.animate(
+          [
+            { transform: "translateY(0) scale(0.8)", opacity: 0.9 },
+            { transform: "translateY(-70px) scale(1.6)", opacity: 0 },
+          ],
+          { duration: 1400, easing: "ease-out" }
+        );
+        setTimeout(() => gas.remove(), 1500);
+      }
+
+      /* spawn precipitation (falling particles) */
+      function spawnPrecipitation(x, y) {
+        const n = 9;
+        for (let i = 0; i < n; i++) {
+          const p = document.createElement("div");
+          p.style.position = "absolute";
+          p.style.left = x + (Math.random() * 40 - 20) + "px";
+          p.style.top = y + (Math.random() * 10 - 5) + "px";
+          p.style.width = "6px";
+          p.style.height = "6px";
+          p.style.borderRadius = "2px";
+          p.style.background = "rgba(200,200,200,0.95)";
+          p.style.zIndex = 22;
+          reactionArea.appendChild(p);
+          const dur = 800 + Math.random() * 800;
+          p.animate(
+            [
+              { transform: "translateY(0) scale(1)", opacity: 1 },
+              {
+                transform: `translateY(${
+                  120 + Math.random() * 60
+                }px) scale(.6)`,
+                opacity: 0.6,
+              },
+            ],
+            { duration: dur, easing: "cubic-bezier(.2,.9,.2,1)" }
+          );
+          setTimeout(() => p.remove(), dur + 60);
+        }
+      }
+
+      /* Log handling */
+      function addLog(a, b, eq, text, status = "defined") {
+        const id = Date.now() + Math.random().toString(36).slice(2, 6);
+        reactionLog.unshift({
+          id,
+          a,
+          b,
+          eq,
+          text,
+          status,
+          t: new Date().toLocaleString(),
+        });
+        undoStack.push({ type: "reaction", id });
+        renderLog();
+      }
+
+      /* render log */
+      function renderLog() {
+        rxListDiv.innerHTML = "";
+        reactionLog.forEach((item) => {
+          const div = document.createElement("div");
+          div.className = "rx-item";
+          div.innerHTML = `<strong>${item.a} + ${item.b}</strong> <div style="color:var(--muted); margin-top:6px">${item.eq} — <em>${item.text}</em> <div class="small muted">${item.t}</div></div>`;
+          rxListDiv.appendChild(div);
+        });
+      }
+
+      /* export CSV */
+      function exportCSV() {
+        if (!reactionLog.length) {
+          alert("Không có lịch sử để export");
+          return;
+        }
+        const rows = [["time", "reactants", "equation", "desc", "status"]];
+        reactionLog
+          .slice()
+          .reverse()
+          .forEach((r) => {
+            rows.push([
+              r.t,
+              `${r.a} + ${r.b}`,
+              r.eq.replace(/,/g, ";"),
+              r.text.replace(/,/g, ";"),
+              r.status,
+            ]);
+          });
+        const csv = rows
+          .map((r) =>
+            r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")
+          )
+          .join("\n");
+        const blob = new Blob([csv], { type: "text/csv" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "reaction_log.csv";
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      /* undo last (remove last products if any) */
+      function undoLast() {
+        if (!undoStack.length) {
+          alert("Không có thao tác nào để undo");
+          return;
+        }
+        const last = undoStack.pop();
+        if (last.type === "reaction") {
+          // remove the last log entry and try to remove last generated product elements (heuristic: product boxes with recent timestamps)
+          const r = reactionLog.shift();
+          renderLog();
+          // remove product boxes whose text matches products in eq (not robust but okay)
+          const prodNames =
+            r.eq.match(/[A-Za-z0-9\(\)₀₁₂₃₄₅₆₇₈₉\+\-\>\<\s]+/g) || [];
+          // best-effort: remove elements with class 'product' created recently
+          const prods = document.querySelectorAll(".chemical-box.product");
+          if (prods.length) {
+            prods[0].remove();
+          }
+          alert(
+            "Undo: đã xóa 1 mục lịch sử. (Một số sản phẩm có thể vẫn tồn tại)"
+          );
+        }
+      }
+
+      /* build reaction catalog (grouped by chemical) */
+      function buildCatalog() {
+        const groups = {};
+        for (const k in REACTIONS) {
+          const [x, y] = k.split("+");
+          if (!groups[x]) groups[x] = [];
+          if (!groups[y]) groups[y] = [];
+          const rx = REACTIONS[k];
+          groups[x].push({
+            partner: y,
+            eq: rx.eq,
+            text: rx.text,
+            status: rx.status,
+          });
+          groups[y].push({
+            partner: x,
+            eq: rx.eq,
+            text: rx.text,
+            status: rx.status,
+          });
+        }
+        catalogDiv.innerHTML = "";
+        Object.keys(groups)
+          .sort()
+          .forEach((ch) => {
+            const head = document.createElement("div");
+            head.style.marginTop = "6px";
+            head.innerHTML = `<strong>${ch}</strong>`;
+            catalogDiv.appendChild(head);
+            groups[ch].forEach((it) => {
+              const div = document.createElement("div");
+              div.className = "rx-item";
+              div.innerHTML = `<span style="font-weight:700">${ch}</span> + <span style="font-weight:700">${
+                it.partner
+              }</span> → <span style="color:var(--muted)">${
+                it.eq
+              }</span> <div class="small muted">${it.text} ${
+                it.status === "possible" ? "(possible)" : ""
+              }</div>`;
+              catalogDiv.appendChild(div);
+            });
+          });
+      }
+
+      /* helper seed */
+      function seedExample() {
+        // clear old boxes
+        document.querySelectorAll(".chemical-box").forEach((n) => n.remove());
+        createBox("HCl", 40, 30);
+        createBox("NaOH", 180, 40);
+        createBox("CO2", 120, 220);
+        createBox("CaO", 60, 260);
+        createBox("BaCl2", 260, 160);
+      }
+
+      /* animate remove pre-existing boxes when reset */
+      function resetAll() {
+        document.querySelectorAll(".chemical-box").forEach((n) => n.remove());
+        reactionLog = [];
+        renderLog();
+        eqBoxInner.innerHTML = "Phương trình sẽ hiển thị ở đây";
+        resultBox.textContent = "—";
+      }
+
+      /* add custom chemical */
+      document.getElementById("addCustom").addEventListener("click", () => {
+        const v = document.getElementById("customChem").value.trim();
+        if (!v) return alert("Nhập mã hóa chất");
+        if (!CHEMICALS.includes(v)) CHEMICALS.push(v);
+        renderChemButtons();
+        document.getElementById("customChem").value = "";
+      });
+
+      /* button bindings */
+      document.getElementById("btnSeed").addEventListener("click", seedExample);
+      document.getElementById("btnReset").addEventListener("click", () => {
+        if (confirm("Reset vùng phản ứng?")) resetAll();
+      });
+      document.getElementById("btnExport").addEventListener("click", exportCSV);
+      document.getElementById("btnUndo").addEventListener("click", undoLast);
+
+      /* exports for console debugging */
+      window._phSim = { createBox, performReaction, REACTIONS, CHEMICALS };
+
+      /* build catalog and render initial demo */
+      buildCatalog();
+      seedExample();
+      renderLog();
+    </script>
+  </body>
+</html>

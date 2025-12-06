@@ -3,143 +3,1261 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Bảng tuần hoàn hóa học tương tác — xem thông tin nguyên tố, cấu trúc nguyên tử, nhóm, chu kỳ, ứng dụng và cấu hình electron."
-    />
-    <title>Bảng tuần hoàn hóa học tương tác</title>
+    <title>Hóa Học 7: Nguyên Tử & Bảng Tuần Hoàn</title>
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="nguyen_tu_nguyen_to_hoa_hoc.css" />
-
-    <!-- Font & Icon -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+
+    <style>
+      :root {
+        --primary: #4361ee;
+        --primary-dark: #3a0ca3;
+        --accent: #f72585;
+        --success: #4cc9f0;
+        --warning: #f8961e;
+        --bg-body: #f0f2f5;
+        --bg-card: #ffffff;
+        --text-main: #2b2d42;
+        --text-light: #8d99ae;
+        --metal: #ffadad;
+        --nonmetal: #ffd6a5;
+        --gas: #a0c4ff;
+        --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+        --radius: 20px;
+      }
+
+      body.theme-dark {
+        --bg-body: #0f172a;
+        --bg-card: #1e293b;
+        --text-main: #f1f5f9;
+        --text-light: #94a3b8;
+        --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Be Vietnam Pro", sans-serif;
+        transition: all 0.3s ease;
+      }
+      body {
+        background-color: var(--bg-body);
+        color: var(--text-main);
+        min-height: 100vh;
+        padding-bottom: 80px;
+      }
+
+      /* --- Header --- */
+      header {
+        background: var(--bg-card);
+        padding: 1rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: var(--shadow);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 800;
+        background: linear-gradient(45deg, var(--primary), var(--accent));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .nav-pills {
+        display: flex;
+        gap: 10px;
+        background: var(--bg-body);
+        padding: 5px;
+        border-radius: 50px;
+      }
+      .nav-item {
+        padding: 8px 20px;
+        border-radius: 40px;
+        cursor: pointer;
+        font-weight: 700;
+        color: var(--text-light);
+        border: none;
+        background: transparent;
+      }
+      .nav-item.active {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 4px 15px rgba(67, 97, 238, 0.4);
+      }
+      .theme-toggle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid var(--text-light);
+        background: transparent;
+        color: var(--text-main);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* --- Content Layout --- */
+      .container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 0 20px;
+      }
+      .section-content {
+        display: none;
+        animation: slideUp 0.5s ease;
+      }
+      .section-content.active {
+        display: block;
+      }
+
+      .card {
+        background: var(--bg-card);
+        border-radius: var(--radius);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        position: relative;
+        overflow: hidden;
+      }
+
+      h2 {
+        color: var(--primary);
+        margin-bottom: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      h2::before {
+        content: "";
+        display: block;
+        width: 6px;
+        height: 24px;
+        background: var(--accent);
+        border-radius: 4px;
+      }
+      h3 {
+        color: var(--text-main);
+        margin: 1rem 0 0.5rem;
+        font-weight: 700;
+        font-size: 1.1rem;
+      }
+      p,
+      li {
+        line-height: 1.7;
+        color: var(--text-main);
+        margin-bottom: 0.5rem;
+      }
+      ul {
+        margin-left: 20px;
+        margin-bottom: 1rem;
+      }
+
+      .highlight-box {
+        background: rgba(67, 97, 238, 0.1);
+        border-left: 4px solid var(--primary);
+        padding: 15px;
+        border-radius: 8px;
+        margin: 15px 0;
+      }
+      .fact-box {
+        background: linear-gradient(135deg, #fff3cd, #ffecb3);
+        color: #856404;
+        padding: 15px;
+        border-radius: 12px;
+        margin-top: 15px;
+        border: 2px dashed #ffeeba;
+      }
+      .theme-dark .fact-box {
+        background: #332b00;
+        color: #ffecb3;
+        border-color: #665500;
+      }
+
+      /* --- Visualizers & Games --- */
+      /* Atom Canvas */
+      #atom-canvas-container {
+        position: relative;
+        background: radial-gradient(circle at center, #1a1a2e 0%, #000000 100%);
+        border-radius: var(--radius);
+        height: 350px;
+        overflow: hidden;
+        box-shadow: inset 0 0 50px rgba(67, 97, 238, 0.2);
+      }
+      canvas {
+        width: 100%;
+        height: 100%;
+      }
+
+      /* Game Buttons */
+      .btn-game {
+        padding: 10px 20px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 1rem;
+        box-shadow: 0 4px 0 var(--primary-dark);
+        margin-top: 10px;
+      }
+      .btn-game:active {
+        transform: translateY(4px);
+        box-shadow: none;
+      }
+      .btn-game.secondary {
+        background: var(--text-light);
+        box-shadow: 0 4px 0 #6c757d;
+      }
+
+      /* Memory Game */
+      .memory-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        perspective: 1000px;
+      }
+      .memory-card {
+        height: 100px;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.5s;
+        cursor: pointer;
+      }
+      .memory-card.flipped {
+        transform: rotateY(180deg);
+      }
+      .memory-card.matched {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .front-face {
+        background: white;
+        color: var(--text-main);
+        transform: rotateY(180deg);
+        border: 2px solid var(--accent);
+      }
+      .back-face {
+        background: linear-gradient(45deg, var(--primary), var(--success));
+        color: white;
+        font-size: 2rem;
+      }
+
+      /* Formula Game */
+      .formula-display {
+        font-size: 2.5rem;
+        font-weight: 800;
+        text-align: center;
+        margin: 20px 0;
+        color: var(--primary);
+        letter-spacing: 2px;
+      }
+      .formula-input {
+        width: 80px;
+        padding: 10px;
+        border-radius: 8px;
+        border: 2px solid var(--text-light);
+        text-align: center;
+        font-size: 1.2rem;
+        margin: 0 5px;
+      }
+
+      /* Sorter Game */
+      .sorter-area {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+      }
+      .drop-zone {
+        width: 30%;
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+        font-weight: bold;
+        border: 2px dashed rgba(0, 0, 0, 0.2);
+        transition: 0.2s;
+        cursor: pointer;
+      }
+      .drop-zone:hover {
+        transform: scale(1.05);
+      }
+      .element-card-drag {
+        background: white;
+        padding: 15px 30px;
+        border-radius: 12px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        font-size: 1.5rem;
+        font-weight: 800;
+        text-align: center;
+        margin: 0 auto 20px;
+        width: fit-content;
+        border: 2px solid var(--text-main);
+        color: #333;
+      }
+
+      /* --- Animations --- */
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @media (max-width: 768px) {
+        .nav-pills {
+          width: 100%;
+          justify-content: space-between;
+          overflow-x: auto;
+        }
+        .memory-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+        header {
+          flex-direction: column;
+          gap: 15px;
+          padding: 15px;
+        }
+        .sorter-area {
+          flex-direction: column;
+        }
+        .drop-zone {
+          width: 100%;
+        }
+      }
+
+      html,
+      body {
+        overflow-y: auto !important;
+        height: auto !important;
+      }
+    </style>
+    <link rel="stylesheet" href="../../component/component.css" />
+    <script src="../../component/component.js"></script>
   </head>
-
   <body>
-    <!-- ===== HEADER ===== -->
-    <header class="app-header">
-      <h1>🧪 BẢNG TUẦN HOÀN HÓA HỌC</h1>
-
-      <div class="controls">
-        <a href="../thcs.html" class="btn"><i class="fas fa-home"></i> Menu</a>
-        <a href="ly_thuyet_nguyen_tu_nguyen_to_hoa_hoc.html" class="btn">
-          <i class="fas fa-book"></i> Lý thuyết
-        </a>
-
-        <input
-          type="text"
-          id="search-bar"
-          placeholder="🔍 Tìm nguyên tố theo tên hoặc ký hiệu..."
-        />
-
-        <select id="language-select" title="Chọn ngôn ngữ">
-          <option value="vi">🇻🇳 Tiếng Việt</option>
-          <option value="en">🇬🇧 English</option>
-        </select>
-
-        <button id="theme-toggle" title="Chuyển chế độ sáng/tối">
-          🌗 Chế độ tối
-        </button>
+    <div id="topbar-container"></div>
+    <header>
+      <div class="logo">
+        <i class="fas fa-atom fa-spin"></i> HÓA HỌC 7 : Nguyên tử, nguyên tố hóa
+        học và bảng tuần hoàn
       </div>
+      <nav class="nav-pills">
+        <button class="nav-item active" onclick="switchTab('atom')">
+          I. Nguyên Tử
+        </button>
+        <button class="nav-item" onclick="switchTab('element')">
+          II. Nguyên Tố
+        </button>
+        <button class="nav-item" onclick="switchTab('ptable')">
+          III. Bảng Tuần Hoàn
+        </button>
+      </nav>
+      <button class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-moon"></i>
+      </button>
     </header>
 
-    <!-- ===== MAIN CONTAINER ===== -->
-    <main class="container">
-      <!-- Bảng tuần hoàn -->
-      <section id="periodic-table" aria-label="Bảng tuần hoàn">
-        <!-- JavaScript sẽ tự sinh -->
+    <div class="container">
+      <section id="atom" class="section-content active">
+        <div class="card">
+          <h2>1. Mô hình Nguyên tử Rutherford - Bohr</h2>
+          <div id="atom-canvas-container">
+            <canvas id="atomCanvas"></canvas>
+            <div
+              style="
+                position: absolute;
+                bottom: 15px;
+                left: 15px;
+                color: rgba(255, 255, 255, 0.8);
+                pointer-events: none;
+              "
+            >
+              <h3 id="atom-name-display" style="color: white; margin: 0">
+                Chọn nguyên tử bên dưới
+              </h3>
+            </div>
+          </div>
+          <div
+            style="
+              display: flex;
+              gap: 10px;
+              justify-content: center;
+              flex-wrap: wrap;
+              margin-top: 15px;
+            "
+          >
+            <button class="btn-game secondary" onclick="loadAtom('H')">
+              Hidro (1p)
+            </button>
+            <button class="btn-game secondary" onclick="loadAtom('C')">
+              Cacbon (6p)
+            </button>
+            <button class="btn-game secondary" onclick="loadAtom('O')">
+              Oxi (8p)
+            </button>
+            <button class="btn-game secondary" onclick="loadAtom('Na')">
+              Natri (11p)
+            </button>
+          </div>
+
+          <div class="highlight-box">
+            <h3><i class="fas fa-microscope"></i> Cấu tạo chi tiết:</h3>
+            <ul>
+              <li>
+                <strong>Hạt nhân (Tâm):</strong> Gồm Proton (p, điện tích +) và
+                Neutron (n, không điện).
+              </li>
+              <li>
+                <strong>Vỏ nguyên tử:</strong> Gồm Electron (e, điện tích -)
+                chuyển động cực nhanh quanh hạt nhân.
+              </li>
+              <li><strong>Nguyên tử trung hòa:</strong> Số p = Số e.</li>
+            </ul>
+          </div>
+          <div class="fact-box">
+            <i class="fas fa-lightbulb"></i>
+            <strong>So sánh thú vị:</strong> Nếu hạt nhân là quả bóng bàn giữa
+            sân vận động, thì electron như những chú ong bay quanh khán đài!
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>2. Khối lượng nguyên tử (amu)</h2>
+          <p>
+            Khối lượng nguyên tử tập trung chủ yếu ở hạt nhân (vì electron siêu
+            nhẹ).
+          </p>
+          <div
+            style="
+              background: rgba(0, 0, 0, 0.03);
+              padding: 15px;
+              border-radius: 12px;
+              text-align: center;
+              margin: 10px 0;
+            "
+          >
+            <span
+              style="
+                font-size: 1.5rem;
+                font-weight: bold;
+                color: var(--primary);
+              "
+              >A ≈ p + n</span
+            >
+            <p style="font-size: 0.9rem">
+              (A: Số khối, p: Số proton, n: Số neutron)
+            </p>
+          </div>
+
+          <div
+            style="
+              border-top: 2px dashed #ddd;
+              margin-top: 20px;
+              padding-top: 20px;
+            "
+          >
+            <h3>
+              <i class="fas fa-calculator"></i> Trò chơi: Thử tài Toán Hóa
+            </h3>
+            <div id="amu-game-ui" style="text-align: center">
+              <div style="font-size: 1.2rem; margin-bottom: 10px">
+                Nguyên tử
+                <b id="q-element-name" style="color: var(--accent)">X</b> có:
+              </div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: center;
+                  gap: 20px;
+                  margin-bottom: 15px;
+                  font-weight: bold;
+                "
+              >
+                <span style="color: var(--success)"
+                  ><i class="fas fa-plus-circle"></i> p =
+                  <span id="q-p">?</span></span
+                >
+                <span style="color: var(--text-light)"
+                  ><i class="fas fa-circle"></i> n =
+                  <span id="q-n">?</span></span
+                >
+              </div>
+              <p>Tính khối lượng (số khối A)?</p>
+              <input
+                type="number"
+                id="amu-input"
+                placeholder="..."
+                class="formula-input"
+              />
+              <button onclick="checkAmu()" class="btn-game">Kiểm tra</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="border-left: 5px solid var(--warning)">
+          <h2><i class="fas fa-expand"></i> Mở rộng: Ion & Đồng vị</h2>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px">
+            <div>
+              <h3>Đồng vị</h3>
+              <p>
+                Là các nguyên tử cùng số <b>proton</b> nhưng khác số
+                <b>neutron</b>.
+              </p>
+              <p><i>Ví dụ:</i> Cacbon-12 (6n), Cacbon-14 (8n).</p>
+            </div>
+            <div>
+              <h3>Ion (Mang điện)</h3>
+              <p>Khi nguyên tử <b>nhường</b> hoặc <b>nhận</b> electron.</p>
+              <div style="text-align: center; margin-top: 10px">
+                <span style="font-weight: bold">Na</span>
+                <i
+                  class="fas fa-arrow-right"
+                  style="color: var(--text-light)"
+                ></i>
+                <span style="font-weight: bold; color: var(--accent)"
+                  >Na<sup>+</sup></span
+                >
+                + 1e <br /><small>(Mất electron hóa trị dương)</small>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <!-- Panel chi tiết nguyên tố -->
-      <aside id="element-panel">
-        <h2 id="panel-title">Nguyên tử</h2>
+      <section id="element" class="section-content">
+        <div class="card">
+          <h2>1. Nguyên tố & Kí hiệu hóa học</h2>
+          <ul>
+            <li>
+              <strong>Nguyên tố:</strong> Tập hợp các nguyên tử có
+              <b>cùng số proton</b>.
+            </li>
+            <li>
+              <strong>Kí hiệu:</strong> 1 hoặc 2 chữ cái. Chữ đầu in hoa, chữ
+              sau thường.
+            </li>
+            <li><i>Ví dụ:</i> Ca (Canxi), Cu (Đồng), Fe (Sắt), Al (Nhôm).</li>
+          </ul>
 
-        <div id="atom-visual">
-          <canvas id="atom-canvas"></canvas>
+          <div style="margin-top: 20px">
+            <h3><i class="fas fa-brain"></i> Game: Lật thẻ nhớ Kí hiệu</h3>
+            <div class="memory-grid" id="memory-grid"></div>
+            <div style="text-align: center; margin-top: 15px">
+              <button onclick="initMemoryGame()" class="btn-game secondary">
+                <i class="fas fa-redo"></i> Chơi lại
+              </button>
+            </div>
+          </div>
         </div>
 
-        <div id="element-details">
+        <div class="card">
+          <h2>2. Ý nghĩa Công thức hóa học</h2>
           <p>
-            <strong>Tên nguyên tố:</strong>
-            <span id="element-name">Chọn nguyên tố</span>
+            Số chỉ số chân bên phải kí hiệu cho biết số lượng nguyên tử của
+            nguyên tố đó.
           </p>
-          <p><strong>Ký hiệu:</strong> <span id="element-symbol">N/A</span></p>
-          <p>
-            <strong>Số hiệu nguyên tử:</strong>
-            <span id="element-number">N/A</span>
-          </p>
-          <p>
-            <strong>Khối lượng nguyên tử:</strong>
-            <span id="element-mass">N/A</span>
-          </p>
-          <p>
-            <strong>Số proton:</strong> <span id="element-protons">N/A</span>
-          </p>
-          <p>
-            <strong>Số neutron:</strong> <span id="element-neutrons">N/A</span>
-          </p>
-          <p>
-            <strong>Số electron:</strong>
-            <span id="element-electrons">N/A</span>
-          </p>
-          <p><strong>Nhóm:</strong> <span id="element-group">N/A</span></p>
-          <p><strong>Chu kỳ:</strong> <span id="element-period">N/A</span></p>
-          <p>
-            <strong>Cấu hình e⁻:</strong>
-            <span id="element-electronConfig">N/A</span>
-          </p>
-          <p>
-            <strong>Ứng dụng:</strong> <span id="element-application">N/A</span>
-          </p>
-        </div>
-      </aside>
-    </main>
+          <div class="highlight-box">
+            <ul>
+              <li><b style="color: var(--primary)">O₂</b>: 2 nguyên tử Oxi.</li>
+              <li><b style="color: var(--primary)">H₂O</b>: 2 Hidro, 1 Oxi.</li>
+              <li>
+                <b style="color: var(--primary)">CaCO₃</b>: 1 Canxi, 1 Cacbon, 3
+                Oxi.
+              </li>
+            </ul>
+          </div>
 
-    <!-- ===== PHÂN NHÓM A - B ===== -->
-    <section id="group-ab">
-      <h2>Phân loại nhóm</h2>
-      <div class="group-buttons">
-        <button onclick="filterGroup('A')">Nhóm A</button>
-        <button onclick="filterGroup('B')">Nhóm B</button>
-        <button onclick="showAll()">Hiện tất cả</button>
-      </div>
-    </section>
+          <div
+            style="
+              border-top: 2px dashed #ddd;
+              margin-top: 20px;
+              padding-top: 10px;
+              text-align: center;
+            "
+          >
+            <h3><i class="fas fa-flask"></i> Game: Vua Công Thức</h3>
+            <p>Hãy đếm số nguyên tử của nguyên tố được hỏi.</p>
 
-    <!-- ===== GHI CHÚ MÀU ===== -->
-    <section id="legend">
-      <h2>Chú thích màu</h2>
-      <div class="legend-grid">
-        <div
-          class="legend-item"
-          onmouseover="showInfo('Kim loại - màu xanh lá')"
-        >
-          <span class="color-box" style="background: #4caf50"></span> Kim loại
-        </div>
-        <div class="legend-item" onmouseover="showInfo('Phi kim - màu tím')">
-          <span class="color-box" style="background: #9c27b0"></span> Phi kim
-        </div>
-        <div class="legend-item" onmouseover="showInfo('Khí hiếm - màu cam')">
-          <span class="color-box" style="background: #ff9800"></span> Khí hiếm
-        </div>
-      </div>
-    </section>
+            <div class="formula-display" id="fm-display">H₂SO₄</div>
+            <p id="fm-question">Có bao nhiêu nguyên tử <b>Oxi</b>?</p>
 
-    <!-- ===== THANH THÔNG TIN ===== -->
-    <footer id="info">
-      <h3>Thông tin nhóm:</h3>
-      <p id="group-info">Di chuột vào màu hoặc chọn nhóm để xem thông tin.</p>
-    </footer>
+            <div style="margin-top: 15px">
+              <button class="btn-game secondary" onclick="checkFormula(1)">
+                1
+              </button>
+              <button class="btn-game secondary" onclick="checkFormula(2)">
+                2
+              </button>
+              <button class="btn-game secondary" onclick="checkFormula(3)">
+                3
+              </button>
+              <button class="btn-game secondary" onclick="checkFormula(4)">
+                4
+              </button>
+            </div>
+            <div
+              id="fm-feedback"
+              style="margin-top: 10px; font-weight: bold; height: 24px"
+            ></div>
+          </div>
+        </div>
+      </section>
 
-    <!-- ===== SCRIPT CHÍNH ===== -->
-    <script src="nguyen_tu_nguyen_to_hoa_hoc-bang-tuan-hoan.js"></script>
-    <script src="nguyen_tu_nguyen_to_hoa_hoc.js"></script>
+      <section id="ptable" class="section-content">
+        <div class="card">
+          <h2>1. Cấu trúc Bảng tuần hoàn</h2>
+          <ul>
+            <li>
+              <strong>Ô nguyên tố:</strong> Chứa số hiệu nguyên tử (Z = p = e),
+              kí hiệu, tên, khối lượng.
+            </li>
+            <li>
+              <strong>Chu kì (Hàng ngang):</strong> Gồm các nguyên tố cùng số
+              lớp electron (7 chu kì).
+            </li>
+            <li>
+              <strong>Nhóm (Cột dọc):</strong> Gồm các nguyên tố có tính chất
+              hóa học tương tự nhau.
+            </li>
+          </ul>
+          <div class="fact-box">
+            <i class="fas fa-history"></i>
+            <strong>Dmitri Mendeleev</strong> (1869) là người đầu tiên sắp xếp
+            bảng này và dự đoán đúng các nguyên tố chưa tìm thấy!
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>2. Phân loại: Kim loại - Phi kim - Khí hiếm</h2>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+              gap: 15px;
+              margin-bottom: 20px;
+            "
+          >
+            <div
+              style="
+                background: var(--metal);
+                padding: 15px;
+                border-radius: 12px;
+                color: #5c0000;
+              "
+            >
+              <h3><i class="fas fa-bolt"></i> Kim loại</h3>
+              <p>Dẫn điện/nhiệt tốt, có ánh kim, dẻo. Dễ nhường e.</p>
+              <small>Vd: Fe, Cu, Al, Na</small>
+            </div>
+            <div
+              style="
+                background: var(--nonmetal);
+                padding: 15px;
+                border-radius: 12px;
+                color: #5c3a00;
+              "
+            >
+              <h3><i class="fas fa-cloud"></i> Phi kim</h3>
+              <p>Không dẫn điện, không ánh kim, giòn. Dễ nhận e.</p>
+              <small>Vd: O, S, Cl, N</small>
+            </div>
+            <div
+              style="
+                background: var(--gas);
+                padding: 15px;
+                border-radius: 12px;
+                color: #001d4a;
+              "
+            >
+              <h3><i class="fas fa-wind"></i> Khí hiếm</h3>
+              <p>Trơ, bền vững, ít phản ứng. Lớp e ngoài cùng bão hòa.</p>
+              <small>Vd: He, Ne, Ar</small>
+            </div>
+          </div>
+
+          <div style="border-top: 2px dashed #ddd; padding-top: 20px">
+            <h3><i class="fas fa-filter"></i> Game: Phân Loại Nhanh</h3>
+            <p style="text-align: center">Nguyên tố này thuộc nhóm nào?</p>
+
+            <div id="sort-game-area" style="text-align: center">
+              <div id="element-to-sort" class="element-card-drag">Sắt (Fe)</div>
+
+              <div class="sorter-area">
+                <div
+                  class="drop-zone"
+                  style="background: #ffe5e5; color: #c0392b"
+                  onclick="checkSort('metal')"
+                >
+                  KIM LOẠI
+                </div>
+                <div
+                  class="drop-zone"
+                  style="background: #fff4e5; color: #d35400"
+                  onclick="checkSort('nonmetal')"
+                >
+                  PHI KIM
+                </div>
+                <div
+                  class="drop-zone"
+                  style="background: #e5f0ff; color: #2980b9"
+                  onclick="checkSort('gas')"
+                >
+                  KHÍ HIẾM
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2><i class="fas fa-user-secret"></i> Thám tử Hóa học</h2>
+          <div class="highlight-box" style="text-align: center">
+            <span style="font-size: 2rem">🔎</span>
+            <p
+              id="detective-clue"
+              style="font-size: 1.1rem; font-weight: bold; margin: 10px 0"
+            >
+              Đang tải manh mối...
+            </p>
+          </div>
+          <div
+            id="detective-options"
+            style="
+              display: grid;
+              grid-template-columns: repeat(2, 1fr);
+              gap: 10px;
+            "
+          ></div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      // --- DATA ---
+      const ELEMENTS = [
+        {
+          z: 1,
+          s: "H",
+          n: "Hidro",
+          p: 1,
+          n_h: 0,
+          m: 1,
+          shells: [1],
+          type: "nonmetal",
+        },
+        {
+          z: 2,
+          s: "He",
+          n: "Helium",
+          p: 2,
+          n_h: 2,
+          m: 4,
+          shells: [2],
+          type: "gas",
+        },
+        {
+          z: 3,
+          s: "Li",
+          n: "Lithi",
+          p: 3,
+          n_h: 4,
+          m: 7,
+          shells: [2, 1],
+          type: "metal",
+        },
+        {
+          z: 6,
+          s: "C",
+          n: "Cacbon",
+          p: 6,
+          n_h: 6,
+          m: 12,
+          shells: [2, 4],
+          type: "nonmetal",
+        },
+        {
+          z: 7,
+          s: "N",
+          n: "Nito",
+          p: 7,
+          n_h: 7,
+          m: 14,
+          shells: [2, 5],
+          type: "nonmetal",
+        },
+        {
+          z: 8,
+          s: "O",
+          n: "Oxi",
+          p: 8,
+          n_h: 8,
+          m: 16,
+          shells: [2, 6],
+          type: "nonmetal",
+        },
+        {
+          z: 10,
+          s: "Ne",
+          n: "Neon",
+          p: 10,
+          n_h: 10,
+          m: 20,
+          shells: [2, 8],
+          type: "gas",
+        },
+        {
+          z: 11,
+          s: "Na",
+          n: "Natri",
+          p: 11,
+          n_h: 12,
+          m: 23,
+          shells: [2, 8, 1],
+          type: "metal",
+        },
+        {
+          z: 12,
+          s: "Mg",
+          n: "Magie",
+          p: 12,
+          n_h: 12,
+          m: 24,
+          shells: [2, 8, 2],
+          type: "metal",
+        },
+        {
+          z: 13,
+          s: "Al",
+          n: "Nhôm",
+          p: 13,
+          n_h: 14,
+          m: 27,
+          shells: [2, 8, 3],
+          type: "metal",
+        },
+        {
+          z: 16,
+          s: "S",
+          n: "Lưu huỳnh",
+          p: 16,
+          n_h: 16,
+          m: 32,
+          shells: [2, 8, 6],
+          type: "nonmetal",
+        },
+        {
+          z: 17,
+          s: "Cl",
+          n: "Clo",
+          p: 17,
+          n_h: 18,
+          m: 35.5,
+          shells: [2, 8, 7],
+          type: "nonmetal",
+        },
+        {
+          z: 18,
+          s: "Ar",
+          n: "Argon",
+          p: 18,
+          n_h: 22,
+          m: 40,
+          shells: [2, 8, 8],
+          type: "gas",
+        },
+        {
+          z: 20,
+          s: "Ca",
+          n: "Canxi",
+          p: 20,
+          n_h: 20,
+          m: 40,
+          shells: [2, 8, 8, 2],
+          type: "metal",
+        },
+        {
+          z: 26,
+          s: "Fe",
+          n: "Sắt",
+          p: 26,
+          n_h: 30,
+          m: 56,
+          shells: [2, 8, 14, 2],
+          type: "metal",
+        },
+        {
+          z: 29,
+          s: "Cu",
+          n: "Đồng",
+          p: 29,
+          n_h: 35,
+          m: 64,
+          shells: [2, 8, 18, 1],
+          type: "metal",
+        },
+      ];
+
+      // --- AUDIO (No External Files) ---
+      // Using simple Howler placeholders or Web Audio API
+      const soundCorrect = new Howl({
+        src: [
+          "https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3",
+        ],
+        volume: 0.5,
+      });
+      const soundWrong = new Howl({
+        src: [
+          "https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3",
+        ],
+        volume: 0.4,
+      });
+      const soundClick = new Howl({
+        src: [
+          "https://assets.mixkit.co/sfx/preview/mixkit-modern-technology-select-3124.mp3",
+        ],
+        volume: 0.3,
+      });
+
+      // --- UI FUNCTIONS ---
+      function switchTab(id) {
+        document
+          .querySelectorAll(".section-content")
+          .forEach((el) => el.classList.remove("active"));
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((el) => el.classList.remove("active"));
+        document.getElementById(id).classList.add("active");
+
+        const btns = document.querySelectorAll(".nav-item");
+        if (id === "atom") btns[0].classList.add("active");
+        if (id === "element") btns[1].classList.add("active");
+        if (id === "ptable") btns[2].classList.add("active");
+        soundClick.play();
+      }
+
+      function toggleTheme() {
+        document.body.classList.toggle("theme-dark");
+        soundClick.play();
+      }
+
+      // --- 1. VISUALIZER (ATOM CANVAS) ---
+      const canvas = document.getElementById("atomCanvas");
+      const ctx = canvas.getContext("2d");
+      let electrons = [];
+
+      function resizeCanvas() {
+        canvas.width = canvas.parentElement.offsetWidth;
+        canvas.height = canvas.parentElement.offsetHeight;
+      }
+      window.addEventListener("resize", resizeCanvas);
+      resizeCanvas();
+
+      function loadAtom(sym) {
+        const el = ELEMENTS.find((e) => e.s === sym);
+        document.getElementById(
+          "atom-name-display"
+        ).innerHTML = `<b>${el.n} (${el.s})</b> - ${el.p} Proton`;
+
+        electrons = [];
+        el.shells.forEach((count, shellIdx) => {
+          const radius = 50 + shellIdx * 35;
+          const speed =
+            (0.02 - shellIdx * 0.002) * (shellIdx % 2 === 0 ? 1 : -1);
+          for (let i = 0; i < count; i++) {
+            electrons.push({
+              angle: ((Math.PI * 2) / count) * i,
+              r: radius,
+              s: speed,
+            });
+          }
+        });
+        soundClick.play();
+      }
+
+      function animateAtom() {
+        ctx.fillStyle = document.body.classList.contains("theme-dark")
+          ? "rgba(0,0,0,0.2)"
+          : "rgba(26,26,46,0.2)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const cx = canvas.width / 2,
+          cy = canvas.height / 2;
+
+        // Nucleus
+        ctx.beginPath();
+        ctx.arc(cx, cy, 12, 0, Math.PI * 2);
+        ctx.fillStyle = "#f72585";
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = "#f72585";
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // Electrons
+        electrons.forEach((e) => {
+          e.angle += e.s;
+          const x = cx + Math.cos(e.angle) * e.r,
+            y = cy + Math.sin(e.angle) * e.r;
+          ctx.beginPath();
+          ctx.arc(cx, cy, e.r, 0, Math.PI * 2);
+          ctx.strokeStyle = "rgba(255,255,255,0.1)";
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(x, y, 5, 0, Math.PI * 2);
+          ctx.fillStyle = "#4cc9f0";
+          ctx.fill();
+        });
+        requestAnimationFrame(animateAtom);
+      }
+
+      // --- 2. GAME: TÍNH AMU ---
+      let amuCurrent = {};
+      function loadAmuQuestion() {
+        const pool = ELEMENTS.filter((e) => e.z > 2);
+        amuCurrent = pool[Math.floor(Math.random() * pool.length)];
+        document.getElementById("q-element-name").textContent = amuCurrent.n;
+        document.getElementById("q-p").textContent = amuCurrent.p;
+        document.getElementById("q-n").textContent = amuCurrent.n_h;
+        document.getElementById("amu-input").value = "";
+      }
+      function checkAmu() {
+        const val = parseInt(document.getElementById("amu-input").value);
+        const correct = amuCurrent.p + amuCurrent.n_h;
+        if (val === correct) {
+          soundCorrect.play();
+          confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
+          Swal.fire({
+            icon: "success",
+            title: "Chính xác!",
+            text: `${amuCurrent.n} có khối lượng ~ ${correct} amu`,
+            timer: 1500,
+            showConfirmButton: false,
+          });
+          loadAmuQuestion();
+        } else {
+          soundWrong.play();
+          Swal.fire({
+            icon: "error",
+            title: "Sai rồi!",
+            text: `Gợi ý: Lấy p + n (${amuCurrent.p} + ${amuCurrent.n_h})`,
+          });
+        }
+      }
+
+      // --- 3. GAME: MEMORY ---
+      let hasFlipped = false,
+        lockBoard = false,
+        firstCard,
+        secondCard;
+      function initMemoryGame() {
+        const grid = document.getElementById("memory-grid");
+        grid.innerHTML = "";
+        const selection = ELEMENTS.sort(() => 0.5 - Math.random()).slice(0, 4);
+        let deck = [];
+        selection.forEach((el) => {
+          deck.push({ id: el.s, content: el.s, type: "symbol" });
+          deck.push({ id: el.s, content: el.n, type: "name" });
+        });
+        deck.sort(() => 0.5 - Math.random());
+        deck.forEach((item) => {
+          const card = document.createElement("div");
+          card.classList.add("memory-card");
+          card.dataset.id = item.id;
+          card.innerHTML = `<div class="face front-face">${item.content}</div><div class="face back-face"><i class="fas fa-atom"></i></div>`;
+          card.addEventListener("click", flipCard);
+          grid.appendChild(card);
+        });
+      }
+      function flipCard() {
+        if (lockBoard || this === firstCard) return;
+        this.classList.add("flipped");
+        soundClick.play();
+        if (!hasFlipped) {
+          hasFlipped = true;
+          firstCard = this;
+          return;
+        }
+        secondCard = this;
+        checkForMatch();
+      }
+      function checkForMatch() {
+        let isMatch = firstCard.dataset.id === secondCard.dataset.id;
+        isMatch ? disableCards() : unflipCards();
+      }
+      function disableCards() {
+        soundCorrect.play();
+        firstCard.removeEventListener("click", flipCard);
+        secondCard.removeEventListener("click", flipCard);
+        setTimeout(() => {
+          firstCard.classList.add("matched");
+          secondCard.classList.add("matched");
+          resetBoard();
+        }, 500);
+      }
+      function unflipCards() {
+        lockBoard = true;
+        soundWrong.play();
+        setTimeout(() => {
+          firstCard.classList.remove("flipped");
+          secondCard.classList.remove("flipped");
+          resetBoard();
+        }, 1000);
+      }
+      function resetBoard() {
+        [hasFlipped, lockBoard] = [false, false];
+        [firstCard, secondCard] = [null, null];
+      }
+
+      // --- 4. GAME: VUA CÔNG THỨC ---
+      const FORMULAS = [
+        { f: "H₂SO₄", q: "Oxi", a: 4 },
+        { f: "CaCO₃", q: "Cacbon", a: 1 },
+        { f: "Al₂O₃", q: "Nhôm", a: 2 },
+        { f: "Mg(OH)₂", q: "Oxi", a: 2 }, // Khó: 2 nhóm OH
+        { f: "Fe₂O₃", q: "Sắt", a: 2 },
+        { f: "CO₂", q: "Oxi", a: 2 },
+      ];
+      let currentFormula = {};
+      function loadFormulaGame() {
+        currentFormula = FORMULAS[Math.floor(Math.random() * FORMULAS.length)];
+        document.getElementById("fm-display").innerHTML =
+          currentFormula.f.replace(/\d/g, (d) => `<sub>${d}</sub>`);
+        document.getElementById(
+          "fm-question"
+        ).innerHTML = `Có bao nhiêu nguyên tử <b>${currentFormula.q}</b>?`;
+        document.getElementById("fm-feedback").textContent = "";
+      }
+      function checkFormula(ans) {
+        if (ans === currentFormula.a) {
+          soundCorrect.play();
+          document.getElementById("fm-feedback").innerHTML =
+            '<span style="color:green">Chính xác!</span>';
+          setTimeout(loadFormulaGame, 1000);
+        } else {
+          soundWrong.play();
+          document.getElementById("fm-feedback").innerHTML =
+            '<span style="color:red">Sai rồi, thử lại xem!</span>';
+        }
+      }
+
+      // --- 5. GAME: PHÂN LOẠI NHANH ---
+      let currentSortEl = {};
+      function loadSorter() {
+        currentSortEl = ELEMENTS[Math.floor(Math.random() * ELEMENTS.length)];
+        document.getElementById(
+          "element-to-sort"
+        ).textContent = `${currentSortEl.n} (${currentSortEl.s})`;
+      }
+      function checkSort(type) {
+        if (currentSortEl.type === type) {
+          soundCorrect.play();
+          Swal.fire({
+            icon: "success",
+            title: "Đúng rồi!",
+            timer: 800,
+            showConfirmButton: false,
+          });
+          loadSorter();
+        } else {
+          soundWrong.play();
+          Swal.fire({
+            icon: "error",
+            title: "Sai rồi!",
+            text: `${currentSortEl.n} là ${getVNType(currentSortEl.type)}`,
+          });
+        }
+      }
+      function getVNType(t) {
+        if (t === "metal") return "Kim loại";
+        if (t === "nonmetal") return "Phi kim";
+        return "Khí hiếm";
+      }
+
+      // --- 6. GAME: DETECTIVE ---
+      function initDetective() {
+        const target = ELEMENTS[Math.floor(Math.random() * ELEMENTS.length)];
+        document.getElementById(
+          "detective-clue"
+        ).innerHTML = `Tìm nguyên tố thuộc <b>Chu kì ${
+          target.shells.length
+        }</b>, là <b>${getVNType(target.type).toUpperCase()}</b>`;
+
+        const container = document.getElementById("detective-options");
+        container.innerHTML = "";
+        let options = [target];
+        while (options.length < 4) {
+          let r = ELEMENTS[Math.floor(Math.random() * ELEMENTS.length)];
+          if (!options.includes(r)) options.push(r);
+        }
+        options.sort(() => 0.5 - Math.random());
+
+        options.forEach((opt) => {
+          const btn = document.createElement("button");
+          btn.className = "btn-game secondary";
+          btn.style.width = "100%";
+          btn.style.padding = "15px";
+          btn.innerHTML = `<strong>${opt.s}</strong><br><small>${opt.n}</small>`;
+          btn.onclick = () => {
+            if (opt.s === target.s) {
+              soundCorrect.play();
+              confetti({ particleCount: 100, spread: 70 });
+              Swal.fire({
+                icon: "success",
+                title: "Xuất sắc!",
+                text: "Đã tìm ra thủ phạm!",
+              });
+              initDetective();
+            } else {
+              soundWrong.play();
+              Swal.fire({ icon: "error", title: "Sai rồi!" });
+            }
+          };
+          container.appendChild(btn);
+        });
+      }
+
+      // --- INIT ---
+      document.addEventListener("DOMContentLoaded", () => {
+        loadAtom("C");
+        animateAtom();
+        loadAmuQuestion();
+        initMemoryGame();
+        loadFormulaGame();
+        loadSorter();
+        initDetective();
+      });
+    </script>
   </body>
 </html>

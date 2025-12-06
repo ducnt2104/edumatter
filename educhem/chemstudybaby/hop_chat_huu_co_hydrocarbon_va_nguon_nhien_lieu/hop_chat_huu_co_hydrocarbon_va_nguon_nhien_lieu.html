@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hóa Học 9 - Chủ Đề 2: Hydrocacbon & Nhiên Liệu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Nunito", sans-serif;
+        background: #0f172a;
+        color: #e2e8f0;
+        overflow-x: hidden;
+      }
+
+      /* Animated Background Particles */
+      .bg-particle {
+        position: fixed;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.05);
+        animation: floatUp linear infinite;
+        z-index: -1;
+      }
+      @keyframes floatUp {
+        0% {
+          transform: translateY(100vh) scale(0);
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-10vh) scale(1);
+          opacity: 0;
+        }
+      }
+
+      /* Glassmorphism */
+      .glass-panel {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+      }
+
+      /* --- 3D MOLECULE ENGINE --- */
+      .scene-3d {
+        perspective: 800px;
+        width: 100%;
+        height: 300px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        cursor: grab;
+      }
+      .scene-3d:active {
+        cursor: grabbing;
+      }
+      .molecule-container {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        transform-style: preserve-3d;
+        animation: floatRotate 15s infinite linear;
+        transition: transform 0.1s linear;
+      }
+      .atom {
+        position: absolute;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        box-shadow: inset -5px -5px 10px rgba(0, 0, 0, 0.5),
+          0 0 10px rgba(0, 0, 0, 0.3);
+      }
+      .atom-c {
+        width: 50px;
+        height: 50px;
+        background: radial-gradient(circle at 30% 30%, #4ade80, #15803d);
+        color: white;
+        font-size: 1rem;
+        z-index: 10;
+      }
+      .atom-h {
+        width: 25px;
+        height: 25px;
+        background: radial-gradient(circle at 30% 30%, #ffffff, #94a3b8);
+        color: #333;
+        font-size: 0.6rem;
+      }
+      .bond-stick {
+        position: absolute;
+        background: #cbd5e1;
+        width: 6px;
+        transform-origin: 50% 100%;
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+      }
+      @keyframes floatRotate {
+        0% {
+          transform: rotateX(10deg) rotateY(0deg);
+        }
+        100% {
+          transform: rotateX(10deg) rotateY(360deg);
+        }
+      }
+
+      /* Animations & Utilities */
+      .animate-float {
+        animation: bounce-slow 3s infinite ease-in-out;
+      }
+      @keyframes bounce-slow {
+        0%,
+        100% {
+          transform: translateY(-5%);
+        }
+        50% {
+          transform: translateY(5%);
+        }
+      }
+
+      .tower-level {
+        transition: all 0.5s ease;
+        opacity: 0.3;
+        filter: grayscale(100%);
+      }
+      .tower-level.active {
+        opacity: 1;
+        filter: grayscale(0%);
+        box-shadow: 0 0 15px currentColor;
+        transform: scale(1.02);
+      }
+
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #1e293b;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #475569;
+        border-radius: 4px;
+      }
+    </style>
+    <link rel="stylesheet" href="../../component/component.css" />
+    <script src="../../component/component.js"></script>
+  </head>
+  <body class="antialiased min-h-screen flex flex-col md:flex-row">
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const body = document.body;
+        for (let i = 0; i < 25; i++) {
+          const div = document.createElement("div");
+          div.classList.add("bg-particle");
+          div.style.width = Math.random() * 15 + 2 + "px";
+          div.style.height = div.style.width;
+          div.style.left = Math.random() * 100 + "vw";
+          div.style.animationDuration = Math.random() * 10 + 15 + "s";
+          div.style.animationDelay = Math.random() * 5 + "s";
+          body.appendChild(div);
+        }
+      });
+    </script>
+
+    <nav
+      class="w-full md:w-64 glass-panel md:h-screen sticky top-0 z-50 flex flex-col p-4 flex-shrink-0"
+    >
+      <div class="flex items-center gap-3 mb-6 px-2">
+        <div
+          class="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-500 to-blue-600 flex items-center justify-center text-white font-bold text-xl shadow-lg"
+        >
+          C
+        </div>
+        <div>
+          <h1 class="font-bold text-lg text-white">Hóa Học 9</h1>
+          <p class="text-xs text-slate-400">Chủ đề 2: Hữu cơ</p>
+          <a
+            href="../../index.html"
+            class="text-sm text-blue-400 hover:underline"
+            >Quay về trang chủ</a
+          >
+        </div>
+      </div>
+
+      <div class="space-y-1 flex-1 overflow-y-auto pr-1">
+        <button
+          onclick="switchTab('intro')"
+          class="nav-btn w-full text-left p-3 rounded-xl hover:bg-white/10 transition flex items-center gap-3 text-cyan-300 bg-white/10"
+          id="btn-intro"
+        >
+          <i class="fas fa-atom w-5"></i> I. Giới thiệu chung
+        </button>
+        <button
+          onclick="switchTab('arkan')"
+          class="nav-btn w-full text-left p-3 rounded-xl hover:bg-white/10 transition flex items-center gap-3 text-slate-300"
+          id="btn-arkan"
+        >
+          <i class="fas fa-cube w-5"></i> II. Ankan (CH₄)
+        </button>
+        <button
+          onclick="switchTab('arken')"
+          class="nav-btn w-full text-left p-3 rounded-xl hover:bg-white/10 transition flex items-center gap-3 text-slate-300"
+          id="btn-arken"
+        >
+          <i class="fas fa-leaf w-5"></i> III. Anken (C₂H₄)
+        </button>
+        <button
+          onclick="switchTab('arkin')"
+          class="nav-btn w-full text-left p-3 rounded-xl hover:bg-white/10 transition flex items-center gap-3 text-slate-300"
+          id="btn-arkin"
+        >
+          <i class="fas fa-bolt w-5"></i> IV. Ankin (C₂H₂)
+        </button>
+        <button
+          onclick="switchTab('fuel')"
+          class="nav-btn w-full text-left p-3 rounded-xl hover:bg-white/10 transition flex items-center gap-3 text-slate-300"
+          id="btn-fuel"
+        >
+          <i class="fas fa-gas-pump w-5"></i> V. Nhiên liệu
+        </button>
+        <div class="h-px bg-white/10 my-2"></div>
+        <button
+          onclick="switchTab('games')"
+          class="nav-btn w-full text-left p-3 rounded-xl hover:bg-white/10 transition flex items-center gap-3 text-yellow-400"
+          id="btn-games"
+        >
+          <i class="fas fa-gamepad w-5"></i> Game Ôn Tập
+        </button>
+      </div>
+    </nav>
+
+    <main
+      class="flex-1 p-4 md:p-8 overflow-y-auto h-screen scroll-smooth relative"
+      id="main-scroll"
+    >
+      <section id="intro" class="tab-content block space-y-6">
+        <header class="mb-6">
+          <h2
+            class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500"
+          >
+            I. Hợp Chất Hữu Cơ
+          </h2>
+          <p class="text-slate-400">Khái niệm & Phân loại</p>
+        </header>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="glass-panel p-6 rounded-2xl border-l-4 border-cyan-500">
+            <h3 class="font-bold text-xl mb-3">
+              <i class="fas fa-book mr-2"></i>Khái niệm
+            </h3>
+            <p class="text-slate-300 mb-2">
+              Hợp chất hữu cơ là hợp chất của <strong>Carbon (C)</strong>.
+            </p>
+            <div
+              class="bg-red-500/20 p-3 rounded-lg border border-red-500/30 text-sm text-red-200 mb-3"
+            >
+              <i class="fas fa-ban mr-1"></i> <strong>Ngoại trừ:</strong> CO,
+              CO₂, Muối cacbonat (CaCO₃...), Xianua, Cacbua...
+            </div>
+            <div class="text-sm text-slate-400">
+              <p><strong>Phân loại:</strong></p>
+              <ul class="list-disc list-inside ml-2 mt-1">
+                <li>
+                  <span class="text-blue-400">Hydrocacbon:</span> Chỉ có C, H
+                  (CH₄, C₂H₄...)
+                </li>
+                <li>
+                  <span class="text-purple-400">Dẫn xuất:</span> Có thêm O, N,
+                  Cl... (C₂H₅OH, CH₃Cl...)
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div
+            class="glass-panel p-6 rounded-2xl relative overflow-hidden flex flex-col items-center justify-center"
+          >
+            <h3 class="font-bold text-lg text-yellow-400 mb-4">
+              Luyện tập: Hữu cơ hay Vô cơ?
+            </h3>
+            <div
+              id="sorter-card"
+              class="bg-slate-800 w-full max-w-xs h-32 rounded-xl flex items-center justify-center text-3xl font-mono font-bold shadow-lg animate-float cursor-pointer select-none"
+            >
+              CH₄
+            </div>
+            <div class="flex gap-4 mt-6 w-full max-w-xs">
+              <button
+                onclick="checkSorter('organic')"
+                class="flex-1 py-2 bg-green-600 hover:bg-green-500 rounded-lg font-bold transition"
+              >
+                Hữu cơ
+              </button>
+              <button
+                onclick="checkSorter('inorganic')"
+                class="flex-1 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg font-bold transition"
+              >
+                Vô cơ
+              </button>
+            </div>
+            <div
+              id="sorter-msg"
+              class="h-6 mt-2 text-sm font-bold text-transparent"
+            >
+              Result
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="arkan" class="tab-content hidden space-y-6">
+        <header class="flex justify-between items-end mb-6">
+          <div>
+            <h2 class="text-3xl font-extrabold text-blue-400">
+              II. Ankan (Metan)
+            </h2>
+            <p class="text-slate-400">
+              Hydrocacbon no (CₙH₂ₙ₊₂) - Chỉ có liên kết đơn.
+            </p>
+          </div>
+          <div class="text-5xl text-blue-500/20 font-mono font-black">CH₄</div>
+        </header>
+
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="glass-panel p-4 rounded-2xl flex flex-col items-center">
+            <div class="flex justify-between w-full px-2 mb-2">
+              <span class="text-xs font-bold bg-blue-600 px-2 py-1 rounded"
+                >Cấu trúc: Tứ diện đều</span
+              >
+              <button
+                onclick="renderMolecule('CH4')"
+                class="text-xs text-blue-300 hover:underline"
+              >
+                <i class="fas fa-sync"></i> Reset 3D
+              </button>
+            </div>
+            <div
+              class="scene-3d bg-slate-900/50 rounded-xl"
+              id="scene-ch4"
+              onmousemove="rotateMolecule(event)"
+              ontouchmove="rotateMoleculeMobile(event)"
+            ></div>
+            <p class="text-xs text-slate-500 mt-2">Di chuột để xoay mô hình</p>
+          </div>
+
+          <div class="space-y-4">
+            <div
+              class="glass-panel p-5 rounded-xl border-l-4 border-yellow-500"
+            >
+              <h3 class="font-bold text-yellow-400 mb-2">
+                <i class="fas fa-fire mr-2"></i>1. Phản ứng cháy
+              </h3>
+              <div
+                class="bg-black/30 p-3 rounded font-mono text-center text-sm text-yellow-200"
+              >
+                CH₄ + 2O₂ <i class="fas fa-arrow-right"></i> CO₂ + 2H₂O
+              </div>
+              <p class="text-xs text-slate-400 mt-2 italic">
+                Chú ý: Cháy không hoàn toàn sinh ra khí CO độc hại.
+              </p>
+            </div>
+
+            <div class="glass-panel p-5 rounded-xl border-l-4 border-green-500">
+              <h3 class="font-bold text-green-400 mb-2">
+                <i class="fas fa-random mr-2"></i>2. Phản ứng thế (với Clo)
+              </h3>
+              <p class="text-sm text-slate-300 mb-2">
+                Điều kiện: Có ánh sáng. H bị thay thế bởi Cl.
+              </p>
+              <div
+                class="flex items-center justify-between bg-black/30 p-3 rounded gap-2"
+              >
+                <div class="text-center font-mono text-xs">
+                  <div class="text-green-300">CH₄ + Cl₂</div>
+                </div>
+                <i class="fas fa-arrow-right text-slate-500"></i>
+                <div class="text-center font-mono text-xs">
+                  <div class="text-green-300">CH₃Cl + HCl</div>
+                  <div class="text-[10px] text-slate-500">Metyl clorua</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="arken" class="tab-content hidden space-y-6">
+        <header class="flex justify-between items-end mb-6">
+          <div>
+            <h2 class="text-3xl font-extrabold text-green-400">
+              III. Anken (Etilen)
+            </h2>
+            <p class="text-slate-400">
+              Hydrocacbon không no (CₙH₂ₙ) - Có 1 liên kết đôi C=C.
+            </p>
+          </div>
+          <div class="text-5xl text-green-500/20 font-mono font-black">
+            C₂H₄
+          </div>
+        </header>
+
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="glass-panel p-4 rounded-2xl flex flex-col items-center">
+            <div class="flex justify-between w-full px-2 mb-2">
+              <span class="text-xs font-bold bg-green-600 px-2 py-1 rounded"
+                >Cấu trúc: Phẳng</span
+              >
+              <button
+                onclick="renderMolecule('C2H4')"
+                class="text-xs text-green-300 hover:underline"
+              >
+                <i class="fas fa-sync"></i> Reset 3D
+              </button>
+            </div>
+            <div
+              class="scene-3d bg-slate-900/50 rounded-xl"
+              id="scene-c2h4"
+              onmousemove="rotateMolecule(event)"
+              ontouchmove="rotateMoleculeMobile(event)"
+            ></div>
+          </div>
+
+          <div class="glass-panel p-6 rounded-2xl">
+            <h3 class="font-bold text-orange-400 mb-4 flex items-center gap-2">
+              <i class="fas fa-flask"></i> Phản ứng cộng (Nhận biết)
+            </h3>
+            <div class="flex gap-4 items-center">
+              <div
+                class="relative h-40 w-24 bg-slate-800 rounded-lg border border-slate-600 flex items-end justify-center overflow-hidden"
+              >
+                <div
+                  id="brom-liquid"
+                  class="w-full h-24 bg-orange-600 transition-colors duration-1000 flex items-center justify-center"
+                >
+                  <span
+                    id="brom-bubbles"
+                    class="hidden absolute bottom-4 space-x-1"
+                  >
+                    <span
+                      class="block w-1 h-1 bg-white rounded-full animate-bounce"
+                    ></span>
+                    <span
+                      class="block w-2 h-2 bg-white rounded-full animate-bounce"
+                      style="animation-delay: 0.1s"
+                    ></span>
+                  </span>
+                </div>
+                <div
+                  class="absolute top-2 text-[10px] text-white/50 w-full text-center"
+                >
+                  Dung dịch Br₂
+                </div>
+              </div>
+              <div class="flex-1 space-y-3">
+                <p class="text-sm text-slate-300">
+                  Dẫn khí Etilen vào dung dịch Brom màu da cam.
+                </p>
+                <button
+                  onclick="runBromineSim()"
+                  class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded text-sm font-bold border border-white/10"
+                >
+                  <i class="fas fa-play mr-1"></i> Thí nghiệm
+                </button>
+                <div
+                  id="brom-result"
+                  class="text-xs font-mono bg-black/30 p-2 rounded hidden"
+                >
+                  <span class="text-green-400">Kết quả:</span> Mất màu da
+                  cam.<br />
+                  C₂H₄ + Br₂ -> C₂H₄Br₂
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="glass-panel p-4 rounded-xl flex items-center gap-4 border border-purple-500/30"
+        >
+          <div class="bg-purple-500/20 p-3 rounded-full">
+            <i class="fas fa-layer-group text-purple-400"></i>
+          </div>
+          <div>
+            <h4 class="font-bold text-purple-300">Phản ứng Trùng hợp</h4>
+            <p class="text-xs text-slate-400">
+              Ở to, p, xt thích hợp: nC₂H₄ → (–CH₂–CH₂–)n (Nhựa PE)
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="arkin" class="tab-content hidden space-y-6">
+        <header class="flex justify-between items-end mb-6">
+          <div>
+            <h2 class="text-3xl font-extrabold text-red-400">
+              IV. Ankin (Axetilen)
+            </h2>
+            <p class="text-slate-400">
+              Hydrocacbon không no (CₙH₂ₙ₋₂) - Có 1 liên kết ba C≡C.
+            </p>
+          </div>
+          <div class="text-5xl text-red-500/20 font-mono font-black">C₂H₂</div>
+        </header>
+
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="glass-panel p-4 rounded-2xl flex flex-col items-center">
+            <div class="flex justify-between w-full px-2 mb-2">
+              <span class="text-xs font-bold bg-red-600 px-2 py-1 rounded"
+                >Cấu trúc: Thẳng (Line)</span
+              >
+              <button
+                onclick="renderMolecule('C2H2')"
+                class="text-xs text-red-300 hover:underline"
+              >
+                <i class="fas fa-sync"></i> Reset 3D
+              </button>
+            </div>
+            <div
+              class="scene-3d bg-slate-900/50 rounded-xl"
+              id="scene-c2h2"
+              onmousemove="rotateMolecule(event)"
+              ontouchmove="rotateMoleculeMobile(event)"
+            ></div>
+          </div>
+
+          <div class="glass-panel p-6 rounded-2xl relative overflow-hidden">
+            <div
+              class="absolute top-0 right-0 w-32 h-32 bg-orange-500 blur-[80px] opacity-20"
+            ></div>
+            <h3 class="font-bold text-lg mb-4 text-white">
+              <i class="fas fa-burn text-orange-500 mr-2"></i>Ứng dụng: Hàn cắt
+              kim loại
+            </h3>
+            <p class="text-sm text-slate-300 mb-4">
+              Axetilen cháy trong Oxi tạo ngọn lửa nhiệt độ rất cao (~3000°C).
+            </p>
+            <div
+              class="bg-black/40 p-3 rounded font-mono text-center text-orange-300 text-sm mb-4"
+            >
+              2C₂H₂ + 5O₂ <i class="fas fa-arrow-right"></i> 4CO₂ + 2H₂O
+            </div>
+
+            <div class="border-t border-white/10 pt-4">
+              <h4 class="font-bold text-sm text-slate-200 mb-2">
+                Tính chất khác:
+              </h4>
+              <ul class="text-xs text-slate-400 space-y-1">
+                <li>
+                  <i class="fas fa-check text-green-500 mr-1"></i> Tác dụng với
+                  Brom (tỉ lệ 1:2)
+                </li>
+                <li>
+                  <i class="fas fa-check text-green-500 mr-1"></i> Tráng gương
+                  (với AgNO₃/NH₃) -> Kết tủa vàng
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="fuel" class="tab-content hidden space-y-6">
+        <header class="mb-6">
+          <h2 class="text-3xl font-extrabold text-slate-200">
+            V. Nguồn Nhiên Liệu
+          </h2>
+          <p class="text-slate-400">
+            Dầu mỏ, Khí thiên nhiên, Nhiên liệu sinh học.
+          </p>
+        </header>
+
+        <div class="glass-panel p-6 rounded-2xl border border-slate-600">
+          <h3 class="font-bold text-xl mb-4 flex items-center gap-2">
+            <i class="fas fa-industry"></i> Chưng Cất Phân Đoạn Dầu Mỏ
+          </h3>
+
+          <div class="flex flex-col md:flex-row gap-8 items-center">
+            <div
+              class="w-24 h-64 bg-slate-800 rounded border-2 border-slate-600 flex flex-col-reverse relative p-1"
+            >
+              <div
+                id="dl-4"
+                class="tower-level flex-1 bg-red-900 border-t border-red-700 rounded-b mb-[1px]"
+              ></div>
+              <div
+                id="dl-3"
+                class="tower-level flex-1 bg-blue-900 border-t border-blue-700 mb-[1px]"
+              ></div>
+              <div
+                id="dl-2"
+                class="tower-level flex-1 bg-orange-700 border-t border-orange-500 mb-[1px]"
+              ></div>
+              <div
+                id="dl-1"
+                class="tower-level flex-1 bg-yellow-600 border-t border-yellow-400 rounded-t"
+              ></div>
+              <i
+                class="fas fa-fire absolute -bottom-8 left-1/2 -translate-x-1/2 text-orange-500 animate-pulse text-2xl"
+              ></i>
+            </div>
+
+            <div class="flex-1 w-full space-y-4">
+              <div>
+                <label class="text-xs font-bold text-slate-400 uppercase"
+                  >Kéo để tăng nhiệt độ sôi</label
+                >
+                <input
+                  type="range"
+                  min="20"
+                  max="400"
+                  value="20"
+                  class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer mt-2"
+                  id="distill-slider"
+                  oninput="updateDistillTower()"
+                />
+                <div
+                  class="text-right font-mono text-cyan-400 font-bold"
+                  id="temp-display"
+                >
+                  20°C
+                </div>
+              </div>
+
+              <div
+                id="distill-info"
+                class="bg-white/5 p-4 rounded-xl border border-white/10 min-h-[100px] flex items-center gap-4 transition-all"
+              >
+                <i class="fas fa-flask text-3xl text-slate-600"></i>
+                <div>
+                  <h4 class="font-bold text-slate-300">Sản phẩm</h4>
+                  <p class="text-xs text-slate-500">
+                    Hãy tăng nhiệt độ để xem sản phẩm thu được.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4 mt-4">
+          <div
+            class="glass-panel p-4 rounded-xl bg-green-900/20 border border-green-500/30"
+          >
+            <h4 class="font-bold text-green-400 mb-1">
+              <i class="fas fa-leaf mr-2"></i>Nhiên liệu sinh học
+            </h4>
+            <p class="text-xs text-slate-300">
+              Xăng E5 (95% A92 + 5% Ethanol), Biodiesel. Giúp giảm thiểu ô nhiễm
+              môi trường.
+            </p>
+          </div>
+          <div
+            class="glass-panel p-4 rounded-xl bg-blue-900/20 border border-blue-500/30"
+          >
+            <h4 class="font-bold text-blue-400 mb-1">
+              <i class="fas fa-cloud mr-2"></i>Khí thiên nhiên
+            </h4>
+            <p class="text-xs text-slate-300">
+              Thành phần chính là Metan (CH₄). Dùng làm nhiên liệu, nguyên liệu
+              sản xuất phân đạm.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="games" class="tab-content hidden space-y-6">
+        <h2
+          class="text-3xl font-bold text-center text-purple-400 uppercase tracking-widest"
+        >
+          Game Center
+        </h2>
+
+        <div
+          class="glass-panel p-8 rounded-2xl text-center border-t-4 border-purple-500"
+        >
+          <h3 class="text-2xl font-bold mb-2">Mưa Kiến Thức</h3>
+          <p class="text-slate-400 mb-6">
+            Chọn đúng công thức của
+            <span class="text-green-400 font-bold">Hydrocacbon</span> (Chỉ C và
+            H)!
+          </p>
+
+          <div class="flex justify-center gap-4 mb-4 font-mono text-sm">
+            <div class="bg-slate-800 px-4 py-2 rounded">
+              Điểm: <span id="rain-score" class="text-yellow-400">0</span>
+            </div>
+            <div class="bg-slate-800 px-4 py-2 rounded">
+              Thời gian: <span id="rain-time" class="text-red-400">30</span>s
+            </div>
+          </div>
+
+          <div
+            id="rain-area"
+            class="relative w-full h-[350px] bg-slate-900 rounded-xl overflow-hidden border border-slate-700 cursor-crosshair"
+          >
+            <div
+              id="rain-overlay"
+              class="absolute inset-0 flex items-center justify-center bg-black/60 z-20"
+            >
+              <button
+                onclick="startRainGame()"
+                class="px-6 py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-full transition transform hover:scale-105"
+              >
+                Bắt đầu
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div
+      id="notification"
+      class="fixed top-4 right-4 bg-white text-slate-900 px-4 py-2 rounded-lg shadow-2xl transform translate-x-[150%] transition-transform duration-300 z-[100] flex items-center gap-3 font-bold text-sm border-l-4 border-green-500"
+    >
+      <i class="fas fa-info-circle"></i>
+      <span id="notif-msg">Thông báo</span>
+    </div>
+
+    <script>
+      /* --- GLOBAL VARIABLES --- */
+      let currentRotation = { x: 10, y: 0 };
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      let active3DContainer = null;
+
+      /* --- AUDIO & UTILS --- */
+      function playSound(type) {
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        const now = audioCtx.currentTime;
+
+        if (type === "click") {
+          osc.frequency.setValueAtTime(600, now);
+          gain.gain.setValueAtTime(0.05, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+          osc.start(now);
+          osc.stop(now + 0.1);
+        } else if (type === "correct") {
+          osc.frequency.setValueAtTime(400, now);
+          osc.frequency.linearRampToValueAtTime(800, now + 0.1);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+          osc.start(now);
+          osc.stop(now + 0.3);
+        } else if (type === "wrong") {
+          osc.type = "sawtooth";
+          osc.frequency.setValueAtTime(150, now);
+          osc.frequency.linearRampToValueAtTime(100, now + 0.2);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+          osc.start(now);
+          osc.stop(now + 0.3);
+        }
+      }
+
+      function showNotif(msg, type = "success") {
+        const el = document.getElementById("notification");
+        document.getElementById("notif-msg").textContent = msg;
+        el.className = `fixed top-4 right-4 bg-white text-slate-900 px-4 py-2 rounded-lg shadow-2xl transition-transform duration-300 z-[100] flex items-center gap-3 font-bold text-sm border-l-4 ${
+          type === "success" ? "border-green-500" : "border-red-500"
+        }`;
+        el.style.transform = "translateX(0)";
+        setTimeout(() => (el.style.transform = "translateX(150%)"), 2000);
+      }
+
+      /* --- NAVIGATION --- */
+      function switchTab(id) {
+        playSound("click");
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((el) => el.classList.remove("block"));
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((el) => el.classList.add("hidden"));
+        document.getElementById(id).classList.remove("hidden");
+        document.getElementById(id).classList.add("block");
+
+        // Style Active Btn
+        document.querySelectorAll(".nav-btn").forEach((btn) => {
+          btn.classList.remove("bg-white/10", "text-cyan-300");
+          btn.classList.add("text-slate-300");
+        });
+        document
+          .getElementById("btn-" + id)
+          .classList.add("bg-white/10", "text-cyan-300");
+
+        // Trigger specific renders
+        if (id === "arkan") {
+          active3DContainer = "scene-ch4";
+          renderMolecule("CH4");
+        }
+        if (id === "arken") {
+          active3DContainer = "scene-c2h4";
+          renderMolecule("C2H4");
+        }
+        if (id === "arkin") {
+          active3DContainer = "scene-c2h2";
+          renderMolecule("C2H2");
+        }
+      }
+
+      /* --- 3D ENGINE --- */
+      function renderMolecule(type) {
+        let containerId = active3DContainer;
+        if (!containerId) return;
+        const container = document.getElementById(containerId);
+        container.innerHTML = `<div id="mol-root-${type}" class="molecule-container"></div>`;
+        const root = document.getElementById(`mol-root-${type}`);
+
+        if (type === "CH4") {
+          // Metan - Tứ diện
+          root.innerHTML += `<div class="atom atom-c" style="left:75px; top:75px;">C</div>`;
+          // H Top
+          root.innerHTML += `<div class="bond-stick" style="height:60px; top:40px; left:100px; transform:rotate(0deg);"></div>`;
+          root.innerHTML += `<div class="atom atom-h" style="top:15px; left:87px;">H</div>`;
+          // H Bottom Left
+          root.innerHTML += `<div class="bond-stick" style="height:60px; top:100px; left:100px; transform:rotate(120deg);"></div>`;
+          root.innerHTML += `<div class="atom atom-h" style="bottom:15px; left:30px; transform:translateZ(40px)">H</div>`;
+          // H Bottom Right
+          root.innerHTML += `<div class="bond-stick" style="height:60px; top:100px; left:100px; transform:rotate(-120deg);"></div>`;
+          root.innerHTML += `<div class="atom atom-h" style="bottom:15px; right:30px; transform:translateZ(40px)">H</div>`;
+          // H Back
+          root.innerHTML += `<div class="bond-stick" style="height:60px; top:100px; left:100px; transform:rotateX(130deg);"></div>`;
+          root.innerHTML += `<div class="atom atom-h" style="top:50px; left:87px; transform:translateZ(-80px)">H</div>`;
+        } else if (type === "C2H4") {
+          // Etilen - Phẳng
+          root.innerHTML += `<div class="atom atom-c" style="left:50px; top:75px;">C</div>`;
+          root.innerHTML += `<div class="atom atom-c" style="left:100px; top:75px;">C</div>`;
+          // Double Bond
+          root.innerHTML += `<div class="bond-stick" style="height:40px; top:80px; left:98px; transform:rotate(90deg); width:6px;"></div>`;
+          root.innerHTML += `<div class="bond-stick" style="height:40px; top:80px; left:98px; transform:rotate(90deg) translateZ(5px); width:2px; background:#333;"></div>`;
+          // H
+          root.innerHTML += `<div class="atom atom-h" style="top:40px; left:30px;">H</div>`;
+          root.innerHTML += `<div class="atom atom-h" style="bottom:40px; left:30px;">H</div>`;
+          root.innerHTML += `<div class="atom atom-h" style="top:40px; right:30px;">H</div>`;
+          root.innerHTML += `<div class="atom atom-h" style="bottom:40px; right:30px;">H</div>`;
+        } else if (type === "C2H2") {
+          // Axetilen - Thẳng
+          root.innerHTML += `<div class="atom atom-c" style="left:50px; top:75px;">C</div>`;
+          root.innerHTML += `<div class="atom atom-c" style="left:100px; top:75px;">C</div>`;
+          // Triple Bond
+          root.innerHTML += `<div class="bond-stick" style="height:40px; top:80px; left:98px; transform:rotate(90deg); width:10px;"></div>`;
+          root.innerHTML += `<div class="bond-stick" style="height:40px; top:80px; left:98px; transform:rotate(90deg); width:2px; background:#333;"></div>`;
+          // H
+          root.innerHTML += `<div class="atom atom-h" style="top:87px; left:10px;">H</div>`;
+          root.innerHTML += `<div class="atom atom-h" style="top:87px; right:10px;">H</div>`;
+        }
+      }
+
+      function rotateMolecule(e) {
+        if (e.buttons !== 1) return;
+        const container = e.currentTarget.querySelector(".molecule-container");
+        if (container) {
+          container.style.animation = "none";
+          container.style.transform = `rotateX(${
+            -e.movementY + 10
+          }deg) rotateY(${e.movementX}deg)`;
+        }
+      }
+      function rotateMoleculeMobile(e) {
+        const touch = e.touches[0];
+        const container = e.currentTarget.querySelector(".molecule-container");
+        if (container) {
+          container.style.animation = "none";
+          container.style.transform = `rotateX(${
+            touch.clientY / 5
+          }deg) rotateY(${touch.clientX / 5}deg)`;
+        }
+      }
+
+      /* --- INTERACTIVE: SORTER (INTRO) --- */
+      const sortData = [
+        { name: "CH₄", type: "organic" },
+        { name: "CO₂", type: "inorganic" },
+        { name: "C₂H₅OH", type: "organic" },
+        { name: "CaCO₃", type: "inorganic" },
+        { name: "C₆H₆", type: "organic" },
+        { name: "NaCl", type: "inorganic" },
+      ];
+      let sortIdx = 0;
+      function checkSorter(choice) {
+        const item = sortData[sortIdx];
+        const msg = document.getElementById("sorter-msg");
+        const card = document.getElementById("sorter-card");
+
+        if (item.type === choice) {
+          playSound("correct");
+          msg.textContent = "Chính xác!";
+          msg.className = "h-6 mt-2 text-sm font-bold text-green-400";
+          card.classList.add("ring-2", "ring-green-400");
+        } else {
+          playSound("wrong");
+          msg.textContent = "Sai rồi!";
+          msg.className = "h-6 mt-2 text-sm font-bold text-red-400";
+          card.classList.add("ring-2", "ring-red-400");
+        }
+
+        setTimeout(() => {
+          card.classList.remove("ring-2", "ring-green-400", "ring-red-400");
+          msg.textContent = "";
+          sortIdx = (sortIdx + 1) % sortData.length;
+          card.textContent = sortData[sortIdx].name;
+        }, 800);
+      }
+
+      /* --- INTERACTIVE: BROMINE SIM --- */
+      function runBromineSim() {
+        const liquid = document.getElementById("brom-liquid");
+        const bubbles = document.getElementById("brom-bubbles");
+        const result = document.getElementById("brom-result");
+
+        playSound("click");
+        liquid.className =
+          "w-full h-24 bg-orange-600 transition-colors duration-1000 flex items-center justify-center"; // Reset
+        result.classList.add("hidden");
+        bubbles.classList.remove("hidden");
+
+        setTimeout(() => {
+          liquid.className =
+            "w-full h-24 bg-white/20 transition-colors duration-1000 flex items-center justify-center"; // React
+          showNotif("Đã mất màu dung dịch Brom!", "success");
+          setTimeout(() => {
+            bubbles.classList.add("hidden");
+            result.classList.remove("hidden");
+            playSound("correct");
+          }, 1200);
+        }, 1000);
+      }
+
+      /* --- INTERACTIVE: DISTILLATION --- */
+      function updateDistillTower() {
+        const val = document.getElementById("distill-slider").value;
+        document.getElementById("temp-display").textContent = val + "°C";
+        const info = document.getElementById("distill-info");
+
+        // Reset levels
+        [1, 2, 3, 4].forEach((i) =>
+          document.getElementById("dl-" + i).classList.remove("active")
+        );
+
+        if (val < 65) {
+          document.getElementById("dl-1").classList.add("active");
+          info.innerHTML = `<i class="fas fa-wind text-3xl text-yellow-400"></i><div><h4 class="font-bold text-yellow-400">Khí đốt (LPG)</h4><p class="text-xs text-slate-400">< 65°C. Nhiên liệu đun nấu.</p></div>`;
+        } else if (val < 170) {
+          document.getElementById("dl-2").classList.add("active");
+          info.innerHTML = `<i class="fas fa-motorcycle text-3xl text-orange-400"></i><div><h4 class="font-bold text-orange-400">Xăng</h4><p class="text-xs text-slate-400">65-170°C. Nhiên liệu xe cộ.</p></div>`;
+        } else if (val < 250) {
+          document.getElementById("dl-3").classList.add("active");
+          info.innerHTML = `<i class="fas fa-plane text-3xl text-blue-400"></i><div><h4 class="font-bold text-blue-400">Dầu hỏa</h4><p class="text-xs text-slate-400">170-250°C. Thắp sáng, phản lực.</p></div>`;
+        } else {
+          document.getElementById("dl-4").classList.add("active");
+          info.innerHTML = `<i class="fas fa-truck text-3xl text-red-400"></i><div><h4 class="font-bold text-red-400">Dầu Diesel & Dầu Mazut</h4><p class="text-xs text-slate-400">> 250°C. Nhiên liệu đốt lò, xe tải.</p></div>`;
+        }
+      }
+
+      /* --- GAME: RAIN --- */
+      let rainInterval,
+        rainTime = 30,
+        rainScore = 0,
+        isGameRunning = false;
+      function startRainGame() {
+        if (isGameRunning) return;
+        isGameRunning = true;
+        rainScore = 0;
+        rainTime = 30;
+        document.getElementById("rain-score").textContent = 0;
+        document.getElementById("rain-overlay").classList.add("hidden");
+        document.getElementById("rain-area").innerHTML = ""; // clear
+
+        const timer = setInterval(() => {
+          rainTime--;
+          document.getElementById("rain-time").textContent = rainTime;
+          if (rainTime <= 0) {
+            clearInterval(timer);
+            clearInterval(rainInterval);
+            endGame();
+          }
+        }, 1000);
+
+        rainInterval = setInterval(spawnItem, 600);
+      }
+
+      function spawnItem() {
+        const items = [
+          { t: "CH₄", ok: true },
+          { t: "C₂H₄", ok: true },
+          { t: "C₂H₂", ok: true },
+          { t: "CO₂", ok: false },
+          { t: "C₂H₅OH", ok: false },
+          { t: "CaCO₃", ok: false },
+          { t: "C₃H₈", ok: true },
+        ];
+        const item = items[Math.floor(Math.random() * items.length)];
+        const el = document.createElement("div");
+        el.textContent = item.t;
+        el.className = `absolute px-3 py-1 rounded font-bold text-sm cursor-pointer select-none shadow-lg ${
+          item.ok ? "bg-green-600 text-white" : "bg-slate-600 text-slate-300"
+        }`;
+        el.style.left = Math.random() * 90 + "%";
+        el.style.top = "-40px";
+
+        el.onclick = () => {
+          if (!isGameRunning) return;
+          if (item.ok) {
+            playSound("correct");
+            rainScore += 10;
+            el.style.transform = "scale(1.5)";
+            el.style.opacity = 0;
+            setTimeout(() => el.remove(), 200);
+          } else {
+            playSound("wrong");
+            rainScore -= 5;
+            el.classList.add("bg-red-500");
+          }
+          document.getElementById("rain-score").textContent = rainScore;
+        };
+
+        document.getElementById("rain-area").appendChild(el);
+
+        let top = -40;
+        const fall = setInterval(() => {
+          if (!isGameRunning) {
+            clearInterval(fall);
+            return;
+          }
+          top += 2;
+          el.style.top = top + "px";
+          if (top > 350) {
+            clearInterval(fall);
+            if (el.parentNode) el.remove();
+          }
+        }, 20);
+      }
+
+      function endGame() {
+        isGameRunning = false;
+        playSound("correct");
+        document.getElementById("rain-area").innerHTML = `
+            <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/80 z-20">
+                <h3 class="text-2xl font-bold text-yellow-400">Hết giờ!</h3>
+                <p class="text-white mb-4">Điểm số: ${rainScore}</p>
+                <button onclick="document.getElementById('rain-overlay').classList.remove('hidden'); this.parentElement.remove()" class="px-4 py-2 bg-blue-600 rounded-full font-bold">Menu</button>
+            </div>
+          `;
+      }
+
+      // Init
+      switchTab("intro");
+    </script>
+  </body>
+</html>

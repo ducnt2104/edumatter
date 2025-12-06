@@ -3,126 +3,463 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E-CHEM | Vũ trụ Hóa học</title>
+    <link rel="icon" href="favicon/educhem.svg" type="image/svg+xml" />
 
-    <title>EDUCHEM</title>
-    <link rel="icon" href="../favicon/educhem.svg" type="image/svg+xml" />
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="educhem.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Segoe+UI:wght@300;400;600&display=swap"
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
     <link rel="stylesheet" href="../component/component.css" />
 
-    <!-- PARTICLES BACKGROUND -->
+    <style>
+      :root {
+        --primary-color: #00d2ff; /* Neon Cyan */
+        --secondary-color: #3a7bd5; /* Deep Blue */
+        --text-color: #ffffff;
+        --card-bg: rgba(255, 255, 255, 0.05);
+        --bg-gradient: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: var(--bg-gradient);
+        color: var(--text-color);
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      /* 1. HIỆU ỨNG NỀN CANVAS (ATOM NETWORK) */
+      #chem-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none; /* Để chuột click xuyên qua canvas vào nút */
+      }
+
+      /* 2. HEADER & NAV */
+      header {
+        position: relative;
+        z-index: 10;
+        padding: 20px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(5px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .logo-group {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .logo-group i {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        animation: spin 10s linear infinite;
+      }
+
+      .site-title h1 {
+        font-family: "Orbitron", sans-serif;
+        font-size: 1.8rem;
+        font-weight: 900;
+        letter-spacing: 2px;
+        background: linear-gradient(90deg, #fff, var(--primary-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 0 15px rgba(0, 210, 255, 0.5);
+      }
+
+      .site-title p {
+        font-size: 0.8rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .nav-controls button {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: 0.3s;
+        margin-left: 10px;
+      }
+
+      .nav-controls button:hover {
+        background: var(--primary-color);
+        color: #000;
+        box-shadow: 0 0 15px var(--primary-color);
+        transform: rotate(90deg);
+      }
+
+      /* 3. HERO TEXT */
+      .hero-section {
+        text-align: center;
+        padding: 60px 20px 40px;
+        position: relative;
+        z-index: 5;
+      }
+
+      .hero-section h2 {
+        font-family: "Orbitron", sans-serif;
+        font-size: 2.5rem;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+        text-shadow: 0 0 20px var(--primary-color);
+      }
+
+      .hero-section p {
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 300;
+      }
+
+      /* 4. MAIN GRID CONTAINER */
+      .chemverse-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px 40px 80px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 40px;
+        position: relative;
+        z-index: 5;
+      }
+
+      /* 5. CARD STYLE (GLASSMORPHISM) */
+      .chem-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 40px 30px;
+        border-radius: 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+      }
+
+      .chem-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        transition: 0.5s;
+      }
+
+      .chem-card:hover::before {
+        left: 100%;
+      }
+
+      .chem-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        background: rgba(255, 255, 255, 0.15);
+        border-color: var(--primary-color);
+        box-shadow: 0 15px 40px rgba(0, 210, 255, 0.2);
+      }
+
+      .icon-wrapper {
+        width: 90px;
+        height: 90px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+        transition: 0.4s;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .chem-card i {
+        font-size: 40px;
+        color: var(--primary-color);
+        transition: 0.4s;
+      }
+
+      .chem-card:hover .icon-wrapper {
+        background: var(--primary-color);
+        transform: scale(1.1);
+        box-shadow: 0 0 30px var(--primary-color);
+        border-color: transparent;
+      }
+
+      .chem-card:hover i {
+        color: #000;
+      }
+
+      .chem-card h3 {
+        font-family: "Orbitron", sans-serif;
+        font-size: 1.4rem;
+        margin-bottom: 12px;
+        color: #fff;
+        font-weight: 700;
+      }
+
+      .chem-card p {
+        font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.6);
+        line-height: 1.6;
+      }
+
+      /* Animations */
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .logo-group i {
+          font-size: 2rem;
+        }
+        .site-title h1 {
+          font-size: 1.4rem;
+        }
+        .hero-section h2 {
+          font-size: 1.8rem;
+        }
+        .chemverse-container {
+          padding: 20px;
+        }
+      }
+    </style>
   </head>
+  <body>
+    <canvas id="chem-canvas"></canvas>
 
-  <body class="light-mode">
-    <div id="particles-bg"></div>
-    <div id="rotate-warning">
-      Vui lòng xoay ngang màn hình để sử dụng trang web
-    </div>
-    <!-- SIDEBAR -->
-    <div id="sidebar-container"></div>
-
-    <!-- HEADER -->
-    <header class="header-left" data-aos="fade-down">
-      <h1 class="site-title">EDUCHEM</h1>
-      <p class="site-slogan">Học Hóa pễ dàng – hiệu quả</p>
-
-      <div class="header-right">
-        <button id="menuToggle" class="menu-toggle">
-          <i class="fas fa-bars"></i>
-        </button>
-
-        <a href="../index.html" class="home-btn">
-          <i class="fas fa-home"></i>
-        </a>
+    <header>
+      <div class="logo-group">
+        <i class="fas fa-atom"></i>
+        <div class="site-title">
+          <h1>EDUCHEM</h1>
+          <p>The Chemistry Universe</p>
+        </div>
+      </div>
+      <div class="nav-controls">
+        <a href="educhem.html"
+          ><button title="Trang chủ"><i class="fas fa-home"></i></button
+        ></a>
+        <button id="theme-toggle"><i class="fas fa-lightbulb"></i></button>
       </div>
     </header>
 
-    <!-- MAIN -->
-    <main class="main-content">
-      <section
-        class="card"
-        data-link="chemstudybaby/chemstudybaby.html"
+    <div class="hero-section" data-aos="fade-down" data-aos-duration="1000">
+      <h2>Trung Tâm Điều Hành</h2>
+      <p>Chọn phân khu để bắt đầu hành trình khám phá</p>
+    </div>
+
+    <main class="chemverse-container">
+      <div
+        class="chem-card"
+        onclick="openLink('chemstudybaby/chemstudybaby.html')"
         data-aos="zoom-in"
+        data-aos-delay="100"
       >
-        <div class="icon-bg"><i class="fas fa-flask"></i></div>
-        <h3>
-          CHEMSTUDY<br />
-          -BABY- <br />
-          Học tập hóa học <br />
-          -THCS-
-        </h3>
-      </section>
+        <div class="icon-wrapper"><i class="fas fa-flask"></i></div>
+        <h3>CHEM STUDY BABY</h3>
+        <p>Kiến thức nền tảng Hóa học THCS.<br />Dành cho người mới bắt đầu.</p>
+      </div>
 
-      <section
-        class="card"
-        data-link="chemstudyteen/chemstudyteen.html"
+      <div
+        class="chem-card"
+        onclick="openLink('chemstudyteen/chemstudyteen.html')"
         data-aos="zoom-in"
+        data-aos-delay="200"
       >
-        <div class="icon-bg"><i class="fas fa-vial"></i></div>
-        <h3>
-          CHEMSTUDY<br />
-          -TEEN- <br />
-          Học tập hóa học <br />
-          -THPT-
-        </h3>
-      </section>
+        <div class="icon-wrapper"><i class="fas fa-vial"></i></div>
+        <h3>CHEM STUDY TEEN</h3>
+        <p>Kiến thức chuyên sâu Hóa học THPT.<br />Luyện thi và nâng cao.</p>
+      </div>
 
-      <section class="card" data-link="../suco.html" data-aos="zoom-in">
-        <div class="icon-bg"><i class="fas fa-comments"></i></div>
-        <h3>
-          CHEMFORUM <br />
-          -Diễn đàn hóa học-
-        </h3>
-      </section>
+      <div
+        class="chem-card"
+        onclick="openLink('chemforum/chemforum.html')"
+        data-aos="zoom-in"
+        data-aos-delay="300"
+      >
+        <div class="icon-wrapper"><i class="fas fa-comments"></i></div>
+        <h3>CHEM FORUM</h3>
+        <p>Diễn đàn thảo luận sôi nổi.<br />Hỏi đáp và chia sẻ tài liệu.</p>
+      </div>
 
-      <section class="card" data-link="../suco.html" data-aos="zoom-in">
-        <div class="icon-bg"><i class="fas fa-globe"></i></div>
-        <h3>
-          CHEMVERSE <br />
-          - Vũ trụ hóa học -<br />
-          Công cụ hỗ trợ học tập <br />
-          -TẠI WEB-
-        </h3>
-      </section>
+      <div
+        class="chem-card"
+        onclick="openLink('chemverse/chemverse.html')"
+        data-aos="zoom-in"
+        data-aos-delay="400"
+      >
+        <div class="icon-wrapper"><i class="fas fa-globe-asia"></i></div>
+        <h3>CHEM VERSE</h3>
+        <p>Vũ trụ mô phỏng 3D.<br />Trải nghiệm trực quan sống động.</p>
+      </div>
+
+      <div
+        class="chem-card"
+        style="opacity: 0.7"
+        onclick="openLink('../suco.html')"
+        data-aos="zoom-in"
+        data-aos-delay="500"
+      >
+        <div class="icon-wrapper"><i class="fas fa-tools"></i></div>
+        <h3>ĐANG XÂY DỰNG</h3>
+        <p>Khu vực đang thi công.<br />Vui lòng quay lại sau.</p>
+      </div>
     </main>
 
-    <!-- FOOTER -->
-    <div id="footer-container"></div>
-
-    <!-- JS LIBS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
-
-    <!-- INIT -->
-    <script>
-      AOS.init();
-
-      // Background particles
-      particlesJS.load("particles-bg", "../particles.json");
-    </script>
-
-    <!-- AUTO COMPONENT LOADER -->
-    <script src="../component/component.js"></script>
-
-    <!-- CUSTOM SCRIPT -->
-    <script src="educhem.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.1/aos.js"></script>
 
     <script>
-      // Điều hướng card
-      document.querySelectorAll("[data-link]").forEach((el) => {
-        el.addEventListener("click", () => {
-          window.location.href = el.dataset.link;
-        });
+      // 1. KHỞI TẠO AOS
+      AOS.init({ once: true });
+
+      // 2. CHUYỂN TRANG MƯỢT
+      function openLink(url) {
+        document.body.style.opacity = 0;
+        document.body.style.transition = "opacity 0.5s";
+        setTimeout(() => {
+          window.location.href = url;
+        }, 500);
+      }
+
+      // 3. HIỆU ỨNG CANVAS: MẠNG LƯỚI NGUYÊN TỬ (ATOM NETWORK)
+      const canvas = document.getElementById("chem-canvas");
+      const ctx = canvas.getContext("2d");
+
+      let particlesArray;
+
+      // Thiết lập kích thước canvas
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.addEventListener("resize", () => {
+        resizeCanvas();
+        init();
       });
+      resizeCanvas();
+
+      // Class Hạt (Particle)
+      class Particle {
+        constructor(x, y, directionX, directionY, size, color) {
+          this.x = x;
+          this.y = y;
+          this.directionX = directionX;
+          this.directionY = directionY;
+          this.size = size;
+          this.color = color;
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+          ctx.fillStyle = "#00d2ff"; // Màu hạt Neon
+          ctx.fill();
+        }
+        update() {
+          if (this.x > canvas.width || this.x < 0)
+            this.directionX = -this.directionX;
+          if (this.y > canvas.height || this.y < 0)
+            this.directionY = -this.directionY;
+          this.x += this.directionX;
+          this.y += this.directionY;
+          this.draw();
+        }
+      }
+
+      // Khởi tạo mảng hạt
+      function init() {
+        particlesArray = [];
+        let numberOfParticles = (canvas.height * canvas.width) / 9000;
+        for (let i = 0; i < numberOfParticles; i++) {
+          let size = Math.random() * 2 + 1;
+          let x = Math.random() * (innerWidth - size * 4) + size * 2;
+          let y = Math.random() * (innerHeight - size * 4) + size * 2;
+          let directionX = Math.random() * 1 - 0.5;
+          let directionY = Math.random() * 1 - 0.5;
+          let color = "#ffffff";
+          particlesArray.push(
+            new Particle(x, y, directionX, directionY, size, color)
+          );
+        }
+      }
+
+      // Vẽ dây liên kết
+      function connect() {
+        let opacityValue = 1;
+        for (let a = 0; a < particlesArray.length; a++) {
+          for (let b = a; b < particlesArray.length; b++) {
+            let distance =
+              (particlesArray[a].x - particlesArray[b].x) *
+                (particlesArray[a].x - particlesArray[b].x) +
+              (particlesArray[a].y - particlesArray[b].y) *
+                (particlesArray[a].y - particlesArray[b].y);
+
+            if (distance < (canvas.width / 7) * (canvas.height / 7)) {
+              opacityValue = 1 - distance / 20000;
+              ctx.strokeStyle = "rgba(0, 210, 255," + opacityValue + ")";
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+              ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+              ctx.stroke();
+            }
+          }
+        }
+      }
+
+      // Animation Loop
+      function animate() {
+        requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        for (let i = 0; i < particlesArray.length; i++) {
+          particlesArray[i].update();
+        }
+        connect();
+      }
+
+      init();
+      animate();
     </script>
+    <script src="../component/component.js"></script>
+    <div id="footer-container"></div>
   </body>
 </html>
