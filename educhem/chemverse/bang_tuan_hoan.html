@@ -3,157 +3,962 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bảng Tuần Hoàn Hóa Học Hiện Đại</title>
+    <title>Bảng Tuần Hoàn 3D Pro</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap"
+      rel="stylesheet"
+    />
     <style>
-      /* Các style bổ sung cho giao diện Bảng Tuần Hoàn */
+      body {
+        font-family: "Inter", sans-serif;
+      }
+
+      /* Tùy chỉnh thanh cuộn cho đẹp */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #1e293b;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #475569;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #64748b;
+      }
+
+      /* Layout Grid Bảng Tuần Hoàn */
       .periodic-table {
         display: grid;
-        /* 18 cột theo cấu trúc bảng tuần hoàn */
-        grid-template-columns: repeat(18, minmax(0, 1fr));
-        gap: 4px; /* Khoảng cách giữa các ô */
+        grid-template-columns: repeat(18, minmax(64px, 1fr));
+        grid-template-rows: repeat(10, minmax(64px, 1fr));
+        gap: 6px;
+        padding: 40px;
+        min-width: 1400px; /* Đảm bảo không bị vỡ trên màn hình nhỏ */
+        margin: 0 auto;
       }
-      #atom-3d-container {
-        width: 100%;
-        height: 300px; /* Chiều cao cố định cho mô hình 3D */
-        border-radius: 8px;
-        overflow: hidden;
-        background-color: #1f2937; /* Màu nền tối */
-      }
+
       .element-cell {
-        /* Đảm bảo ô vuông và vị trí được xác định bởi JS */
-        aspect-ratio: 1 / 1;
+        aspect-ratio: 1/1;
+        position: relative;
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
+        justify-content: space-between;
+        padding: 6px;
         cursor: pointer;
-        transition: all 0.2s ease-in-out;
-        font-size: 0.75rem; /* text-xs */
-        font-weight: bold;
-        border-width: 2px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-          0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
       }
 
       .element-cell:hover {
-        transform: scale(1.05);
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2),
-          0 4px 6px -4px rgba(0, 0, 0, 0.1);
-        z-index: 10;
+        transform: scale(1.35);
+        z-index: 50;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+        border-color: rgba(255, 255, 255, 0.5);
       }
 
-      /* Định vị bằng CSS Grid */
-      /* JS sẽ đặt style grid-column và grid-row cho từng ô */
-      .grid-col-1 {
-        grid-column: 1;
-      }
-      .grid-col-18 {
-        grid-column: 18;
-      }
-      /* ... và các giá trị khác ... */
-
-      /* Modal backdrop mờ */
-      .modal-backdrop {
-        background-color: rgba(0, 0, 0, 0.8);
-        backdrop-filter: blur(5px);
+      /* Nhãn chỉ dẫn cho họ Lanthanides/Actinides */
+      .f-block-label {
+        grid-column: 1 / span 3; /* Chiếm 3 cột đầu */
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: 12px;
+        font-weight: 600;
+        font-size: 13px;
+        color: #94a3b8;
+        letter-spacing: 0.05em;
       }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body class="bg-gray-50 dark:bg-gray-900 min-h-screen p-4 md:p-8">
-    <h1
-      class="text-3xl md:text-5xl font-extrabold text-center mb-8 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600"
+  <body
+    class="bg-slate-900 text-slate-100 h-screen overflow-hidden flex flex-col"
+  >
+    <header
+      class="bg-slate-800 border-b border-slate-700 py-4 px-8 shadow-lg z-10 flex justify-between items-center shrink-0"
     >
-      ✨ Bảng Tuần Hoàn Hóa Học Hiện Đại
-    </h1>
+      <h1
+        class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300 tracking-tight"
+      >
+        BẢNG TUẦN HOÀN 3D
+      </h1>
+      <div
+        class="text-xs font-mono text-slate-400 border border-slate-600 px-3 py-1 rounded-full"
+      >
+        Interactive Chemistry • Group VIIIB Fixed
+      </div>
+    </header>
+
+    <main class="flex-1 overflow-auto relative custom-scrollbar bg-[#0f172a]">
+      <div class="w-full flex justify-center">
+        <div id="periodic-table" class="periodic-table"></div>
+      </div>
+    </main>
 
     <div
-      id="periodic-table-container"
-      class="periodic-table max-w-7xl mx-auto"
-    ></div>
-
-    <div
-      id="element-modal"
-      class="fixed inset-0 hidden modal-backdrop items-center justify-center p-4 z-50"
+      id="modal-backdrop"
+      class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4"
     >
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-lg p-6 relative border-t-8 border-blue-500 transform transition-all duration-300 scale-95 opacity-0"
         id="modal-content"
+        class="bg-white w-full max-w-7xl h-[90vh] rounded-3xl shadow-2xl overflow-hidden flex transition-all duration-300 transform scale-95 opacity-0 font-sans"
       >
-        <button
-          class="absolute top-3 right-3 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white text-3xl font-bold"
-          onclick="closeModal()"
+        <div
+          class="w-[35%] bg-slate-900 relative border-r border-slate-700 flex flex-col justify-between shrink-0"
         >
-          &times;
-        </button>
-        <h2
-          id="modal-name"
-          class="text-3xl font-bold mb-2 text-blue-600 dark:text-blue-400"
-        ></h2>
-        <p class="text-sm font-mono text-gray-500 dark:text-gray-400 mb-4">
-          #<span id="modal-number"></span> | Khối lượng:
-          <span id="modal-mass"></span>
-        </p>
-
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <h3 class="font-semibold text-lg text-gray-700 dark:text-gray-200">
-              Thông tin cơ bản
-            </h3>
-            <p>
-              <strong>Ký hiệu:</strong>
-              <span
-                id="modal-symbol"
-                class="text-4xl font-black text-red-500"
-              ></span>
-            </p>
-            <p>
-              <strong>Chu kỳ/Nhóm:</strong> <span id="modal-position"></span>
-            </p>
-            <p>
-              <strong>Nguyên tố khối:</strong> <span id="modal-block"></span>
-            </p>
-          </div>
-          <div>
-            <h3 class="font-semibold text-lg text-gray-700 dark:text-gray-200">
-              Cấu hình electron
-            </h3>
-            <p
-              class="text-xl font-mono bg-yellow-100 dark:bg-yellow-900 p-2 rounded-md shadow-inner text-yellow-800 dark:text-yellow-300"
+          <div
+            id="atom-container"
+            class="w-full h-[55%] cursor-move z-10 relative"
+          >
+            <div
+              class="absolute bottom-4 left-0 w-full text-center pointer-events-none opacity-50"
             >
-              <span id="modal-e-config"></span>
-            </p>
-            <p class="mt-2">
-              <strong>Số lớp:</strong> <span id="modal-e-layers"></span>
-            </p>
-            <p><strong>p/n/e:</strong> <span id="modal-parts"></span></p>
+              <p class="text-white text-[10px] uppercase tracking-[0.2em]">
+                Interactive 3D Atom
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="h-[45%] bg-slate-800 p-6 flex flex-col gap-4 overflow-y-auto custom-scrollbar"
+          >
+            <div class="text-center">
+              <h1
+                id="m-symbol"
+                class="text-8xl font-black text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 to-blue-600 drop-shadow-lg"
+              ></h1>
+              <h2
+                id="m-name-vi"
+                class="text-3xl font-bold text-white mt-2"
+              ></h2>
+              <h3
+                id="m-name-en"
+                class="text-lg text-slate-400 italic font-serif"
+              ></h3>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 mt-2">
+              <div
+                class="bg-red-500/10 border border-red-500/30 p-2 rounded text-center"
+              >
+                <div class="text-[10px] text-red-400 uppercase font-bold">
+                  Proton
+                </div>
+                <div id="m-p" class="text-xl font-bold text-red-500"></div>
+              </div>
+              <div
+                class="bg-slate-500/10 border border-slate-500/30 p-2 rounded text-center"
+              >
+                <div class="text-[10px] text-slate-400 uppercase font-bold">
+                  Neutron
+                </div>
+                <div id="m-n" class="text-xl font-bold text-slate-400"></div>
+              </div>
+              <div
+                class="bg-cyan-500/10 border border-cyan-500/30 p-2 rounded text-center"
+              >
+                <div class="text-[10px] text-cyan-400 uppercase font-bold">
+                  Electron
+                </div>
+                <div id="m-e" class="text-xl font-bold text-cyan-500"></div>
+              </div>
+            </div>
+
+            <div
+              class="bg-slate-900/50 p-3 rounded border border-slate-600 text-center"
+            >
+              <div class="text-[10px] text-slate-500 uppercase mb-1">
+                Cấu hình Electron
+              </div>
+              <div
+                id="m-config"
+                class="text-lg font-mono text-yellow-400 font-bold tracking-wider"
+              ></div>
+            </div>
           </div>
         </div>
 
-        <h3 class="font-semibold text-lg text-gray-700 dark:text-gray-200 mt-4">
-          Ứng dụng chính
-        </h3>
-        <p
-          id="modal-application"
-          class="text-gray-600 dark:text-gray-300 italic border-l-4 border-teal-500 pl-3 py-1 bg-teal-50 dark:bg-teal-900/30 rounded-r"
-        ></p>
+        <div class="w-[65%] bg-slate-50 h-full relative flex flex-col">
+          <button
+            onclick="closeModal()"
+            class="absolute top-4 right-4 z-20 p-2 rounded-full bg-white shadow-md hover:bg-red-50 hover:text-red-600 transition-colors text-slate-400 border border-slate-100"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+
+          <div class="overflow-y-auto h-full p-8 custom-scrollbar-light">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              <div
+                class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm"
+              >
+                <div class="text-xs text-slate-400 uppercase font-bold">
+                  Số hiệu (Z)
+                </div>
+                <div
+                  id="m-number"
+                  class="text-2xl font-bold text-slate-800"
+                ></div>
+              </div>
+              <div
+                class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm"
+              >
+                <div class="text-xs text-slate-400 uppercase font-bold">
+                  Nguyên tử khối
+                </div>
+                <div
+                  id="m-mass"
+                  class="text-2xl font-bold text-slate-800"
+                ></div>
+              </div>
+              <div
+                class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm"
+              >
+                <div class="text-xs text-slate-400 uppercase font-bold">
+                  Độ âm điện
+                </div>
+                <div
+                  id="m-electronegativity"
+                  class="text-2xl font-bold text-purple-600"
+                ></div>
+              </div>
+              <div
+                class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm"
+              >
+                <div class="text-xs text-slate-400 uppercase font-bold">
+                  Hóa trị (Ngoài cùng)
+                </div>
+                <div
+                  id="m-valence"
+                  class="text-2xl font-bold text-indigo-600"
+                ></div>
+              </div>
+            </div>
+
+            <div class="flex gap-6 mb-8">
+              <div class="w-2/3">
+                <h4
+                  class="flex items-center gap-2 font-bold text-slate-800 text-lg mb-3"
+                >
+                  <span class="w-1 h-6 bg-blue-500 rounded-full"></span> Nguồn
+                  gốc & Lịch sử
+                </h4>
+                <p
+                  id="m-origin"
+                  class="text-slate-600 bg-blue-50 p-4 rounded-lg border border-blue-100 leading-relaxed italic"
+                ></p>
+              </div>
+              <div class="w-1/3 space-y-2">
+                <div
+                  class="flex justify-between border-b border-slate-200 pb-1"
+                >
+                  <span class="text-slate-500 text-sm">Nhóm</span>
+                  <span id="m-group" class="font-bold text-slate-800"></span>
+                </div>
+                <div
+                  class="flex justify-between border-b border-slate-200 pb-1"
+                >
+                  <span class="text-slate-500 text-sm">Chu kỳ</span>
+                  <span id="m-period" class="font-bold text-slate-800"></span>
+                </div>
+                <div
+                  class="flex justify-between border-b border-slate-200 pb-1"
+                >
+                  <span class="text-slate-500 text-sm">Phân loại</span>
+                  <span id="m-type" class="font-bold text-blue-600"></span>
+                </div>
+                <div
+                  class="flex justify-between border-b border-slate-200 pb-1"
+                >
+                  <span class="text-slate-500 text-sm">Block</span>
+                  <span
+                    id="m-block"
+                    class="font-bold text-slate-800 uppercase"
+                  ></span>
+                </div>
+              </div>
+            </div>
+
+            <hr class="border-slate-200 mb-8" />
+
+            <div class="mb-8">
+              <h4
+                class="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2"
+              >
+                <svg
+                  class="w-5 h-5 text-amber-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
+                  ></path>
+                </svg>
+                Tính chất Vật lý
+              </h4>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                <div class="bg-slate-100 p-3 rounded-lg">
+                  <div class="text-xs text-slate-500">Trạng thái</div>
+                  <div id="m-state" class="font-bold text-slate-900"></div>
+                </div>
+                <div class="bg-slate-100 p-3 rounded-lg">
+                  <div class="text-xs text-slate-500">Màu sắc</div>
+                  <div
+                    id="m-color"
+                    class="font-bold text-slate-900 text-sm"
+                  ></div>
+                </div>
+                <div class="bg-slate-100 p-3 rounded-lg">
+                  <div class="text-xs text-slate-500">Nhiệt độ nóng chảy</div>
+                  <div id="m-melting" class="font-bold text-slate-900"></div>
+                </div>
+                <div class="bg-slate-100 p-3 rounded-lg">
+                  <div class="text-xs text-slate-500">Nhiệt độ sôi</div>
+                  <div id="m-boiling" class="font-bold text-slate-900"></div>
+                </div>
+              </div>
+              <div
+                class="bg-amber-50 border border-amber-100 p-3 rounded-lg text-sm text-slate-700"
+              >
+                <span class="font-bold text-amber-600">Đặc điểm khác:</span>
+                <span id="m-physical-props"></span>
+              </div>
+            </div>
+
+            <div class="mb-8">
+              <h4
+                class="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2"
+              >
+                <svg
+                  class="w-5 h-5 text-green-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
+                  ></path>
+                </svg>
+                Hóa học & Phản ứng
+              </h4>
+
+              <div class="mb-4">
+                <div class="text-sm font-bold text-slate-500 mb-1">
+                  Số Oxy hóa thường gặp:
+                </div>
+                <div id="m-oxidation" class="flex flex-wrap gap-2"></div>
+              </div>
+
+              <div class="space-y-3">
+                <div class="bg-green-50 p-4 rounded-lg border border-green-100">
+                  <div class="font-bold text-green-700 text-sm mb-1">
+                    Khả năng phản ứng:
+                  </div>
+                  <p id="m-reactivity" class="text-sm text-slate-700"></p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                  <div class="font-bold text-slate-700 text-sm mb-1">
+                    Phản ứng tiêu biểu:
+                  </div>
+                  <code
+                    id="m-reaction"
+                    class="text-sm text-red-600 font-mono block bg-white p-2 rounded border border-slate-100"
+                  ></code>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div>
+                <h4
+                  class="font-bold text-slate-800 mb-2 border-b border-slate-200 pb-2"
+                >
+                  Ứng dụng thực tế
+                </h4>
+                <p
+                  id="m-applications"
+                  class="text-sm text-slate-600 leading-relaxed"
+                ></p>
+              </div>
+              <div>
+                <h4
+                  class="font-bold text-slate-800 mb-2 border-b border-slate-200 pb-2"
+                >
+                  Trạng thái tự nhiên
+                </h4>
+                <p
+                  id="m-natural"
+                  class="text-sm text-slate-600 leading-relaxed"
+                ></p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div
+                class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm"
+              >
+                <div
+                  class="bg-slate-100 px-4 py-2 font-bold text-slate-700 text-sm flex justify-between"
+                >
+                  <span>Đồng vị chính</span>
+                  <span
+                    id="m-isotopes-summary"
+                    class="font-normal text-xs text-slate-500"
+                  ></span>
+                </div>
+                <div class="p-0">
+                  <table class="w-full text-sm text-left">
+                    <thead class="text-xs text-slate-500 bg-slate-50 uppercase">
+                      <tr>
+                        <th class="px-4 py-2">Tên</th>
+                        <th class="px-4 py-2">%</th>
+                        <th class="px-4 py-2">Vai trò</th>
+                      </tr>
+                    </thead>
+                    <tbody id="m-isotopes-list" class="text-slate-700"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div>
+                <div class="font-bold text-slate-800 text-sm mb-2 uppercase">
+                  Hợp chất quan trọng
+                </div>
+                <div id="m-compounds-list" class="space-y-2"></div>
+              </div>
+            </div>
+
+            <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+              <h4 class="font-bold text-red-700 flex items-center gap-2">
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  ></path>
+                </svg>
+                An toàn & Độc tính
+              </h4>
+              <div class="mt-2 text-sm text-red-800">
+                <p class="mb-1">
+                  <span class="font-bold">Độc tính:</span>
+                  <span id="m-toxicity"></span>
+                </p>
+                <p>
+                  <span class="font-bold">Nguy hiểm:</span>
+                  <span id="m-hazards"></span>
+                </p>
+              </div>
+            </div>
+
+            <div class="h-10"></div>
+          </div>
+        </div>
       </div>
     </div>
-    <div
-      id="element-modal"
-      class="fixed inset-0 hidden modal-backdrop items-center justify-center p-4 z-50"
-    >
-      <div id="modal-content" class="... (các class cũ) ...">
-        <h3 class="font-semibold text-lg text-gray-700 dark:text-gray-200 mt-6">
-          ⚛️ Mô hình Nguyên tử 3D
-        </h3>
-        <div id="atom-3d-container" class="mb-4"></div>
-      </div>
-    </div>
+
     <script src="element.js"></script>
-    <script src="script.js"></script>
+
+    <script>
+      // ==========================================
+      // 1. CẤU HÌNH CỘT (GRID CONFIG)
+      // ==========================================
+      const romanToColumn = {
+        IA: 1,
+        IIA: 2,
+        IIIB: 3,
+        IVB: 4,
+        VB: 5,
+        VIB: 6,
+        VIIB: 7,
+        VIIIB: 8, // Mặc định map vào cột 8, sẽ xử lý lại ở logic dưới
+        IB: 11,
+        IIB: 12,
+        IIIA: 13,
+        IVA: 14,
+        VA: 15,
+        VIA: 16,
+        VIIA: 17,
+        VIIIA: 18,
+      };
+
+      const tableContainer = document.getElementById("periodic-table");
+
+      // ==========================================
+      // 2. LOGIC TÍNH TOÁN VỊ TRÍ (QUAN TRỌNG)
+      // ==========================================
+      function getGridPosition(element) {
+        const z = element.basic.number;
+        const groupRaw = element.details.position.group;
+
+        // A. Xử lý họ Lanthanides (57-71) -> Dòng riêng 1
+        if (z >= 57 && z <= 71) {
+          return { row: 9, col: z - 57 + 4 };
+        }
+
+        // B. Xử lý họ Actinides (89-103) -> Dòng riêng 2
+        if (z >= 89 && z <= 103) {
+          return { row: 10, col: z - 89 + 4 };
+        }
+
+        // C. Xử lý nhóm VIIIB (Sắt, Coban, Niken...) -> Tách ra 3 cột 8, 9, 10
+        if (groupRaw === "VIIIB") {
+          // Cột 8: Fe(26), Ru(44), Os(76), Hs(108)
+          if ([26, 44, 76, 108].includes(z))
+            return { row: element.details.position.period, col: 8 };
+          // Cột 9: Co(27), Rh(45), Ir(77), Mt(109)
+          if ([27, 45, 77, 109].includes(z))
+            return { row: element.details.position.period, col: 9 };
+          // Cột 10: Ni(28), Pd(46), Pt(78), Ds(110)
+          if ([28, 46, 78, 110].includes(z))
+            return { row: element.details.position.period, col: 10 };
+
+          // Fallback (nếu có lỗi dữ liệu thì về cột 8)
+          return { row: element.details.position.period, col: 8 };
+        }
+
+        // D. Các nguyên tố còn lại
+        let col = 1;
+        if (!isNaN(groupRaw)) {
+          col = parseInt(groupRaw);
+        } else if (romanToColumn[groupRaw]) {
+          col = romanToColumn[groupRaw];
+        }
+
+        return {
+          row: element.details.position.period,
+          col: col,
+        };
+      }
+
+      // ==========================================
+      // 3. RENDER BẢNG
+      // ==========================================
+      function renderTable() {
+        if (typeof DETAILED_PERIODIC_TABLE === "undefined") {
+          console.error(
+            "Không tìm thấy dữ liệu DETAILED_PERIODIC_TABLE từ element.js"
+          );
+          return;
+        }
+
+        // Tạo nhãn dòng F-block
+        const hasLanthanides = DETAILED_PERIODIC_TABLE.some(
+          (e) => e.basic.number >= 57 && e.basic.number <= 71
+        );
+        if (hasLanthanides) {
+          const labelLa = document.createElement("div");
+          labelLa.className = "f-block-label";
+          labelLa.style.gridRow = 9;
+          labelLa.innerText = "57-71 Lanthanides";
+          tableContainer.appendChild(labelLa);
+
+          const labelAc = document.createElement("div");
+          labelAc.className = "f-block-label";
+          labelAc.style.gridRow = 10;
+          labelAc.innerText = "89-103 Actinides";
+          tableContainer.appendChild(labelAc);
+        }
+
+        DETAILED_PERIODIC_TABLE.forEach((el) => {
+          const pos = getGridPosition(el);
+          const cell = document.createElement("div");
+
+          // Lấy style màu sắc, fallback nếu thiếu
+          const bgClass = el.styles?.color || "bg-slate-700";
+          const textClass = el.styles?.text || "text-white";
+          const borderClass = el.styles?.border || "border-slate-600";
+
+          cell.className = `element-cell ${bgClass} ${textClass} ${borderClass}`;
+          cell.style.gridColumn = pos.col;
+          cell.style.gridRow = pos.row;
+
+          // Nội dung ô
+          cell.innerHTML = `
+            <div class="text-[10px] font-mono opacity-60 absolute top-1 left-2">${el.basic.number}</div>
+            <div class="text-xl md:text-2xl font-black mt-2 text-center drop-shadow-md">${el.basic.symbol}</div>
+            <div class="text-[9px] font-semibold truncate w-full text-center px-1 opacity-90">${el.basic.nameVI}</div>
+          `;
+
+          // Sự kiện click
+          cell.onclick = () => openModal(el);
+          tableContainer.appendChild(cell);
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", renderTable);
+
+      // ==========================================
+      // 4. LOGIC HIỂN THỊ MODAL CHI TIẾT
+      // ==========================================
+      const modalBackdrop = document.getElementById("modal-backdrop");
+      const modalContent = document.getElementById("modal-content");
+
+      // Hàm tiện ích: Trả về "N/A" nếu dữ liệu null/undefined
+      const safe = (val, suffix = "") => (val ? val + suffix : "---");
+
+      function openModal(data) {
+        const b = data.basic;
+        const d = data.details;
+        const p = d.physical || {};
+        const c = d.chemical || {};
+        const pos = d.position || {};
+
+        // --- 1. Header & Cơ bản ---
+        document.getElementById("m-symbol").innerText = b.symbol;
+        document.getElementById("m-name-vi").innerText = b.nameVI;
+        document.getElementById("m-name-en").innerText = b.nameEN;
+        document.getElementById("m-number").innerText = b.number;
+        document.getElementById("m-mass").innerText = b.atomicMass;
+        document.getElementById("m-config").innerText = b.electronConfig;
+
+        // Hạt cơ bản
+        document.getElementById("m-p").innerText = b.number;
+        document.getElementById("m-e").innerText = b.number;
+        // Tính neutron gần đúng = Khối lượng - Proton (làm tròn)
+        document.getElementById("m-n").innerText =
+          Math.round(b.atomicMass) - b.number;
+
+        // --- 2. Thông số chỉ số ---
+        document.getElementById("m-electronegativity").innerText = safe(b.en); // Độ âm điện
+        document.getElementById("m-valence").innerText = safe(
+          b.valenceElectrons
+        ); // Hóa trị lớp ngoài
+
+        // --- 3. Vị trí & Nguồn gốc ---
+        document.getElementById("m-group").innerText = safe(pos.group);
+        document.getElementById("m-period").innerText = safe(pos.period);
+        document.getElementById("m-type").innerText = safe(pos.type);
+        document.getElementById("m-block").innerText = safe(
+          pos.block,
+          "-block"
+        );
+        document.getElementById("m-origin").innerText =
+          d.origin || "Đang cập nhật dữ liệu lịch sử...";
+
+        // --- 4. Tính chất Vật lý ---
+        document.getElementById("m-state").innerText = safe(p.state);
+        document.getElementById("m-color").innerText = safe(p.color);
+        document.getElementById("m-melting").innerText = safe(p.meltingPoint);
+        document.getElementById("m-boiling").innerText = safe(p.boilingPoint);
+        document.getElementById("m-physical-props").innerText = safe(
+          p.properties,
+          "."
+        );
+
+        // --- 5. Hóa học & Số Oxy hóa ---
+        // Render Badges cho số oxy hóa
+        const oxContainer = document.getElementById("m-oxidation");
+        oxContainer.innerHTML = "";
+        if (c.oxidationStates) {
+          // Tách chuỗi "+1, -1" thành mảng và render từng cái
+          const states = c.oxidationStates
+            .toString()
+            .split(",")
+            .map((s) => s.trim());
+          states.forEach((state) => {
+            const badge = document.createElement("span");
+            badge.className =
+              "px-2 py-1 bg-indigo-100 text-indigo-700 text-xs font-bold rounded border border-indigo-200";
+            badge.innerText = state;
+            oxContainer.appendChild(badge);
+          });
+        } else {
+          oxContainer.innerText = "---";
+        }
+
+        document.getElementById("m-reactivity").innerText = safe(
+          c.reactivity,
+          "."
+        );
+        document.getElementById("m-reaction").innerText =
+          safe(c.notableReactions) || "Không có dữ liệu phản ứng đặc trưng.";
+
+        // --- 6. Ứng dụng & Tự nhiên ---
+        document.getElementById("m-applications").innerText = safe(
+          d.applications,
+          "."
+        );
+        document.getElementById("m-natural").innerText = safe(
+          d.naturalOccurrence,
+          "."
+        );
+
+        // --- 7. Đồng vị (Render Table Rows) ---
+        const isoList = document.getElementById("m-isotopes-list");
+        isoList.innerHTML = ""; // Clear cũ
+        document.getElementById("m-isotopes-summary").innerText =
+          d.isotopes?.summary || "";
+
+        if (d.isotopes && d.isotopes.list && d.isotopes.list.length > 0) {
+          d.isotopes.list.forEach((iso) => {
+            const tr = document.createElement("tr");
+            tr.className = "border-b border-slate-100 hover:bg-slate-50";
+            tr.innerHTML = `
+        <td class="px-4 py-2 font-medium text-slate-800">${iso.name}</td>
+        <td class="px-4 py-2 text-slate-500">${iso.abundance || "Vết"}</td>
+        <td class="px-4 py-2 text-xs text-slate-500 italic">${
+          iso.role || "-"
+        }</td>
+      `;
+            isoList.appendChild(tr);
+          });
+        } else {
+          isoList.innerHTML = `<tr><td colspan="3" class="px-4 py-2 text-center text-slate-400 italic">Dữ liệu đồng vị đang cập nhật...</td></tr>`;
+        }
+
+        // --- 8. Hợp chất (Render Cards) ---
+        const compList = document.getElementById("m-compounds-list");
+        compList.innerHTML = ""; // Clear cũ
+
+        if (d.compounds && d.compounds.length > 0) {
+          d.compounds.forEach((comp) => {
+            const div = document.createElement("div");
+            div.className =
+              "bg-white p-3 rounded border border-slate-200 shadow-sm flex items-start gap-3";
+            div.innerHTML = `
+        <div class="bg-blue-100 text-blue-700 font-bold px-2 py-1 rounded text-xs min-w-[50px] text-center">${comp.formula}</div>
+        <div>
+            <div class="font-bold text-slate-800 text-sm">${comp.name}</div>
+            <div class="text-xs text-slate-500">${comp.desc}</div>
+        </div>
+      `;
+            compList.appendChild(div);
+          });
+        } else {
+          compList.innerHTML = `<div class="text-slate-400 text-sm italic">Không có hợp chất quan trọng hoặc chưa cập nhật.</div>`;
+        }
+
+        // --- 9. An toàn ---
+        const safety = d.safety || {};
+        document.getElementById("m-toxicity").innerText = safe(safety.toxicity);
+        document.getElementById("m-hazards").innerText = safe(safety.hazards);
+
+        // --- HIỆU ỨNG MỞ MODAL ---
+        modalBackdrop.classList.remove("hidden");
+        // Animation delay
+        setTimeout(() => {
+          modalContent.classList.remove("scale-95", "opacity-0");
+          modalContent.classList.add("scale-100", "opacity-100");
+        }, 10);
+
+        // --- KHỞI TẠO 3D (Giữ nguyên logic cũ) ---
+        initAtom3D(b.number);
+      }
+
+      function closeModal() {
+        modalContent.classList.remove("scale-100", "opacity-100");
+        modalContent.classList.add("scale-95", "opacity-0");
+
+        setTimeout(() => {
+          modalBackdrop.classList.add("hidden");
+          stop3D(); // Tắt 3D để tiết kiệm RAM
+        }, 300);
+      }
+
+      // Click ra ngoài để đóng
+      modalBackdrop.addEventListener("click", (e) => {
+        if (e.target === modalBackdrop) closeModal();
+      });
+
+      // ==========================================
+      // 5. THREE.JS ENGINE (ATOM 3D)
+      // ==========================================
+      let scene, camera, renderer, animationId;
+      const container = document.getElementById("atom-container");
+      let electrons = [];
+      let nucleusGroup;
+
+      function stop3D() {
+        if (animationId) cancelAnimationFrame(animationId);
+        if (renderer) {
+          renderer.dispose();
+          renderer.forceContextLoss();
+          if (renderer.domElement) renderer.domElement.remove();
+          renderer = null;
+        }
+        if (scene) {
+          scene.clear();
+          scene = null;
+        }
+        container.innerHTML = "";
+      }
+
+      function initAtom3D(protonCount) {
+        stop3D(); // Reset cũ
+
+        // Setup Scene
+        scene = new THREE.Scene();
+        // Camera
+        camera = new THREE.PerspectiveCamera(
+          50,
+          container.clientWidth / container.clientHeight,
+          0.1,
+          1000
+        );
+        camera.position.z = 18;
+
+        // Renderer
+        renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        // Controls (Chuột)
+        let isDragging = false;
+        let previousMouse = { x: 0, y: 0 };
+
+        container.onmousedown = (e) => {
+          isDragging = true;
+          previousMouse = { x: e.clientX, y: e.clientY };
+        };
+        window.onmouseup = () => {
+          isDragging = false;
+        };
+        container.onmousemove = (e) => {
+          if (!isDragging) return;
+          const deltaX = e.clientX - previousMouse.x;
+          const deltaY = e.clientY - previousMouse.y;
+          scene.rotation.y += deltaX * 0.005;
+          scene.rotation.x += deltaY * 0.005;
+          previousMouse = { x: e.clientX, y: e.clientY };
+        };
+        container.onwheel = (e) => {
+          e.preventDefault();
+          camera.position.z += e.deltaY * 0.01;
+          camera.position.z = Math.max(5, Math.min(camera.position.z, 50));
+        };
+
+        // Ánh sáng
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+        const pointLight = new THREE.PointLight(0xffffff, 1.5);
+        pointLight.position.set(10, 10, 10);
+        scene.add(pointLight);
+
+        // HẠT NHÂN (Nucleus)
+        const nucleusGeo = new THREE.SphereGeometry(1.5, 32, 32);
+        const nucleusMat = new THREE.MeshStandardMaterial({
+          color: 0xff3333,
+          emissive: 0xaa0000,
+          emissiveIntensity: 0.4,
+          roughness: 0.4,
+          metalness: 0.5,
+        });
+        nucleusGroup = new THREE.Mesh(nucleusGeo, nucleusMat);
+        scene.add(nucleusGroup);
+
+        // ELECTRONS
+        electrons = [];
+        const shells = [2, 8, 18, 32, 32, 18, 8]; // Sức chứa tối đa các lớp
+        let remaining = protonCount;
+        let shellIdx = 0;
+
+        while (remaining > 0 && shellIdx < shells.length) {
+          const count = Math.min(remaining, shells[shellIdx]);
+          const radius = 4 + shellIdx * 2.5;
+          createShell(count, radius, shellIdx);
+          remaining -= count;
+          shellIdx++;
+        }
+
+        animate();
+      }
+
+      function createShell(count, radius, index) {
+        // Vòng quỹ đạo
+        const orbitGeo = new THREE.TorusGeometry(radius, 0.03, 16, 100);
+        const orbitMat = new THREE.MeshBasicMaterial({
+          color: 0xffffff,
+          transparent: true,
+          opacity: 0.1,
+        });
+        const orbit = new THREE.Mesh(orbitGeo, orbitMat);
+
+        // Random góc nghiêng cho tự nhiên
+        orbit.rotation.x = Math.random() * Math.PI;
+        orbit.rotation.y = Math.random() * Math.PI;
+        scene.add(orbit);
+
+        // Group chứa electron chạy trên quỹ đạo này
+        const eGroup = new THREE.Group();
+        eGroup.rotation.copy(orbit.rotation);
+        scene.add(eGroup);
+
+        // Hạt Electron
+        const eGeo = new THREE.SphereGeometry(0.2, 16, 16);
+        const eMat = new THREE.MeshStandardMaterial({
+          color: 0x00ffff,
+          emissive: 0x00ffff,
+          emissiveIntensity: 1,
+        });
+
+        for (let i = 0; i < count; i++) {
+          const mesh = new THREE.Mesh(eGeo, eMat);
+          const angle = (i / count) * Math.PI * 2;
+          mesh.position.set(
+            Math.cos(angle) * radius,
+            Math.sin(angle) * radius,
+            0
+          );
+          eGroup.add(mesh);
+        }
+
+        // Tốc độ xoay
+        const speed = (index % 2 == 0 ? 1 : -1) * (0.02 - index * 0.002);
+        electrons.push({ group: eGroup, speed: speed });
+      }
+
+      function animate() {
+        animationId = requestAnimationFrame(animate);
+        if (nucleusGroup) {
+          nucleusGroup.rotation.y += 0.005;
+          nucleusGroup.rotation.x += 0.002;
+        }
+        electrons.forEach((e) => {
+          e.group.rotation.z += e.speed;
+        });
+        renderer.render(scene, camera);
+      }
+
+      // Resize Handler
+      window.addEventListener("resize", () => {
+        if (camera && renderer && container) {
+          camera.aspect = container.clientWidth / container.clientHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+      });
+    </script>
   </body>
 </html>

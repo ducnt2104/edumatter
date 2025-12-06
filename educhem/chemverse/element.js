@@ -1,4 +1,4 @@
-const DETAILED_PERIODIC_TABLE_PART_1 = [
+const DETAILED_PERIODIC_TABLE = [
   // =========================================================================
   // CHU KỲ 1
   // =========================================================================
@@ -11,11 +11,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 1.008, // 4. Nguyên tử khối (A)
       electronConfig: "1s¹", // 5. Cấu hình electron
       valenceElectrons: 1, // 7. Số electron lớp ngoài cùng
+      en: 2.2,
+      ox: "-1, +1",
     },
     details: {
       origin:
         "Tiếng Hy Lạp 'hydro' (nước) và 'genes' (tạo ra) → 'tạo ra nước'.", // 1. Nguồn gốc
-      position: { group: 1, period: 1, block: "s", type: "Phi kim" }, // 6. Vị trí & Phân loại
+      position: { group: "IA", period: 1, block: "s", type: "Phi kim" }, // 6. Vị trí & Phân loại
       physical: {
         state: "Khí",
         color: "Không màu",
@@ -82,6 +84,8 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
     basic: {
       number: 2,
       symbol: "He",
+      en: null,
+      ox: "",
       nameVI: "Heli",
       nameEN: "Helium",
       atomicMass: 4.0026,
@@ -91,7 +95,7 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
     details: {
       origin:
         "Tiếng Hy Lạp 'helios' nghĩa là Mặt trời (được phát hiện trong quang phổ mặt trời trước Trái Đất).",
-      position: { group: 18, period: 1, block: "s", type: "Khí hiếm" },
+      position: { group: "VIIIA", period: 1, block: "s", type: "Khí hiếm" },
       physical: {
         state: "Khí",
         color: "Không màu, không mùi",
@@ -151,11 +155,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 6.94,
       electronConfig: "[He] 2s¹",
       valenceElectrons: 1,
+      en: 0.98,
+      ox: "+1",
     },
     details: {
       origin:
         "Tiếng Hy Lạp 'lithos' nghĩa là đá (do được tìm thấy trong khoáng vật đá, khác với Na, K trong thực vật).",
-      position: { group: 1, period: 2, block: "s", type: "Kim loại kiềm" },
+      position: { group: "IA", period: 2, block: "s", type: "Kim loại kiềm" },
       physical: {
         state: "Rắn",
         color: "Trắng bạc (nhanh xỉn màu)",
@@ -220,10 +226,17 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 9.0122,
       electronConfig: "[He] 2s²",
       valenceElectrons: 2,
+      en: 1.57,
+      ox: "+2",
     },
     details: {
       origin: "Từ tên khoáng vật 'beryl' (ngọc lục bảo).",
-      position: { group: 2, period: 2, block: "s", type: "Kim loại kiềm thổ" },
+      position: {
+        group: "IIA",
+        period: 2,
+        block: "s",
+        type: "Kim loại kiềm thổ",
+      },
       physical: {
         state: "Rắn",
         color: "Xám thép",
@@ -289,10 +302,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 10.81,
       electronConfig: "[He] 2s² 2p¹",
       valenceElectrons: 3,
+      en: 2.04,
+      ox: "+3",
     },
     details: {
       origin: "Từ tiếng Ả Rập 'buraq' (tên gọi của hàn the).",
-      position: { group: 13, period: 2, block: "p", type: "Á kim" },
+      position: { group: "IIIA", period: 2, block: "p", type: "Á kim" },
       physical: {
         state: "Rắn",
         color: "Đen (tinh thể) hoặc nâu (vô định hình)",
@@ -364,10 +379,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 12.011,
       electronConfig: "[He] 2s² 2p²",
       valenceElectrons: 4,
+      en: 2.55,
+      ox: "-4, +2, +4",
     },
     details: {
       origin: "Tiếng Latin 'carbo' nghĩa là than.",
-      position: { group: 14, period: 2, block: "p", type: "Phi kim" },
+      position: { group: "IVA", period: 2, block: "p", type: "Phi kim" },
       physical: {
         state: "Rắn",
         color: "Đen (than chì), Không màu (kim cương)",
@@ -438,10 +455,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 14.007,
       electronConfig: "[He] 2s² 2p³",
       valenceElectrons: 5,
+      en: 3.04,
+      ox: "-3, +1, +2, +3, +4, +5",
     },
     details: {
       origin: "Tiếng Hy Lạp 'nitron' (soda tự nhiên) + 'genes' (tạo ra).",
-      position: { group: 15, period: 2, block: "p", type: "Phi kim" },
+      position: { group: "VA", period: 2, block: "p", type: "Phi kim" },
       physical: {
         state: "Khí (N₂)",
         color: "Không màu, không mùi, không vị",
@@ -505,11 +524,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 15.999,
       electronConfig: "[He] 2s² 2p⁴",
       valenceElectrons: 6,
+      en: 3.44,
+      ox: "-2",
     },
     details: {
       origin:
         "Tiếng Hy Lạp 'oxys' (axit) + 'genes' (tạo ra) → 'tạo ra axit' (quan niệm sai lầm cũ).",
-      position: { group: 16, period: 2, block: "p", type: "Phi kim" },
+      position: { group: "VIA", period: 2, block: "p", type: "Phi kim" },
       physical: {
         state: "Khí (O₂)",
         color: "Không màu (lỏng có màu xanh nhạt)",
@@ -569,11 +590,18 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 18.998,
       electronConfig: "[He] 2s² 2p⁵",
       valenceElectrons: 7,
+      en: 3.98,
+      ox: "-1",
     },
     details: {
       origin:
         "Tiếng Latin 'fluere' nghĩa là dòng chảy (do khoáng vật fluorite dùng làm chất trợ chảy).",
-      position: { group: 17, period: 2, block: "p", type: "Phi kim (Halogen)" },
+      position: {
+        group: "VIIA",
+        period: 2,
+        block: "p",
+        type: "Phi kim (Halogen)",
+      },
       physical: {
         state: "Khí",
         color: "Vàng lục nhạt",
@@ -635,10 +663,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 20.18,
       electronConfig: "[He] 2s² 2p⁶",
       valenceElectrons: 8,
+      en: null,
+      ox: "",
     },
     details: {
       origin: "Tiếng Hy Lạp 'neos' nghĩa là mới.",
-      position: { group: 18, period: 2, block: "p", type: "Khí hiếm" },
+      position: { group: "VIIIA", period: 2, block: "p", type: "Khí hiếm" },
       physical: {
         state: "Khí",
         color: "Không màu (phát sáng màu đỏ cam trong điện trường)",
@@ -691,10 +721,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 22.99,
       electronConfig: "[Ne] 3s¹",
       valenceElectrons: 1,
+      en: 0.93,
+      ox: "+1",
     },
     details: {
       origin: "Tiếng Latin 'natrium' từ tiếng Ai Cập 'natron' (muối khoáng).",
-      position: { group: 1, period: 3, block: "s", type: "Kim loại kiềm" },
+      position: { group: "IA", period: 3, block: "s", type: "Kim loại kiềm" },
       physical: {
         state: "Rắn",
         color: "Trắng bạc",
@@ -753,10 +785,17 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 24.305,
       electronConfig: "[Ne] 3s²",
       valenceElectrons: 2,
+      en: 1.31,
+      ox: "+2",
     },
     details: {
       origin: "Từ tên vùng Magnesia ở Hy Lạp.",
-      position: { group: 2, period: 3, block: "s", type: "Kim loại kiềm thổ" },
+      position: {
+        group: "IIA",
+        period: 3,
+        block: "s",
+        type: "Kim loại kiềm thổ",
+      },
       physical: {
         state: "Rắn",
         color: "Trắng bạc",
@@ -810,11 +849,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 26.982,
       electronConfig: "[Ne] 3s² 3p¹",
       valenceElectrons: 3,
+      en: 1.61,
+      ox: "+3",
     },
     details: {
       origin: "Tiếng Latin 'alumen' (phèn chua).",
       position: {
-        group: 13,
+        group: "IIIA",
         period: 3,
         block: "p",
         type: "Kim loại yếu (Lưỡng tính)",
@@ -874,10 +915,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 28.085,
       electronConfig: "[Ne] 3s² 3p²",
       valenceElectrons: 4,
+      en: 1.9,
+      ox: "-4, +2, +4",
     },
     details: {
       origin: "Tiếng Latin 'silex' (đá lửa).",
-      position: { group: 14, period: 3, block: "p", type: "Á kim" },
+      position: { group: "IVA", period: 3, block: "p", type: "Á kim" },
       physical: {
         state: "Rắn",
         color: "Xám sẫm ánh kim",
@@ -934,11 +977,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 30.974,
       electronConfig: "[Ne] 3s² 3p³",
       valenceElectrons: 5,
+      en: 2.19,
+      ox: "-3, +3, +5",
     },
     details: {
       origin:
         "Tiếng Hy Lạp 'phosphoros' (mang lại ánh sáng - do P trắng phát sáng trong tối).",
-      position: { group: 15, period: 3, block: "p", type: "Phi kim" },
+      position: { group: "VA", period: 3, block: "p", type: "Phi kim" },
       physical: {
         state: "Rắn",
         color: "Trắng/Vàng (độc), Đỏ (bền), Đen (bán dẫn)",
@@ -994,10 +1039,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 32.06,
       electronConfig: "[Ne] 3s² 3p⁴",
       valenceElectrons: 6,
+      en: 2.58,
+      ox: "-2, +4, +6",
     },
     details: {
       origin: "Tiếng Latin 'sulphurium'.",
-      position: { group: 16, period: 3, block: "p", type: "Phi kim" },
+      position: { group: "VIA", period: 3, block: "p", type: "Phi kim" },
       physical: {
         state: "Rắn",
         color: "Vàng chanh",
@@ -1057,10 +1104,17 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 35.45,
       electronConfig: "[Ne] 3s² 3p⁵",
       valenceElectrons: 7,
+      en: 3.16,
+      ox: "-1, +1, +3, +5, +7",
     },
     details: {
       origin: "Tiếng Hy Lạp 'chloros' (màu vàng lục).",
-      position: { group: 17, period: 3, block: "p", type: "Phi kim (Halogen)" },
+      position: {
+        group: "VIIA",
+        period: 3,
+        block: "p",
+        type: "Phi kim (Halogen)",
+      },
       physical: {
         state: "Khí",
         color: "Vàng lục",
@@ -1114,10 +1168,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 39.948,
       electronConfig: "[Ne] 3s² 3p⁶",
       valenceElectrons: 8,
+      en: null,
+      ox: "",
     },
     details: {
       origin: "Tiếng Hy Lạp 'argos' (lười biếng/trơ).",
-      position: { group: 18, period: 3, block: "p", type: "Khí hiếm" },
+      position: { group: "VIIIA", period: 3, block: "p", type: "Khí hiếm" },
       physical: {
         state: "Khí",
         color: "Không màu (tím xanh trong điện trường)",
@@ -1172,10 +1228,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 39.098,
       electronConfig: "[Ar] 4s¹",
       valenceElectrons: 1,
+      en: 0.82,
+      ox: "+1",
     },
     details: {
       origin: "Từ 'potash' (tro thực vật). Kí hiệu K từ tiếng Latin 'kalium'.",
-      position: { group: 1, period: 4, block: "s", type: "Kim loại kiềm" },
+      position: { group: "IA", period: 4, block: "s", type: "Kim loại kiềm" },
       physical: {
         state: "Rắn",
         color: "Trắng bạc",
@@ -1241,10 +1299,17 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 40.078,
       electronConfig: "[Ar] 4s²",
       valenceElectrons: 2,
+      en: 1.0,
+      ox: "+2",
     },
     details: {
       origin: "Tiếng Latin 'calx' (vôi).",
-      position: { group: 2, period: 4, block: "s", type: "Kim loại kiềm thổ" },
+      position: {
+        group: "IIA",
+        period: 4,
+        block: "s",
+        type: "Kim loại kiềm thổ",
+      },
       physical: {
         state: "Rắn",
         color: "Trắng bạc (xám xỉn nhanh)",
@@ -1295,11 +1360,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 44.956,
       electronConfig: "[Ar] 3d¹ 4s²",
       valenceElectrons: 3,
+      en: 1.36,
+      ox: "+3",
     },
     details: {
       origin: "Tiếng Latin 'Scandia' (vùng Scandinavia - Bắc Âu).",
       position: {
-        group: 3,
+        group: "IIIB",
         period: 4,
         block: "d",
         type: "Kim loại chuyển tiếp",
@@ -1342,12 +1409,14 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 47.867,
       electronConfig: "[Ar] 3d² 4s²",
       valenceElectrons: 4,
+      en: 1.54,
+      ox: "+2, +3, +4",
     },
     details: {
       origin:
         "Theo tên các vị thần 'Titans' trong thần thoại Hy Lạp (tượng trưng sức mạnh).",
       position: {
-        group: 4,
+        group: "IVB",
         period: 4,
         block: "d",
         type: "Kim loại chuyển tiếp",
@@ -1405,12 +1474,14 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 50.942,
       electronConfig: "[Ar] 3d³ 4s²",
       valenceElectrons: 5,
+      en: 1.63,
+      ox: "+2, +3, +4, +5",
     },
     details: {
       origin:
         "Từ tên nữ thần 'Vanadis' (Bắc Âu) do các hợp chất có màu sắc rực rỡ.",
       position: {
-        group: 5,
+        group: "VB",
         period: 4,
         block: "d",
         type: "Kim loại chuyển tiếp",
@@ -1460,11 +1531,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 51.996,
       electronConfig: "[Ar] 3d⁵ 4s¹",
       valenceElectrons: 6,
+      en: 1.66,
+      ox: "+2, +3, +6",
     },
     details: {
       origin: "Tiếng Hy Lạp 'chroma' (màu sắc).",
       position: {
-        group: 6,
+        group: "VIB",
         period: 4,
         block: "d",
         type: "Kim loại chuyển tiếp",
@@ -1523,11 +1596,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 54.938,
       electronConfig: "[Ar] 3d⁵ 4s²",
       valenceElectrons: 7,
+      en: 1.55,
+      ox: "+2, +3, +4, +6, +7",
     },
     details: {
       origin: "Tiếng Latin 'magnes' (nam châm) - dễ nhầm với Mg.",
       position: {
-        group: 7,
+        group: "VIIB",
         period: 4,
         block: "d",
         type: "Kim loại chuyển tiếp",
@@ -1583,11 +1658,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 55.845,
       electronConfig: "[Ar] 3d⁶ 4s²",
       valenceElectrons: 8,
+      en: 1.83,
+      ox: "+2, +3, +6",
     },
     details: {
       origin: "Tiếng Anh cổ 'isern'. Kí hiệu Fe từ Latin 'ferrum'.",
       position: {
-        group: 8,
+        group: "VIIIB",
         period: 4,
         block: "d",
         type: "Kim loại chuyển tiếp",
@@ -1651,12 +1728,14 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 58.933,
       electronConfig: "[Ar] 3d⁷ 4s²",
       valenceElectrons: 9,
+      en: 1.88,
+      ox: "+2, +3",
     }, // Nhóm VIIIB
     details: {
       origin:
         "Tiếng Đức 'kobold' (yêu tinh) - thợ mỏ tin rằng yêu tinh làm quặng không ra đồng và sinh khí độc (thực ra là Asen).",
       position: {
-        group: 9,
+        group: "VIIIB",
         period: 4,
         block: "d",
         type: "Kim loại chuyển tiếp",
@@ -1725,12 +1804,14 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 58.693,
       electronConfig: "[Ar] 3d⁸ 4s²",
       valenceElectrons: 10,
+      en: 1.91,
+      ox: "+2, +3",
     },
     details: {
       origin:
         "Tiếng Đức 'Kupfernickel' (đồng của quỷ) - quặng giống đồng nhưng không lấy được đồng.",
       position: {
-        group: 10,
+        group: "VIIIB",
         period: 4,
         block: "d",
         type: "Kim loại chuyển tiếp",
@@ -1785,12 +1866,14 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 63.546,
       electronConfig: "[Ar] 3d¹⁰ 4s¹",
       valenceElectrons: 11,
+      en: 1.9,
+      ox: "+1, +2",
     }, // Ngoại lệ cấu hình
     details: {
       origin:
         "Tiếng Latin 'Cuprum' (đảo Síp - nơi khai thác đồng thời cổ đại).",
       position: {
-        group: 11,
+        group: "IB",
         period: 4,
         block: "d",
         type: "Kim loại chuyển tiếp",
@@ -1854,12 +1937,14 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 65.38,
       electronConfig: "[Ar] 3d¹⁰ 4s²",
       valenceElectrons: 12,
+      en: 1.65,
+      ox: "+2",
     },
     details: {
       origin:
         "Tiếng Đức 'Zinke' (nhọn/răng cưa - hình dáng tinh thể trong lò luyện).",
       position: {
-        group: 12,
+        group: "IIB",
         period: 4,
         block: "d",
         type: "Kim loại chuyển tiếp",
@@ -1913,10 +1998,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 69.723,
       electronConfig: "[Ar] 3d¹⁰ 4s² 4p¹",
       valenceElectrons: 3,
+      en: 1.81,
+      ox: "+3",
     },
     details: {
       origin: "Tiếng Latin 'Gallia' (nước Pháp).",
-      position: { group: 13, period: 4, block: "p", type: "Kim loại yếu" },
+      position: { group: "IIIA", period: 4, block: "p", type: "Kim loại yếu" },
       physical: {
         state: "Rắn (nhưng tan chảy trong tay)",
         color: "Bạc trắng",
@@ -1968,10 +2055,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 72.63,
       electronConfig: "[Ar] 3d¹⁰ 4s² 4p²",
       valenceElectrons: 4,
+      en: 2.01,
+      ox: "-4, +2, +4",
     },
     details: {
       origin: "Tiếng Latin 'Germania' (nước Đức).",
-      position: { group: 14, period: 4, block: "p", type: "Á kim" },
+      position: { group: "IVA", period: 4, block: "p", type: "Á kim" },
       physical: {
         state: "Rắn",
         color: "Trắng xám",
@@ -2013,10 +2102,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 74.922,
       electronConfig: "[Ar] 3d¹⁰ 4s² 4p³",
       valenceElectrons: 5,
+      en: 2.18,
+      ox: "-3, +3, +5",
     },
     details: {
       origin: "Tiếng Ba Tư 'zarnikh' (màu vàng).",
-      position: { group: 15, period: 4, block: "p", type: "Á kim" },
+      position: { group: "VA", period: 4, block: "p", type: "Á kim" },
       physical: {
         state: "Rắn",
         color: "Xám kim loại (bền), Vàng (không bền)",
@@ -2063,11 +2154,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 78.971,
       electronConfig: "[Ar] 3d¹⁰ 4s² 4p⁴",
       valenceElectrons: 6,
+      en: 2.55,
+      ox: "-2, +4, +6",
     },
     details: {
       origin:
         "Tiếng Hy Lạp 'selene' (Mặt trăng - vì đi cùng Tellurium là Trái đất).",
-      position: { group: 16, period: 4, block: "p", type: "Phi kim" },
+      position: { group: "VIA", period: 4, block: "p", type: "Phi kim" },
       physical: {
         state: "Rắn",
         color: "Xám (bền), Đỏ",
@@ -2109,10 +2202,19 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 79.904,
       electronConfig: "[Ar] 3d¹⁰ 4s² 4p⁵",
       valenceElectrons: 7,
+      en: 2.55,
+      ox: "-2, +4, +6",
+      en: 2.96,
+      ox: "-1, +1, +3, +5, +7",
     },
     details: {
       origin: "Tiếng Hy Lạp 'bromos' (mùi hôi thối).",
-      position: { group: 17, period: 4, block: "p", type: "Phi kim (Halogen)" },
+      position: {
+        group: "VIIA",
+        period: 4,
+        block: "p",
+        type: "Phi kim (Halogen)",
+      },
       physical: {
         state: "Lỏng",
         color: "Đỏ nâu (bốc khói mạnh)",
@@ -2169,10 +2271,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 83.798,
       electronConfig: "[Ar] 3d¹⁰ 4s² 4p⁶",
       valenceElectrons: 8,
+      en: 3.0,
+      ox: "+2",
     },
     details: {
       origin: "Tiếng Hy Lạp 'kryptos' (ẩn giấu).",
-      position: { group: 18, period: 4, block: "p", type: "Khí hiếm" },
+      position: { group: "VIIIA", period: 4, block: "p", type: "Khí hiếm" },
       physical: {
         state: "Khí",
         color: "Không màu (sáng trắng chói lòa trong điện trường)",
@@ -2219,10 +2323,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 85.468,
       electronConfig: "[Kr] 5s¹",
       valenceElectrons: 1,
+      en: 0.82,
+      ox: "+1",
     },
     details: {
       origin: "Tiếng Latin 'rubidus' (đỏ thẫm - màu vạch quang phổ).",
-      position: { group: 1, period: 5, block: "s", type: "Kim loại kiềm" },
+      position: { group: "IA", period: 5, block: "s", type: "Kim loại kiềm" },
       physical: {
         state: "Rắn",
         color: "Trắng bạc",
@@ -2261,10 +2367,17 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 87.62,
       electronConfig: "[Kr] 5s²",
       valenceElectrons: 2,
+      en: 0.95,
+      ox: "+2",
     },
     details: {
       origin: "Tên ngôi làng 'Strontian' ở Scotland.",
-      position: { group: 2, period: 5, block: "s", type: "Kim loại kiềm thổ" },
+      position: {
+        group: "IIA",
+        period: 5,
+        block: "s",
+        type: "Kim loại kiềm thổ",
+      },
       physical: {
         state: "Rắn",
         color: "Vàng nhạt",
@@ -2324,11 +2437,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 88.906,
       electronConfig: "[Kr] 4d¹ 5s²",
       valenceElectrons: 3,
+      en: 1.22,
+      ox: "+3",
     },
     details: {
       origin: "Làng 'Ytterby' ở Thụy Điển (nơi tìm ra 4 nguyên tố đất hiếm).",
       position: {
-        group: 3,
+        group: "IIIB",
         period: 5,
         block: "d",
         type: "Kim loại chuyển tiếp (Đất hiếm)",
@@ -2379,11 +2494,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 91.224,
       electronConfig: "[Kr] 4d² 5s²",
       valenceElectrons: 4,
+      en: 1.33,
+      ox: "+4",
     },
     details: {
       origin: "Tiếng Ba Tư 'zargun' (màu vàng kim).",
       position: {
-        group: 4,
+        group: "IVB",
         period: 5,
         block: "d",
         type: "Kim loại chuyển tiếp",
@@ -2430,12 +2547,14 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 92.906,
       electronConfig: "[Kr] 4d⁴ 5s¹",
       valenceElectrons: 5,
+      en: 1.6,
+      ox: "+3, +5",
     },
     details: {
       origin:
         "Tên nữ thần 'Niobe' (con của Tantalus - do Nb hay đi cùng Tantalum).",
       position: {
-        group: 5,
+        group: "VB",
         period: 5,
         block: "d",
         type: "Kim loại chuyển tiếp",
@@ -2481,11 +2600,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 95.95,
       electronConfig: "[Kr] 4d⁵ 5s¹",
       valenceElectrons: 6,
+      en: 2.16,
+      ox: "+2, +3, +4, +5, +6",
     },
     details: {
       origin: "Tiếng Hy Lạp 'molybdos' (chì - do quặng giống chì).",
       position: {
-        group: 6,
+        group: "VIB",
         period: 5,
         block: "d",
         type: "Kim loại chuyển tiếp",
@@ -2531,11 +2652,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 98,
       electronConfig: "[Kr] 4d⁵ 5s²",
       valenceElectrons: 7,
+      en: 1.9,
+      ox: "+4, +6, +7",
     },
     details: {
       origin: "Tiếng Hy Lạp 'technetos' (nhân tạo).",
       position: {
-        group: 7,
+        group: "VIIB",
         period: 5,
         block: "d",
         type: "Kim loại chuyển tiếp (Phóng xạ)",
@@ -2585,11 +2708,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 101.07,
       electronConfig: "[Kr] 4d⁷ 5s¹",
       valenceElectrons: 8,
+      en: 2.2,
+      ox: "+2, +3, +4, +6, +8",
     },
     details: {
       origin: "Tiếng Latin 'Ruthenia' (nước Nga).",
       position: {
-        group: 8,
+        group: "VIIIB",
         period: 5,
         block: "d",
         type: "Kim loại chuyển tiếp (Nhóm Platin)",
@@ -2629,11 +2754,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 102.91,
       electronConfig: "[Kr] 4d⁸ 5s¹",
       valenceElectrons: 9,
+      en: 2.28,
+      ox: "+2, +3, +4",
     },
     details: {
       origin: "Tiếng Hy Lạp 'rhodon' (hoa hồng - do dung dịch muối có màu đỏ).",
       position: {
-        group: 9,
+        group: "VIIIB",
         period: 5,
         block: "d",
         type: "Kim loại chuyển tiếp (Nhóm Platin)",
@@ -2674,11 +2801,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 106.42,
       electronConfig: "[Kr] 4d¹⁰",
       valenceElectrons: 10,
+      en: 2.2,
+      ox: "+2, +4",
     },
     details: {
       origin: "Tên tiểu hành tinh Pallas.",
       position: {
-        group: 10,
+        group: "VIIIB",
         period: 5,
         block: "d",
         type: "Kim loại chuyển tiếp (Nhóm Platin)",
@@ -2718,11 +2847,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 107.868,
       electronConfig: "[Kr] 4d¹⁰ 5s¹",
       valenceElectrons: 11,
+      en: 1.93,
+      ox: "+1",
     },
     details: {
       origin: "Tiếng Anh cổ 'seolfor'. Kí hiệu Ag từ Latin 'argentum'.",
       position: {
-        group: 11,
+        group: "IB",
         period: 5,
         block: "d",
         type: "Kim loại chuyển tiếp",
@@ -2775,11 +2906,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 112.41,
       electronConfig: "[Kr] 4d¹⁰ 5s²",
       valenceElectrons: 12,
+      en: 1.69,
+      ox: "+2",
     },
     details: {
       origin: "Tiếng Latin 'cadmia' (khoáng vật kẽm cacbonat).",
       position: {
-        group: 12,
+        group: "IIB",
         period: 5,
         block: "d",
         type: "Kim loại chuyển tiếp",
@@ -2828,10 +2961,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 114.82,
       electronConfig: "[Kr] 4d¹⁰ 5s² 5p¹",
       valenceElectrons: 3,
+      en: 1.78,
+      ox: "+3",
     },
     details: {
       origin: "Từ màu xanh 'indigo' (chàm) trong quang phổ.",
-      position: { group: 13, period: 5, block: "p", type: "Kim loại yếu" },
+      position: { group: "IIIA", period: 5, block: "p", type: "Kim loại yếu" },
       physical: {
         state: "Rắn",
         color: "Trắng bạc",
@@ -2873,10 +3008,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 118.71,
       electronConfig: "[Kr] 4d¹⁰ 5s² 5p²",
       valenceElectrons: 4,
+      en: 1.96,
+      ox: "+2, +4",
     },
     details: {
       origin: "Tiếng Anh cổ 'tin'. Kí hiệu Sn từ Latin 'stannum'.",
-      position: { group: 14, period: 5, block: "p", type: "Kim loại yếu" },
+      position: { group: "IVA", period: 5, block: "p", type: "Kim loại yếu" },
       physical: {
         state: "Rắn",
         color: "Trắng bạc (thiếc trắng), Xám (thiếc xám - bột)",
@@ -2922,11 +3059,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 121.76,
       electronConfig: "[Kr] 4d¹⁰ 5s² 5p³",
       valenceElectrons: 5,
+      en: 2.05,
+      ox: "-3, +3, +5",
     },
     details: {
       origin:
         "Tiếng Hy Lạp 'anti-monos' (không ở một mình - vì luôn tìm thấy trong hợp chất). Kí hiệu Sb từ 'stibium'.",
-      position: { group: 15, period: 5, block: "p", type: "Á kim" },
+      position: { group: "VA", period: 5, block: "p", type: "Á kim" },
       physical: {
         state: "Rắn",
         color: "Trắng bạc lấp lánh",
@@ -2967,10 +3106,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 127.6,
       electronConfig: "[Kr] 4d¹⁰ 5s² 5p⁴",
       valenceElectrons: 6,
+      en: 2.05,
+      ox: "-3, +3, +5",
     },
     details: {
       origin: "Tiếng Latin 'tellus' (Trái đất).",
-      position: { group: 16, period: 5, block: "p", type: "Á kim" },
+      position: { group: "VIA", period: 5, block: "p", type: "Á kim" },
       physical: {
         state: "Rắn",
         color: "Trắng bạc kim loại",
@@ -3016,10 +3157,17 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 126.9,
       electronConfig: "[Kr] 4d¹⁰ 5s² 5p⁵",
       valenceElectrons: 7,
+      en: 2.66,
+      ox: "-1, +1, +3, +5, +7",
     },
     details: {
       origin: "Tiếng Hy Lạp 'iodes' (màu tím - màu hơi iốt).",
-      position: { group: 17, period: 5, block: "p", type: "Phi kim (Halogen)" },
+      position: {
+        group: "VIIA",
+        period: 5,
+        block: "p",
+        type: "Phi kim (Halogen)",
+      },
       physical: {
         state: "Rắn",
         color: "Đen tím (tinh thể)",
@@ -3074,10 +3222,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 131.29,
       electronConfig: "[Kr] 4d¹⁰ 5s² 5p⁶",
       valenceElectrons: 8,
+      en: 2.6,
+      ox: "+2, +4, +6, +8",
     },
     details: {
       origin: "Tiếng Hy Lạp 'xenos' (người lạ).",
-      position: { group: 18, period: 5, block: "p", type: "Khí hiếm" },
+      position: { group: "VIIIA", period: 5, block: "p", type: "Khí hiếm" },
       physical: {
         state: "Khí",
         color: "Không màu (xanh lam trong điện trường)",
@@ -3126,10 +3276,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 132.905,
       electronConfig: "[Xe] 6s¹",
       valenceElectrons: 1,
+      en: 0.79,
+      ox: "+1",
     },
     details: {
       origin: "Tiếng Latin 'caesius' (xanh da trời - màu vạch quang phổ).",
-      position: { group: 1, period: 6, block: "s", type: "Kim loại kiềm" },
+      position: { group: "IA", period: 6, block: "s", type: "Kim loại kiềm" },
       physical: {
         state: "Lỏng (trên 28°C)",
         color: "Vàng kim nhạt",
@@ -3166,11 +3318,18 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 137.327,
       electronConfig: "[Xe] 6s²",
       valenceElectrons: 2,
+      en: 0.89,
+      ox: "+2",
     },
     details: {
       origin:
         "Tiếng Hy Lạp 'barys' (nặng - do mật độ cao của khoáng vật barite).",
-      position: { group: 2, period: 6, block: "s", type: "Kim loại kiềm thổ" },
+      position: {
+        group: "IIA",
+        period: 6,
+        block: "s",
+        type: "Kim loại kiềm thổ",
+      },
       physical: {
         state: "Rắn",
         color: "Trắng bạc",
@@ -3224,11 +3383,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 138.905,
       electronConfig: "[Xe] 5d¹ 6s²",
       valenceElectrons: 3,
+      en: 1.1,
+      ox: "+3",
     },
     details: {
       origin: "Tiếng Hy Lạp 'lanthanein' (ẩn giấu).",
       position: {
-        group: 3,
+        group: "IIIB",
         period: 6,
         block: "d/f",
         type: "Lanthanide (Đất hiếm)",
@@ -3274,10 +3435,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 140.116,
       electronConfig: "[Xe] 4f¹ 5d¹ 6s²",
       valenceElectrons: 4,
+      en: 1.12,
+      ox: "+3, +4",
     },
     details: {
       origin: "Đặt theo tên tiểu hành tinh Ceres.",
-      position: { group: "f", period: 6, block: "f", type: "Lanthanide" },
+      position: { group: "IIIB", period: 6, block: "f", type: "Lanthanide" },
       physical: {
         state: "Rắn",
         color: "Trắng bạc",
@@ -3319,10 +3482,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 140.908,
       electronConfig: "[Xe] 4f³ 6s²",
       valenceElectrons: 3,
+      en: 1.13,
+      ox: "+3",
     },
     details: {
       origin: "Tiếng Hy Lạp 'prasios didymos' (cặp đôi xanh lá).",
-      position: { group: "f", period: 6, block: "f", type: "Lanthanide" },
+      position: { group: "IIIB", period: 6, block: "f", type: "Lanthanide" },
       physical: {
         state: "Rắn",
         color: "Trắng bạc ánh vàng",
@@ -3364,10 +3529,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 144.242,
       electronConfig: "[Xe] 4f⁴ 6s²",
       valenceElectrons: 3,
+      en: 1.14,
+      ox: "+3",
     },
     details: {
       origin: "Tiếng Hy Lạp 'neos didymos' (cặp đôi mới).",
-      position: { group: "f", period: 6, block: "f", type: "Lanthanide" },
+      position: { group: "IIIB", period: 6, block: "f", type: "Lanthanide" },
       physical: {
         state: "Rắn",
         color: "Trắng bạc ánh vàng (chuyển tím dưới ánh sáng khác)",
@@ -3409,11 +3576,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 145,
       electronConfig: "[Xe] 4f⁵ 6s²",
       valenceElectrons: 3,
+      en: 1.13,
+      ox: "+3",
     },
     details: {
       origin: "Theo Prometheus (thần đã lấy lửa từ các vị thần).",
       position: {
-        group: "f",
+        group: "IIIB",
         period: 6,
         block: "f",
         type: "Lanthanide (Phóng xạ)",
@@ -3464,10 +3633,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 150.36,
       electronConfig: "[Xe] 4f⁶ 6s²",
       valenceElectrons: 3,
+      en: 1.17,
+      ox: "+2, +3",
     },
     details: {
       origin: "Theo tên kỹ sư mỏ người Nga Vasili Samarsky-Bykhovets.",
-      position: { group: "f", period: 6, block: "f", type: "Lanthanide" },
+      position: { group: "IIIB", period: 6, block: "f", type: "Lanthanide" },
       physical: {
         state: "Rắn",
         color: "Trắng bạc",
@@ -3509,10 +3680,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 151.964,
       electronConfig: "[Xe] 4f⁷ 6s²",
       valenceElectrons: 3,
+      en: 1.2,
+      ox: "+2, +3",
     },
     details: {
       origin: "Theo tên lục địa Châu Âu (Europe).",
-      position: { group: "f", period: 6, block: "f", type: "Lanthanide" },
+      position: { group: "IIIB", period: 6, block: "f", type: "Lanthanide" },
       physical: {
         state: "Rắn",
         color: "Trắng bạc",
@@ -3554,10 +3727,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 157.25,
       electronConfig: "[Xe] 4f⁷ 5d¹ 6s²",
       valenceElectrons: 3,
+      en: 1.2,
+      ox: "+3",
     },
     details: {
       origin: "Theo tên nhà hóa học Johan Gadolin.",
-      position: { group: "f", period: 6, block: "f", type: "Lanthanide" },
+      position: { group: "IIIB", period: 6, block: "f", type: "Lanthanide" },
       physical: {
         state: "Rắn",
         color: "Trắng bạc",
@@ -3611,10 +3786,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 158.925,
       electronConfig: "[Xe] 4f⁹ 6s²",
       valenceElectrons: 3,
+      en: 1.2,
+      ox: "+3, +4",
     },
     details: {
       origin: "Làng 'Ytterby' ở Thụy Điển.",
-      position: { group: "f", period: 6, block: "f", type: "Lanthanide" },
+      position: { group: "IIIB", period: 6, block: "f", type: "Lanthanide" },
       physical: {
         state: "Rắn",
         color: "Trắng bạc",
@@ -3652,10 +3829,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 162.5,
       electronConfig: "[Xe] 4f¹⁰ 6s²",
       valenceElectrons: 3,
+      en: 1.22,
+      ox: "+3",
     },
     details: {
       origin: "Tiếng Hy Lạp 'dysprositos' (khó tiếp cận).",
-      position: { group: "f", period: 6, block: "f", type: "Lanthanide" },
+      position: { group: "IIIB", period: 6, block: "f", type: "Lanthanide" },
       physical: {
         state: "Rắn",
         color: "Trắng bạc",
@@ -3687,10 +3866,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 164.93,
       electronConfig: "[Xe] 4f¹¹ 6s²",
       valenceElectrons: 3,
+      en: 1.23,
+      ox: "+3",
     },
     details: {
       origin: "Tiếng Latin 'Holmia' (Stockholm, quê hương của khám phá).",
-      position: { group: "f", period: 6, block: "f", type: "Lanthanide" },
+      position: { group: "IIIB", period: 6, block: "f", type: "Lanthanide" },
       physical: {
         state: "Rắn",
         color: "Trắng bạc",
@@ -3728,10 +3909,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 167.259,
       electronConfig: "[Xe] 4f¹² 6s²",
       valenceElectrons: 3,
+      en: 1.24,
+      ox: "+3",
     },
     details: {
       origin: "Làng 'Ytterby' ở Thụy Điển.",
-      position: { group: "f", period: 6, block: "f", type: "Lanthanide" },
+      position: { group: "IIIB", period: 6, block: "f", type: "Lanthanide" },
       physical: {
         state: "Rắn",
         color: "Trắng bạc",
@@ -3763,10 +3946,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 168.934,
       electronConfig: "[Xe] 4f¹³ 6s²",
       valenceElectrons: 3,
+      en: 1.25,
+      ox: "+3",
     },
     details: {
       origin: "Tên cổ của Scandinavia, 'Thule'.",
-      position: { group: "f", period: 6, block: "f", type: "Lanthanide" },
+      position: { group: "IIIB", period: 6, block: "f", type: "Lanthanide" },
       physical: {
         state: "Rắn",
         color: "Trắng bạc",
@@ -3798,10 +3983,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 173.054,
       electronConfig: "[Xe] 4f¹⁴ 6s²",
       valenceElectrons: 2,
+      en: 1.1,
+      ox: "+2, +3",
     },
     details: {
       origin: "Làng 'Ytterby' ở Thụy Điển.",
-      position: { group: "f", period: 6, block: "f", type: "Lanthanide" },
+      position: { group: "IIIB", period: 6, block: "f", type: "Lanthanide" },
       physical: {
         state: "Rắn",
         color: "Trắng bạc",
@@ -3838,10 +4025,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 174.967,
       electronConfig: "[Xe] 4f¹⁴ 5d¹ 6s²",
       valenceElectrons: 3,
+      en: 1.27,
+      ox: "+3",
     },
     details: {
       origin: "Tên Latin của Paris, 'Lutetia'.",
-      position: { group: 3, period: 6, block: "d/f", type: "Lanthanide" },
+      position: { group: "IIIB", period: 6, block: "d/f", type: "Lanthanide" },
       physical: {
         state: "Rắn",
         color: "Trắng bạc",
@@ -3883,11 +4072,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 178.49,
       electronConfig: "[Xe] 4f¹⁴ 5d² 6s²",
       valenceElectrons: 4,
+      en: 1.3,
+      ox: "+4",
     },
     details: {
       origin: "Tên Latin của Copenhagen, 'Hafnia'.",
       position: {
-        group: 4,
+        group: "IVB",
         period: 6,
         block: "d",
         type: "Kim loại chuyển tiếp",
@@ -3927,11 +4118,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 180.948,
       electronConfig: "[Xe] 4f¹⁴ 5d³ 6s²",
       valenceElectrons: 5,
+      en: 1.5,
+      ox: "+5",
     },
     details: {
       origin: "Tên nhân vật thần thoại Hy Lạp 'Tantalus' (vì khó phân tách).",
       position: {
-        group: 5,
+        group: "VB",
         period: 6,
         block: "d",
         type: "Kim loại chuyển tiếp",
@@ -3978,10 +4171,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       origin:
         "Ký hiệu W từ tiếng Đức 'Wolfram'. Tên tiếng Anh từ tiếng Thụy Điển 'tung sten' (đá nặng).",
       position: {
-        group: 6,
+        group: "VIB",
         period: 6,
         block: "d",
         type: "Kim loại chuyển tiếp",
+        en: 2.36,
+        ox: "+2, +3, +4, +5, +6",
       },
       physical: {
         state: "Rắn",
@@ -4027,11 +4222,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 186.207,
       electronConfig: "[Xe] 4f¹⁴ 5d⁵ 6s²",
       valenceElectrons: 7,
+      en: 1.9,
+      ox: "+2, +4, +6, +7",
     },
     details: {
       origin: "Tên sông Rhine (Rheinland, Đức).",
       position: {
-        group: 7,
+        group: "VIIB",
         period: 6,
         block: "d",
         type: "Kim loại chuyển tiếp",
@@ -4073,11 +4270,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 190.23,
       electronConfig: "[Xe] 4f¹⁴ 5d⁶ 6s²",
       valenceElectrons: 8,
+      en: 2.2,
+      ox: "+2, +3, +4, +6, +8",
     },
     details: {
       origin: "Tiếng Hy Lạp 'osme' (mùi hôi - do Oxit OsO₄ có mùi khó chịu).",
       position: {
-        group: 8,
+        group: "VIIIB",
         period: 6,
         block: "d",
         type: "Kim loại chuyển tiếp (Nhóm Platin)",
@@ -4126,12 +4325,14 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 192.217,
       electronConfig: "[Xe] 4f¹⁴ 5d⁷ 6s²",
       valenceElectrons: 9,
+      en: 2.2,
+      ox: "+2, +3, +4, +6",
     },
     details: {
       origin:
         "Tên Nữ thần Hy Lạp 'Iris' (cầu vồng - do muối có nhiều màu sắc).",
       position: {
-        group: 9,
+        group: "VIIIB",
         period: 6,
         block: "d",
         type: "Kim loại chuyển tiếp (Nhóm Platin)",
@@ -4173,11 +4374,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 195.084,
       electronConfig: "[Xe] 4f¹⁴ 5d⁹ 6s¹",
       valenceElectrons: 10,
+      en: 2.28,
+      ox: "+2, +4",
     },
     details: {
       origin: "Tiếng Tây Ban Nha 'platina' (bạc nhỏ).",
       position: {
-        group: 10,
+        group: "VIIIB",
         period: 6,
         block: "d",
         type: "Kim loại chuyển tiếp (Nhóm Platin)",
@@ -4223,12 +4426,14 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 196.967,
       electronConfig: "[Xe] 4f¹⁴ 5d¹⁰ 6s¹",
       valenceElectrons: 11,
+      en: 2.54,
+      ox: "+1, +3",
     },
     details: {
       origin:
         "Tiếng Anh cổ 'geolu'. Ký hiệu Au từ Latin 'aurum' (bình minh rạng rỡ).",
       position: {
-        group: 11,
+        group: "IB",
         period: 6,
         block: "d",
         type: "Kim loại chuyển tiếp",
@@ -4268,12 +4473,14 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 200.59,
       electronConfig: "[Xe] 4f¹⁴ 5d¹⁰ 6s²",
       valenceElectrons: 12,
+      en: 2.0,
+      ox: "+1, +2",
     },
     details: {
       origin:
         "Đặt theo tên thần Mercury (Hy Lạp). Ký hiệu Hg từ Latin 'hydrargyrum' (bạc nước).",
       position: {
-        group: 12,
+        group: "IIB",
         period: 6,
         block: "d",
         type: "Kim loại chuyển tiếp",
@@ -4329,11 +4536,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 204.38,
       electronConfig: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p¹",
       valenceElectrons: 3,
+      en: 1.62,
+      ox: "+1, +3",
     },
     details: {
       origin:
         "Tiếng Hy Lạp 'thallos' (chồi xanh - màu vạch quang phổ xanh lá).",
-      position: { group: 13, period: 6, block: "p", type: "Kim loại yếu" },
+      position: { group: "IIIA", period: 6, block: "p", type: "Kim loại yếu" },
       physical: {
         state: "Rắn",
         color: "Trắng bạc ánh xanh",
@@ -4373,10 +4582,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 207.2,
       electronConfig: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p²",
       valenceElectrons: 4,
+      en: 2.33,
+      ox: "+2, +4",
     },
     details: {
       origin: "Tiếng Anh cổ 'lead'. Ký hiệu Pb từ Latin 'plumbum'.",
-      position: { group: 14, period: 6, block: "p", type: "Kim loại yếu" },
+      position: { group: "IVA", period: 6, block: "p", type: "Kim loại yếu" },
       physical: {
         state: "Rắn",
         color: "Xám xanh (mới cắt), chuyển xám mờ (xỉn)",
@@ -4426,10 +4637,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 208.98,
       electronConfig: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p³",
       valenceElectrons: 5,
+      en: 2.02,
+      ox: "+3, +5",
     },
     details: {
       origin: "Tiếng Đức 'Wissmuth' (khối trắng).",
-      position: { group: 15, period: 6, block: "p", type: "Kim loại yếu" },
+      position: { group: "VA", period: 6, block: "p", type: "Kim loại yếu" },
       physical: {
         state: "Rắn",
         color: "Trắng bạc (thường chuyển màu cầu vồng khi bị oxit hóa)",
@@ -4479,10 +4692,17 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 209,
       electronConfig: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁴",
       valenceElectrons: 6,
+      en: 2.0,
+      ox: "-2, +2, +4, +6",
     },
     details: {
       origin: "Đặt theo tên quê hương của Marie Curie, 'Poland' (Ba Lan).",
-      position: { group: 16, period: 6, block: "p", type: "Á kim (Phóng xạ)" },
+      position: {
+        group: "VIA",
+        period: 6,
+        block: "p",
+        type: "Á kim (Phóng xạ)",
+      },
       physical: {
         state: "Rắn",
         color: "Bạc",
@@ -4532,11 +4752,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 210,
       electronConfig: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁵",
       valenceElectrons: 7,
+      en: 2.2,
+      ox: "-1, +1, +3, +5, +7",
     },
     details: {
       origin: "Tiếng Hy Lạp 'astatos' (không ổn định).",
       position: {
-        group: 17,
+        group: "VIIA",
         period: 6,
         block: "p",
         type: "Phi kim (Halogen/Phóng xạ)",
@@ -4589,11 +4811,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 222,
       electronConfig: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁶",
       valenceElectrons: 8,
+      en: 2.2,
+      ox: "+2",
     },
     details: {
       origin: "Phát hiện từ quá trình phân rã Radium.",
       position: {
-        group: 18,
+        group: "VIIIA",
         period: 6,
         block: "p",
         type: "Khí hiếm (Phóng xạ)",
@@ -4646,11 +4870,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 223,
       electronConfig: "[Rn] 7s¹",
       valenceElectrons: 1,
+      en: 0.7,
+      ox: "+1",
     },
     details: {
       origin: "Theo tên nước Pháp, 'France'.",
       position: {
-        group: 1,
+        group: "IA",
         period: 7,
         block: "s",
         type: "Kim loại kiềm (Phóng xạ)",
@@ -4702,11 +4928,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 226,
       electronConfig: "[Rn] 7s²",
       valenceElectrons: 2,
+      en: 0.9,
+      ox: "+2",
     },
     details: {
       origin: "Tiếng Latin 'radius' (tia - vì phát ra bức xạ mạnh).",
       position: {
-        group: 2,
+        group: "IIA",
         period: 7,
         block: "s",
         type: "Kim loại kiềm thổ (Phóng xạ)",
@@ -4762,11 +4990,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 227,
       electronConfig: "[Rn] 6d¹ 7s²",
       valenceElectrons: 3,
+      en: 1.1,
+      ox: "+3",
     },
     details: {
       origin: "Tiếng Hy Lạp 'aktinos' (tia sáng - vì phát quang).",
       position: {
-        group: 3,
+        group: "IIIB",
         period: 7,
         block: "d/f",
         type: "Actinide (Phóng xạ)",
@@ -4814,11 +5044,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 232.038,
       electronConfig: "[Rn] 6d² 7s²",
       valenceElectrons: 4,
+      en: 1.3,
+      ox: "+4",
     },
     details: {
       origin: "Theo tên thần sấm Na Uy 'Thor'.",
       position: {
-        group: "f",
+        group: "IIIB",
         period: 7,
         block: "f",
         type: "Actinide (Phóng xạ nhẹ)",
@@ -4876,11 +5108,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 231.036,
       electronConfig: "[Rn] 5f² 6d¹ 7s²",
       valenceElectrons: 5,
+      en: 1.5,
+      ox: "+4, +5",
     },
     details: {
       origin: "Tiếng Hy Lạp 'protos' (đầu tiên) - phân rã thành Actinium.",
       position: {
-        group: "f",
+        group: "IIIB",
         period: 7,
         block: "f",
         type: "Actinide (Phóng xạ)",
@@ -4932,11 +5166,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 238.029,
       electronConfig: "[Rn] 5f³ 6d¹ 7s²",
       valenceElectrons: 6,
+      en: 1.13,
+      ox: "+3, +4, +5, +6",
     },
     details: {
       origin: "Theo tên hành tinh Uranus (Thiên Vương Tinh).",
       position: {
-        group: "f",
+        group: "IIIB",
         period: 7,
         block: "f",
         type: "Actinide (Phóng xạ)",
@@ -4999,11 +5235,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 237,
       electronConfig: "[Rn] 5f⁴ 6d¹ 7s²",
       valenceElectrons: 7,
+      en: 1.13,
+      ox: "+3, +4, +5, +6",
     },
     details: {
       origin: "Theo tên hành tinh Neptune (Hải Vương Tinh - sau Uranus).",
       position: {
-        group: "f",
+        group: "IIIB",
         period: 7,
         block: "f",
         type: "Actinide (Phóng xạ, Tổng hợp)",
@@ -5055,11 +5293,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 244,
       electronConfig: "[Rn] 5f⁶ 7s²",
       valenceElectrons: 4,
+      en: 1.13,
+      ox: "+3, +4, +5, +6",
     },
     details: {
       origin: "Theo tên hành tinh Pluto (Sao Diêm Vương - sau Neptune).",
       position: {
-        group: "f",
+        group: "IIIB",
         period: 7,
         block: "f",
         type: "Actinide (Phóng xạ, Tổng hợp)",
@@ -5113,11 +5353,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 243,
       electronConfig: "[Rn] 5f⁷ 7s²",
       valenceElectrons: 3,
+      en: 1.13,
+      ox: "+3, +4, +5, +6",
     },
     details: {
       origin: "Theo tên Châu Mỹ (America).",
       position: {
-        group: "f",
+        group: "IIIB",
         period: 7,
         block: "f",
         type: "Actinide (Phóng xạ, Tổng hợp)",
@@ -5162,11 +5404,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 247,
       electronConfig: "[Rn] 5f⁷ 6d¹ 7s²",
       valenceElectrons: 4,
+      en: 1.3,
+      ox: "+3, +4",
     },
     details: {
       origin: "Theo tên nhà khoa học Marie và Pierre Curie.",
       position: {
-        group: "f",
+        group: "IIIB",
         period: 7,
         block: "f",
         type: "Actinide (Phóng xạ, Tổng hợp)",
@@ -5211,11 +5455,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 247,
       electronConfig: "[Rn] 5f⁹ 7s²",
       valenceElectrons: 3,
+      en: 1.3,
+      ox: "+3, +4",
     },
     details: {
       origin: "Theo tên thành phố Berkeley, California.",
       position: {
-        group: "f",
+        group: "IIIB",
         period: 7,
         block: "f",
         type: "Actinide (Phóng xạ, Tổng hợp)",
@@ -5263,11 +5509,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 251,
       electronConfig: "[Rn] 5f¹⁰ 7s²",
       valenceElectrons: 3,
+      en: 1.3,
+      ox: "+3, +4",
     },
     details: {
       origin: "Theo tên bang California và Đại học California, Berkeley.",
       position: {
-        group: "f",
+        group: "IIIB",
         period: 7,
         block: "f",
         type: "Actinide (Phóng xạ, Tổng hợp)",
@@ -5315,11 +5563,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 252,
       electronConfig: "[Rn] 5f¹¹ 7s²",
       valenceElectrons: 3,
+      en: 1.3,
+      ox: "+3",
     },
     details: {
       origin: "Theo tên nhà vật lý Albert Einstein.",
       position: {
-        group: "f",
+        group: "IIIB",
         period: 7,
         block: "f",
         type: "Actinide (Phóng xạ, Tổng hợp)",
@@ -5364,11 +5614,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 257,
       electronConfig: "[Rn] 5f¹² 7s²",
       valenceElectrons: 3,
+      en: 1.3,
+      ox: "+3",
     },
     details: {
       origin: "Theo tên nhà vật lý Enrico Fermi.",
       position: {
-        group: "f",
+        group: "IIIB",
         period: 7,
         block: "f",
         type: "Actinide (Phóng xạ, Tổng hợp)",
@@ -5412,12 +5664,14 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 258,
       electronConfig: "[Rn] 5f¹³ 7s²",
       valenceElectrons: 3,
+      en: 1.3,
+      ox: "+2, +3",
     },
     details: {
       origin:
         "Theo tên nhà hóa học Dmitri Mendeleev (người tạo ra Bảng tuần hoàn).",
       position: {
-        group: "f",
+        group: "IIIB",
         period: 7,
         block: "f",
         type: "Actinide (Phóng xạ, Tổng hợp)",
@@ -5462,11 +5716,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 259,
       electronConfig: "[Rn] 5f¹⁴ 7s²",
       valenceElectrons: 2,
+      en: 1.3,
+      ox: "+2, +3",
     },
     details: {
       origin: "Theo tên nhà hóa học Alfred Nobel.",
       position: {
-        group: "f",
+        group: "IIIB",
         period: 7,
         block: "f",
         type: "Actinide (Phóng xạ, Tổng hợp)",
@@ -5514,12 +5770,14 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 262,
       electronConfig: "[Rn] 5f¹⁴ 6d¹ 7s²",
       valenceElectrons: 3,
+      en: 1.3,
+      ox: "+3",
     },
     details: {
       origin:
         "Theo tên nhà vật lý Ernest O. Lawrence (người phát minh máy gia tốc cyclotron).",
       position: {
-        group: 3,
+        group: "IIIB",
         period: 7,
         block: "d/f",
         type: "Actinide (Phóng xạ, Tổng hợp)",
@@ -5563,11 +5821,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 267,
       electronConfig: "[Rn] 5f¹⁴ 6d² 7s²",
       valenceElectrons: 4,
+      en: null,
+      ox: "+4",
     },
     details: {
       origin: "Theo tên nhà vật lý Ernest Rutherford.",
       position: {
-        group: 4,
+        group: "IVB",
         period: 7,
         block: "d",
         type: "Kim loại chuyển tiếp (Tổng hợp)",
@@ -5619,11 +5879,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 268,
       electronConfig: "[Rn] 5f¹⁴ 6d³ 7s²",
       valenceElectrons: 5,
+      en: null,
+      ox: "+5",
     },
     details: {
       origin: "Theo tên thành phố Dubna, Nga.",
       position: {
-        group: 5,
+        group: "VB",
         period: 7,
         block: "d",
         type: "Kim loại chuyển tiếp (Tổng hợp)",
@@ -5671,11 +5933,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 271,
       electronConfig: "[Rn] 5f¹⁴ 6d⁴ 7s²",
       valenceElectrons: 6,
+      en: null,
+      ox: "+6",
     },
     details: {
       origin: "Theo tên nhà vật lý Glenn T. Seaborg.",
       position: {
-        group: 6,
+        group: "VIB",
         period: 7,
         block: "d",
         type: "Kim loại chuyển tiếp (Tổng hợp)",
@@ -5723,11 +5987,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 272,
       electronConfig: "[Rn] 5f¹⁴ 6d⁵ 7s²",
       valenceElectrons: 7,
+      en: null,
+      ox: "+7",
     },
     details: {
       origin: "Theo tên nhà vật lý Niels Bohr.",
       position: {
-        group: 7,
+        group: "VIIB",
         period: 7,
         block: "d",
         type: "Kim loại chuyển tiếp (Tổng hợp)",
@@ -5775,11 +6041,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 270,
       electronConfig: "[Rn] 5f¹⁴ 6d⁶ 7s²",
       valenceElectrons: 8,
+      en: null,
+      ox: "+8",
     },
     details: {
       origin: "Theo tên bang Hesse, Đức.",
       position: {
-        group: 8,
+        group: "VIIIB",
         period: 7,
         block: "d",
         type: "Kim loại chuyển tiếp (Tổng hợp)",
@@ -5827,11 +6095,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 276,
       electronConfig: "[Rn] 5f¹⁴ 6d⁷ 7s²",
       valenceElectrons: 9,
+      en: null,
+      ox: "N/A",
     },
     details: {
       origin: "Theo tên nhà vật lý Lise Meitner.",
       position: {
-        group: 9,
+        group: "VIIIB",
         period: 7,
         block: "d",
         type: "Kim loại chuyển tiếp (Tổng hợp)",
@@ -5879,11 +6149,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 281,
       electronConfig: "[Rn] 5f¹⁴ 6d⁸ 7s²",
       valenceElectrons: 10,
+      en: null,
+      ox: "N/A",
     },
     details: {
       origin: "Theo tên thành phố Darmstadt, Đức.",
       position: {
-        group: 10,
+        group: "VIIIB",
         period: 7,
         block: "d",
         type: "Kim loại chuyển tiếp (Tổng hợp)",
@@ -5931,11 +6203,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 280,
       electronConfig: "[Rn] 5f¹⁴ 6d⁹ 7s²",
       valenceElectrons: 11,
+      en: null,
+      ox: "N/A",
     },
     details: {
       origin: "Theo tên nhà vật lý Wilhelm Conrad Röntgen.",
       position: {
-        group: 11,
+        group: "IB",
         period: 7,
         block: "d",
         type: "Kim loại chuyển tiếp (Tổng hợp)",
@@ -5983,11 +6257,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 285,
       electronConfig: "[Rn] 5f¹⁴ 6d¹⁰ 7s²",
       valenceElectrons: 12,
+      Cn: { en: null, ox: "+2" },
     },
     details: {
       origin: "Theo tên nhà thiên văn học Nicolaus Copernicus.",
       position: {
-        group: 12,
+        group: "IIB",
         period: 7,
         block: "d",
         type: "Kim loại chuyển tiếp (Tổng hợp)",
@@ -6036,11 +6311,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 286,
       electronConfig: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p¹",
       valenceElectrons: 3,
+      en: null,
+      ox: "N/A",
     },
     details: {
       origin: "Từ 'Nihon' (tên gọi Nhật Bản trong tiếng Nhật).",
       position: {
-        group: 13,
+        group: "IIIA",
         period: 7,
         block: "p",
         type: "Kim loại yếu (Tổng hợp)",
@@ -6088,11 +6365,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 289,
       electronConfig: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p²",
       valenceElectrons: 4,
+      en: null,
+      ox: "N/A",
     },
     details: {
       origin: "Theo tên nhà vật lý Georgy Flyorov.",
       position: {
-        group: 14,
+        group: "IVA",
         period: 7,
         block: "p",
         type: "Kim loại yếu (Tổng hợp)",
@@ -6141,11 +6420,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 290,
       electronConfig: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p³",
       valenceElectrons: 5,
+      en: null,
+      ox: "N/A",
     },
     details: {
       origin: "Theo tên tỉnh Moscow, Nga.",
       position: {
-        group: 15,
+        group: "VA",
         period: 7,
         block: "p",
         type: "Kim loại yếu (Tổng hợp)",
@@ -6193,11 +6474,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 293,
       electronConfig: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁴",
       valenceElectrons: 6,
+      en: null,
+      ox: "N/A",
     },
     details: {
       origin: "Theo tên Phòng thí nghiệm Quốc gia Lawrence Livermore, Mỹ.",
       position: {
-        group: 16,
+        group: "VIA",
         period: 7,
         block: "p",
         type: "Phi kim (Tổng hợp)",
@@ -6245,11 +6528,13 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
       atomicMass: 294,
       electronConfig: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁵",
       valenceElectrons: 7,
+      en: null,
+      ox: "N/A",
     },
     details: {
       origin: "Theo tên bang Tennessee, Mỹ.",
       position: {
-        group: 17,
+        group: "VIIA",
         period: 7,
         block: "p",
         type: "Phi kim (Halogen/Tổng hợp)",
@@ -6301,10 +6586,12 @@ const DETAILED_PERIODIC_TABLE_PART_1 = [
     details: {
       origin: "Theo tên nhà vật lý Yuri Oganessian.",
       position: {
-        group: 18,
+        group: "VIIIA",
         period: 7,
         block: "p",
         type: "Khí hiếm (Tổng hợp)",
+        en: null,
+        ox: "N/A",
       },
       physical: {
         state: "Khí/Lỏng (dự đoán)",
