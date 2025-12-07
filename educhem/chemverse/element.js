@@ -2202,8 +2202,6 @@ const DETAILED_PERIODIC_TABLE = [
       atomicMass: 79.904,
       electronConfig: "[Ar] 3d¹⁰ 4s² 4p⁵",
       valenceElectrons: 7,
-      en: 2.55,
-      ox: "-2, +4, +6",
       en: 2.96,
       ox: "-1, +1, +3, +5, +7",
     },
