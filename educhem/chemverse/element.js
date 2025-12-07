@@ -1016,6 +1016,7 @@ const DETAILED_PERIODIC_TABLE = [
         "Phân bón (Superphosphate), diêm (P đỏ), thuốc trừ sâu, pháo sáng quân sự, thành phần DNA/ATP.",
       naturalOccurrence: "Trong khoáng vật Apatit, xương và răng động vật.",
       preparation: {
+        lab: "Từ apatit bằng xử lý nhiệt và hóa chất (phosphorus extraction).",
         industry:
           "Nung quặng photphat với cát và than: Ca₃(PO₄)₂ + 3SiO₂ + 5C → 3CaSiO₃ + 2P + 5CO.",
       },
@@ -1081,6 +1082,7 @@ const DETAILED_PERIODIC_TABLE = [
       naturalOccurrence:
         "Mỏ lưu huỳnh tự nhiên (gần núi lửa), trong dầu thô và khí đốt (cần loại bỏ để tránh mưa axit).",
       preparation: {
+        lab: "Tách từ mỏ lưu huỳnh; tinh chế bằng chưng cất.",
         industry:
           "Quy trình Frasch (khai thác mỏ) hoặc quy trình Claus (thu hồi từ khí đốt).",
       },
@@ -1202,7 +1204,10 @@ const DETAILED_PERIODIC_TABLE = [
         "Môi trường khí trơ khi hàn kim loại (hàn TIG/MIG), bơm vào bóng đèn dây tóc (ngăn oxy hóa vonfram), giữa các lớp kính cách nhiệt.",
       naturalOccurrence:
         "Chiếm 0.93% khí quyển Trái Đất (khí hiếm phổ biến nhất).",
-      preparation: { industry: "Chưng cất phân đoạn không khí lỏng." },
+      preparation: {
+        lab: "Tách từ không khí lỏng (phân đoạn chưng cất).",
+        industry: "Chưng cất phân đoạn không khí lỏng.",
+      },
       safety: {
         toxicity: "Không độc.",
         hazards:
@@ -1276,6 +1281,7 @@ const DETAILED_PERIODIC_TABLE = [
       naturalOccurrence:
         "Trong khoáng vật Sylvite, Carnallite. Phổ biến thứ 7 vỏ Trái Đất.",
       preparation: {
+        lab: "Khử kali halide (KCl) bằng điện phân nóng chảy.",
         industry:
           "Điện phân KCl nóng chảy hoặc phản ứng Na + KCl (lỏng) → NaCl + K (hơi).",
       },
@@ -1339,7 +1345,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Xây dựng (Xi măng, bê tông), luyện kim (khử oxy/lưu huỳnh), sinh học (cấu tạo xương/răng, đông máu, dẫn truyền thần kinh).",
       naturalOccurrence: "Phổ biến thứ 5 vỏ Trái Đất.",
-      preparation: { industry: "Điện phân nóng chảy CaCl₂." },
+      preparation: {
+        lab: "Khử CaCl₂ bằng điện phân hoặc khử hợp chất.",
+        industry: "Điện phân nóng chảy CaCl₂.",
+      },
       safety: {
         toxicity: "Không độc.",
         hazards: "Phản ứng CaO + nước tỏa nhiệt rất mạnh gây bỏng.",
@@ -1388,7 +1397,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Hợp kim Nhôm-Scandi (siêu nhẹ, siêu bền cho máy bay tiêm kích MiG, vợt bóng chày, khung xe đạp), đèn sân vận động (ánh sáng giống mặt trời).",
       naturalOccurrence: "Phân tán loãng, hiếm mỏ tập trung.",
-      preparation: { industry: "Điện phân ScCl₃." },
+      preparation: {
+        lab: "Khử oxide bằng canxi hoặc magiê ở nhiệt độ cao.",
+        industry: "Điện phân ScCl₃.",
+      },
       safety: {
         toxicity: "Chưa rõ, coi là độc nhẹ.",
         hazards: "Bột mịn dễ cháy.",
@@ -1453,7 +1465,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Hàng không vũ trụ (động cơ máy bay), y tế (khớp nhân tạo, nẹp xương vì trơ sinh học), gọng kính, trang sức.",
       naturalOccurrence: "Phổ biến thứ 9 vỏ Trái Đất (Ilmenite, Rutile).",
-      preparation: { industry: "Quy trình Kroll: TiCl₄ + 2Mg → Ti + 2MgCl₂." },
+      preparation: {
+        lab: "TiCl₄ khử bằng Mg (Kroll process).",
+        industry: "Quy trình Kroll: TiCl₄ + 2Mg → Ti + 2MgCl₂.",
+      },
       safety: {
         toxicity: "Trơ sinh học, không độc.",
         hazards: "Bột Titan rất dễ nổ.",
@@ -1510,7 +1525,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Hợp kim thép (Ferrovanadium) làm dụng cụ cắt, cờ lê, trục xe, lò xo giảm xóc (thép siêu cứng), pin dòng chảy Vanadium (lưu trữ năng lượng tái tạo).",
       naturalOccurrence: "Trong quặng Vanadinite.",
-      preparation: { industry: "Khử V₂O₅ bằng canxi hoặc nhôm." },
+      preparation: {
+        lab: "Khử oxide bằng canxi hoặc aluminotermy.",
+        industry: "Khử V₂O₅ bằng canxi hoặc nhôm.",
+      },
       safety: {
         toxicity: "Hợp chất Vanadi độc hại (kích ứng hô hấp).",
         hazards: "",
@@ -1574,7 +1592,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Thép không gỉ (Inox - chứa >11% Crom), mạ crom (trang trí, chống xước xe máy), thuộc da, phẩm màu.",
       naturalOccurrence: "Quặng Chromite (FeCr₂O₄).",
-      preparation: { industry: "Nhiệt nhôm Cr₂O₃ hoặc khử quặng." },
+      preparation: {
+        lab: "Khử Cr₂O₃ bằng aluminotermy (thermite) hoặc CO.",
+        industry: "Nhiệt nhôm Cr₂O₃ hoặc khử quặng.",
+      },
       safety: {
         toxicity:
           "Cr(III) cần thiết lượng vết. Cr(VI) RẤT ĐỘC và gây ung thư (phim 'Erin Brockovich').",
@@ -1636,7 +1657,10 @@ const DETAILED_PERIODIC_TABLE = [
         "Luyện thép (khử lưu huỳnh, tăng độ cứng - đường ray xe lửa, két sắt), vỏ lon nhôm (hợp kim Al-Mn), pin alkaline.",
       naturalOccurrence:
         "Quặng Pyrolusite (MnO₂). Dưới đáy biển có 'kết hạch mangan'.",
-      preparation: { industry: "Điện phân hoặc khử bằng CO." },
+      preparation: {
+        lab: "Khử oxide bằng cacbon hoặc aluminotermy.",
+        industry: "Điện phân hoặc khử bằng CO.",
+      },
       safety: {
         toxicity:
           "Bụi Mn gây hội chứng Manganism (tổn thương thần kinh giống Parkinson).",
@@ -1706,6 +1730,7 @@ const DETAILED_PERIODIC_TABLE = [
       naturalOccurrence:
         "Phổ biến thứ 4 vỏ Trái Đất, nhưng là thành phần chính của lõi Trái Đất.",
       preparation: {
+        lab: "Khử hematite bằng than trong lò cao; điều chế kim loại.",
         industry: "Lò cao: Khử quặng sắt bằng than cốc (CO) ở nhiệt độ cao.",
       },
       safety: {
@@ -1783,7 +1808,10 @@ const DETAILED_PERIODIC_TABLE = [
         "Pin sạc Li-ion, nam châm vĩnh cửu (Alnico), hợp kim siêu bền chịu nhiệt (động cơ phản lực), xạ trị y tế.",
       naturalOccurrence:
         "Trong quặng Cobaltite (CoAsS). Thường đi kèm niken và đồng.",
-      preparation: { industry: "Sản phẩm phụ khi luyện đồng/niken." },
+      preparation: {
+        lab: "Khử hematite bằng than trong lò cao; điều chế kim loại.",
+        industry: "Sản phẩm phụ khi luyện đồng/niken.",
+      },
       safety: {
         toxicity: "Cần thiết lượng vết (B12), nhưng độc ở nồng độ cao.",
         hazards: "Bụi coban gây bệnh phổi.",
@@ -1844,7 +1872,10 @@ const DETAILED_PERIODIC_TABLE = [
         "Thép không gỉ (Inox 304 chứa 8-10% Ni), tiền xu, pin sạc, mạ bảo vệ kim loại, dây đàn guitar điện.",
       naturalOccurrence:
         "Trong thiên thạch sắt và lõi Trái Đất. Quặng Laterite.",
-      preparation: { industry: "Quy trình Mond (dùng CO để tinh chế)." },
+      preparation: {
+        lab: "Khử muối/nước bằng điện phân hoặc pyrometallurgy.",
+        industry: "Quy trình Mond (dùng CO để tinh chế).",
+      },
       safety: {
         toxicity:
           "Gây dị ứng tiếp xúc da phổ biến nhất (ngứa khi đeo trang sức giả).",
@@ -1916,7 +1947,10 @@ const DETAILED_PERIODIC_TABLE = [
         "Dây điện, ống nước, tiền xu, tản nhiệt máy tính, đúc tượng, mái nhà kiến trúc.",
       naturalOccurrence:
         "Đôi khi gặp dạng tự nhiên (đồng nguyên chất). Quặng Chalcopyrite.",
-      preparation: { industry: "Hỏa luyện hoặc thủy luyện từ quặng." },
+      preparation: {
+        lab: "Khử các hợp chất đồng (sulfide/oxide) bằng phản ứng nhiệt.",
+        industry: "Hỏa luyện hoặc thủy luyện từ quặng.",
+      },
       safety: {
         toxicity: "Thấp, nhưng dư thừa gây bệnh Wilson.",
         hazards: "Độc với động vật không xương sống (ốc, tảo).",
@@ -1976,7 +2010,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Mạ kẽm (galvanizing) bảo vệ tôn/thép, hợp kim đồng thau, pin kẽm-carbon, đúc chi tiết ô tô.",
       naturalOccurrence: "Quặng Sphalerite (ZnS).",
-      preparation: { industry: "Nung ZnS thành ZnO rồi khử bằng than cốc." },
+      preparation: {
+        lab: "Tách từ oxide bằng điện phân hoặc xử lý pyrometallurgy.",
+        industry: "Nung ZnS thành ZnO rồi khử bằng than cốc.",
+      },
       safety: {
         toxicity:
           "Thấp (cần thiết cho miễn dịch). Hít khói ZnO gây 'sốt hơi kim loại'.",
@@ -2034,7 +2071,9 @@ const DETAILED_PERIODIC_TABLE = [
         "Chất bán dẫn (điện thoại, vệ tinh), nhiệt kế y tế (thay thủy ngân), đèn LED, tấm pin mặt trời.",
       naturalOccurrence:
         "Không có quặng riêng, đi kèm trong quặng Bauxite và Kẽm.",
-      preparation: { industry: "Sản phẩm phụ công nghiệp nhôm." },
+      preparation: {
+        lab: "Tách từ quặng Ga-bearing bằng xử lý hóa học và tinh luyện.",
+      },
       safety: {
         toxicity: "Thấp.",
         hazards: "Làm hỏng cấu trúc kim loại khác (nhôm, thép) nếu tiếp xúc.",
@@ -2084,7 +2123,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Transistor đầu tiên làm từ Ge, sợi quang học (internet), ống kính camera hồng ngoại (quân sự/ban đêm), pin mặt trời vệ tinh.",
       naturalOccurrence: "Hiếm, lẫn trong quặng kẽm và than đá.",
-      preparation: { industry: "Chưng cất phân đoạn từ bụi lò luyện kẽm." },
+      preparation: {
+        lab: "Khử GeO₂ bằng H₂ hoặc phản ứng kim loại.",
+        industry: "Chưng cất phân đoạn từ bụi lò luyện kẽm.",
+      },
       safety: { toxicity: "Thấp, một số hợp chất hữu cơ Ge độc.", hazards: "" },
     },
     styles: {
@@ -2132,7 +2174,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Chất bán dẫn (GaAs) trong chip điện thoại, thuốc trừ sâu/diệt cỏ (đã hạn chế), hợp kim làm cứng chì (đạn, ắc quy).",
       naturalOccurrence: "Khoáng vật Realgar, Orpiment.",
-      preparation: { industry: "Nung quặng FeAsS trong không khí." },
+      preparation: {
+        lab: "Tách từ quặng sulfide; chưng cất phân đoạn.",
+        industry: "Nung quặng FeAsS trong không khí.",
+      },
       safety: {
         toxicity:
           "RẤT ĐỘC và gây ung thư. Ô nhiễm asen trong nước ngầm là vấn đề lớn.",
@@ -2180,7 +2225,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Trống máy photocopy (nhờ tính quang dẫn), sản xuất thủy tinh đỏ (đèn giao thông), pin mặt trời (CIGS), thực phẩm chức năng (chống oxy hóa).",
       naturalOccurrence: "Tạp chất trong quặng đồng sunfua.",
-      preparation: { industry: "Sản phẩm phụ tinh chế đồng." },
+      preparation: {
+        lab: "Tách từ sulfid selenium trong quá trình tinh luyện đồng.",
+        industry: "Sản phẩm phụ tinh chế đồng.",
+      },
       safety: {
         toxicity:
           "Cần thiết lượng vết, nhưng độc như thạch tín nếu liều cao. Hơi thở có mùi tỏi khi ngộ độc.",
@@ -2246,6 +2294,7 @@ const DETAILED_PERIODIC_TABLE = [
         "Chất chống cháy (nhựa vỏ tivi, máy tính), dung dịch khoan dầu khí, phim ảnh (cũ), thuốc trừ sâu (methyl bromide - đã cấm nhiều nơi).",
       naturalOccurrence: "Trong nước biển và hồ muối (Biển Chết).",
       preparation: {
+        lab: "Oxi hóa bromide (Br⁻) trong dung dịch muối bromide để giải phóng Br₂.",
         industry:
           "Dùng khí Clo oxi hóa muối Bromua: Cl₂ + 2NaBr → 2NaCl + Br₂.",
       },
@@ -2299,7 +2348,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Đèn flash máy ảnh tốc độ cao, đèn sân bay (xuyên sương mù), laser y tế phẫu thuật mắt, lớp cách nhiệt cửa sổ cao cấp.",
       naturalOccurrence: "Rất hiếm trong khí quyển (1 ppm).",
-      preparation: { industry: "Chưng cất phân đoạn không khí." },
+      preparation: {
+        lab: "Tách từ không khí lỏng; thành phần rất nhỏ.",
+        industry: "Chưng cất phân đoạn không khí.",
+      },
       safety: { toxicity: "Không độc.", hazards: "Gây ngạt." },
     },
     styles: {
@@ -2347,7 +2399,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Đồng hồ nguyên tử (GPS), pháo hoa (màu tím), tế bào quang điện, động cơ ion cho tàu vũ trụ (tiềm năng).",
       naturalOccurrence: "Trong khoáng vật Lepidolite.",
-      preparation: { industry: "Khử RbCl bằng Canxi." },
+      preparation: {
+        lab: "Khử rubidium chloride bằng kali nóng chảy hoặc điện phân.",
+        industry: "Khử RbCl bằng Canxi.",
+      },
       safety: { toxicity: "Nhẹ.", hazards: "Nguy hiểm cháy nổ cao." },
     },
     styles: {
@@ -2413,7 +2468,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Pháo hoa (màu đỏ), nam châm gốm, sơn dạ quang, kem đánh răng cho răng nhạy cảm (SrCl₂).",
       naturalOccurrence: "Quặng Celestite (SrSO₄).",
-      preparation: { industry: "Điện phân nóng chảy SrCl₂." },
+      preparation: {
+        lab: "Khử SrCl₂ hoặc SrO bằng kim loại mạnh ở nhiệt độ cao.",
+        industry: "Điện phân nóng chảy SrCl₂.",
+      },
       safety: {
         toxicity:
           "Sr không độc, nhưng đồng vị phóng xạ Sr-90 gây ung thư xương.",
@@ -2474,7 +2532,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Đèn LED trắng (lớp phủ phosphor), màn hình màu (tạo màu đỏ), bugi đánh lửa, chất siêu dẫn.",
       naturalOccurrence: "Trong quặng Monazite.",
-      preparation: { industry: "Trao đổi ion từ quặng đất hiếm." },
+      preparation: {
+        lab: "Khử Y₂O₃ bằng canxi hoặc magiê (thermic) trong lò chân không.",
+        industry: "Trao đổi ion từ quặng đất hiếm.",
+      },
       safety: { toxicity: "Bụi gây bệnh phổi.", hazards: "" },
     },
     styles: {
@@ -2527,7 +2588,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Vỏ thanh nhiên liệu hạt nhân (do không hấp thụ neutron), dao gốm (sắc vĩnh cửu), răng sứ, đá giả kim cương.",
       naturalOccurrence: "Khoáng vật Zircon (cát đen biển).",
-      preparation: { industry: "Quy trình Kroll (giống Titan)." },
+      preparation: {
+        lab: "Kroll process: khử ZrCl₄ bằng Mg.",
+        industry: "Quy trình Kroll (giống Titan).",
+      },
       safety: { toxicity: "Thấp.", hazards: "Bột Zr cực dễ cháy nổ." },
     },
     styles: {
@@ -2580,7 +2644,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Nam châm siêu dẫn (máy MRI, máy gia tốc hạt), thép hợp kim thấp (đường ống dẫn dầu, cầu), trang sức (tạo màu bằng điện phân).",
       naturalOccurrence: "Khoáng vật Columbite.",
-      preparation: { industry: "Khử phức florua." },
+      preparation: {
+        lab: "Khử NbCl₅ hoặc Nb₂O₅ bằng aluminotermy hoặc Kroll-like processes.",
+        industry: "Khử phức florua.",
+      },
       safety: { toxicity: "Thấp.", hazards: "" },
     },
     styles: {
@@ -2632,7 +2699,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Thép siêu cứng (công cụ cắt, vỏ xe tăng), chất bôi trơn động cơ, điện cực lò nung thủy tinh.",
       naturalOccurrence: "Quặng Molybdenite (MoS₂).",
-      preparation: { industry: "Tuyển nổi quặng rồi nung." },
+      preparation: {
+        lab: "Khử MoO₃ bằng hơ luyện khí CO hoặc hidro, hoặc aluminotermy.",
+        industry: "Tuyển nổi quặng rồi nung.",
+      },
       safety: { toxicity: "Thấp.", hazards: "" },
     },
     styles: {
@@ -2688,7 +2758,10 @@ const DETAILED_PERIODIC_TABLE = [
         "Y học hạt nhân (Chụp xạ hình xương, tim, thận - do chu kỳ bán rã ngắn 6h, ít hại người bệnh), chất xúc tác, tiêu chuẩn tia beta.",
       naturalOccurrence:
         "Hầu như không có tự nhiên (chỉ vết nhỏ trong mỏ uranium).",
-      preparation: { industry: "Tách từ rác thải lò phản ứng hạt nhân." },
+      preparation: {
+        lab: "Thu từ sản phẩm phân hạch hạt nhân; tinh chế phóng xạ.",
+        industry: "Tách từ rác thải lò phản ứng hạt nhân.",
+      },
       safety: { toxicity: "Phóng xạ.", hazards: "Nguy hiểm phóng xạ." },
     },
     styles: {
@@ -2734,7 +2807,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Tiếp điểm điện (chống mài mòn), ngòi bút máy cao cấp, chất xúc tác hóa học, ổ cứng máy tính (lớp từ tính).",
       naturalOccurrence: "Lẫn với quặng Platin.",
-      preparation: { industry: "Tinh chế từ quặng Platin." },
+      preparation: {
+        lab: "Khử oxide bằng phản ứng kim loại hoặc tinh luyện từ quặng.",
+        industry: "Tinh chế từ quặng Platin.",
+      },
       safety: { toxicity: "Hợp chất RuO₄ rất độc và gây nổ.", hazards: "" },
     },
     styles: {
@@ -2781,7 +2857,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Bộ chuyển đổi xúc tác ô tô (giảm khí thải độc), mạ trang sức (vàng trắng/bạc được mạ Rhodium để sáng bóng), gương đèn pha.",
       naturalOccurrence: "Rất hiếm, đi cùng Platin.",
-      preparation: { industry: "Tinh chế từ quặng Platin/Niken." },
+      preparation: {
+        lab: "Tách từ quặng platinum group metals (PGM) và tinh chế.",
+        industry: "Tinh chế từ quặng Platin/Niken.",
+      },
       safety: { toxicity: "Hợp chất độc.", hazards: "" },
     },
     styles: {
@@ -2827,7 +2906,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Bộ xúc tác ô tô, tụ điện gốm (điện tử), nha khoa (cầu răng), pin nhiên liệu hydro, trang sức.",
       naturalOccurrence: "Quặng niken-đồng.",
-      preparation: { industry: "Sản phẩm phụ khai thác niken." },
+      preparation: {
+        lab: "Tách từ PGM ores; điện luyện/tinh chế.",
+        industry: "Sản phẩm phụ khai thác niken.",
+      },
       safety: { toxicity: "Thấp.", hazards: "" },
     },
     styles: {
@@ -2882,7 +2964,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Trang sức, tiền xu, pin mặt trời, gương, mạch in điện tử, tính kháng khuẩn (băng gạc y tế, tất khử mùi).",
       naturalOccurrence: "Dạng tự sinh hoặc quặng Argentite.",
-      preparation: { industry: "Tách từ quặng chì/kẽm (phương pháp Parkes)." },
+      preparation: {
+        lab: "Khử Ag₂S hoặc AgCl bằng phương pháp hóa học, điện phân.",
+        industry: "Tách từ quặng chì/kẽm (phương pháp Parkes).",
+      },
       safety: {
         toxicity:
           "Muối bạc độc với vi khuẩn. Tiếp xúc nhiều gây bệnh da xanh (Argyria).",
@@ -2938,7 +3023,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Pin sạc Ni-Cd (đang bị thay thế), mạ điện chống ăn mòn, thanh điều khiển lò phản ứng hạt nhân (hấp thụ neutron), sắc tố sơn.",
       naturalOccurrence: "Tạp chất trong quặng kẽm.",
-      preparation: { industry: "Phụ phẩm luyện kẽm." },
+      preparation: {
+        lab: "Khử oxide hoặc sulfide bằng carbon hoặc điện phân.",
+        industry: "Phụ phẩm luyện kẽm.",
+      },
       safety: {
         toxicity: "CỰC ĐỘC. Gây loãng xương, suy thận (bệnh Itai-Itai ở Nhật).",
         hazards: "Tích tụ sinh học.",
@@ -2988,7 +3076,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Màn hình cảm ứng (điện thoại, tablet) nhờ lớp phủ ITO, hàn vi mạch, hợp kim nhiệt độ nóng chảy thấp.",
       naturalOccurrence: "Phụ phẩm quặng kẽm.",
-      preparation: { industry: "Điện phân." },
+      preparation: {
+        lab: "Tinh luyện từ các quặng chứa indium; khử oxide bằng phản ứng kim loại.",
+        industry: "Điện phân.",
+      },
       safety: { toxicity: "Thấp.", hazards: "" },
     },
     styles: {
@@ -3036,7 +3127,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Hàn mạch điện tử (solder), tráng lên thép làm vỏ đồ hộp (tin can), hợp kim đồng thiếc (chuông), kính phẳng (thủy tinh nổi trên thiếc lỏng).",
       naturalOccurrence: "Quặng Cassiterite (SnO₂).",
-      preparation: { industry: "Khử quặng bằng than." },
+      preparation: {
+        lab: "Khử oxide bằng carbon hoặc từ quặng cassiterite.",
+        industry: "Khử quặng bằng than.",
+      },
       safety: {
         toxicity: "Kim loại không độc. Hợp chất hữu cơ thiếc rất độc.",
         hazards: "",
@@ -3083,7 +3177,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Chất chống cháy (nhựa, vải, bọc ghế ô tô), làm cứng chì (ắc quy axit chì), đạn dược, mỹ phẩm cổ đại (kohl - trang điểm mắt).",
       naturalOccurrence: "Quặng Stibnite (Sb₂S₃).",
-      preparation: { industry: "Nung quặng với sắt." },
+      preparation: {
+        lab: "Tách từ quặng stibnite (Sb₂S₃) bằng nung và chưng cất phân đoạn.",
+        industry: "Nung quặng với sắt.",
+      },
       safety: {
         toxicity: "Độc (tương tự Asen).",
         hazards: "Bụi gây hại phổi.",
@@ -3133,7 +3230,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Pin mặt trời, đĩa quang (CD-RW, DVD-RW - lớp ghi dữ liệu), pha vào thép để dễ gia công, nhiệt điện.",
       naturalOccurrence: "Thường đi kèm vàng (Gold telluride).",
-      preparation: { industry: "Phụ phẩm tinh chế đồng." },
+      preparation: {
+        lab: "Tách từ tinh luyện đồng; khử từ telluride.",
+        industry: "Phụ phẩm tinh chế đồng.",
+      },
       safety: {
         toxicity:
           "Độc nhẹ. Đặc điểm: Tiếp xúc dù ít cũng làm hơi thở có mùi tỏi nồng nặc nhiều tuần.",
@@ -3199,7 +3299,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Y tế (sát trùng, thuốc cản quang X-quang), muối Iốt (ngừa bướu cổ, đần độn), nhiếp ảnh, màn hình LCD.",
       naturalOccurrence: "Trong nước biển, rong biển.",
-      preparation: { industry: "Từ nước biển hoặc mỏ diêm tiêu." },
+      preparation: {
+        lab: "Oxi hóa iodide (I⁻) để sinh I₂ và chưng cất.",
+        industry: "Từ nước biển hoặc mỏ diêm tiêu.",
+      },
       safety: {
         toxicity: "Cần thiết cho tuyến giáp. Dạng tinh thể gây bỏng da.",
         hazards: "",
@@ -3250,6 +3353,7 @@ const DETAILED_PERIODIC_TABLE = [
         "Động cơ ion (tàu vũ trụ NASA), đèn pha ô tô cao cấp (đèn Xenon), đèn flash nhiếp ảnh, thuốc gây mê toàn thân (đắt tiền nhưng an toàn).",
       naturalOccurrence: "Cực hiếm trong khí quyển.",
       preparation: {
+        lab: "Tách từ không khí lỏng; chưng cất phân đoạn.",
         industry: "Chưng cất phân đoạn không khí lỏng (rất đắt).",
       },
       safety: {
@@ -3298,7 +3402,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Đồng hồ nguyên tử (chuẩn thời gian toàn cầu), chất hút khí (getter) trong đèn chân không, chất xúc tác.",
       naturalOccurrence: "Khoáng vật Pollucite (hiếm).",
-      preparation: { industry: "Điện phân CsCN." },
+      preparation: {
+        lab: "Khử CsCl bằng sodium hoặc điện phân muối nóng chảy.",
+        industry: "Điện phân CsCN.",
+      },
       safety: { toxicity: "Thấp.", hazards: "Nguy cơ cháy nổ cực kỳ cao." },
     },
     styles: {
@@ -3356,7 +3463,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Pháo hoa (xanh lá), ngành dầu khí (khoan), chân không (hút khí), pin nhiệt điện.",
       naturalOccurrence: "Quặng Barite (BaSO₄).",
-      preparation: { industry: "Điện phân nóng chảy BaCl₂." },
+      preparation: {
+        lab: "Khử BaCl₂ hoặc BaO bằng kim loại mạnh ở nhiệt độ cao.",
+        industry: "Điện phân nóng chảy BaCl₂.",
+      },
       safety: {
         toxicity: "Ion Ba²⁺ RẤT ĐỘC (trừ BaSO₄ không tan).",
         hazards: "Độc, gây tổn thương thần kinh và tim.",
@@ -3415,7 +3525,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Ống kính máy ảnh/kính thiên văn (chỉ số khúc xạ cao), pin xe hybrid (NiMH), buồng đốt hồ quang.",
       naturalOccurrence: "Quặng Monazite.",
-      preparation: { industry: "Điện phân muối nóng chảy." },
+      preparation: {
+        lab: "Khử La₂O₃ bằng canxi hoặc aluminotermy.",
+        industry: "Điện phân muối nóng chảy.",
+      },
       safety: { toxicity: "Độc nhẹ.", hazards: "" },
     },
     styles: {
@@ -3462,7 +3575,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Đá lửa (hợp kim Mischmetal), xúc tác lọc khí thải ô tô, chất đánh bóng kính.",
       naturalOccurrence: "Quặng Bastnasite.",
-      preparation: { industry: "Khử oxit bằng canxi." },
+      preparation: {
+        lab: "Kroll-like reduction từ CeCl₃ hoặc khử oxide.",
+        industry: "Khử oxit bằng canxi.",
+      },
       safety: { toxicity: "Thấp.", hazards: "Bột dễ cháy." },
     },
     styles: {
@@ -3509,7 +3625,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Thủy tinh hàn (Didymium Glass - lọc tia hồng ngoại), nam châm Nd-Fe-B (tăng độ bền nhiệt), màu men gốm sứ.",
       naturalOccurrence: "Đi cùng Neodymium.",
-      preparation: { industry: "Tách khỏi Neodymium (khó)." },
+      preparation: {
+        lab: "Kroll-like reduction từ CeCl₃ hoặc khử oxide.",
+        industry: "Tách khỏi Neodymium (khó).",
+      },
       safety: { toxicity: "Độc nhẹ.", hazards: "" },
     },
     styles: {
@@ -3556,7 +3675,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Nam châm siêu mạnh (tai nghe, động cơ xe điện, tuabin gió), laser (y tế, công nghiệp), thủy tinh tím/hồng (lọc ánh sáng vàng).",
       naturalOccurrence: "Khoáng vật Monazite.",
-      preparation: { industry: "Trao đổi ion, tách khỏi Praseodymium." },
+      preparation: {
+        lab: "Khử Nd₂O₃ bằng canxi/magiê.",
+        industry: "Trao đổi ion, tách khỏi Praseodymium.",
+      },
       safety: { toxicity: "Độc nhẹ.", hazards: "Bột dễ cháy." },
     },
     styles: {
@@ -3612,6 +3734,7 @@ const DETAILED_PERIODIC_TABLE = [
         "Nguồn pin nguyên tử (chỉ ở quy mô nhỏ), sơn phát sáng (dùng thay cho Ra/Tritium).",
       naturalOccurrence: "Chỉ tìm thấy ở dạng vết cực nhỏ (phân rã U).",
       preparation: {
+        lab: "Tách từ nhiên liệu hạt nhân hoặc sản phẩm phân hạch; chỉ làm trong cơ sở phóng xạ.",
         industry: "Sản phẩm phân hạch Uranium trong lò phản ứng.",
       },
       safety: { toxicity: "Phóng xạ.", hazards: "Nguy cơ chiếu xạ." },
@@ -3660,7 +3783,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Nam châm chịu nhiệt độ cao (quân sự, hàng không vũ trụ), thanh điều khiển lò phản ứng hạt nhân (hấp thụ neutron), laser.",
       naturalOccurrence: "Quặng Monazite.",
-      preparation: { industry: "Khử oxit bằng Lanthan." },
+      preparation: {
+        lab: "Khử oxide bằng canxi hoặc magiê.",
+        industry: "Khử oxit bằng Lanthan.",
+      },
       safety: { toxicity: "Độc nhẹ.", hazards: "" },
     },
     styles: {
@@ -3707,7 +3833,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Phốt pho đỏ (màn hình CRT cũ, đèn huỳnh quang), vật liệu chống hàng giả (tờ tiền, thẻ căn cước), quang điện tử.",
       naturalOccurrence: "Quặng Monazite.",
-      preparation: { industry: "Điện phân EuCl₃." },
+      preparation: {
+        lab: "Khử oxide Eu₂O₃ bằng canxi.",
+        industry: "Điện phân EuCl₃.",
+      },
       safety: { toxicity: "Độc nhẹ.", hazards: "" },
     },
     styles: {
@@ -3763,7 +3892,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Chất cản quang cho máy chụp cộng hưởng từ (MRI), thanh điều khiển lò phản ứng (hấp thụ neutron), công nghệ làm lạnh từ tính.",
       naturalOccurrence: "Quặng Monazite, Bastnasite.",
-      preparation: { industry: "Khử muối fluoride bằng Canxi." },
+      preparation: {
+        lab: "Khử oxide Gd₂O₃ bằng canxi hoặc aluminotermy.",
+        industry: "Khử muối fluoride bằng Canxi.",
+      },
       safety: {
         toxicity: "Độc nhẹ.",
         hazards: "Có thể gây lắng đọng trong cơ thể (MRI).",
@@ -3809,7 +3941,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Phốt pho xanh lá cây (màn hình, đèn huỳnh quang), ổ đĩa quang từ, hợp kim Magnetostrictive (chuyển đổi từ tính thành cơ học).",
       naturalOccurrence: "Hiếm, đi cùng Gadolinium.",
-      preparation: { industry: "Trao đổi ion từ quặng." },
+      preparation: {
+        lab: "Khử oxide bằng canxi hoặc magiê; tinh chế.",
+        industry: "Trao đổi ion từ quặng.",
+      },
       safety: { toxicity: "Độc nhẹ.", hazards: "" },
     },
     styles: {
@@ -3846,7 +3981,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Nam châm NdFeB (tăng lực từ và chịu nhiệt), đĩa ghi dữ liệu, lò phản ứng hạt nhân.",
       naturalOccurrence: "Tương đối phổ biến trong nhóm Lanthanides.",
-      preparation: { industry: "Trao đổi ion." },
+      preparation: {
+        lab: "Khử oxide bằng canxi hoặc magiê.",
+        industry: "Trao đổi ion.",
+      },
       safety: { toxicity: "Độc nhẹ.", hazards: "" },
     },
     styles: {
@@ -3889,7 +4027,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Laser YAG (phẫu thuật), nam châm cực mạnh (nghiên cứu), chất tạo màu trong thủy tinh quang học.",
       naturalOccurrence: "Tương đối hiếm.",
-      preparation: { industry: "Trao đổi ion." },
+      preparation: {
+        lab: "Khử Ho₂O₃ bằng canxi/magiê; tinh chế.",
+        industry: "Trao đổi ion.",
+      },
       safety: { toxicity: "Độc nhẹ.", hazards: "" },
     },
     styles: {
@@ -3926,7 +4067,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Bộ khuếch đại sợi quang (EDFA) cho cáp quang dưới biển, laser hồng ngoại (thẩm mỹ, nha khoa), tạo màu hồng cho thủy tinh.",
       naturalOccurrence: "Tương đối phổ biến trong nhóm Đất hiếm.",
-      preparation: { industry: "Trao đổi ion." },
+      preparation: {
+        lab: "Khử oxide bằng canxi hoặc magiê.",
+        industry: "Trao đổi ion.",
+      },
       safety: { toxicity: "Độc nhẹ.", hazards: "" },
     },
     styles: {
@@ -3963,7 +4107,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Nguồn tia X di động (dùng đồng vị ¹⁷⁰Tm), laser rắn trạng thái rắn.",
       naturalOccurrence: "Rất hiếm, đi kèm Erbi.",
-      preparation: { industry: "Trao đổi ion." },
+      preparation: {
+        lab: "Khử oxide; hiếm nên thường làm ở quy mô nhỏ.",
+        industry: "Trao đổi ion.",
+      },
       safety: { toxicity: "Độc nhẹ.", hazards: "" },
     },
     styles: {
@@ -4005,7 +4152,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Đồng hồ nguyên tử chính xác nhất, hợp kim cường độ cao, laser sợi quang (cắt, hàn).",
       naturalOccurrence: "Quặng Monazite.",
-      preparation: { industry: "Khử oxit bằng Lanthan/Mischmetal." },
+      preparation: {
+        lab: "Khử oxide bằng canxi; tinh luyện bằng chưng cất.",
+        industry: "Khử oxit bằng Lanthan/Mischmetal.",
+      },
       safety: { toxicity: "Độc nhẹ.", hazards: "" },
     },
     styles: {
@@ -4052,7 +4202,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Máy chụp cắt lớp phát xạ positron (PET Scan), chất xúc tác hóa dầu, nghiên cứu khoa học.",
       naturalOccurrence: "Rất hiếm, đi kèm Ytterbium.",
-      preparation: { industry: "Trao đổi ion, điện phân." },
+      preparation: {
+        lab: "Khử Lu₂O₃ bằng canxi hoặc magiê.",
+        industry: "Trao đổi ion, điện phân.",
+      },
       safety: { toxicity: "Độc nhẹ.", hazards: "" },
     },
     styles: {
@@ -4098,7 +4251,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Thanh điều khiển lò phản ứng hạt nhân (do hấp thụ neutron mạnh), chất phụ gia hợp kim chịu nhiệt (động cơ phản lực), vi mạch bán dẫn (hợp chất Hafnium oxide).",
       naturalOccurrence: "Luôn đi kèm Zirconium.",
-      preparation: { industry: "Tách từ Zirconium bằng chiết dung môi." },
+      preparation: {
+        lab: "Tách từ zirconium ores; khử halide.",
+        industry: "Tách từ Zirconium bằng chiết dung môi.",
+      },
       safety: { toxicity: "Độc nhẹ.", hazards: "Bột dễ cháy." },
     },
     styles: {
@@ -4146,7 +4302,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Tụ điện gốm (điện thoại, máy tính), cấy ghép y tế/phẫu thuật (trơ hóa học, cơ thể không đào thải), hợp kim siêu bền (động cơ máy bay).",
       naturalOccurrence: "Trong khoáng vật Tantalite.",
-      preparation: { industry: "Điện phân." },
+      preparation: {
+        lab: "Khử TaCl₅ bằng natri hoặc bằng aluminotermy.",
+        industry: "Điện phân.",
+      },
       safety: { toxicity: "Thấp.", hazards: "" },
     },
     styles: {
@@ -4202,7 +4361,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Dây tóc bóng đèn sợi đốt (chịu nhiệt), điện cực hàn TIG, đầu mũi khoan, đạn xuyên giáp, trang sức chịu xước.",
       naturalOccurrence: "Quặng Wolframite.",
-      preparation: { industry: "Khử oxit bằng Hydro." },
+      preparation: {
+        lab: "Tách từ scheelite/wolframite và khử bằng hydro/cacbon.",
+        industry: "Khử oxit bằng Hydro.",
+      },
       safety: { toxicity: "Thấp.", hazards: "" },
     },
     styles: {
@@ -4250,7 +4412,10 @@ const DETAILED_PERIODIC_TABLE = [
         "Hợp kim siêu bền chịu nhiệt (lưỡi tuabin động cơ phản lực, lên đến 6% Reni), chất xúc tác cho xăng không chì.",
       naturalOccurrence:
         "Sản phẩm phụ khai thác Molypden (một trong những nguyên tố hiếm nhất).",
-      preparation: { industry: "Khử Amoni Perrhenate." },
+      preparation: {
+        lab: "Tách từ quặng molybdenum/thiếc; tinh chế.",
+        industry: "Khử Amoni Perrhenate.",
+      },
       safety: { toxicity: "Thấp.", hazards: "" },
     },
     styles: {
@@ -4302,7 +4467,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Hợp kim siêu cứng (ngòi bút máy cao cấp, trục la bàn, tiếp điểm điện), quang học.",
       naturalOccurrence: "Hiếm, trong quặng Platin.",
-      preparation: { industry: "Sản phẩm phụ tinh chế Platin." },
+      preparation: {
+        lab: "Tách từ PGM ores và tinh chế bằng phương pháp hóa học.",
+        industry: "Sản phẩm phụ tinh chế Platin.",
+      },
       safety: {
         toxicity: "OsO₄ cực độc (hơi gây mù mắt và tổn thương phổi).",
         hazards: "Độc cao.",
@@ -4354,7 +4522,10 @@ const DETAILED_PERIODIC_TABLE = [
         "Đầu bugi ô tô cao cấp, ngòi bút máy (làm cứng Platin), phát hiện va chạm thiên thạch (nồng độ cao tại ranh giới K/T).",
       naturalOccurrence:
         "Hiếm, trong quặng Platin. Phổ biến trong thiên thạch.",
-      preparation: { industry: "Sản phẩm phụ tinh chế Platin." },
+      preparation: {
+        lab: "Tách từ PGM ores; tinh luyện.",
+        industry: "Sản phẩm phụ tinh chế Platin.",
+      },
       safety: { toxicity: "Thấp.", hazards: "" },
     },
     styles: {
@@ -4406,7 +4577,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Bộ chuyển đổi xúc tác ô tô, trang sức cao cấp, điện cực trong pin nhiên liệu, nhiệt kế kháng nhiệt độ.",
       naturalOccurrence: "Quặng Platin (hiếm).",
-      preparation: { industry: "Sản phẩm phụ khai thác Niken/Đồng." },
+      preparation: {
+        lab: "Tách từ PGM ores; tinh luyện điện hóa.",
+        industry: "Sản phẩm phụ khai thác Niken/Đồng.",
+      },
       safety: { toxicity: "Kim loại trơ. Hợp chất phức tạp độc.", hazards: "" },
     },
     styles: {
@@ -4453,7 +4627,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Trang sức, dự trữ tiền tệ, lớp mạ bảo vệ trong điện tử (kháng ăn mòn), nha khoa.",
       naturalOccurrence: "Dạng tự sinh (quặng vàng, phù sa).",
-      preparation: { industry: "Khai thác mỏ, chiết xuất cyanide." },
+      preparation: {
+        lab: "Tách từ vàng quặng, tinh luyện điện phân.",
+        industry: "Khai thác mỏ, chiết xuất cyanide.",
+      },
       safety: { toxicity: "Kim loại không độc.", hazards: "" },
     },
     styles: {
@@ -4512,7 +4689,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Nhiệt kế (đã cấm nhiều nơi), áp kế, đèn huỳnh quang/đèn hơi thủy ngân, khai thác vàng (đã cấm nhiều nơi).",
       naturalOccurrence: "Quặng Cinnabar (HgS).",
-      preparation: { industry: "Nung quặng Cinnabar." },
+      preparation: {
+        lab: "Tách từ quặng cinnabar (HgS) bằng nung và ngưng tụ.",
+        industry: "Nung quặng Cinnabar.",
+      },
       safety: {
         toxicity:
           "CỰC KỲ ĐỘC. Hơi thủy ngân và hợp chất hữu cơ gây tổn thương thần kinh nghiêm trọng.",
@@ -4558,7 +4738,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Chất bán dẫn (quang điện), sợi quang hồng ngoại, bẫy chuột (đã cấm vì quá độc).",
       naturalOccurrence: "Tạp chất trong quặng Kali và Selen.",
-      preparation: { industry: "Sản phẩm phụ luyện kẽm/chì." },
+      preparation: {
+        lab: "Tách từ quặng chứa thallium; chưng cất phân đoạn.",
+        industry: "Sản phẩm phụ luyện kẽm/chì.",
+      },
       safety: {
         toxicity:
           "CỰC KỲ ĐỘC. Độc hơn Chì. Gây rụng tóc, tổn thương thần kinh và tử vong. Chất độc ám sát nổi tiếng.",
@@ -4613,7 +4796,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Ắc quy axit chì (ô tô), chắn bức xạ X/Gamma, đạn dược, hợp kim hàn (đang bị thay thế bằng thiếc).",
       naturalOccurrence: "Quặng Galena (PbS).",
-      preparation: { industry: "Nung chảy PbS." },
+      preparation: {
+        lab: "Nung oxide/sulfide và tinh luyện; khử bằng cacbon.",
+        industry: "Nung chảy PbS.",
+      },
       safety: {
         toxicity:
           "ĐỘC. Gây tổn thương thần kinh, đặc biệt ở trẻ em (gây giảm IQ).",
@@ -4668,7 +4854,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Thuốc (Pepto-Bismol), hợp kim nóng chảy thấp (cần chữa cháy, thay thế chì trong hàn), sắc tố mỹ phẩm (bột ngọc trai).",
       naturalOccurrence: "Dạng tự sinh, quặng Bismuthinite (Bi₂S₃).",
-      preparation: { industry: "Phụ phẩm tinh chế đồng, chì." },
+      preparation: {
+        lab: "Khử sulfide/oxide bằng phương pháp pyrometallurgy.",
+        industry: "Phụ phẩm tinh chế đồng, chì.",
+      },
       safety: {
         toxicity:
           "Kim loại nặng KHÔNG ĐỘC (thay thế chì trong nhiều ứng dụng).",
@@ -4728,7 +4917,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Nguồn nhiệt trong vệ tinh/tàu thăm dò không gian (radioisotope thermoelectric generator - RTG), loại bỏ tĩnh điện trong công nghiệp.",
       naturalOccurrence: "Phân rã Uranium (cực hiếm).",
-      preparation: { industry: "Chiếu xạ Bismuth trong lò phản ứng." },
+      preparation: {
+        lab: "Thu từ uranium ores; xử lý phóng xạ chuyên dụng.",
+        industry: "Chiếu xạ Bismuth trong lò phản ứng.",
+      },
       safety: {
         toxicity:
           "CỰC KỲ ĐỘC. Độc nhất theo trọng lượng (tàn phá tế bào do Alpha).",
@@ -4788,7 +4980,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Y học hạt nhân (xạ trị Alpha nhắm mục tiêu), nghiên cứu khoa học.",
       naturalOccurrence: "Phân rã Uranium và Thorium (dạng vết).",
-      preparation: { industry: "Bắn phá Bismuth bằng hạt Alpha." },
+      preparation: {
+        lab: "Sản xuất bằng phản ứng hạt nhân; xử lý phóng xạ.",
+        industry: "Bắn phá Bismuth bằng hạt Alpha.",
+      },
       safety: {
         toxicity: "CỰC KỲ ĐỘC. Phóng xạ mạnh.",
         hazards: "Độc tính phóng xạ cao.",
@@ -4846,7 +5041,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Chẩn đoán chất phóng xạ, nghiên cứu địa chất (dự báo động đất), một số ứng dụng trị liệu ung thư (đã lỗi thời).",
       naturalOccurrence: "Sản phẩm phân rã Uranium và Thorium trong đất đá.",
-      preparation: { industry: "Tách từ nước chứa Radium." },
+      preparation: {
+        lab: "Sinh ra từ phân rã radium; thu trong thiết bị kín.",
+        industry: "Tách từ nước chứa Radium.",
+      },
       safety: {
         toxicity:
           "CỰC ĐỘC. Là nguyên nhân gây ung thư phổi phổ biến thứ hai (sau hút thuốc).",
@@ -4905,7 +5103,10 @@ const DETAILED_PERIODIC_TABLE = [
       compounds: [],
       applications: "Chỉ dùng trong nghiên cứu cơ bản (quang phổ).",
       naturalOccurrence: "Dạng vết cực hiếm (phân rã của Uranium).",
-      preparation: { industry: "Sản xuất từ phản ứng hạt nhân." },
+      preparation: {
+        lab: "Sản xuất bằng phản ứng hạt nhân; chỉ lượng nguyên tử nhỏ.",
+        industry: "Sản xuất từ phản ứng hạt nhân.",
+      },
       safety: {
         toxicity: "Cực kỳ phóng xạ.",
         hazards: "Không thể thu thập số lượng lớn.",
@@ -4963,7 +5164,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Điều trị ung thư (đã lỗi thời), sơn phát quang (đồng hồ cũ - đã bị thay thế vì độc), nguồn neutron (Be-Ra).",
       naturalOccurrence: "Phân rã Uranium (1 tấn U chứa 0.14g Ra).",
-      preparation: { industry: "Tách từ quặng Uranium (rất khó)." },
+      preparation: {
+        lab: "Tách từ quặng uraninite; xử lý phóng xạ.",
+        industry: "Tách từ quặng Uranium (rất khó).",
+      },
       safety: {
         toxicity: "CỰC KỲ ĐỘC. Gây ung thư xương (do tính chất giống Canxi).",
         hazards: "Phóng xạ Alpha và Gamma.",
@@ -5024,7 +5228,10 @@ const DETAILED_PERIODIC_TABLE = [
       compounds: [],
       applications: "Nguồn neutron, điều trị ung thư (đang nghiên cứu).",
       naturalOccurrence: "Vết nhỏ trong quặng Uranium.",
-      preparation: { industry: "Chiếu xạ Radium bằng neutron." },
+      preparation: {
+        lab: "Tách từ quặng uranium; xử lý phóng xạ.",
+        industry: "Chiếu xạ Radium bằng neutron.",
+      },
       safety: { toxicity: "Cực kỳ phóng xạ.", hazards: "Độc tính cao." },
     },
     styles: {
@@ -5085,7 +5292,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Nhiên liệu hạt nhân tiềm năng (chu trình Thori), ống kính máy ảnh (chỉ số khúc xạ cao), đèn măng xông.",
       naturalOccurrence: "Phổ biến hơn Uranium (quặng Monazite).",
-      preparation: { industry: "Tách từ Monazite." },
+      preparation: {
+        lab: "Khử ThO₂ hoặc tinh chế từ thorium salts.",
+        industry: "Tách từ Monazite.",
+      },
       safety: {
         toxicity: "Phóng xạ nhẹ, độc (tích tụ trong cơ thể).",
         hazards: "Bột dễ cháy.",
@@ -5142,7 +5352,10 @@ const DETAILED_PERIODIC_TABLE = [
       compounds: [],
       applications: "Nghiên cứu khoa học cơ bản (rất hiếm).",
       naturalOccurrence: "Phân rã Uranium-235 (cực hiếm).",
-      preparation: { industry: "Tách từ quặng Uranium." },
+      preparation: {
+        lab: "Tách từ nhiên liệu hạt nhân hoặc sản xuất hạt nhân.",
+        industry: "Tách từ quặng Uranium.",
+      },
       safety: {
         toxicity:
           "CỰC KỲ ĐỘC. Phóng xạ Alpha mạnh, rất hiếm (rất nguy hiểm nếu bị nhiễm).",
@@ -5212,7 +5425,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Nhiên liệu lò phản ứng hạt nhân, vũ khí hạt nhân, vật liệu xuyên giáp (Uranium nghèo), tạo màu cho gốm sứ (cũ).",
       naturalOccurrence: "Quặng Uraninite (phổ biến hơn Au/Ag).",
-      preparation: { industry: "Khai thác mỏ, làm giàu đồng vị (ly tâm khí)." },
+      preparation: {
+        lab: "Tinh chế từ UO₂/U₃O₈ bằng phản ứng hóa học hoặc điện phân.",
+        industry: "Khai thác mỏ, làm giàu đồng vị (ly tâm khí).",
+      },
       safety: {
         toxicity: "Độc hóa học (gây suy thận) và phóng xạ.",
         hazards: "Độc tính cao.",
@@ -5270,7 +5486,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Sản xuất Plutonium (từ chiếu xạ ²³⁸U), nghiên cứu hạt nhân, chất thải hạt nhân.",
       naturalOccurrence: "Vết cực nhỏ (phản ứng neutron tự nhiên).",
-      preparation: { industry: "Phụ phẩm lò phản ứng hạt nhân." },
+      preparation: {
+        lab: "Sản xuất và tách trong cơ sở hạt nhân; xử lý phóng xạ.",
+        industry: "Phụ phẩm lò phản ứng hạt nhân.",
+      },
       safety: {
         toxicity: "Cực kỳ phóng xạ và độc hóa học.",
         hazards: "Độc tính cao.",
@@ -5329,6 +5548,7 @@ const DETAILED_PERIODIC_TABLE = [
         "Vũ khí hạt nhân (bom nguyên tử), nhiên liệu MOX (lò phản ứng), nguồn điện RTG (sứ mệnh không gian).",
       naturalOccurrence: "Vết cực nhỏ trong quặng U.",
       preparation: {
+        lab: "Tận thu từ nhiên liệu hạt nhân; tinh chế phóng xạ.",
         industry: "Chiếu xạ ²³⁸U bằng neutron trong lò phản ứng.",
       },
       safety: {
@@ -5384,7 +5604,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Đầu dò khói gia đình (nguồn Alpha), máy đo độ dày trong công nghiệp, nghiên cứu hạt nhân.",
       naturalOccurrence: "Tổng hợp.",
-      preparation: { industry: "Chiếu xạ Plutonium bằng neutron." },
+      preparation: {
+        lab: "Tinh chế từ sản phẩm phân hạch; xử lý phóng xạ chuyên dụng.",
+        industry: "Chiếu xạ Plutonium bằng neutron.",
+      },
       safety: { toxicity: "Cực kỳ phóng xạ.", hazards: "Độc tính cao." },
     },
     styles: {
@@ -5435,7 +5658,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Nguồn điện RTG (thăm dò không gian), thiết bị đo phổ tia X Alpha (APXS) trên sao Hỏa.",
       naturalOccurrence: "Tổng hợp.",
-      preparation: { industry: "Chiếu xạ Americium." },
+      preparation: {
+        lab: "Sản xuất trong lò phản ứng hạt nhân; xử lý phóng xạ.",
+        industry: "Chiếu xạ Americium.",
+      },
       safety: { toxicity: "Cực kỳ phóng xạ.", hazards: "Độc tính cao." },
     },
     styles: {
@@ -5487,6 +5713,7 @@ const DETAILED_PERIODIC_TABLE = [
         "Sản xuất nguyên tố siêu nặng (sử dụng như mục tiêu bắn phá).",
       naturalOccurrence: "Tổng hợp.",
       preparation: {
+        lab: "Sản xuất trong lò phản ứng; chỉ ở quy mô vi lượng.",
         industry:
           "Chiếu xạ Americium bằng neutron trong lò phản ứng năng lượng cao.",
       },
@@ -5540,7 +5767,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Khởi động lò phản ứng hạt nhân, thăm dò dầu khí (phân tích vật liệu), điều trị ung thư (hiếm).",
       naturalOccurrence: "Tổng hợp.",
-      preparation: { industry: "Chiếu xạ Curium." },
+      preparation: {
+        lab: "Sản xuất trong lò phản ứng qua kích hoạt neutron.",
+        industry: "Chiếu xạ Curium.",
+      },
       safety: {
         toxicity: "Cực kỳ phóng xạ. Rất ít cần thiết để gây nguy hiểm.",
         hazards: "Nguồn neutron nguy hiểm.",
@@ -5594,7 +5824,10 @@ const DETAILED_PERIODIC_TABLE = [
       applications:
         "Chỉ dùng trong nghiên cứu (sản xuất các nguyên tố nặng hơn).",
       naturalOccurrence: "Tổng hợp.",
-      preparation: { industry: "Chiếu xạ Plutonium bằng neutron." },
+      preparation: {
+        lab: "Sản xuất trong lò phản ứng; chỉ microgram.",
+        industry: "Chiếu xạ Plutonium bằng neutron.",
+      },
       safety: { toxicity: "Cực kỳ phóng xạ.", hazards: "Độc tính cao." },
     },
     styles: {
@@ -5644,7 +5877,10 @@ const DETAILED_PERIODIC_TABLE = [
       compounds: [],
       applications: "Chỉ dùng trong nghiên cứu khoa học cơ bản (rất hiếm).",
       naturalOccurrence: "Tổng hợp.",
-      preparation: { industry: "Phân hạch hạt nhân." },
+      preparation: {
+        lab: "Sản xuất bằng kích hoạt neutron, tinh chế phóng xạ.",
+        industry: "Phân hạch hạt nhân.",
+      },
       safety: { toxicity: "Cực kỳ phóng xạ.", hazards: "Độc tính cao." },
     },
     styles: {
@@ -5696,7 +5932,10 @@ const DETAILED_PERIODIC_TABLE = [
       compounds: [],
       applications: "Chỉ dùng trong nghiên cứu khoa học cơ bản (rất hiếm).",
       naturalOccurrence: "Tổng hợp.",
-      preparation: { industry: "Bắn phá Einsteinium bằng hạt Alpha." },
+      preparation: {
+        lab: "Sản xuất bằng bắn hạt nhân; xử lý phóng xạ.",
+        industry: "Bắn phá Einsteinium bằng hạt Alpha.",
+      },
       safety: { toxicity: "Cực kỳ phóng xạ.", hazards: "Độc tính cao." },
     },
     styles: {
@@ -5750,7 +5989,10 @@ const DETAILED_PERIODIC_TABLE = [
       compounds: [],
       applications: "Chỉ dùng trong nghiên cứu khoa học cơ bản (rất hiếm).",
       naturalOccurrence: "Tổng hợp.",
-      preparation: { industry: "Bắn phá Curium bằng Carbon." },
+      preparation: {
+        lab: "Sản xuất trong phòng thí nghiệm va chạm hạt nhân.",
+        industry: "Bắn phá Curium bằng Carbon.",
+      },
       safety: { toxicity: "Cực kỳ phóng xạ.", hazards: "Độc tính cao." },
     },
     styles: {
@@ -5801,7 +6043,10 @@ const DETAILED_PERIODIC_TABLE = [
       compounds: [],
       applications: "Chỉ dùng trong nghiên cứu khoa học cơ bản.",
       naturalOccurrence: "Tổng hợp.",
-      preparation: { industry: "Bắn phá Californium bằng Boron." },
+      preparation: {
+        lab: "Sản xuất bằng va chạm hạt nhân; chỉ vài nguyên tử.",
+        industry: "Bắn phá Californium bằng Boron.",
+      },
       safety: { toxicity: "Cực kỳ phóng xạ.", hazards: "Độc tính cao." },
     },
     styles: {
@@ -5856,7 +6101,10 @@ const DETAILED_PERIODIC_TABLE = [
       compounds: [],
       applications: "Chỉ dùng trong nghiên cứu khoa học cơ bản.",
       naturalOccurrence: "Tổng hợp.",
-      preparation: { industry: "Bắn phá Californium bằng Carbon." },
+      preparation: {
+        lab: "Sản xuất trong phản ứng hạt nhân; chỉ lượng cực nhỏ.",
+        industry: "Bắn phá Californium bằng Carbon.",
+      },
       safety: {
         toxicity: "Cực kỳ phóng xạ.",
         hazards: "Độc tính cao (dự đoán).",
@@ -5913,7 +6161,10 @@ const DETAILED_PERIODIC_TABLE = [
       compounds: [],
       applications: "Chỉ dùng trong nghiên cứu khoa học cơ bản.",
       naturalOccurrence: "Tổng hợp.",
-      preparation: { industry: "Bắn phá Californium bằng Nitơ." },
+      preparation: {
+        lab: "Sản xuất trong va chạm hạt nhân, lượng nguyên tử rất nhỏ.",
+        industry: "Bắn phá Californium bằng Nitơ.",
+      },
       safety: { toxicity: "Cực kỳ phóng xạ.", hazards: "" },
     },
     styles: {
@@ -5967,7 +6218,10 @@ const DETAILED_PERIODIC_TABLE = [
       compounds: [],
       applications: "Chỉ dùng trong nghiên cứu khoa học cơ bản.",
       naturalOccurrence: "Tổng hợp.",
-      preparation: { industry: "Bắn phá Californium bằng Oxi." },
+      preparation: {
+        lab: "Sản xuất trong thí nghiệm va chạm hạt nhân.",
+        industry: "Bắn phá Californium bằng Oxi.",
+      },
       safety: { toxicity: "Cực kỳ phóng xạ.", hazards: "" },
     },
     styles: {
@@ -6021,7 +6275,10 @@ const DETAILED_PERIODIC_TABLE = [
       compounds: [],
       applications: "Chỉ dùng trong nghiên cứu khoa học cơ bản.",
       naturalOccurrence: "Tổng hợp.",
-      preparation: { industry: "Bắn phá Bismuth bằng Crom." },
+      preparation: {
+        lab: "Sản xuất bởi va chạm hạt nhân; chỉ vi lượng.",
+        industry: "Bắn phá Bismuth bằng Crom.",
+      },
       safety: { toxicity: "Cực kỳ phóng xạ.", hazards: "" },
     },
     styles: {
@@ -6075,7 +6332,10 @@ const DETAILED_PERIODIC_TABLE = [
       compounds: [],
       applications: "Chỉ dùng trong nghiên cứu khoa học cơ bản.",
       naturalOccurrence: "Tổng hợp.",
-      preparation: { industry: "Bắn phá Curium bằng Sắt." },
+      preparation: {
+        lab: "Sản xuất bằng phản ứng hạt nhân; nghiên cứu chuyên sâu.",
+        industry: "Bắn phá Curium bằng Sắt.",
+      },
       safety: { toxicity: "Cực kỳ phóng xạ.", hazards: "" },
     },
     styles: {
@@ -6129,7 +6389,10 @@ const DETAILED_PERIODIC_TABLE = [
       compounds: [],
       applications: "Chỉ dùng trong nghiên cứu khoa học cơ bản.",
       naturalOccurrence: "Tổng hợp.",
-      preparation: { industry: "Bắn phá Bismuth bằng Sắt." },
+      preparation: {
+        lab: "Sản xuất trong cơ sở va chạm hạt nhân.",
+        industry: "Bắn phá Bismuth bằng Sắt.",
+      },
       safety: { toxicity: "Cực kỳ phóng xạ.", hazards: "" },
     },
     styles: {
@@ -6183,7 +6446,10 @@ const DETAILED_PERIODIC_TABLE = [
       compounds: [],
       applications: "Chỉ dùng trong nghiên cứu khoa học cơ bản.",
       naturalOccurrence: "Tổng hợp.",
-      preparation: { industry: "Bắn phá Chì bằng Niken." },
+      preparation: {
+        lab: "Sản xuất bằng phản ứng hạt nhân.",
+        industry: "Bắn phá Chì bằng Niken.",
+      },
       safety: { toxicity: "Cực kỳ phóng xạ.", hazards: "" },
     },
     styles: {
@@ -6237,7 +6503,10 @@ const DETAILED_PERIODIC_TABLE = [
       compounds: [],
       applications: "Chỉ dùng trong nghiên cứu khoa học cơ bản.",
       naturalOccurrence: "Tổng hợp.",
-      preparation: { industry: "Bắn phá Bismuth bằng Niken." },
+      preparation: {
+        lab: "Sản xuất bằng bắn hạt nhân; lượng cực nhỏ.",
+        industry: "Bắn phá Bismuth bằng Niken.",
+      },
       safety: { toxicity: "Cực kỳ phóng xạ.", hazards: "" },
     },
     styles: {
@@ -6291,7 +6560,10 @@ const DETAILED_PERIODIC_TABLE = [
       compounds: [],
       applications: "Chỉ dùng trong nghiên cứu khoa học cơ bản.",
       naturalOccurrence: "Tổng hợp.",
-      preparation: { industry: "Bắn phá Chì bằng Kẽm." },
+      preparation: {
+        lab: "Tổng hợp trong phòng thí nghiệm va chạm hạt nhân.",
+        industry: "Bắn phá Chì bằng Kẽm.",
+      },
       safety: { toxicity: "Cực kỳ phóng xạ.", hazards: "" },
     },
     styles: {
@@ -6345,7 +6617,10 @@ const DETAILED_PERIODIC_TABLE = [
       compounds: [],
       applications: "Chỉ dùng trong nghiên cứu khoa học cơ bản.",
       naturalOccurrence: "Tổng hợp.",
-      preparation: { industry: "Bắn phá Bismuth bằng Kẽm." },
+      preparation: {
+        lab: "Sản xuất bằng va chạm hạt nhân; nghiên cứu chuyên sâu.",
+        industry: "Bắn phá Bismuth bằng Kẽm.",
+      },
       safety: { toxicity: "Cực kỳ phóng xạ.", hazards: "" },
     },
     styles: {
@@ -6400,7 +6675,10 @@ const DETAILED_PERIODIC_TABLE = [
       compounds: [],
       applications: "Chỉ dùng trong nghiên cứu khoa học cơ bản.",
       naturalOccurrence: "Tổng hợp.",
-      preparation: { industry: "Bắn phá Plutonium bằng Canxi." },
+      preparation: {
+        lab: "Thu bằng kỹ thuật phân tích nhanh trong phòng thí nghiệm hạt nhân.",
+        industry: "Bắn phá Plutonium bằng Canxi.",
+      },
       safety: { toxicity: "Cực kỳ phóng xạ.", hazards: "" },
     },
     styles: {
@@ -6454,7 +6732,10 @@ const DETAILED_PERIODIC_TABLE = [
       compounds: [],
       applications: "Chỉ dùng trong nghiên cứu khoa học cơ bản.",
       naturalOccurrence: "Tổng hợp.",
-      preparation: { industry: "Bắn phá Americium bằng Canxi." },
+      preparation: {
+        lab: "Sản xuất trong va chạm hạt nhân; chỉ nguyên tử ít ỏi.",
+        industry: "Bắn phá Americium bằng Canxi.",
+      },
       safety: { toxicity: "Cực kỳ phóng xạ.", hazards: "" },
     },
     styles: {
@@ -6508,7 +6789,10 @@ const DETAILED_PERIODIC_TABLE = [
       compounds: [],
       applications: "Chỉ dùng trong nghiên cứu khoa học cơ bản.",
       naturalOccurrence: "Tổng hợp.",
-      preparation: { industry: "Bắn phá Curium bằng Canxi." },
+      preparation: {
+        lab: "Sản xuất và phân tích nhanh trong cơ sở hạt nhân.",
+        industry: "Bắn phá Curium bằng Canxi.",
+      },
       safety: { toxicity: "Cực kỳ phóng xạ.", hazards: "" },
     },
     styles: {
@@ -6562,7 +6846,10 @@ const DETAILED_PERIODIC_TABLE = [
       compounds: [],
       applications: "Chỉ dùng trong nghiên cứu khoa học cơ bản.",
       naturalOccurrence: "Tổng hợp.",
-      preparation: { industry: "Bắn phá Berkelium bằng Canxi." },
+      preparation: {
+        lab: "Sản xuất bằng phản ứng va chạm nhân; lượng rất nhỏ.",
+        industry: "Bắn phá Berkelium bằng Canxi.",
+      },
       safety: { toxicity: "Cực kỳ phóng xạ.", hazards: "" },
     },
     styles: {
@@ -6617,7 +6904,10 @@ const DETAILED_PERIODIC_TABLE = [
       compounds: [],
       applications: "Chỉ dùng trong nghiên cứu khoa học cơ bản.",
       naturalOccurrence: "Tổng hợp.",
-      preparation: { industry: "Bắn phá Californium bằng Canxi." },
+      preparation: {
+        lab: "Sản xuất bằng phản ứng hạt nhân; chỉ vài nguyên tử từng được tạo.",
+        industry: "Bắn phá Californium bằng Canxi.",
+      },
       safety: { toxicity: "Cực kỳ phóng xạ.", hazards: "" },
     },
     styles: {
