@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Build Craft - Hóa Học</title>
+
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <script>
+      // Tailwind Config (Giữ nguyên)
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Nunito", "sans-serif"],
+              display: ["Fredoka", "sans-serif"],
+            },
+            colors: {
+              brand: {
+                bg: "#0f172a",
+                card: "#1e293b",
+                accent: "#38bdf8",
+                primary: "#6366f1",
+                success: "#22c55e",
+                warning: "#eab308",
+                danger: "#ef4444",
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        background-color: #0f172a;
+        color: #f8fafc;
+        user-select: none;
+        overflow: hidden;
+      }
+
+      .scroll-y::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      .scroll-y::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .scroll-y::-webkit-scrollbar-thumb {
+        background: #475569;
+        border-radius: 4px;
+      }
+      .glass {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const { useState, useEffect, useRef, useMemo } = React;
+      const { motion, AnimatePresence } = window.Motion;
+      const { createIcons } = window.lucide;
+
+      // --- ÂM THANH ---
+      const playSound = (type) => {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        const now = ctx.currentTime;
+
+        if (type === "click") {
+          osc.frequency.setValueAtTime(600, now);
+          gain.gain.setValueAtTime(0.05, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+          osc.start(now);
+          osc.stop(now + 0.1);
+        } else if (type === "success") {
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(440, now);
+          osc.frequency.setValueAtTime(880, now + 0.1);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.linearRampToValueAtTime(0, now + 0.5);
+          osc.start(now);
+          osc.stop(now + 0.5);
+        } else if (type === "pop") {
+          osc.frequency.setValueAtTime(300, now);
+          gain.gain.setValueAtTime(0.05, now);
+          osc.start(now);
+          osc.stop(now + 0.05);
+        }
+      };
+
+      // --- COMPONENTS ---
+
+      // 1. Atom UI
+      const Atom = ({ type, size = "md", animate = false }) => {
+        const data = ATOMS[type] || ATOMS["H"];
+        const sizeClass =
+          size === "lg"
+            ? "w-16 h-16 text-xl"
+            : size === "sm"
+            ? "w-10 h-10 text-xs"
+            : "w-12 h-12 text-md";
+
+        return (
+          <motion.div
+            layout
+            initial={animate ? { scale: 0 } : false}
+            animate={{ scale: 1 }}
+            className={`rounded-full flex items-center justify-center font-display font-bold shadow-lg border-b-4 ${data.color} ${data.border} ${data.text} ${sizeClass}`}
+          >
+            {data.symbol}
+          </motion.div>
+        );
+      };
+
+      // 3. Builder Tab (Logic chính)
+      const BuilderTab = () => {
+        const QUESTIONS_PER_ROUND = MISSIONS.length || 4; // Dùng số lượng nhiệm vụ mẫu
+
+        const generateRandomMissions = (count) => {
+          const shuffled = [...MISSIONS].sort(() => 0.5 - Math.random());
+          return shuffled.slice(0, count);
+        };
+
+        const [currentMissions, setCurrentMissions] = useState(() =>
+          generateRandomMissions(QUESTIONS_PER_ROUND)
+        );
+        const [missionIdx, setMissionIdx] = useState(0);
+        const [bench, setBench] = useState([]);
+        const [success, setSuccess] = useState(false);
+
+        const mission = currentMissions[missionIdx];
+
+        const addToBench = (type) => {
+          if (success) return;
+          setBench([...bench, type]);
+          playSound("pop");
+        };
+
+        const removeFromBench = (index) => {
+          if (success) return;
+          const newBench = [...bench];
+          newBench.splice(index, 1);
+          setBench(newBench);
+          playSound("click");
+        };
+
+        const clearBench = () => {
+          setBench([]);
+          setSuccess(false);
+          playSound("click");
+        };
+
+        const resetGame = () => {
+          setCurrentMissions(generateRandomMissions(QUESTIONS_PER_ROUND));
+          setMissionIdx(0);
+          setBench([]);
+          setSuccess(false);
+          playSound("click");
+        };
+
+        useEffect(() => {
+          if (!mission) return;
+
+          const currentCount = bench.reduce((acc, type) => {
+            acc[type] = (acc[type] || 0) + 1;
+            return acc;
+          }, {});
+
+          const targetCount = mission.recipe;
+          const currentKeys = Object.keys(currentCount);
+          const targetKeys = Object.keys(targetCount);
+
+          if (
+            bench.length !==
+            Object.values(targetCount).reduce((a, b) => a + b, 0)
+          )
+            return;
+
+          const isMatch = targetKeys.every(
+            (key) => currentCount[key] === targetCount[key]
+          );
+
+          if (isMatch) {
+            setSuccess(true);
+            playSound("success");
+            confetti({ particleCount: 150, spread: 60, origin: { y: 0.6 } });
+          }
+        }, [bench, mission]);
+
+        const nextMission = () => {
+          if (missionIdx < currentMissions.length - 1) {
+            setMissionIdx((m) => m + 1);
+            setBench([]);
+            setSuccess(false);
+          }
+        };
+
+        if (!mission)
+          return (
+            <div className="p-10 text-center">
+              Không có nhiệm vụ để tải. Vui lòng kiểm tra lại biến MISSIONS.
+            </div>
+          );
+
+        return (
+          <div className="flex flex-col h-full max-w-4xl mx-auto p-4 gap-4 overflow-y-auto scroll-y pb-20">
+            {/* Header Mission */}
+            <div className="bg-brand-card p-4 rounded-2xl flex justify-between items-center shadow-lg border border-slate-700 shrink-0">
+              <div>
+                <div className="text-xs text-slate-400 uppercase tracking-wider font-bold">
+                  Nhiệm vụ {missionIdx + 1}/{currentMissions.length}
+                </div>
+                <h2 className="text-xl font-bold text-white">
+                  Tạo ra:{" "}
+                  <span className="text-brand-accent text-2xl">
+                    {mission.name} ({mission.formula})
+                  </span>
+                </h2>
+              </div>
+              <div className="hidden md:block text-right text-sm text-slate-400">
+                {mission.desc}
+              </div>
+            </div>
+
+            {/* Main Assembly Area */}
+            <div
+              className="flex-1 min-h-[300px] glass rounded-3xl relative flex items-center justify-center overflow-hidden border-2 border-dashed border-slate-600 transition-colors duration-500"
+              style={{
+                borderColor: success ? "#22c55e" : "#475569",
+                backgroundColor: success ? "rgba(34, 197, 94, 0.1)" : "",
+              }}
+            >
+              {/* Grid Background */}
+              <div
+                className="absolute inset-0 opacity-10"
+                style={{
+                  backgroundImage: "radial-gradient(#fff 1px, transparent 1px)",
+                  backgroundSize: "20px 20px",
+                }}
+              ></div>
+
+              {/* Atoms on Bench */}
+              <div className="relative z-10 flex flex-wrap gap-2 justify-center items-center p-8">
+                {bench.length === 0 && !success && (
+                  <div className="text-slate-500 animate-pulse text-center">
+                    Chạm vào nguyên tử bên dưới để thêm...
+                  </div>
+                )}
+                <AnimatePresence>
+                  {bench.map((type, idx) => (
+                    <motion.div
+                      key={`${type}-${idx}`}
+                      initial={{ scale: 0, rotate: 180 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      exit={{ scale: 0 }}
+                      onClick={() => removeFromBench(idx)}
+                      className="cursor-pointer hover:scale-110 transition-transform"
+                    >
+                      <Atom type={type} size="lg" />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+
+              {/* Success Overlay */}
+              {success && (
+                <motion.div
+                  initial={{ y: 50, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  className="absolute bottom-6 flex flex-col items-center gap-3 bg-brand-bg/90 backdrop-blur-md p-6 rounded-2xl border border-brand-success shadow-2xl z-20"
+                >
+                  {missionIdx < currentMissions.length - 1 ? (
+                    <>
+                      <div className="text-brand-success font-bold text-2xl">
+                        🎉 Chính xác!
+                      </div>
+                      <div className="text-slate-300">
+                        Đây là{" "}
+                        <span className="font-bold text-white">
+                          {mission.type}
+                        </span>
+                      </div>
+                      <button
+                        onClick={nextMission}
+                        className="bg-brand-success text-white px-8 py-3 rounded-xl font-bold hover:scale-105 transition mt-2"
+                      >
+                        Bài Tiếp Theo ➜
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <div className="text-yellow-400 font-bold text-2xl text-center">
+                        🏆 Hoàn thành xuất sắc!
+                      </div>
+                      <button
+                        onClick={resetGame}
+                        className="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:scale-105 transition mt-2 flex items-center gap-2"
+                      >
+                        <i data-lucide="refresh-cw" className="w-4 h-4"></i>{" "}
+                        Chơi Lại
+                      </button>
+                    </>
+                  )}
+                </motion.div>
+              )}
+            </div>
+
+            {/* Inventory */}
+            <div className="bg-brand-card p-4 rounded-2xl border-t border-slate-700 shrink-0">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-xs font-bold text-slate-500 uppercase">
+                  Kho Nguyên Tử
+                </span>
+                <div className="flex gap-3">
+                  <button
+                    onClick={resetGame}
+                    className="text-xs text-slate-400 hover:text-white flex items-center gap-1"
+                  >
+                    <i data-lucide="refresh-cw" className="w-3 h-3"></i> Reset
+                  </button>
+                  <button
+                    onClick={clearBench}
+                    className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1"
+                  >
+                    <i data-lucide="trash-2" className="w-3 h-3"></i> Xóa
+                  </button>
+                </div>
+              </div>
+              <div className="flex gap-4 overflow-x-auto pb-2 scroll-y justify-start">
+                {Object.keys(mission.recipe).map((key) => (
+                  <button
+                    key={key}
+                    onClick={() => addToBench(key)}
+                    className="flex flex-col items-center gap-1 group min-w-[60px]"
+                  >
+                    <div className="group-active:scale-90 transition-transform">
+                      <Atom type={key} />
+                    </div>
+                    <span className="text-xs font-bold text-slate-400">
+                      {ATOMS[key]?.mass} đvC
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      // --- MAIN APP ---
+      const App = () => {
+        const [tab, setTab] = useState("build");
+
+        useEffect(() => {
+          // Khởi tạo Lucide Icons sau khi tab thay đổi
+          createIcons();
+        }, [tab]);
+
+        const NavBtn = ({ id, icon, label }) => (
+          <button
+            onClick={() => setTab(id)}
+            className={`flex-1 flex flex-col items-center p-3 rounded-xl transition-all ${
+              tab === id
+                ? "bg-brand-primary text-white shadow-lg shadow-brand-primary/30"
+                : "text-slate-400 hover:bg-slate-800"
+            }`}
+          >
+            <i data-lucide={icon} className="mb-1 w-6 h-6"></i>
+            <span className="text-xs font-bold text-center leading-tight">
+              {label}
+            </span>
+          </button>
+        );
+
+        return (
+          <div className="h-screen flex flex-col bg-brand-bg max-w-md md:max-w-4xl mx-auto border-x border-slate-800 shadow-2xl">
+            {/* Header */}
+            <header className="p-4 flex items-center justify-between bg-brand-bg/80 backdrop-blur-md z-50 border-b border-slate-800 shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-brand-accent to-brand-primary rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                  2
+                </div>
+                <div>
+                  <h1 className="font-display font-bold text-xl leading-none">
+                    Phân Tử
+                  </h1>
+                  <span className="text-xs text-brand-accent">
+                    Hóa học Lớp 7
+                  </span>
+                </div>
+              </div>
+            </header>
+
+            {/* Main Content */}
+            <main className="flex-1 relative overflow-hidden">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={tab}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.2 }}
+                  className="h-full"
+                >
+                  {tab === "theory" && <TheoryTab />}
+                  {tab === "build" && <BuilderTab />}
+                  {tab === "scale" && <ScaleTab />}
+                  {tab === "ClassificationTab" && <ClassificationTab />}
+                </motion.div>
+              </AnimatePresence>
+            </main>
+
+            {/* Bottom Nav */}
+          </div>
+        );
+      };
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+    <script src="atom.js"></script>
+    <script src="misson.js"></script>
+  </body>
+</html>
