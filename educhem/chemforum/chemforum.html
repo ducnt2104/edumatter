@@ -3,193 +3,482 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Trang đang hoàn thiện</title>
-    <link rel="icon" href="favicon/edumatter.svg?v=1" type="image/svg+xml" />
-    <!-- Particles.js -->
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-
-    <!-- Confetti -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-
+    <title>Cộng Đồng Hóa Học - Chemical Chat</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
     <style>
+      :root {
+        --primary: #00f2ff;
+        --secondary: #6b2cf5;
+        --dark: #0f172a;
+        --glass: rgba(255, 255, 255, 0.1);
+        --border: rgba(255, 255, 255, 0.2);
+      }
+
       body {
-        margin: 0;
-        padding: 0;
-        background: #0a0a0a;
-        font-family: Arial, sans-serif;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: radial-gradient(
+          circle at top left,
+          #1a1a2e,
+          #16213e,
+          #0f3460
+        );
         color: white;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        margin: 0;
         height: 100vh;
         overflow: hidden;
+        display: flex;
       }
 
-      /* nền hạt */
-      #particles-js {
+      /* Background Animation (Molecules) */
+      .bg-animation {
         position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
-        z-index: 1;
+        z-index: -1;
+        overflow: hidden;
+      }
+      .molecule {
+        position: absolute;
+        color: var(--border);
+        animation: float 20s infinite linear;
+        font-size: 2rem;
+        opacity: 0.3;
+      }
+      @keyframes float {
+        0% {
+          transform: translateY(100vh) rotate(0deg);
+        }
+        100% {
+          transform: translateY(-10vh) rotate(360deg);
+        }
       }
 
-      .container {
-        z-index: 5;
-        text-align: center;
-        max-width: 600px;
-        padding: 30px;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 20px;
-        box-shadow: 0 0 25px rgba(255, 255, 255, 0.1);
+      /* Sidebar */
+      .sidebar {
+        width: 280px;
+        background: var(--glass);
         backdrop-filter: blur(10px);
-        animation: fadeIn 0.7s ease;
-      }
-
-      h1 {
-        font-size: 32px;
-        margin-bottom: 15px;
-      }
-
-      p {
-        font-size: 18px;
-        opacity: 0.75;
-      }
-
-      .btn {
-        margin-top: 25px;
-        padding: 12px 25px;
-        font-size: 16px;
-        border-radius: 10px;
-        border: none;
-        cursor: pointer;
-        background: #3b82f6;
-        color: white;
-        transition: 0.25s;
-      }
-
-      .btn:hover {
-        background: #2563eb;
-        transform: scale(1.05);
-      }
-
-      /* Contact buttons */
-      .links {
-        margin-top: 25px;
+        border-right: 1px solid var(--border);
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        padding: 20px;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--primary);
+        margin-bottom: 20px;
+        text-shadow: 0 0 10px var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .room-list {
+        flex: 1;
+        overflow-y: auto;
+      }
+
+      .room-item {
+        padding: 12px;
+        margin-bottom: 8px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .room-item:hover,
+      .room-item.active {
+        background: linear-gradient(90deg, var(--secondary), transparent);
+        border-left: 4px solid var(--primary);
+      }
+
+      .btn-create {
+        background: var(--primary);
+        color: var(--dark);
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: 0.3s;
+      }
+      .btn-create:hover {
+        box-shadow: 0 0 15px var(--primary);
+      }
+
+      /* Main Chat Area */
+      .chat-area {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+
+      .chat-header {
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.2);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .messages {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
         gap: 15px;
       }
 
-      .contact-btn {
-        padding: 10px 18px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
-        color: white;
-        text-decoration: none;
-        transition: 0.25s;
-        border: 1px solid rgba(255, 255, 255, 0.2);
+      .message {
+        max-width: 70%;
+        padding: 10px 15px;
+        border-radius: 15px;
+        position: relative;
+        animation: fadeIn 0.3s ease;
       }
-
-      .contact-btn:hover {
-        background: rgba(255, 255, 255, 0.25);
-        transform: scale(1.05);
-      }
-
-      /* Animation */
       @keyframes fadeIn {
         from {
           opacity: 0;
-          transform: translateY(20px);
+          transform: translateY(10px);
         }
         to {
           opacity: 1;
           transform: translateY(0);
         }
       }
+
+      .msg-system {
+        align-self: center;
+        background: rgba(255, 255, 255, 0.1);
+        font-size: 0.8rem;
+        border-radius: 20px;
+        padding: 5px 15px;
+      }
+      .msg-mine {
+        align-self: flex-end;
+        background: linear-gradient(135deg, var(--secondary), #892cdc);
+        border-bottom-right-radius: 2px;
+      }
+      .msg-other {
+        align-self: flex-start;
+        background: rgba(255, 255, 255, 0.1);
+        border-bottom-left-radius: 2px;
+      }
+
+      .msg-user {
+        font-size: 0.75rem;
+        color: var(--primary);
+        margin-bottom: 3px;
+        font-weight: bold;
+      }
+      .msg-time {
+        font-size: 0.65rem;
+        color: #aaa;
+        text-align: right;
+        margin-top: 5px;
+      }
+
+      .input-area {
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.2);
+        display: flex;
+        gap: 10px;
+      }
+
+      input {
+        flex: 1;
+        padding: 15px;
+        border-radius: 30px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.05);
+        color: white;
+        outline: none;
+      }
+      input:focus {
+        border-color: var(--primary);
+      }
+
+      .btn-send {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: none;
+        background: var(--primary);
+        color: var(--dark);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        transition: 0.3s;
+      }
+      .btn-send:hover {
+        transform: scale(1.1);
+      }
+
+      /* Modal (Login/Create Room) */
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+      .modal-content {
+        background: #16213e;
+        padding: 30px;
+        border-radius: 15px;
+        width: 350px;
+        border: 1px solid var(--border);
+        text-align: center;
+        box-shadow: 0 0 30px rgba(0, 242, 255, 0.2);
+      }
+      .hidden {
+        display: none;
+      }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+      }
     </style>
   </head>
-
   <body>
-    <!-- Particle background -->
-    <div id="particles-js"></div>
+    <div class="bg-animation" id="bg-anim"></div>
 
-    <!-- MAIN UI -->
-    <div class="container" id="mainBox">
-      <h1>🚧 Trang này đang được hoàn thiện</h1>
-      <p id="msg">
-        Một số tính năng chưa được cập nhật. Vui lòng quay lại sau!
-      </p>
-
-      <button class="btn" onclick="goHome()">Trở về EduChem</button>
-
-      <div class="links">
-        <a
-          class="contact-btn"
-          href="https://www.facebook.com/ducnt214/"
-          target="_blank"
-          >Facebook</a
-        >
-        <a class="contact-btn" href="mailto:ducnt2104@gmail.com" target="_blank"
-          >Gmail</a
-        >
-        <a class="contact-btn" href="tel:0342266204" target="_blank"
-          >Gọi điện</a
-        >
+    <div id="loginModal" class="modal">
+      <div class="modal-content">
+        <h2 style="color: var(--primary)">
+          <i class="fas fa-flask"></i> Chào Nhà Hóa Học!
+        </h2>
+        <p>Vui lòng nhập biệt danh để tham gia</p>
+        <input
+          type="text"
+          id="usernameInput"
+          placeholder="VD: Mendeleev, H2O..."
+          style="width: 80%; margin-bottom: 20px"
+        />
+        <button class="btn-create" onclick="joinChat()" style="width: 100%">
+          BẮT ĐẦU THÍ NGHIỆM
+        </button>
       </div>
     </div>
 
+    <div id="roomModal" class="modal hidden">
+      <div class="modal-content">
+        <h3>Tạo Phòng Chat Mới</h3>
+        <input
+          type="text"
+          id="newRoomInput"
+          placeholder="Tên phòng (VD: Giải bài tập)"
+          style="width: 80%; margin-bottom: 20px"
+        />
+        <div style="display: flex; gap: 10px; justify-content: center">
+          <button
+            class="btn-create"
+            onclick="confirmCreateRoom()"
+            style="background: var(--secondary); color: white"
+          >
+            Tạo
+          </button>
+          <button
+            class="btn-create"
+            onclick="closeRoomModal()"
+            style="
+              background: transparent;
+              border: 1px solid white;
+              color: white;
+            "
+          >
+            Hủy
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="logo"><i class="fas fa-atom fa-spin"></i> ChemCommunity</div>
+      <div class="room-list" id="roomList"></div>
+      <button class="btn-create" onclick="openRoomModal()">
+        <i class="fas fa-plus"></i> Tạo Phòng Mới
+      </button>
+    </div>
+
+    <div class="chat-area">
+      <div class="chat-header">
+        <h3 id="currentRoomName" style="margin: 0">Loading...</h3>
+        <span style="font-size: 0.9rem; color: #aaa"
+          ><i class="fas fa-users"></i> <span id="userCount">0</span> đang
+          online</span
+        >
+      </div>
+      <div class="messages" id="messages"></div>
+      <div class="input-area">
+        <input
+          type="text"
+          id="msgInput"
+          placeholder="Nhập tin nhắn..."
+          autocomplete="off"
+        />
+        <button class="btn-send" onclick="sendMessage()">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
     <script>
-      /* ============================================
-         AUTO TEXT CHANGER
-      ============================================ */
-      const messages = [
-        "Hệ thống đang cập nhật...",
-        "Tính năng này chưa mở, vui lòng chờ thêm!",
-        "Chúng tôi đang cải thiện trải nghiệm người dùng!",
-        "Trang sẽ hoàn thiện trong thời gian sớm nhất!",
-        "Cảm ơn bạn đã kiên nhẫn chờ đợi!",
-        "Vui lòng thử lại sau vài phút nữa!",
-        "Đội ngũ phát triển đang làm việc hết công suất!",
-        "Chúng tôi sẽ sớm quay lại với nhiều tính năng mới!",
-        "Cảm ơn bạn đã sử dụng dịch vụ!",
-        "Chúng tôi xin lỗi vì sự bất tiện này!",
+      const socket = io();
+      let username = "";
+      let currentRoomId = "general";
+
+      // Tạo hiệu ứng nền
+      const bg = document.getElementById("bg-anim");
+      const icons = [
+        "fa-atom",
+        "fa-flask",
+        "fa-vial",
+        "fa-dna",
+        "fa-bacterium",
       ];
-
-      let index = 0;
-      setInterval(() => {
-        index = (index + 1) % messages.length;
-        document.getElementById("msg").textContent = messages[index];
-      }, 2000);
-
-      function goHome() {
-        window.location.href = "../educhem.html";
+      for (let i = 0; i < 15; i++) {
+        const el = document.createElement("i");
+        el.className = `fas ${
+          icons[Math.floor(Math.random() * icons.length)]
+        } molecule`;
+        el.style.left = Math.random() * 100 + "%";
+        el.style.animationDuration = 15 + Math.random() * 20 + "s";
+        el.style.fontSize = 1 + Math.random() * 2 + "rem";
+        bg.appendChild(el);
       }
 
-      /* ============================================
-         CONFETTI ON CLICK (click anywhere)
-      ============================================ */
-      document.addEventListener("click", (e) => {
-        confetti({
-          particleCount: 40,
-          spread: 55,
-          origin: {
-            x: e.clientX / window.innerWidth,
-            y: e.clientY / window.innerHeight,
-          },
+      // Login Logic
+      function joinChat() {
+        const input = document.getElementById("usernameInput");
+        if (input.value.trim() !== "") {
+          username = input.value.trim();
+          document.getElementById("loginModal").classList.add("hidden");
+          socket.emit("joinRoom", { username, roomID: currentRoomId });
+        }
+      }
+
+      // Room Logic
+      socket.on("updateRoomList", (rooms) => {
+        const list = document.getElementById("roomList");
+        list.innerHTML = "";
+        rooms.forEach((room) => {
+          const div = document.createElement("div");
+          div.className = `room-item ${
+            room.id === currentRoomId ? "active" : ""
+          }`;
+          div.innerHTML = `<span>${room.name}</span>`;
+          div.onclick = () => switchRoom(room.id);
+          list.appendChild(div);
         });
       });
 
-      /* ============================================
-         PARTICLES BACKGROUND
-      ============================================ */
-      particlesJS("particles-js", {
-        particles: {
-          number: { value: 70 },
-          size: { value: 3 },
-          move: { speed: 2 },
-          color: { value: "#ffffff" },
-          line_linked: { enable: true, color: "#888", opacity: 0.3 },
-        },
+      function switchRoom(roomId) {
+        currentRoomId = roomId;
+        document.getElementById("messages").innerHTML = ""; // Xóa chat cũ
+        socket.emit("joinRoom", { username, roomID: roomId });
+        // Cập nhật UI active
+        document
+          .querySelectorAll(".room-item")
+          .forEach((el) => el.classList.remove("active"));
+        // (Socket sẽ gửi lại list để update active, hoặc làm thủ công ở đây)
+      }
+
+      socket.on("roomInfo", (info) => {
+        document.getElementById("currentRoomName").innerText = info.name;
+        document.getElementById("userCount").innerText = info.count;
+      });
+
+      // Chat Logic
+      const messagesDiv = document.getElementById("messages");
+
+      socket.on("message", (msg) => {
+        appendMessage(msg, "user");
+      });
+
+      socket.on("botMessage", (text) => {
+        appendMessage({ text }, "system");
+      });
+
+      function appendMessage(msg, type) {
+        const div = document.createElement("div");
+        if (type === "system") {
+          div.className = "message msg-system";
+          div.innerHTML = `<i>${msg.text}</i>`;
+        } else {
+          const isMine = msg.username === username;
+          div.className = `message ${isMine ? "msg-mine" : "msg-other"}`;
+          div.innerHTML = `
+                    <div class="msg-user">${isMine ? "Tôi" : msg.username}</div>
+                    <div class="msg-content">${msg.text}</div>
+                    <div class="msg-time">${msg.time}</div>
+                `;
+        }
+        messagesDiv.appendChild(div);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      }
+
+      function sendMessage() {
+        const input = document.getElementById("msgInput");
+        if (input.value.trim()) {
+          socket.emit("chatMessage", input.value);
+          input.value = "";
+        }
+      }
+
+      // Enter để gửi
+      document.getElementById("msgInput").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") sendMessage();
+      });
+
+      // Create Room UI
+      function openRoomModal() {
+        document.getElementById("roomModal").classList.remove("hidden");
+      }
+      function closeRoomModal() {
+        document.getElementById("roomModal").classList.add("hidden");
+      }
+
+      function confirmCreateRoom() {
+        const name = document.getElementById("newRoomInput").value;
+        if (name) {
+          socket.emit("createRoom", name);
+          closeRoomModal();
+        }
+      }
+
+      socket.on("roomCreated", (newId) => {
+        switchRoom(newId);
+      });
+
+      socket.on("errorMessage", (msg) => {
+        alert(msg);
       });
     </script>
   </body>
