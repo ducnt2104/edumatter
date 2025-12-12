@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chủ Đề 2: Bảng Tuần Hoàn Các Nguyên Tố Hóa Học</title>
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <!-- MathJax for formulas -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+    <!-- Chart.js for Trend Visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+      :root {
+        --primary: #2563eb; /* Royal Blue */
+        --secondary: #7c3aed; /* Violet */
+        --accent: #f59e0b; /* Amber */
+        --bg: #0f172a; /* Slate 900 */
+        --card: #1e293b; /* Slate 800 */
+        --text: #f1f5f9; /* Slate 100 */
+        --text-muted: #94a3b8; /* Slate 400 */
+        --metal: #fca5a5; /* Light Red */
+        --nonmetal: #86efac; /* Light Green */
+        --gas: #7dd3fc; /* Light Blue */
+        --metalloid: #fde047; /* Yellow */
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        line-height: 1.6;
+      }
+
+      /* Header Style */
+      header {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        padding: 2rem 1rem;
+        text-align: center;
+        border-bottom: 4px solid var(--accent);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      }
+      header h1 {
+        margin: 0;
+        font-size: 2.2rem;
+        font-weight: 800;
+        letter-spacing: -1px;
+      }
+      header p {
+        color: rgba(255, 255, 255, 0.9);
+        margin-top: 0.5rem;
+        font-family: "Merriweather", serif;
+        font-style: italic;
+      }
+
+      /* Navigation */
+      .nav-bar {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: rgba(30, 41, 59, 0.8);
+        backdrop-filter: blur(10px);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        flex-wrap: wrap;
+      }
+      .nav-btn {
+        background: transparent;
+        border: 2px solid var(--text-muted);
+        color: var(--text-muted);
+        padding: 0.5rem 1.2rem;
+        border-radius: 99px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .nav-btn:hover {
+        border-color: var(--text);
+        color: var(--text);
+      }
+      .nav-btn.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #0f172a; /* Dark text on bright button */
+        box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+      }
+
+      /* Main Content */
+      main {
+        flex: 1;
+        max-width: 1200px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+      }
+
+      .tab-content {
+        display: none;
+        animation: fadeIn 0.4s ease-out;
+      }
+      .tab-content.active {
+        display: block;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Cards & Layout */
+      .card {
+        background: var(--card);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .card h2 {
+        color: var(--accent);
+        margin-top: 0;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 0.5rem;
+      }
+      .card h3 {
+        color: var(--primary);
+        margin-top: 1.5rem;
+      }
+
+      /* Theory Styles */
+      details {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        overflow: hidden;
+      }
+      summary {
+        padding: 1rem;
+        cursor: pointer;
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.05);
+        transition: background 0.2s;
+      }
+      summary:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      summary::after {
+        content: "+";
+        font-size: 1.5rem;
+        color: var(--text-muted);
+      }
+      details[open] summary::after {
+        content: "-";
+        color: var(--accent);
+      }
+      .details-content {
+        padding: 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .concept-box {
+        border-left: 4px solid var(--secondary);
+        background: rgba(124, 58, 237, 0.1);
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 0 8px 8px 0;
+      }
+
+      /* Periodic Table Grid */
+      .periodic-table-wrapper {
+        overflow-x: auto;
+        padding-bottom: 1rem;
+      }
+      .periodic-grid {
+        display: grid;
+        grid-template-columns: repeat(18, minmax(45px, 1fr));
+        gap: 4px;
+        min-width: 900px; /* Ensure table doesn't squash too much */
+      }
+      .element-cell {
+        aspect-ratio: 1;
+        background: #334155;
+        border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        position: relative;
+        font-size: 0.8rem;
+        color: #0f172a; /* Dark text for legibility on colored cells */
+      }
+      .element-cell:hover {
+        transform: scale(1.2);
+        z-index: 10;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        border: 2px solid white;
+      }
+      .element-cell .symbol {
+        font-weight: 800;
+        font-size: 1.1rem;
+      }
+      .element-cell .z-num {
+        position: absolute;
+        top: 2px;
+        left: 4px;
+        font-size: 0.6rem;
+        opacity: 0.7;
+      }
+
+      /* Types */
+      .type-metal {
+        background-color: var(--metal);
+      }
+      .type-nonmetal {
+        background-color: var(--nonmetal);
+      }
+      .type-gas {
+        background-color: var(--gas);
+      }
+      .type-metalloid {
+        background-color: var(--metalloid);
+      }
+      .type-empty {
+        background: transparent;
+        pointer-events: none;
+      }
+
+      /* Element Detail Modal/Panel */
+      .element-detail-panel {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--accent);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+        display: none;
+        grid-template-columns: 1fr 2fr;
+        gap: 2rem;
+        animation: fadeIn 0.3s;
+      }
+      .big-symbol {
+        font-size: 4rem;
+        font-weight: 900;
+        color: var(--accent);
+        text-align: center;
+        border: 4px solid var(--accent);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      /* Trends Chart Section */
+      .chart-container {
+        position: relative;
+        height: 400px;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 12px;
+        padding: 1rem;
+      }
+      .chart-controls {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        justify-content: center;
+      }
+      select {
+        background: var(--card);
+        color: var(--text);
+        padding: 0.5rem;
+        border: 1px solid var(--text-muted);
+        border-radius: 6px;
+      }
+
+      /* Quiz */
+      .quiz-option {
+        display: block;
+        padding: 1rem;
+        margin: 0.5rem 0;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        cursor: pointer;
+        border: 1px solid transparent;
+        transition: 0.2s;
+      }
+      .quiz-option:hover {
+        border-color: var(--primary);
+        background: rgba(37, 99, 235, 0.1);
+      }
+      .quiz-option.correct {
+        background: rgba(34, 197, 94, 0.2);
+        border-color: #22c55e;
+        color: #22c55e;
+        font-weight: bold;
+      }
+      .quiz-option.wrong {
+        background: rgba(239, 68, 68, 0.2);
+        border-color: #ef4444;
+        color: #ef4444;
+      }
+
+      /* Footer */
+      footer {
+        text-align: center;
+        padding: 2rem;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .element-detail-panel {
+          grid-template-columns: 1fr;
+        }
+        .periodic-grid {
+          min-width: 600px;
+        } /* Allow scrolling */
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>BẢNG TUẦN HOÀN CÁC NGUYÊN TỐ HÓA HỌC</h1>
+      <p>Chủ đề 2 - Hóa Học 10</p>
+    </header>
+
+    <div class="nav-bar">
+      <button class="nav-btn active" onclick="switchTab('lythuyet')">
+        📖 Lý Thuyết
+      </button>
+      <button class="nav-btn" onclick="switchTab('bangtuanhoan')">
+        🧪 Bảng Tương Tác
+      </button>
+      <button class="nav-btn" onclick="switchTab('xuhuong')">
+        📈 Xu Hướng Biến Đổi
+      </button>
+      <button class="nav-btn" onclick="switchTab('tracnghiem')">
+        📝 Trắc Nghiệm
+      </button>
+    </div>
+
+    <main>
+      <!-- TAB 1: LÝ THUYẾT -->
+      <div id="lythuyet" class="tab-content active">
+        <!-- I. CẤU TẠO -->
+        <div class="card">
+          <h2>I. Cấu Tạo Bảng Tuần Hoàn</h2>
+
+          <details open>
+            <summary>1. Lịch sử hình thành (Mendeleev)</summary>
+            <div class="details-content">
+              <p>
+                <strong>Dmitri Mendeleev (1869):</strong> Sắp xếp theo chiều
+                tăng dần của <em>khối lượng nguyên tử</em>.
+              </p>
+              <div class="concept-box">
+                <strong>Điểm thiên tài:</strong> Ông đã để trống các ô cho những
+                nguyên tố chưa tìm thấy (như Gallium, Germanium) và dự đoán
+                chính xác tính chất của chúng.
+              </div>
+              <p>
+                <strong>Ngày nay:</strong> Bảng tuần hoàn sắp xếp theo chiều
+                tăng dần của <strong>điện tích hạt nhân (Z)</strong>.
+              </p>
+            </div>
+          </details>
+
+          <details>
+            <summary>2. Ô Nguyên tố - Chu kì - Nhóm</summary>
+            <div class="details-content">
+              <h3>Ô Nguyên tố</h3>
+              <p>
+                Mỗi ô chứa thông tin: Số hiệu nguyên tử (Z), Kí hiệu, Tên,
+                Nguyên tử khối, Cấu hình e.
+              </p>
+
+              <h3>Chu kì (Hàng ngang)</h3>
+              <ul>
+                <li>Có 7 chu kì.</li>
+                <li>
+                  Nguyên tố cùng chu kì có
+                  <strong>cùng số lớp electron</strong>.
+                </li>
+                <li>
+                  Chu kì 1 (2 nguyên tố), Chu kì 2,3 (8 nguyên tố), Chu kì 4+
+                  (18+ nguyên tố).
+                </li>
+              </ul>
+
+              <h3>Nhóm (Cột dọc)</h3>
+              <ul>
+                <li>
+                  Có 18 nhóm. Nguyên tố cùng nhóm có tính chất hóa học tương tự.
+                </li>
+                <li><strong>Nhóm A:</strong> Nguyên tố s và p (Điển hình).</li>
+                <li>
+                  <strong>Nhóm B:</strong> Nguyên tố d và f (Kim loại chuyển
+                  tiếp).
+                </li>
+              </ul>
+            </div>
+          </details>
+
+          <details>
+            <summary>3. Phân loại nguyên tố</summary>
+            <div class="details-content">
+              <ul>
+                <li>
+                  <span style="color: var(--metal)">■</span>
+                  <strong>Kim loại:</strong> Góc dưới bên trái. Dễ nhường e.
+                </li>
+                <li>
+                  <span style="color: var(--nonmetal)">■</span>
+                  <strong>Phi kim:</strong> Góc trên bên phải. Dễ nhận e.
+                </li>
+                <li>
+                  <span style="color: var(--gas)">■</span>
+                  <strong>Khí hiếm:</strong> Nhóm VIIIA (18). Rất bền vững.
+                </li>
+              </ul>
+            </div>
+          </details>
+        </div>
+
+        <!-- II. XU HƯỚNG -->
+        <div class="card">
+          <h2>II. Xu Hướng Biến Đổi Tính Chất</h2>
+          <p>
+            Quy luật biến đổi trong một chu kì (trái sang phải) và một nhóm A
+            (trên xuống dưới).
+          </p>
+
+          <div style="overflow-x: auto">
+            <table
+              style="
+                width: 100%;
+                border-collapse: collapse;
+                text-align: center;
+                margin-top: 1rem;
+              "
+            >
+              <tr
+                style="
+                  background: rgba(255, 255, 255, 0.1);
+                  color: var(--accent);
+                "
+              >
+                <th style="padding: 10px; border: 1px solid #334155">
+                  Tính chất
+                </th>
+                <th style="padding: 10px; border: 1px solid #334155">
+                  Chu kì (→)
+                </th>
+                <th style="padding: 10px; border: 1px solid #334155">
+                  Nhóm (↓)
+                </th>
+                <th style="padding: 10px; border: 1px solid #334155">
+                  Giải thích ngắn
+                </th>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border: 1px solid #334155">
+                  <strong>Bán kính (R)</strong>
+                </td>
+                <td style="color: #fca5a5">GIẢM</td>
+                <td style="color: #86efac">TĂNG</td>
+                <td
+                  style="
+                    text-align: left;
+                    padding: 10px;
+                    border: 1px solid #334155;
+                  "
+                >
+                  Chu kì: Hút e mạnh hơn → co lại.<br />Nhóm: Thêm lớp e → phình
+                  ra.
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border: 1px solid #334155">
+                  <strong>Độ âm điện ($\chi$)</strong>
+                </td>
+                <td style="color: #86efac">TĂNG</td>
+                <td style="color: #fca5a5">GIẢM</td>
+                <td
+                  style="
+                    text-align: left;
+                    padding: 10px;
+                    border: 1px solid #334155;
+                  "
+                >
+                  Đặc trưng cho khả năng hút e. F mạnh nhất.
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border: 1px solid #334155">
+                  <strong>Tính Kim loại</strong>
+                </td>
+                <td style="color: #fca5a5">GIẢM</td>
+                <td style="color: #86efac">TĂNG</td>
+                <td
+                  style="
+                    text-align: left;
+                    padding: 10px;
+                    border: 1px solid #334155;
+                  "
+                >
+                  Dễ mất e thì tính kim loại mạnh.
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border: 1px solid #334155">
+                  <strong>Tính Phi kim</strong>
+                </td>
+                <td style="color: #86efac">TĂNG</td>
+                <td style="color: #fca5a5">GIẢM</td>
+                <td
+                  style="
+                    text-align: left;
+                    padding: 10px;
+                    border: 1px solid #334155;
+                  "
+                >
+                  Dễ nhận e thì tính phi kim mạnh.
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border: 1px solid #334155">
+                  <strong>Tính Acid (Oxide)</strong>
+                </td>
+                <td style="color: #86efac">TĂNG</td>
+                <td style="color: #fca5a5">GIẢM</td>
+                <td
+                  style="
+                    text-align: left;
+                    padding: 10px;
+                    border: 1px solid #334155;
+                  "
+                >
+                  $Na_2O$ (Base) $\rightarrow$ $Cl_2O_7$ (Acid)
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- III. ĐỊNH LUẬT -->
+        <div class="card">
+          <h2>III. Định Luật Tuần Hoàn & Ý Nghĩa</h2>
+          <div class="concept-box">
+            <strong>Phát biểu:</strong> Tính chất của các nguyên tố và đơn chất,
+            cũng như thành phần và tính chất của các hợp chất tạo nên từ chúng
+            biến đổi tuần hoàn theo chiều tăng của điện tích hạt nhân nguyên tử.
+          </div>
+          <h3>Ý nghĩa thực tế:</h3>
+          <ul>
+            <li>
+              Biết vị trí $\rightarrow$ Suy ra tính chất (Kim loại/Phi kim, Hóa
+              trị, Công thức oxide...).
+            </li>
+            <li>Biết tính chất $\rightarrow$ Dự đoán vị trí.</li>
+            <li>So sánh tính chất với các nguyên tố lân cận.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- TAB 2: BẢNG TƯƠNG TÁC -->
+      <div id="bangtuanhoan" class="tab-content">
+        <div class="card">
+          <h2>Bảng Tuần Hoàn Tương Tác</h2>
+          <p>
+            Click vào nguyên tố để xem "hồ sơ" chi tiết. (Hiển thị các nguyên tố
+            nhóm A điển hình).
+          </p>
+
+          <div class="periodic-table-wrapper">
+            <div class="periodic-grid" id="periodic-table">
+              <!-- JS will fill this -->
+            </div>
+          </div>
+
+          <!-- DETAIL PANEL -->
+          <div id="el-detail" class="element-detail-panel">
+            <div class="big-symbol">
+              <div id="detail-symbol">H</div>
+            </div>
+            <div>
+              <h3 id="detail-name" style="margin-top: 0; font-size: 2rem">
+                Hydrogen
+              </h3>
+              <p
+                id="detail-summary"
+                style="font-style: italic; color: var(--accent)"
+              >
+                Phi kim - Chu kì 1 - Nhóm IA
+              </p>
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: 1fr 1fr;
+                  gap: 1rem;
+                  margin-top: 1rem;
+                "
+              >
+                <div>
+                  <small style="color: var(--text-muted)">Số hiệu (Z)</small>
+                  <div
+                    id="detail-z"
+                    style="font-weight: bold; font-size: 1.2rem"
+                  >
+                    1
+                  </div>
+                </div>
+                <div>
+                  <small style="color: var(--text-muted)">Nguyên tử khối</small>
+                  <div
+                    id="detail-mass"
+                    style="font-weight: bold; font-size: 1.2rem"
+                  >
+                    1.008
+                  </div>
+                </div>
+                <div>
+                  <small style="color: var(--text-muted)">Độ âm điện</small>
+                  <div
+                    id="detail-neg"
+                    style="font-weight: bold; font-size: 1.2rem"
+                  >
+                    2.20
+                  </div>
+                </div>
+                <div>
+                  <small style="color: var(--text-muted)">Cấu hình e</small>
+                  <div
+                    id="detail-config"
+                    style="font-weight: bold; font-size: 1.2rem"
+                  >
+                    1s¹
+                  </div>
+                </div>
+              </div>
+              <p
+                style="
+                  margin-top: 1rem;
+                  border-top: 1px solid rgba(255, 255, 255, 0.1);
+                  padding-top: 0.5rem;
+                "
+              >
+                <strong>Oxide cao nhất:</strong>
+                <span id="detail-oxide">H₂O (Trung tính)</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: XU HƯỚNG (CHART) -->
+      <div id="xuhuong" class="tab-content">
+        <div class="card">
+          <h2>Biểu Đồ Xu Hướng Biến Đổi</h2>
+          <p>Chọn tính chất để quan sát sự biến đổi trực quan.</p>
+
+          <div class="chart-controls">
+            <select id="trend-period" onchange="updateChart()">
+              <option value="2">Chu kì 2 (Li - Ne)</option>
+              <option value="3">Chu kì 3 (Na - Ar)</option>
+            </select>
+            <select id="trend-property" onchange="updateChart()">
+              <option value="radius">Bán kính nguyên tử (pm)</option>
+              <option value="electronegativity">Độ âm điện (Pauling)</option>
+            </select>
+          </div>
+
+          <div class="chart-container">
+            <canvas id="trendChart"></canvas>
+          </div>
+
+          <div
+            id="trend-explanation"
+            class="concept-box"
+            style="margin-top: 1rem"
+          >
+            <!-- JS will update this -->
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: TRẮC NGHIỆM -->
+      <div id="tracnghiem" class="tab-content">
+        <div class="card">
+          <h2>Kiểm Tra Kiến Thức</h2>
+          <div id="quiz-container"></div>
+          <button
+            class="nav-btn active"
+            style="margin-top: 2rem; width: 100%; text-align: center"
+            onclick="resetQuiz()"
+          >
+            Làm lại
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <footer>Hóa Học 10 - Chương 2 | Thiết kế hỗ trợ học tập trực quan</footer>
+
+    <script>
+      // --- DATA ---
+      // Dữ liệu cho 20 nguyên tố đầu + một số nguyên tố nhóm 7A, 1A để minh họa nhóm
+      const elementsData = [
+        {
+          z: 1,
+          s: "H",
+          n: "Hydrogen",
+          m: 1.008,
+          neg: 2.2,
+          r: 53,
+          gr: 1,
+          pr: 1,
+          type: "nonmetal",
+          conf: "1s¹",
+          oxide: "H₂O",
+        },
+        {
+          z: 2,
+          s: "He",
+          n: "Helium",
+          m: 4.003,
+          neg: null,
+          r: 31,
+          gr: 18,
+          pr: 1,
+          type: "gas",
+          conf: "1s²",
+          oxide: "-",
+        },
+
+        {
+          z: 3,
+          s: "Li",
+          n: "Lithium",
+          m: 6.94,
+          neg: 0.98,
+          r: 167,
+          gr: 1,
+          pr: 2,
+          type: "metal",
+          conf: "[He] 2s¹",
+          oxide: "Li₂O (Base)",
+        },
+        {
+          z: 4,
+          s: "Be",
+          n: "Beryllium",
+          m: 9.01,
+          neg: 1.57,
+          r: 112,
+          gr: 2,
+          pr: 2,
+          type: "metal",
+          conf: "[He] 2s²",
+          oxide: "BeO (Lưỡng tính)",
+        },
+        {
+          z: 5,
+          s: "B",
+          n: "Boron",
+          m: 10.81,
+          neg: 2.04,
+          r: 87,
+          gr: 13,
+          pr: 2,
+          type: "metalloid",
+          conf: "[He] 2s² 2p¹",
+          oxide: "B₂O₃ (Acid)",
+        },
+        {
+          z: 6,
+          s: "C",
+          n: "Carbon",
+          m: 12.01,
+          neg: 2.55,
+          r: 67,
+          gr: 14,
+          pr: 2,
+          type: "nonmetal",
+          conf: "[He] 2s² 2p²",
+          oxide: "CO₂ (Acid)",
+        },
+        {
+          z: 7,
+          s: "N",
+          n: "Nitrogen",
+          m: 14.01,
+          neg: 3.04,
+          r: 56,
+          gr: 15,
+          pr: 2,
+          type: "nonmetal",
+          conf: "[He] 2s² 2p³",
+          oxide: "N₂O₅ (Acid)",
+        },
+        {
+          z: 8,
+          s: "O",
+          n: "Oxygen",
+          m: 16.0,
+          neg: 3.44,
+          r: 48,
+          gr: 16,
+          pr: 2,
+          type: "nonmetal",
+          conf: "[He] 2s² 2p⁴",
+          oxide: "-",
+        },
+        {
+          z: 9,
+          s: "F",
+          n: "Fluorine",
+          m: 19.0,
+          neg: 3.98,
+          r: 42,
+          gr: 17,
+          pr: 2,
+          type: "nonmetal",
+          conf: "[He] 2s² 2p⁵",
+          oxide: "OF₂",
+        },
+        {
+          z: 10,
+          s: "Ne",
+          n: "Neon",
+          m: 20.18,
+          neg: null,
+          r: 38,
+          gr: 18,
+          pr: 2,
+          type: "gas",
+          conf: "[He] 2s² 2p⁶",
+          oxide: "-",
+        },
+
+        {
+          z: 11,
+          s: "Na",
+          n: "Sodium",
+          m: 22.99,
+          neg: 0.93,
+          r: 190,
+          gr: 1,
+          pr: 3,
+          type: "metal",
+          conf: "[Ne] 3s¹",
+          oxide: "Na₂O (Base mạnh)",
+        },
+        {
+          z: 12,
+          s: "Mg",
+          n: "Magnesium",
+          m: 24.31,
+          neg: 1.31,
+          r: 145,
+          gr: 2,
+          pr: 3,
+          type: "metal",
+          conf: "[Ne] 3s²",
+          oxide: "MgO (Base)",
+        },
+        {
+          z: 13,
+          s: "Al",
+          n: "Aluminium",
+          m: 26.98,
+          neg: 1.61,
+          r: 118,
+          gr: 13,
+          pr: 3,
+          type: "metal",
+          conf: "[Ne] 3s² 3p¹",
+          oxide: "Al₂O₃ (Lưỡng tính)",
+        },
+        {
+          z: 14,
+          s: "Si",
+          n: "Silicon",
+          m: 28.09,
+          neg: 1.9,
+          r: 111,
+          gr: 14,
+          pr: 3,
+          type: "metalloid",
+          conf: "[Ne] 3s² 3p²",
+          oxide: "SiO₂ (Acid yếu)",
+        },
+        {
+          z: 15,
+          s: "P",
+          n: "Phosphorus",
+          m: 30.97,
+          neg: 2.19,
+          r: 98,
+          gr: 15,
+          pr: 3,
+          type: "nonmetal",
+          conf: "[Ne] 3s² 3p³",
+          oxide: "P₂O₅ (Acid)",
+        },
+        {
+          z: 16,
+          s: "S",
+          n: "Sulfur",
+          m: 32.06,
+          neg: 2.58,
+          r: 88,
+          gr: 16,
+          pr: 3,
+          type: "nonmetal",
+          conf: "[Ne] 3s² 3p⁴",
+          oxide: "SO₃ (Acid)",
+        },
+        {
+          z: 17,
+          s: "Cl",
+          n: "Chlorine",
+          m: 35.45,
+          neg: 3.16,
+          r: 79,
+          gr: 17,
+          pr: 3,
+          type: "nonmetal",
+          conf: "[Ne] 3s² 3p⁵",
+          oxide: "Cl₂O₇ (Acid mạnh)",
+        },
+        {
+          z: 18,
+          s: "Ar",
+          n: "Argon",
+          m: 39.95,
+          neg: null,
+          r: 71,
+          gr: 18,
+          pr: 3,
+          type: "gas",
+          conf: "[Ne] 3s² 3p⁶",
+          oxide: "-",
+        },
+
+        {
+          z: 19,
+          s: "K",
+          n: "Potassium",
+          m: 39.1,
+          neg: 0.82,
+          r: 243,
+          gr: 1,
+          pr: 4,
+          type: "metal",
+          conf: "[Ar] 4s¹",
+          oxide: "K₂O (Base mạnh)",
+        },
+        {
+          z: 20,
+          s: "Ca",
+          n: "Calcium",
+          m: 40.08,
+          neg: 1.0,
+          r: 194,
+          gr: 2,
+          pr: 4,
+          type: "metal",
+          conf: "[Ar] 4s²",
+          oxide: "CaO (Base mạnh)",
+        },
+      ];
+
+      const quizData = [
+        {
+          q: "Nguyên tố nào sau đây có độ âm điện lớn nhất?",
+          a: ["Na", "Al", "Cl", "F"],
+          correct: 3,
+        },
+        {
+          q: "Trong một chu kì, đi từ trái sang phải, bán kính nguyên tử biến đổi thế nào?",
+          a: ["Tăng dần", "Giảm dần", "Không đổi", "Biến đổi không quy luật"],
+          correct: 1,
+        },
+        {
+          q: "Nguyên tố X thuộc chu kì 3, nhóm VIA. Công thức oxide cao nhất của X là?",
+          a: ["XO₂", "XO₃", "X₂O₃", "X₂O"],
+          correct: 1,
+        }, // S -> SO3
+        {
+          q: "Tính chất nào sau đây tăng dần khi đi từ trên xuống dưới trong một nhóm A?",
+          a: [
+            "Độ âm điện",
+            "Tính phi kim",
+            "Bán kính nguyên tử",
+            "Năng lượng ion hóa",
+          ],
+          correct: 2,
+        },
+        {
+          q: "Nguyên tố Z=11 (Na) thuộc loại nguyên tố nào?",
+          a: ["s", "p", "d", "f"],
+          correct: 0,
+        },
+      ];
+
+      // --- TAB LOGIC ---
+      function switchTab(tabId) {
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((el) => el.classList.remove("active"));
+        document
+          .querySelectorAll(".nav-btn")
+          .forEach((el) => el.classList.remove("active"));
+
+        document.getElementById(tabId).classList.add("active");
+
+        // Active button
+        const btns = document.querySelectorAll(".nav-btn");
+        if (tabId === "lythuyet") btns[0].classList.add("active");
+        if (tabId === "bangtuanhoan") btns[1].classList.add("active");
+        if (tabId === "xuhuong") {
+          btns[2].classList.add("active");
+          updateChart(); // Render chart when visible
+        }
+        if (tabId === "tracnghiem") btns[3].classList.add("active");
+      }
+
+      // --- PERIODIC TABLE RENDER ---
+      function renderTable() {
+        const grid = document.getElementById("periodic-table");
+        grid.innerHTML = "";
+
+        // Helper to find element by row/col
+        // Simplifying layout: Rows 1-4.
+        // Row 1: H(1), gap(16), He(18)
+        // Row 2: Li(1), Be(2), gap(10), B(13)...Ne(18)
+        // Row 3: Na(1)...Ar(18)
+
+        // Let's create a map for easy placement
+        const map = {};
+        elementsData.forEach((e) => (map[`${e.pr}-${e.gr}`] = e));
+
+        for (let row = 1; row <= 4; row++) {
+          for (let col = 1; col <= 18; col++) {
+            const el = map[`${row}-${col}`];
+            const div = document.createElement("div");
+
+            if (el) {
+              div.className = `element-cell type-${el.type}`;
+              div.innerHTML = `<span class="z-num">${el.z}</span><span class="symbol">${el.s}</span>`;
+              div.onclick = () => showDetail(el);
+            } else {
+              div.className = "element-cell type-empty";
+            }
+            grid.appendChild(div);
+          }
+        }
+      }
+
+      function showDetail(el) {
+        const panel = document.getElementById("el-detail");
+        panel.style.display = "grid";
+
+        document.getElementById("detail-symbol").innerText = el.s;
+        document.getElementById(
+          "detail-symbol"
+        ).style.borderColor = `var(--${el.type})`;
+        document.getElementById("detail-name").innerText = el.n;
+
+        let typeName =
+          el.type === "metal"
+            ? "Kim loại"
+            : el.type === "nonmetal"
+            ? "Phi kim"
+            : el.type === "gas"
+            ? "Khí hiếm"
+            : "Á kim";
+        document.getElementById(
+          "detail-summary"
+        ).innerText = `${typeName} - Chu kì ${el.pr} - Nhóm ${el.gr}A`;
+
+        document.getElementById("detail-z").innerText = el.z;
+        document.getElementById("detail-mass").innerText = el.m;
+        document.getElementById("detail-neg").innerText = el.neg || "N/A";
+        document.getElementById("detail-config").innerText = el.conf;
+        document.getElementById("detail-oxide").innerText = el.oxide;
+      }
+
+      // --- CHART LOGIC (Chart.js) ---
+      let myChart = null;
+
+      function updateChart() {
+        const period = parseInt(document.getElementById("trend-period").value);
+        const prop = document.getElementById("trend-property").value;
+        const explanationDiv = document.getElementById("trend-explanation");
+
+        // Filter elements in the selected period
+        const periodEls = elementsData.filter(
+          (e) => e.pr === period && e.gr <= 18
+        ); // Main group only ideally
+        // Sort by group
+        periodEls.sort((a, b) => a.gr - b.gr);
+
+        const labels = periodEls.map((e) => e.s);
+        const data = periodEls.map((e) =>
+          prop === "radius" ? e.r : e.neg || 0
+        );
+
+        const labelStr =
+          prop === "radius" ? "Bán kính nguyên tử (pm)" : "Độ âm điện";
+        const color = prop === "radius" ? "#fca5a5" : "#86efac";
+
+        // Update Explanation
+        if (prop === "radius") {
+          explanationDiv.innerHTML = `<strong>Giải thích:</strong> Trong chu kì ${period}, khi đi từ trái sang phải (${
+            labels[0]
+          } $\\rightarrow$ ${
+            labels[labels.length - 1]
+          }), điện tích hạt nhân tăng dần, lực hút giữa hạt nhân và lớp vỏ tăng, làm co lớp vỏ electron $\\rightarrow$ <strong>Bán kính giảm</strong>.`;
+        } else {
+          explanationDiv.innerHTML = `<strong>Giải thích:</strong> Trong chu kì ${period}, điện tích hạt nhân tăng nhưng số lớp e không đổi, khả năng hút e của hạt nhân tăng lên $\\rightarrow$ <strong>Độ âm điện tăng</strong>.`;
+        }
+        if (window.MathJax) MathJax.typesetPromise();
+
+        const ctx = document.getElementById("trendChart").getContext("2d");
+
+        if (myChart) myChart.destroy();
+
+        myChart = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: labelStr,
+                data: data,
+                backgroundColor: color,
+                borderColor: color,
+                borderWidth: 1,
+                borderRadius: 4,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: false,
+                grid: { color: "rgba(255,255,255,0.1)" },
+                ticks: { color: "#94a3b8" },
+              },
+              x: { grid: { display: false }, ticks: { color: "#94a3b8" } },
+            },
+            plugins: {
+              legend: { labels: { color: "#f1f5f9" } },
+            },
+          },
+        });
+      }
+
+      // --- QUIZ LOGIC ---
+      function initQuiz() {
+        const container = document.getElementById("quiz-container");
+        container.innerHTML = "";
+
+        quizData.forEach((q, idx) => {
+          const div = document.createElement("div");
+          div.innerHTML = `<p style="font-weight:bold; margin-bottom:0.5rem;">Câu ${
+            idx + 1
+          }: ${q.q}</p>`;
+
+          q.a.forEach((opt, optIdx) => {
+            const btn = document.createElement("div");
+            btn.className = "quiz-option";
+            btn.innerText = opt;
+            btn.onclick = function () {
+              // Check answer
+              if (
+                this.parentElement.querySelector(".correct") ||
+                this.parentElement.querySelector(".wrong")
+              )
+                return; // Block multiple clicks
+
+              if (optIdx === q.correct) {
+                this.classList.add("correct");
+              } else {
+                this.classList.add("wrong");
+                // Highlight correct one
+                this.parentElement.children[q.correct + 1].classList.add(
+                  "correct"
+                );
+              }
+            };
+            div.appendChild(btn);
+          });
+
+          container.appendChild(div);
+        });
+      }
+
+      function resetQuiz() {
+        initQuiz();
+      }
+
+      // --- INIT ---
+      window.onload = function () {
+        renderTable();
+        initQuiz();
+        // Pre-select H detail
+        showDetail(elementsData[0]);
+      };
+    </script>
+  </body>
+</html>

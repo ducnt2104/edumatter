@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chương 6: Tốc Độ Phản Ứng</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap");
+
+      body {
+        font-family: "Be Vietnam Pro", sans-serif;
+        scroll-behavior: smooth;
+      }
+
+      /* Custom UI */
+      .glass-panel {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      }
+      .dark .glass-panel {
+        background: rgba(15, 23, 42, 0.9);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .tab-btn.active {
+        background-color: #10b981;
+        color: white;
+        border-color: #10b981;
+      }
+
+      /* Simulator Styles */
+      .reaction-bar {
+        height: 30px;
+        background: linear-gradient(90deg, #fef2f2 0%, #dc2626 100%);
+        border-radius: 9999px;
+        transition: width 0.5s ease-out;
+        box-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
+      }
+      .rate-display {
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* Maxwell-Boltzmann Chart */
+      .mb-chart {
+        position: relative;
+        height: 200px;
+        border-left: 1px solid #94a3b8;
+        border-bottom: 1px solid #94a3b8;
+      }
+      .activation-energy-line {
+        position: absolute;
+        height: 100%;
+        top: 0;
+        border-left: 2px dashed #f59e0b; /* Amber */
+      }
+      .distribution-curve {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300"
+  >
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full glass-panel z-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center text-white shadow-lg"
+            >
+              <i class="fas fa-tachometer-alt"></i>
+            </div>
+            <span class="font-bold text-xl tracking-tight hidden sm:block"
+              >Chương 6 - Tốc Độ Phản Ứng</span
+            >
+          </div>
+          <div class="hidden md:flex space-x-6">
+            <button
+              onclick="scrollToSection('khai-niem')"
+              class="hover:text-emerald-600 dark:hover:text-emerald-400 font-medium transition py-2 border-b-2 border-transparent hover:border-emerald-500"
+            >
+              I. Khái Niệm
+            </button>
+            <button
+              onclick="scrollToSection('y-to')"
+              class="hover:text-emerald-600 dark:hover:text-emerald-400 font-medium transition py-2 border-b-2 border-transparent hover:border-emerald-500"
+            >
+              II. Yếu Tố
+            </button>
+            <button
+              onclick="scrollToSection('simulator')"
+              class="hover:text-emerald-600 dark:hover:text-emerald-400 font-medium transition py-2 border-b-2 border-transparent hover:border-emerald-500"
+            >
+              III. Simulator
+            </button>
+          </div>
+          <div class="flex items-center gap-3">
+            <button
+              onclick="toggleDarkMode()"
+              class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-300 dark:hover:bg-slate-700 transition"
+            >
+              <i class="fas fa-moon dark:text-yellow-400 text-slate-600"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <header
+      class="pt-32 pb-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-fixed bg-emerald-50 dark:bg-slate-900"
+    >
+      <div class="max-w-7xl mx-auto px-4 text-center">
+        <div
+          class="inline-block px-4 py-1.5 mb-6 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 rounded-full text-sm font-bold tracking-wide uppercase border border-emerald-200 dark:border-emerald-800"
+        >
+          Chương 6 • Động Học Hóa Học
+        </div>
+        <h1
+          class="text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-slate-900 dark:text-white"
+        >
+          Tốc Độ Phản Ứng
+        </h1>
+        <p
+          class="text-xl text-slate-600 dark:text-slate-400 mb-8 leading-relaxed max-w-2xl mx-auto"
+        >
+          Hiểu rõ các yếu tố kiểm soát phản ứng, từ nồng độ, nhiệt độ đến vai
+          trò quan trọng của chất xúc tác.
+        </p>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-16 space-y-20">
+      <!-- I. KHÁI NIỆM & PHƯƠNG TRÌNH -->
+      <section id="khai-niem" class="scroll-mt-28">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">
+            I. Bản Chất và Biểu Thức Tốc Độ
+          </h2>
+          <div class="w-20 h-1 bg-emerald-500 mx-auto rounded"></div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-12">
+          <!-- Bản Chất -->
+          <div
+            class="p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border-t-4 border-emerald-500"
+          >
+            <h3
+              class="text-2xl font-bold mb-4 text-emerald-600 flex items-center gap-2"
+            >
+              <i class="fas fa-vial"></i> 1. Bản Chất Thật Sự
+            </h3>
+            <p class="text-slate-600 dark:text-slate-300 mb-4">
+              Tốc độ phản ứng phụ thuộc vào 2 yếu tố chính của **Lý thuyết Va
+              Chạm** (Collision Theory):
+            </p>
+            <ul class="space-y-3 font-medium">
+              <li class="p-3 bg-slate-100 dark:bg-slate-700 rounded-lg">
+                <strong class="text-red-500">Tần suất Va Chạm:</strong> Phân tử
+                phải va chạm với nhau. (Phụ thuộc Nồng độ, Áp suất, Bề mặt).
+              </li>
+              <li class="p-3 bg-slate-100 dark:bg-slate-700 rounded-lg">
+                <strong class="text-blue-500">Năng lượng Va Chạm:</strong> Năng
+                lượng phải vượt qua **Năng lượng hoạt hóa** (\(E_a\)). (Phụ
+                thuộc Nhiệt độ, Xúc tác).
+              </li>
+            </ul>
+            <p class="mt-4 text-sm italic text-slate-500 dark:text-slate-400">
+              → Va chạm càng nhiều và càng mạnh, phản ứng càng nhanh.
+            </p>
+          </div>
+
+          <!-- Biểu Thức Tốc Độ -->
+          <div
+            class="p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border-t-4 border-teal-500"
+          >
+            <h3
+              class="text-2xl font-bold mb-4 text-teal-600 flex items-center gap-2"
+            >
+              <i class="fas fa-calculator"></i> 2. Biểu Thức Tốc Độ
+            </h3>
+            <p class="text-slate-600 dark:text-slate-300 mb-4">
+              Cho phản ứng tổng quát \(aA + bB \rightarrow \text{sản phẩm}\),
+              biểu thức tốc độ thực nghiệm là:
+            </p>
+            <div
+              class="bg-teal-50 dark:bg-teal-900/10 p-6 rounded-xl border border-teal-200 dark:border-teal-800 mb-6 text-center"
+            >
+              <div
+                class="text-3xl md:text-4xl py-2 font-mono font-bold text-slate-900 dark:text-white"
+              >
+                $$ v = k \cdot [A]^m \cdot [B]^n $$
+              </div>
+            </div>
+            <ul class="text-sm space-y-2">
+              <li>
+                \(\mathbf{k}\): Hằng số tốc độ (Chỉ phụ thuộc T, \(E_a\)).
+              </li>
+              <li>
+                \(\mathbf{m}, \mathbf{n}\): Bậc phản ứng (Thực nghiệm,
+                <strong class="text-red-500">KHÔNG nhất thiết</strong> bằng \(a,
+                b\)).
+              </li>
+              <li>\(\mathbf{m} + \mathbf{n}\): Bậc phản ứng tổng.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Arrhenius -->
+        <div
+          class="mt-12 p-6 bg-slate-100 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700"
+        >
+          <h3 class="text-xl font-bold text-orange-600 mb-3">
+            <i class="fas fa-chart-line mr-2"></i>Phương Trình Arrhenius (Ảnh
+            hưởng của Nhiệt độ lên \(k\))
+          </h3>
+          <p class="text-sm text-slate-600 dark:text-slate-300 mb-4">
+            Phương trình này giải thích vì sao nhiệt độ tăng làm \(k\) tăng rất
+            mạnh, kéo theo \(v\) tăng mạnh:
+          </p>
+          <div
+            class="text-2xl text-center py-2 font-mono font-bold text-slate-800 dark:text-white"
+          >
+            $$ k = A \cdot e^{ -E_a / (R \cdot T) } $$
+          </div>
+          <p
+            class="text-center text-xs italic mt-2 text-slate-500 dark:text-slate-400"
+          >
+            \(E_a\): Năng lượng hoạt hóa; \(T\): Nhiệt độ tuyệt đối (K).
+          </p>
+        </div>
+      </section>
+
+      <!-- II. CÁC YẾU TỐ ẢNH HƯỞNG -->
+      <section id="y-to" class="scroll-mt-28">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">
+            II. Các Yếu Tố Ảnh Hưởng (Giải Thích)
+          </h2>
+          <div class="w-20 h-1 bg-emerald-500 mx-auto rounded"></div>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-6">
+          <!-- Nồng độ/Áp suất -->
+          <div
+            class="p-6 bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 hover:shadow-lg transition"
+          >
+            <h4
+              class="text-xl font-bold text-blue-600 mb-2 flex items-center gap-2"
+            >
+              <i class="fas fa-balance-scale"></i> Nồng Độ / Áp Suất
+            </h4>
+            <p class="text-sm text-slate-600 dark:text-slate-300">
+              Nồng độ $\uparrow$ (hoặc Áp suất $\uparrow$ với khí) $\rightarrow$
+              số lượng phân tử trong cùng thể tích $\uparrow$ $\rightarrow$
+              **Tần suất Va Chạm** $\uparrow$ $\rightarrow$ Tốc độ $\uparrow$.
+            </p>
+            <div
+              class="mt-4 p-2 bg-blue-50 dark:bg-blue-900/10 rounded text-xs italic"
+            >
+              Thực tế: Dùng oxi đậm đặc (nồng độ cao) để hàn cắt kim loại.
+            </div>
+          </div>
+
+          <!-- Nhiệt độ -->
+          <div
+            class="p-6 bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 hover:shadow-lg transition"
+          >
+            <h4
+              class="text-xl font-bold text-red-600 mb-2 flex items-center gap-2"
+            >
+              <i class="fas fa-thermometer-half"></i> Nhiệt Độ
+            </h4>
+            <p class="text-sm text-slate-600 dark:text-slate-300">
+              Nhiệt độ $\uparrow$ $\rightarrow$ Năng lượng trung bình của phân
+              tử $\uparrow$ $\rightarrow$ tỷ lệ phân tử vượt qua $E_a$
+              $\uparrow$ $\rightarrow$ Tốc độ $\uparrow$ (Thường tăng 2-4
+              lần/10°C).
+            </p>
+            <div
+              class="mt-4 p-2 bg-red-50 dark:bg-red-900/10 rounded text-xs italic"
+            >
+              Thực tế: Bảo quản thực phẩm ở nhiệt độ thấp để giảm tốc độ phản
+              ứng phân hủy.
+            </div>
+          </div>
+
+          <!-- Bề mặt/Xúc tác -->
+          <div
+            class="p-6 bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 hover:shadow-lg transition"
+          >
+            <h4
+              class="text-xl font-bold text-yellow-600 mb-2 flex items-center gap-2"
+            >
+              <i class="fas fa-layer-group"></i> Bề Mặt Tiếp Xúc
+            </h4>
+            <p class="text-sm text-slate-600 dark:text-slate-300">
+              Chất rắn nghiền nhỏ (Bột, vụn) $\rightarrow$ **Diện tích bề mặt**
+              $\uparrow$ $\rightarrow$ Tần suất Va Chạm giữa các pha $\uparrow$
+              $\rightarrow$ Tốc độ $\uparrow$.
+            </p>
+            <div
+              class="mt-4 p-2 bg-yellow-50 dark:bg-yellow-900/10 rounded text-xs italic"
+            >
+              Thực tế: Dùng than nghiền mịn (bụi than) dễ gây nổ hơn than cục.
+            </div>
+          </div>
+
+          <!-- Xúc tác (Full Width) -->
+          <div
+            class="lg:col-span-3 p-6 bg-slate-100 dark:bg-slate-800/50 rounded-2xl border border-slate-300 dark:border-slate-700"
+          >
+            <h4
+              class="text-xl font-bold text-purple-600 mb-4 flex items-center gap-2"
+            >
+              <i class="fas fa-flask"></i> Chất Xúc Tác
+            </h4>
+            <div class="grid md:grid-cols-2 gap-6 items-start">
+              <!-- Xúc tác định nghĩa -->
+              <div>
+                <p class="text-sm text-slate-600 dark:text-slate-300 mb-3">
+                  Chất xúc tác $\rightarrow$ **Cung cấp con đường phản ứng mới**
+                  với Năng lượng hoạt hóa (\(E_a\)) thấp hơn.
+                </p>
+                <ul
+                  class="space-y-1 text-xs text-slate-700 dark:text-slate-300 list-disc pl-5"
+                >
+                  <li>Tăng tốc độ, không bị tiêu hao sau phản ứng.</li>
+                  <li>Không làm thay đổi hằng số cân bằng.</li>
+                  <li>
+                    Ứng dụng quan trọng nhất trong công nghiệp và sinh học
+                    (Enzyme).
+                  </li>
+                </ul>
+              </div>
+              <!-- Biểu đồ E_a -->
+              <div class="mb-chart">
+                <h5
+                  class="absolute top-2 left-1/2 -translate-x-1/2 text-sm font-bold text-slate-500"
+                >
+                  Ảnh hưởng của Xúc tác lên \(E_a\)
+                </h5>
+                <div class="activation-energy-line" style="left: 70%">
+                  <span
+                    class="absolute top-0 -left-16 text-xs text-amber-500 font-bold"
+                    >\(E_a\) (Không Xúc tác)</span
+                  >
+                </div>
+                <!-- Lowered Ea line (Catalyst) -->
+                <div
+                  class="activation-energy-line"
+                  style="left: 45%; border-color: #a78bfa"
+                >
+                  <span
+                    class="absolute top-10 -right-16 text-xs text-purple-500 font-bold"
+                    >\(E_a\) (Có Xúc tác)</span
+                  >
+                </div>
+                <div
+                  class="absolute bottom-0 left-0 w-full h-1/2 bg-red-100/50 dark:bg-red-900/10"
+                  style="
+                    clip-path: polygon(
+                      0% 100%,
+                      15% 50%,
+                      40% 60%,
+                      80% 30%,
+                      100% 50%,
+                      100% 100%
+                    );
+                  "
+                ></div>
+                <div
+                  class="absolute bottom-0 left-0 w-full h-1/2 bg-blue-100/50 dark:bg-blue-900/10"
+                  style="
+                    clip-path: polygon(
+                      0% 100%,
+                      15% 50%,
+                      40% 60%,
+                      80% 30%,
+                      100% 50%,
+                      100% 100%
+                    );
+                  "
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- III. SIMULATOR ĐỘNG HỌC -->
+      <section id="simulator" class="scroll-mt-28">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">
+            III. Simulator: Điều Khiển Tốc Độ Phản Ứng
+          </h2>
+          <p class="text-slate-600 dark:text-slate-400 max-w-xl mx-auto">
+            Hãy di chuyển các thanh trượt và quan sát sự thay đổi của tốc độ
+            phản ứng (v).
+          </p>
+          <div class="w-20 h-1 bg-emerald-500 mx-auto rounded mt-4"></div>
+        </div>
+
+        <div
+          class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-2xl border border-slate-200 dark:border-slate-700"
+        >
+          <!-- Rate Display -->
+          <div class="text-center mb-8">
+            <p
+              class="text-2xl font-semibold text-slate-600 dark:text-slate-300"
+            >
+              Tốc độ Phản Ứng (\(v\))
+            </p>
+            <div
+              class="text-6xl font-extrabold rate-display mt-2 text-red-600 dark:text-red-400"
+            >
+              <span id="current-rate">1.00</span>
+              <span class="text-3xl text-slate-500">M/s</span>
+            </div>
+            <!-- Reaction Bar Visualization -->
+            <div
+              class="mt-6 h-8 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden max-w-lg mx-auto"
+            >
+              <div
+                id="rate-visualization"
+                class="reaction-bar"
+                style="width: 10%"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div
+            class="grid md:grid-cols-3 gap-8 border-t pt-8 dark:border-slate-700"
+          >
+            <!-- 1. Concentration -->
+            <div>
+              <label
+                for="concentration-slider"
+                class="block text-lg font-bold mb-2 text-blue-600 dark:text-blue-400"
+              >
+                Nồng Độ ([A])
+              </label>
+              <input
+                type="range"
+                id="concentration-slider"
+                min="1"
+                max="100"
+                value="10"
+                class="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer dark:bg-blue-700/50"
+                oninput="updateRate()"
+              />
+              <div class="flex justify-between text-sm mt-1 text-slate-500">
+                <span>Thấp</span>
+                <span id="conc-val">1.0 M</span>
+                <span>Cao</span>
+              </div>
+              <p class="text-xs mt-2 text-slate-500">
+                Ảnh hưởng đến: Tần suất Va Chạm.
+              </p>
+            </div>
+
+            <!-- 2. Temperature -->
+            <div>
+              <label
+                for="temperature-slider"
+                class="block text-lg font-bold mb-2 text-red-600 dark:text-red-400"
+              >
+                Nhiệt Độ (T)
+              </label>
+              <input
+                type="range"
+                id="temperature-slider"
+                min="20"
+                max="100"
+                value="20"
+                class="w-full h-2 bg-red-100 rounded-lg appearance-none cursor-pointer dark:bg-red-700/50"
+                oninput="updateRate()"
+              />
+              <div class="flex justify-between text-sm mt-1 text-slate-500">
+                <span>Lạnh (293 K)</span>
+                <span id="temp-val">20 °C</span>
+                <span>Nóng (373 K)</span>
+              </div>
+              <p class="text-xs mt-2 text-slate-500">
+                Ảnh hưởng đến: Tỷ lệ phân tử vượt qua $E_a$.
+              </p>
+            </div>
+
+            <!-- 3. Catalyst -->
+            <div>
+              <label
+                for="catalyst-slider"
+                class="block text-lg font-bold mb-2 text-purple-600 dark:text-purple-400"
+              >
+                Chất Xúc Tác ($\downarrow E_a$)
+              </label>
+              <input
+                type="range"
+                id="catalyst-slider"
+                min="0"
+                max="100"
+                value="0"
+                class="w-full h-2 bg-purple-100 rounded-lg appearance-none cursor-pointer dark:bg-purple-700/50"
+                oninput="updateRate()"
+              />
+              <div class="flex justify-between text-sm mt-1 text-slate-500">
+                <span>Không</span>
+                <span id="cat-val">0%</span>
+                <span>Mạnh</span>
+              </div>
+              <p class="text-xs mt-2 text-slate-500">
+                Ảnh hưởng đến: Cung cấp con đường $E_a$ thấp.
+              </p>
+            </div>
+          </div>
+
+          <!-- Guidance Note -->
+          <div
+            class="mt-10 p-4 border-l-4 border-emerald-500 bg-emerald-50 dark:bg-emerald-900/10 text-sm text-slate-700 dark:text-slate-300 rounded-lg"
+          >
+            <i class="fas fa-lightbulb mr-2 text-emerald-600"></i>
+            <strong>Thử thách:</strong> Hãy tìm ra tổ hợp Nồng độ, Nhiệt độ và
+            Xúc tác để đạt được tốc độ phản ứng cao nhất (Max Rate)!
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer
+      class="bg-slate-900 text-slate-400 py-12 mt-20 border-t border-slate-800"
+    >
+      <div class="max-w-7xl mx-auto px-4 text-center">
+        <p class="mb-4 text-slate-500">
+          Nội dung được tổng hợp theo chuẩn kiến thức Hóa Học 10 - Chương trình
+          mới.
+        </p>
+        <p>&copy; 2025 AI Education. Reaction Kinetics Chapter.</p>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+      // --- Dark Mode ---
+      function toggleDarkMode() {
+        document.documentElement.classList.toggle("dark");
+      }
+      if (
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+      ) {
+        document.documentElement.classList.add("dark");
+      }
+
+      function scrollToSection(id) {
+        document
+          .getElementById(id)
+          .scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      // --- Simulator Logic ---
+      const R = 8.314; // J/(mol·K)
+      const Ea_initial = 50000; // J/mol (50 kJ/mol) - Năng lượng hoạt hóa ban đầu
+      const T_ref = 293.15; // 20 °C in Kelvin
+
+      // Simplified Rate Model (v = k * [A]^m. Assume m=1)
+      // k = A * exp(-Ea / RT)
+      const A_factor = 50000; // Simplified pre-exponential factor
+
+      function calculateRate(conc_percent, temp_c, catalyst_percent) {
+        // 1. Concentration ([A]) - Linearly scaled from 1M to 10M
+        const conc = 1 + (conc_percent / 100) * 9;
+
+        // 2. Temperature (T) - Convert to Kelvin
+        const temp_k = temp_c + 273.15;
+
+        // 3. Activation Energy (Ea) - Reduced by catalyst
+        // Catalyst reduces Ea by up to 80%
+        const Ea_reduction = (catalyst_percent / 100) * 0.8;
+        const Ea_current = Ea_initial * (1 - Ea_reduction);
+
+        // 4. Calculate k using Arrhenius equation
+        const k = A_factor * Math.exp(-Ea_current / (R * temp_k));
+
+        // 5. Calculate final rate (v = k * [A])
+        const rate = k * conc;
+
+        // Normalize and cap rate for visualization (Max theoretical rate is high)
+        // We set a realistic max visual rate for T=100C, C=10M, Cat=100%
+        const max_visual_rate = 120000000; // Based on the calculation above
+        const normalized_rate = Math.min(rate, max_visual_rate);
+
+        return {
+          rate: rate,
+          normalized_rate_percent: (normalized_rate / max_visual_rate) * 100,
+          conc: conc,
+          Ea: Ea_current,
+        };
+      }
+
+      function updateRate() {
+        const conc_percent = parseFloat(
+          document.getElementById("concentration-slider").value
+        );
+        const temp_c = parseFloat(
+          document.getElementById("temperature-slider").value
+        );
+        const catalyst_percent = parseFloat(
+          document.getElementById("catalyst-slider").value
+        );
+
+        const result = calculateRate(conc_percent, temp_c, catalyst_percent);
+
+        // Update UI displays
+        document.getElementById("conc-val").innerText = `${result.conc.toFixed(
+          1
+        )} M`;
+        document.getElementById("temp-val").innerText = `${temp_c.toFixed(
+          0
+        )} °C`;
+        document.getElementById(
+          "cat-val"
+        ).innerText = `${catalyst_percent.toFixed(0)}%`;
+
+        document.getElementById("current-rate").innerText = (
+          result.rate / 1000000
+        ).toFixed(2); // Display in 10^6 M/s
+        document.getElementById(
+          "rate-visualization"
+        ).style.width = `${result.normalized_rate_percent.toFixed(2)}%`;
+      }
+
+      // Initial setup
+      window.onload = () => {
+        setChart("temp"); // Default chart (Maxwell-Boltzmann is complex to draw with pure CSS)
+        updateRate();
+      };
+
+      // Placeholder for a more complex chart function (if needed)
+      function setChart(type) {
+        // This function is currently unused but kept for future expansion of the chart element
+      }
+    </script>
+  </body>
+</html>

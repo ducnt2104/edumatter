@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Toàn Tập Halogen - Nhóm VIIA</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Orbitron:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-color: #0f172a;
+        --card-bg: #1e293b;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+        --accent-fluorine: #a3e635; /* Vàng lục */
+        --accent-chlorine: #fde047; /* Vàng chanh */
+        --accent-bromine: #ef4444; /* Đỏ */
+        --accent-iodine: #a855f7; /* Tím */
+        --glass: rgba(30, 41, 59, 0.8);
+        --border: rgba(255, 255, 255, 0.1);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Roboto", sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-primary);
+        overflow-x: hidden;
+        line-height: 1.6;
+        scroll-behavior: smooth;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-family: "Orbitron", sans-serif;
+        text-transform: uppercase;
+      }
+
+      /* BACKGROUND */
+      #bg-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        opacity: 0.2;
+      }
+
+      /* HEADER */
+      header {
+        text-align: center;
+        padding: 3rem 1rem;
+        background: linear-gradient(to bottom, #020617, transparent);
+      }
+      header h1 {
+        font-size: 2.5rem;
+        background: linear-gradient(
+          90deg,
+          var(--accent-fluorine),
+          var(--accent-iodine)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+      }
+
+      /* NAVIGATION */
+      nav {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        position: sticky;
+        top: 10px;
+        z-index: 100;
+        flex-wrap: wrap;
+        padding: 0 1rem;
+      }
+      .nav-btn {
+        background: var(--glass);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border);
+        color: white;
+        padding: 0.6rem 1.2rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 0.85rem;
+        font-weight: bold;
+      }
+      .nav-btn:hover,
+      .nav-btn.active {
+        background: var(--accent-fluorine);
+        color: black;
+        box-shadow: 0 0 15px var(--accent-fluorine);
+      }
+
+      /* MAIN LAYOUT */
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+      }
+
+      section {
+        margin-bottom: 4rem;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s ease;
+      }
+      section.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .section-header {
+        border-left: 5px solid var(--accent-fluorine);
+        padding-left: 1rem;
+        margin-bottom: 2rem;
+      }
+      .section-header h2 {
+        font-size: 1.8rem;
+        color: var(--text-primary);
+      }
+      .section-header p {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      /* CARDS & GRIDS */
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+      }
+      .grid-4 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 15px;
+        padding: 1.5rem;
+        transition: transform 0.3s;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        border-color: var(--accent-fluorine);
+      }
+
+      /* ATOM SIMULATION AREA */
+      .atom-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 20px;
+        padding: 2rem;
+      }
+      .atom-visual {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-width: 280px;
+      }
+      .atom-info {
+        flex: 1;
+        min-width: 280px;
+      }
+
+      .element-selector {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+      }
+      .el-btn {
+        flex: 1;
+        padding: 0.5rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        background: #334155;
+        color: white;
+        transition: 0.2s;
+      }
+      .el-btn:hover {
+        filter: brightness(1.2);
+      }
+
+      /* NATURAL STATE LIST */
+      .natural-state-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 0.8rem;
+        padding: 0.8rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+      }
+      .icon-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-family: "Orbitron";
+        background: #333;
+      }
+
+      /* CHEMICAL PROPERTIES - REACTIONS */
+      .reaction-box {
+        background: #0f172a;
+        border: 1px solid var(--border);
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+      .reaction-box::before {
+        content: "Click để xem sản phẩm";
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        font-size: 0.7rem;
+        color: var(--text-secondary);
+        opacity: 0.7;
+      }
+      .reaction-equation {
+        font-family: "Courier New", monospace;
+        font-size: 1.1rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .product {
+        opacity: 0;
+        transform: translateX(-10px);
+        transition: 0.4s;
+        color: var(--accent-fluorine);
+        font-weight: bold;
+      }
+      .reaction-box.active .product {
+        opacity: 1;
+        transform: translateX(0);
+      }
+      .reaction-desc {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        font-style: italic;
+        display: none;
+      }
+      .reaction-box.active .reaction-desc {
+        display: block;
+        animation: fadeIn 0.5s;
+      }
+
+      /* APPLICATIONS FLIP CARDS */
+      .flip-card {
+        background-color: transparent;
+        perspective: 1000px;
+        height: 200px;
+      }
+      .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+      }
+      .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+      }
+      .flip-front,
+      .flip-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        border: 1px solid var(--border);
+      }
+      .flip-front {
+        background-color: var(--card-bg);
+      }
+      .flip-back {
+        background-color: var(--accent-fluorine);
+        color: black;
+        transform: rotateY(180deg);
+      }
+
+      /* COMPOUNDS CHARTS */
+      .chart-bar {
+        height: 40px;
+        margin-bottom: 1rem;
+        background: #334155;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        padding: 0 1rem;
+        position: relative;
+        overflow: hidden;
+      }
+      .chart-fill {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        opacity: 0.5;
+        transition: width 1s ease-out;
+      }
+      .chart-label {
+        z-index: 2;
+        position: relative;
+        font-weight: bold;
+      }
+      .chart-val {
+        margin-left: auto;
+        z-index: 2;
+        font-size: 0.8rem;
+      }
+
+      /* LAB & QUIZ (Reused styles) */
+      .lab-bench {
+        background: #1e293b;
+        border-radius: 20px;
+        height: 350px;
+        position: relative;
+        margin-top: 2rem;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        gap: 2rem;
+        padding-bottom: 2rem;
+        box-shadow: inset 0 -10px 20px rgba(0, 0, 0, 0.5);
+      }
+      .test-tube {
+        width: 40px;
+        height: 120px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top: none;
+        border-radius: 0 0 20px 20px;
+        position: relative;
+        background: rgba(255, 255, 255, 0.05);
+        cursor: pointer;
+      }
+      .tube-liquid {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 30%;
+        background: rgba(135, 206, 235, 0.2);
+        transition: 0.5s;
+      }
+      .dropper {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        width: 20px;
+        height: 80px;
+        background: #94a3b8;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: 0.5s;
+        z-index: 10;
+        border-radius: 0 0 2px 2px;
+      }
+      .dropper::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 7px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: white;
+      }
+
+      .quiz-option {
+        padding: 1rem;
+        margin-bottom: 0.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .quiz-option:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      .quiz-option.correct {
+        background: var(--accent-fluorine);
+        color: black;
+      }
+      .quiz-option.wrong {
+        background: var(--accent-bromine);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 1.8rem;
+        }
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="bg-canvas"></canvas>
+
+    <header>
+      <p
+        style="
+          color: var(--accent-fluorine);
+          font-weight: bold;
+          letter-spacing: 2px;
+        "
+      >
+        HÓA HỌC LỚP 10
+      </p>
+      <h1>CHUYÊN ĐỀ HALOGEN</h1>
+      <p>Nhóm VIIA: F - Cl - Br - I</p>
+    </header>
+
+    <nav>
+      <button class="nav-btn active" onclick="scrollToId('part1')">
+        1. Tổng Quan
+      </button>
+      <button class="nav-btn" onclick="scrollToId('part2')">2. Đơn Chất</button>
+      <button class="nav-btn" onclick="scrollToId('part3')">3. Hợp Chất</button>
+      <button class="nav-btn" onclick="scrollToId('part4')">
+        4. Thực Hành
+      </button>
+    </nav>
+
+    <main>
+      <!-- PHẦN 1: TỔNG QUAN -->
+      <section id="part1" class="visible">
+        <div class="section-header">
+          <h2>I. Vị Trí & Cấu Tạo</h2>
+          <p>Nhóm VIIA | ns²np⁵ | Độ âm điện cao nhất bảng tuần hoàn</p>
+        </div>
+
+        <div class="atom-wrapper">
+          <!-- Canvas Mô phỏng -->
+          <div class="atom-visual">
+            <canvas id="atomCanvas" width="280" height="280"></canvas>
+          </div>
+
+          <!-- Thông tin chi tiết & Trạng thái tự nhiên -->
+          <div class="atom-info">
+            <div class="element-selector">
+              <button
+                class="el-btn"
+                style="background: var(--accent-fluorine); color: black"
+                onclick="setAtom('F')"
+              >
+                Fluorine (F)
+              </button>
+              <button
+                class="el-btn"
+                style="background: var(--accent-chlorine); color: black"
+                onclick="setAtom('Cl')"
+              >
+                Chlorine (Cl)
+              </button>
+              <button
+                class="el-btn"
+                style="background: var(--accent-bromine)"
+                onclick="setAtom('Br')"
+              >
+                Bromine (Br)
+              </button>
+              <button
+                class="el-btn"
+                style="background: var(--accent-iodine)"
+                onclick="setAtom('I')"
+              >
+                Iodine (I)
+              </button>
+            </div>
+
+            <div
+              id="atomDetails"
+              style="
+                background: rgba(0, 0, 0, 0.3);
+                padding: 1.5rem;
+                border-radius: 10px;
+              "
+            >
+              <h3 id="elName" style="color: var(--accent-fluorine)">
+                Fluorine (Z=9)
+              </h3>
+              <p style="margin: 0.5rem 0">
+                <strong>Cấu hình e:</strong>
+                <span id="elConfig" style="font-family: monospace"
+                  >[He] 2s² 2p⁵</span
+                >
+              </p>
+              <p style="font-size: 0.9rem; margin-bottom: 1rem">
+                Có 7e lớp ngoài cùng, xu hướng nhận 1e mạnh mẽ để đạt cấu hình
+                bền.
+              </p>
+
+              <h4
+                style="
+                  border-top: 1px solid rgba(255, 255, 255, 0.1);
+                  padding-top: 0.8rem;
+                  margin-top: 0.8rem;
+                "
+              >
+                Đặc Điểm Phân Tử (X₂)
+              </h4>
+              <p style="font-size: 0.9rem">
+                Liên kết cộng hóa trị không cực. Năng lượng liên kết giảm dần từ
+                Cl₂ → I₂.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 2rem">
+          <h3>Trạng Thái Tự Nhiên</h3>
+          <p style="margin-bottom: 1rem; color: var(--text-secondary)">
+            Do hoạt động hóa học mạnh, Halogen không tồn tại dạng đơn chất trong
+            tự nhiên.
+          </p>
+          <div class="grid-2">
+            <div class="natural-state-item">
+              <div class="icon-circle" style="color: var(--accent-fluorine)">
+                F
+              </div>
+              <div>
+                <strong>Trong khoáng vật</strong><br />
+                <span style="font-size: 0.9rem; color: #ccc"
+                  >CaF₂ (Fluorite), Cryolite</span
+                >
+              </div>
+            </div>
+            <div class="natural-state-item">
+              <div class="icon-circle" style="color: var(--accent-chlorine)">
+                Cl
+              </div>
+              <div>
+                <strong>Nước biển & Muối mỏ</strong><br />
+                <span style="font-size: 0.9rem; color: #ccc"
+                  >NaCl (chủ yếu), KCl, MgCl₂</span
+                >
+              </div>
+            </div>
+            <div class="natural-state-item">
+              <div class="icon-circle" style="color: var(--accent-bromine)">
+                Br
+              </div>
+              <div>
+                <strong>Nước biển</strong><br />
+                <span style="font-size: 0.9rem; color: #ccc"
+                  >Tồn tại dạng muối Bromide (hiếm hơn Cl)</span
+                >
+              </div>
+            </div>
+            <div class="natural-state-item">
+              <div class="icon-circle" style="color: var(--accent-iodine)">
+                I
+              </div>
+              <div>
+                <strong>Rong biển & Tuyến giáp</strong><br />
+                <span style="font-size: 0.9rem; color: #ccc"
+                  >Muối iodide trong rong biển, NaI</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PHẦN 2: TÍNH CHẤT ĐƠN CHẤT -->
+      <section id="part2">
+        <div class="section-header">
+          <h2>II. Tính Chất Đơn Chất</h2>
+          <p>Vật lý biến đổi đều đặn - Hóa học oxi hóa giảm dần</p>
+        </div>
+
+        <!-- Tính chất vật lí -->
+        <h3 style="margin-bottom: 1rem">1. Tính Chất Vật Lí</h3>
+        <div class="grid-4" style="margin-bottom: 3rem">
+          <div class="card" style="text-align: center">
+            <h2 style="color: var(--accent-fluorine)">F₂</h2>
+            <p>Khí - Vàng lục</p>
+            <p style="font-size: 0.8rem; color: #aaa">Rất độc</p>
+          </div>
+          <div class="card" style="text-align: center">
+            <h2 style="color: var(--accent-chlorine)">Cl₂</h2>
+            <p>Khí - Vàng lục nhạt</p>
+            <p style="font-size: 0.8rem; color: #aaa">Mùi hắc, ngạt</p>
+          </div>
+          <div class="card" style="text-align: center">
+            <h2 style="color: var(--accent-bromine)">Br₂</h2>
+            <p>Lỏng - Đỏ nâu</p>
+            <p style="font-size: 0.8rem; color: #aaa">Dễ bay hơi, gây bỏng</p>
+          </div>
+          <div class="card" style="text-align: center">
+            <h2 style="color: var(--accent-iodine)">I₂</h2>
+            <p>Rắn - Tím đen</p>
+            <p style="font-size: 0.8rem; color: #aaa">
+              Thăng hoa thành hơi tím
+            </p>
+          </div>
+        </div>
+
+        <!-- Tính chất hóa học -->
+        <h3 style="margin-bottom: 1rem">
+          2. Tính Chất Hóa Học (Tính Oxi Hóa Mạnh)
+        </h3>
+        <div
+          style="
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+          "
+        >
+          <p style="margin-bottom: 1rem">
+            Quy luật: Tính oxi hóa giảm dần từ
+            <strong>F₂ > Cl₂ > Br₂ > I₂</strong>
+          </p>
+
+          <h4
+            style="
+              margin-top: 1.5rem;
+              margin-bottom: 0.5rem;
+              color: var(--accent-chlorine);
+            "
+          >
+            a. Tác dụng với Kim loại
+          </h4>
+          <div class="reaction-box" onclick="toggleReaction(this)">
+            <div class="reaction-equation">
+              2Na + Cl₂ <span style="color: #aaa">→</span>
+              <span class="product">2NaCl</span>
+            </div>
+            <p class="reaction-desc">
+              Phản ứng mãnh liệt, tỏa nhiều nhiệt tạo muối Sodium Chloride.
+            </p>
+          </div>
+
+          <h4
+            style="
+              margin-top: 1.5rem;
+              margin-bottom: 0.5rem;
+              color: var(--accent-chlorine);
+            "
+          >
+            b. Tác dụng với Hydrogen (H₂)
+          </h4>
+          <div class="reaction-box" onclick="toggleReaction(this)">
+            <div class="reaction-equation">
+              H₂ + F₂ <span style="color: #aaa">(-252°C) →</span>
+              <span class="product">2HF (nổ mạnh)</span>
+            </div>
+            <p class="reaction-desc">
+              F₂ phản ứng nổ ngay cả trong bóng tối và nhiệt độ cực thấp.
+            </p>
+          </div>
+          <div class="reaction-box" onclick="toggleReaction(this)">
+            <div class="reaction-equation">
+              H₂ + Cl₂ <span style="color: #aaa">(ánh sáng) →</span>
+              <span class="product">2HCl</span>
+            </div>
+            <p class="reaction-desc">
+              Cần ánh sáng hoặc đun nóng để phản ứng xảy ra.
+            </p>
+          </div>
+          <div class="reaction-box" onclick="toggleReaction(this)">
+            <div class="reaction-equation">
+              H₂ + I₂ <span style="color: #aaa">(350°C, Pt) ⇌</span>
+              <span class="product">2HI</span>
+            </div>
+            <p class="reaction-desc">
+              Phản ứng thuận nghịch, thu nhiệt, cần xúc tác.
+            </p>
+          </div>
+
+          <h4
+            style="
+              margin-top: 1.5rem;
+              margin-bottom: 0.5rem;
+              color: var(--accent-chlorine);
+            "
+          >
+            c. Oxi hóa muối Halide yếu hơn
+          </h4>
+          <div class="reaction-box" onclick="toggleReaction(this)">
+            <div class="reaction-equation">
+              Cl₂ + 2NaBr <span style="color: #aaa">→</span>
+              <span class="product">2NaCl + Br₂</span>
+            </div>
+            <p class="reaction-desc">
+              Clo đẩy Brom ra khỏi muối. Chứng tỏ tính oxi hóa Cl₂ > Br₂.
+            </p>
+          </div>
+        </div>
+
+        <!-- Ứng dụng -->
+        <h3 style="margin-bottom: 1rem">3. Ứng Dụng Thực Tiễn</h3>
+        <div class="grid-4">
+          <div class="flip-card">
+            <div class="flip-card-inner">
+              <div class="flip-front">
+                <h1 style="color: var(--accent-chlorine)">Cl₂</h1>
+                <p>Ứng dụng phổ biến nhất</p>
+              </div>
+              <div class="flip-back">
+                <p>• Xử lý nước sạch</p>
+                <p>• Sản xuất nhựa PVC</p>
+                <p>• Tẩy trắng giấy, vải</p>
+              </div>
+            </div>
+          </div>
+          <div class="flip-card">
+            <div class="flip-card-inner">
+              <div class="flip-front">
+                <h1 style="color: var(--accent-fluorine)">F₂</h1>
+                <p>Hợp chất siêu bền</p>
+              </div>
+              <div
+                class="flip-back"
+                style="background-color: var(--accent-fluorine)"
+              >
+                <p>• Teflon (chảo chống dính)</p>
+                <p>• NaF (Kem đánh răng)</p>
+                <p>• Làm giàu Uranium</p>
+              </div>
+            </div>
+          </div>
+          <div class="flip-card">
+            <div class="flip-card-inner">
+              <div class="flip-front">
+                <h1 style="color: var(--accent-bromine)">Br₂</h1>
+                <p>Công nghiệp</p>
+              </div>
+              <div
+                class="flip-back"
+                style="background-color: var(--accent-bromine); color: white"
+              >
+                <p>• Thuốc trừ sâu</p>
+                <p>• Chất chống cháy</p>
+                <p>• Dược phẩm</p>
+              </div>
+            </div>
+          </div>
+          <div class="flip-card">
+            <div class="flip-card-inner">
+              <div class="flip-front">
+                <h1 style="color: var(--accent-iodine)">I₂</h1>
+                <p>Y tế & Sức khỏe</p>
+              </div>
+              <div
+                class="flip-back"
+                style="background-color: var(--accent-iodine); color: white"
+              >
+                <p>• Cồn Iod sát trùng</p>
+                <p>• Muối Iod (phòng bướu cổ)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PHẦN 3: HỢP CHẤT -->
+      <section id="part3">
+        <div class="section-header">
+          <h2>III. Hợp Chất Hydrogen Halide & Ion Halide</h2>
+          <p>Axit Halogenic và Tính khử của Ion</p>
+        </div>
+
+        <div class="grid-2">
+          <!-- Hydrogen Halide -->
+          <div class="card">
+            <h3>1. Hydrogen Halide (HX)</h3>
+            <p style="font-size: 0.9rem; margin-bottom: 1rem; color: #ccc">
+              Tan trong nước tạo dung dịch Acid. HF là acid yếu, còn lại là acid
+              mạnh.
+            </p>
+
+            <h4 style="margin-bottom: 0.5rem">Độ mạnh Acid:</h4>
+            <div class="chart-bar">
+              <div
+                class="chart-fill"
+                style="width: 20%; background: var(--accent-fluorine)"
+              ></div>
+              <span class="chart-label">HF</span
+              ><span class="chart-val">Yếu (ăn mòn kính)</span>
+            </div>
+            <div class="chart-bar">
+              <div
+                class="chart-fill"
+                style="width: 60%; background: var(--accent-chlorine)"
+              ></div>
+              <span class="chart-label">HCl</span
+              ><span class="chart-val">Mạnh</span>
+            </div>
+            <div class="chart-bar">
+              <div
+                class="chart-fill"
+                style="width: 80%; background: var(--accent-bromine)"
+              ></div>
+              <span class="chart-label">HBr</span
+              ><span class="chart-val">Rất Mạnh</span>
+            </div>
+            <div class="chart-bar">
+              <div
+                class="chart-fill"
+                style="width: 100%; background: var(--accent-iodine)"
+              ></div>
+              <span class="chart-label">HI</span
+              ><span class="chart-val">Mạnh Nhất</span>
+            </div>
+
+            <p style="font-size: 0.8rem; margin-top: 1rem">
+              * HF có nhiệt độ sôi cao bất thường do liên kết Hydrogen.
+            </p>
+          </div>
+
+          <!-- Tính khử Ion Halide -->
+          <div class="card">
+            <h3>2. Tính Khử Của Ion Halide (X⁻)</h3>
+            <p style="font-size: 0.9rem; margin-bottom: 1rem; color: #ccc">
+              Ngược lại với tính oxi hóa của đơn chất.
+            </p>
+
+            <h4 style="margin-bottom: 0.5rem">Tính Khử Tăng Dần:</h4>
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 1rem;
+                background: #333;
+                padding: 1rem;
+                border-radius: 8px;
+              "
+            >
+              <span style="color: var(--accent-fluorine)"
+                >F⁻ <br /><small>Không khử</small></span
+              >
+              <span>&lt;</span>
+              <span style="color: var(--accent-chlorine)">Cl⁻</span>
+              <span>&lt;</span>
+              <span style="color: var(--accent-bromine)">Br⁻</span>
+              <span>&lt;&lt;</span>
+              <span
+                style="
+                  color: var(--accent-iodine);
+                  font-weight: bold;
+                  font-size: 1.2rem;
+                "
+                >I⁻ <br /><small>Khử mạnh</small></span
+              >
+            </div>
+            <p>
+              <strong>Ví dụ:</strong> I⁻ dễ dàng nhường electron hơn Br⁻ và Cl⁻.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- PHẦN 4: THỰC HÀNH & QUIZ -->
+      <section id="part4">
+        <div class="section-header">
+          <h2>IV. Thực Hành & Kiểm Tra</h2>
+          <p>Nhận biết Ion Halide bằng AgNO₃</p>
+        </div>
+
+        <!-- LAB -->
+        <div class="lab-bench">
+          <div class="dropper" id="dropper">
+            <span
+              style="
+                position: absolute;
+                top: -15px;
+                width: 100%;
+                text-align: center;
+                font-size: 0.7rem;
+                color: #ccc;
+              "
+              >AgNO₃</span
+            >
+          </div>
+
+          <div style="text-align: center">
+            <div class="test-tube" onclick="runLab('F', this)">
+              <div class="tube-liquid" id="liq-F"></div>
+            </div>
+            <p style="margin-top: 5px">NaF</p>
+            <small id="res-F" style="color: var(--accent-fluorine)"></small>
+          </div>
+
+          <div style="text-align: center">
+            <div class="test-tube" onclick="runLab('Cl', this)">
+              <div class="tube-liquid" id="liq-Cl"></div>
+            </div>
+            <p style="margin-top: 5px">NaCl</p>
+            <small id="res-Cl" style="color: var(--accent-chlorine)"></small>
+          </div>
+
+          <div style="text-align: center">
+            <div class="test-tube" onclick="runLab('Br', this)">
+              <div class="tube-liquid" id="liq-Br"></div>
+            </div>
+            <p style="margin-top: 5px">NaBr</p>
+            <small id="res-Br" style="color: var(--accent-bromine)"></small>
+          </div>
+
+          <div style="text-align: center">
+            <div class="test-tube" onclick="runLab('I', this)">
+              <div class="tube-liquid" id="liq-I"></div>
+            </div>
+            <p style="margin-top: 5px">NaI</p>
+            <small id="res-I" style="color: var(--accent-iodine)"></small>
+          </div>
+
+          <button
+            onclick="resetLab()"
+            style="
+              position: absolute;
+              top: 10px;
+              right: 10px;
+              background: rgba(255, 255, 255, 0.1);
+              border: none;
+              color: white;
+              padding: 5px 10px;
+              cursor: pointer;
+              border-radius: 4px;
+            "
+          >
+            Làm Sạch
+          </button>
+        </div>
+
+        <!-- QUIZ -->
+        <div class="card" style="margin-top: 2rem">
+          <h3>Trắc Nghiệm Nhanh</h3>
+          <div id="quiz-area">
+            <div class="quiz-q" id="q1">
+              <p style="margin-bottom: 1rem">
+                <strong>Câu 1:</strong> Halogen nào ở thể lỏng trong điều kiện
+                thường?
+              </p>
+              <div class="quiz-option" onclick="checkQuiz(this, false)">
+                A. Fluorine (F₂)
+              </div>
+              <div class="quiz-option" onclick="checkQuiz(this, false)">
+                B. Chlorine (Cl₂)
+              </div>
+              <div class="quiz-option" onclick="checkQuiz(this, true)">
+                C. Bromine (Br₂)
+              </div>
+              <div class="quiz-option" onclick="checkQuiz(this, false)">
+                D. Iodine (I₂)
+              </div>
+            </div>
+
+            <div class="quiz-q hidden" id="q2">
+              <p style="margin-bottom: 1rem">
+                <strong>Câu 2:</strong> Acid nào có thể ăn mòn thủy tinh?
+              </p>
+              <div class="quiz-option" onclick="checkQuiz(this, false)">
+                A. HCl
+              </div>
+              <div class="quiz-option" onclick="checkQuiz(this, true)">
+                B. HF
+              </div>
+              <div class="quiz-option" onclick="checkQuiz(this, false)">
+                C. HBr
+              </div>
+              <div class="quiz-option" onclick="checkQuiz(this, false)">
+                D. HI
+              </div>
+            </div>
+
+            <div class="quiz-q hidden" id="q3">
+              <p style="margin-bottom: 1rem">
+                <strong>Câu 3:</strong> Kết tủa AgBr có màu gì?
+              </p>
+              <div class="quiz-option" onclick="checkQuiz(this, false)">
+                A. Trắng
+              </div>
+              <div class="quiz-option" onclick="checkQuiz(this, true)">
+                B. Vàng nhạt
+              </div>
+              <div class="quiz-option" onclick="checkQuiz(this, false)">
+                C. Vàng đậm
+              </div>
+              <div class="quiz-option" onclick="checkQuiz(this, false)">
+                D. Đen tím
+              </div>
+            </div>
+          </div>
+          <button
+            id="nextBtn"
+            class="hidden"
+            onclick="nextQ()"
+            style="
+              margin-top: 1rem;
+              padding: 0.5rem 1rem;
+              background: white;
+              color: black;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+            "
+          >
+            Câu tiếp theo
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      // --- SCROLL & NAV ---
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+              // Highlight Nav
+              document
+                .querySelectorAll(".nav-btn")
+                .forEach((btn) => btn.classList.remove("active"));
+              const id = entry.target.id;
+              const btn = document.querySelector(
+                `button[onclick="scrollToId('${id}')"]`
+              );
+              if (btn) btn.classList.add("active");
+            }
+          });
+        },
+        { threshold: 0.2 }
+      );
+
+      document
+        .querySelectorAll("section")
+        .forEach((sec) => observer.observe(sec));
+
+      function scrollToId(id) {
+        document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+      }
+
+      // --- ATOM CANVAS SIMULATION ---
+      const canvas = document.getElementById("atomCanvas");
+      const ctx = canvas.getContext("2d");
+      let atomType = "F";
+      let tick = 0;
+
+      const atomData = {
+        F: {
+          shells: [2, 7],
+          color: "#a3e635",
+          name: "Fluorine",
+          z: 9,
+          config: "[He] 2s² 2p⁵",
+        },
+        Cl: {
+          shells: [2, 8, 7],
+          color: "#fde047",
+          name: "Chlorine",
+          z: 17,
+          config: "[Ne] 3s² 3p⁵",
+        },
+        Br: {
+          shells: [2, 8, 18, 7],
+          color: "#ef4444",
+          name: "Bromine",
+          z: 35,
+          config: "[Ar] 3d¹⁰ 4s² 4p⁵",
+        },
+        I: {
+          shells: [2, 8, 18, 18, 7],
+          color: "#a855f7",
+          name: "Iodine",
+          z: 53,
+          config: "[Kr] 4d¹⁰ 5s² 5p⁵",
+        },
+      };
+
+      function setAtom(type) {
+        atomType = type;
+        const d = atomData[type];
+        document.getElementById("elName").innerText = `${d.name} (Z=${d.z})`;
+        document.getElementById("elName").style.color = d.color;
+        document.getElementById("elConfig").innerText = d.config;
+      }
+
+      function drawAtom() {
+        ctx.clearRect(0, 0, 280, 280);
+        const cx = 140,
+          cy = 140;
+        const d = atomData[atomType];
+
+        // Nucleus
+        ctx.beginPath();
+        ctx.arc(cx, cy, 12, 0, Math.PI * 2);
+        ctx.fillStyle = d.color;
+        ctx.fill();
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = d.color;
+
+        // Shells
+        d.shells.forEach((count, i) => {
+          const r = 30 + i * 20;
+          ctx.beginPath();
+          ctx.arc(cx, cy, r, 0, Math.PI * 2);
+          ctx.strokeStyle = "rgba(255,255,255,0.1)";
+          ctx.stroke();
+
+          // Electrons
+          for (let e = 0; e < count; e++) {
+            const ang = tick * (0.02 - i * 0.002) + (e * Math.PI * 2) / count;
+            const x = cx + Math.cos(ang) * r;
+            const y = cy + Math.sin(ang) * r;
+            ctx.beginPath();
+            ctx.arc(x, y, 3, 0, Math.PI * 2);
+            ctx.fillStyle = i === d.shells.length - 1 ? "#fff" : "#888";
+            ctx.fill();
+          }
+        });
+        tick++;
+        requestAnimationFrame(drawAtom);
+      }
+      drawAtom();
+
+      // --- REACTION TOGGLE ---
+      function toggleReaction(el) {
+        el.classList.toggle("active");
+      }
+
+      // --- VIRTUAL LAB ---
+      function runLab(type, tube) {
+        const dropper = document.getElementById("dropper");
+        const rect = tube.getBoundingClientRect();
+        const benchRect = document
+          .querySelector(".lab-bench")
+          .getBoundingClientRect();
+
+        // Move dropper
+        const left = rect.left - benchRect.left + 10;
+        dropper.style.left = left + "px";
+        dropper.style.opacity = 1;
+
+        setTimeout(() => {
+          // Change liquid
+          const liq = document.getElementById(`liq-${type}`);
+          const res = document.getElementById(`res-${type}`);
+
+          if (type === "F") {
+            liq.style.height = "40%";
+            res.innerText = "Không kết tủa (AgF tan)";
+          } else if (type === "Cl") {
+            liq.style.height = "40%";
+            liq.style.background = "white";
+            res.innerText = "Kết tủa Trắng (AgCl)";
+          } else if (type === "Br") {
+            liq.style.height = "40%";
+            liq.style.background = "#fef08a";
+            res.innerText = "Kết tủa Vàng Nhạt (AgBr)";
+          } else if (type === "I") {
+            liq.style.height = "40%";
+            liq.style.background = "#fbbf24";
+            res.innerText = "Kết tủa Vàng Đậm (AgI)";
+          }
+        }, 600);
+      }
+
+      function resetLab() {
+        ["F", "Cl", "Br", "I"].forEach((t) => {
+          const l = document.getElementById(`liq-${t}`);
+          l.style.background = "rgba(135, 206, 235, 0.2)";
+          l.style.height = "30%";
+          document.getElementById(`res-${t}`).innerText = "";
+        });
+        document.getElementById("dropper").style.opacity = 0;
+      }
+
+      // --- QUIZ ---
+      let qIdx = 1;
+      function checkQuiz(el, isCorrect) {
+        if (
+          el.parentElement.querySelector(".correct") ||
+          el.parentElement.querySelector(".wrong")
+        )
+          return; // Prevent multiple clicks
+        if (isCorrect) el.classList.add("correct");
+        else el.classList.add("wrong");
+        document.getElementById("nextBtn").classList.remove("hidden");
+      }
+      function nextQ() {
+        document.getElementById(`q${qIdx}`).classList.add("hidden");
+        qIdx++;
+        if (qIdx > 3) qIdx = 1;
+        document.getElementById(`q${qIdx}`).classList.remove("hidden");
+        document.getElementById("nextBtn").classList.add("hidden");
+        // Reset styles
+        document
+          .querySelectorAll(".quiz-option")
+          .forEach((o) => o.classList.remove("correct", "wrong"));
+      }
+
+      // --- BACKGROUND ---
+      const bg = document.getElementById("bg-canvas");
+      const bgCtx = bg.getContext("2d");
+      bg.width = window.innerWidth;
+      bg.height = window.innerHeight;
+      const parts = Array(40)
+        .fill()
+        .map(() => ({
+          x: Math.random() * bg.width,
+          y: Math.random() * bg.height,
+          s: Math.random() * 2,
+        }));
+
+      function animBg() {
+        bgCtx.clearRect(0, 0, bg.width, bg.height);
+        bgCtx.fillStyle = "rgba(255,255,255,0.2)";
+        parts.forEach((p) => {
+          p.y -= p.s * 0.5;
+          if (p.y < 0) p.y = bg.height;
+          bgCtx.beginPath();
+          bgCtx.arc(p.x, p.y, p.s, 0, Math.PI * 2);
+          bgCtx.fill();
+        });
+        requestAnimationFrame(animBg);
+      }
+      animBg();
+      window.onresize = () => {
+        bg.width = window.innerWidth;
+        bg.height = window.innerHeight;
+      };
+    </script>
+  </body>
+</html>

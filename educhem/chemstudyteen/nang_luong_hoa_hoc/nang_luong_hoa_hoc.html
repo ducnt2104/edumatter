@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chương 5: Năng Lượng Hóa Học</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap");
+
+      body {
+        font-family: "Be Vietnam Pro", sans-serif;
+        scroll-behavior: smooth;
+      }
+
+      /* Hero Animation - Energy Particles */
+      .energy-container {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        margin: 0 auto;
+      }
+      .core {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 60px;
+        height: 60px;
+        background: radial-gradient(circle, #f59e0b, #ef4444);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 0 30px rgba(239, 68, 68, 0.6);
+        z-index: 10;
+        animation: pulse-core 2s infinite ease-in-out;
+      }
+      .particle-ring {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        height: 100%;
+        transform: translate(-50%, -50%);
+        border: 2px dashed rgba(245, 158, 11, 0.3);
+        border-radius: 50%;
+        animation: spin 10s linear infinite;
+      }
+      .particle {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: #fbbf24;
+        border-radius: 50%;
+        box-shadow: 0 0 10px #fbbf24;
+      }
+
+      @keyframes pulse-core {
+        0%,
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+          box-shadow: 0 0 30px rgba(239, 68, 68, 0.6);
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(1.1);
+          box-shadow: 0 0 50px rgba(239, 68, 68, 0.8);
+        }
+      }
+      @keyframes spin {
+        100% {
+          transform: translate(-50%, -50%) rotate(360deg);
+        }
+      }
+
+      /* Energy Diagram Animation */
+      .chart-container {
+        position: relative;
+        height: 300px;
+        border-left: 2px solid #94a3b8;
+        border-bottom: 2px solid #94a3b8;
+      }
+      .energy-level {
+        position: absolute;
+        width: 100px;
+        height: 4px;
+        transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .reactants {
+        left: 20px;
+        background-color: #3b82f6;
+      } /* Blue */
+      .products {
+        right: 20px;
+        background-color: #ef4444;
+      } /* Red */
+
+      .arrow-path {
+        position: absolute;
+        left: 70px; /* Center of reactants */
+        width: 0;
+        border-top: 2px dashed #cbd5e1;
+        transform-origin: left;
+        transition: all 1s ease;
+      }
+
+      /* Modal & UI */
+      .glass-panel {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      }
+      .dark .glass-panel {
+        background: rgba(15, 23, 42, 0.9);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .quiz-option:hover {
+        transform: translateX(5px);
+      }
+      .tab-btn.active {
+        background-color: #f59e0b;
+        color: white;
+        border-color: #f59e0b;
+      }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: #475569;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300"
+  >
+    <!-- Navigation -->
+    <nav
+      class="fixed top-0 w-full glass-panel z-50 transition-all duration-300"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center text-white shadow-lg"
+            >
+              <i class="fas fa-fire-alt"></i>
+            </div>
+            <span class="font-bold text-xl tracking-tight hidden sm:block"
+              >Hóa Học 10 - Energy Master</span
+            >
+          </div>
+          <div class="hidden md:flex space-x-6">
+            <button
+              onclick="scrollToSection('khai-niem')"
+              class="hover:text-amber-600 dark:hover:text-amber-400 font-medium transition py-2 border-b-2 border-transparent hover:border-amber-500"
+            >
+              Khái Niệm
+            </button>
+            <button
+              onclick="scrollToSection('bieu-do')"
+              class="hover:text-amber-600 dark:hover:text-amber-400 font-medium transition py-2 border-b-2 border-transparent hover:border-amber-500"
+            >
+              Biểu Đồ
+            </button>
+            <button
+              onclick="scrollToSection('tinh-toan')"
+              class="hover:text-amber-600 dark:hover:text-amber-400 font-medium transition py-2 border-b-2 border-transparent hover:border-amber-500"
+            >
+              Tính Toán
+            </button>
+            <button
+              onclick="scrollToSection('thuc-tien')"
+              class="hover:text-amber-600 dark:hover:text-amber-400 font-medium transition py-2 border-b-2 border-transparent hover:border-amber-500"
+            >
+              Thực Tiễn
+            </button>
+          </div>
+          <div class="flex items-center gap-3">
+            <button
+              onclick="openQuiz()"
+              class="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow hover:shadow-lg transition transform hover:-translate-y-0.5"
+            >
+              <i class="fas fa-gamepad mr-2"></i>Thi Thử
+            </button>
+            <button
+              onclick="toggleDarkMode()"
+              class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-300 dark:hover:bg-slate-700 transition"
+            >
+              <i class="fas fa-moon dark:text-yellow-400 text-slate-600"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <header
+      class="pt-32 pb-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-fixed bg-orange-50 dark:bg-slate-900"
+    >
+      <div
+        class="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center"
+      >
+        <div class="animate-fade-in-up">
+          <div
+            class="inline-block px-4 py-1.5 mb-6 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full text-sm font-bold tracking-wide uppercase border border-amber-200 dark:border-amber-800"
+          >
+            Chương 5 • Hóa Học Vô Cơ
+          </div>
+          <h1
+            class="text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-slate-900 dark:text-white"
+          >
+            Năng Lượng <br />
+            <span
+              class="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-red-600"
+              >Hóa Học</span
+            >
+          </h1>
+          <p
+            class="text-xl text-slate-600 dark:text-slate-400 mb-8 leading-relaxed max-w-lg"
+          >
+            Tại sao đốt than lại nóng? Tại sao đá khô lại lạnh? Khám phá bí ẩn
+            của Enthalpy và sự chuyển hóa năng lượng trong phản ứng.
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <button
+              onclick="scrollToSection('khai-niem')"
+              class="px-8 py-4 bg-amber-600 hover:bg-amber-700 text-white rounded-xl shadow-xl shadow-amber-500/20 transition transform hover:-translate-y-1 font-bold text-lg"
+            >
+              Bắt Đầu Học
+            </button>
+            <button
+              onclick="scrollToSection('tinh-toan')"
+              class="px-8 py-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-amber-500 rounded-xl shadow-md transition font-bold text-lg text-slate-700 dark:text-slate-200"
+            >
+              Công Thức
+            </button>
+          </div>
+        </div>
+        <div class="flex justify-center lg:justify-end relative">
+          <div
+            class="absolute -inset-4 bg-gradient-to-r from-amber-500 to-red-500 opacity-20 blur-3xl rounded-full"
+          ></div>
+          <!-- Energy Animation -->
+          <div class="energy-container relative z-10">
+            <div class="core"></div>
+            <div class="particle-ring">
+              <div class="particle" style="top: 0; left: 50%"></div>
+              <div class="particle" style="top: 50%; left: 100%"></div>
+              <div class="particle" style="top: 100%; left: 50%"></div>
+              <div class="particle" style="top: 50%; left: 0%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-16 space-y-32">
+      <!-- I. KHÁI NIỆM -->
+      <section id="khai-niem" class="scroll-mt-28">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">
+            I. Phản Ứng Tỏa Nhiệt & Thu Nhiệt
+          </h2>
+          <div class="w-20 h-1 bg-amber-500 mx-auto rounded"></div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+          <!-- Tỏa nhiệt -->
+          <div
+            class="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg border-t-4 border-red-500 hover:shadow-xl transition relative overflow-hidden group"
+          >
+            <div
+              class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition"
+            >
+              <i class="fas fa-fire text-8xl text-red-500"></i>
+            </div>
+            <h3
+              class="text-2xl font-bold text-red-600 mb-4 flex items-center gap-2"
+            >
+              <i class="fas fa-arrow-down"></i> Tỏa Nhiệt (Exothermic)
+            </h3>
+            <div class="text-4xl font-bold text-slate-800 dark:text-white mb-4">
+              \(\Delta_r H < 0\)
+            </div>
+            <ul class="space-y-3 text-slate-600 dark:text-slate-300">
+              <li>
+                <i class="fas fa-check text-red-500 mr-2"></i>Giải phóng năng
+                lượng ra môi trường.
+              </li>
+              <li>
+                <i class="fas fa-check text-red-500 mr-2"></i>Làm môi trường
+                xung quanh nóng lên.
+              </li>
+              <li>
+                <i class="fas fa-check text-red-500 mr-2"></i>VD: Đốt cháy than,
+                trung hòa acid-base.
+              </li>
+            </ul>
+          </div>
+
+          <!-- Thu nhiệt -->
+          <div
+            class="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg border-t-4 border-blue-500 hover:shadow-xl transition relative overflow-hidden group"
+          >
+            <div
+              class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition"
+            >
+              <i class="fas fa-snowflake text-8xl text-blue-500"></i>
+            </div>
+            <h3
+              class="text-2xl font-bold text-blue-600 mb-4 flex items-center gap-2"
+            >
+              <i class="fas fa-arrow-up"></i> Thu Nhiệt (Endothermic)
+            </h3>
+            <div class="text-4xl font-bold text-slate-800 dark:text-white mb-4">
+              \(\Delta_r H > 0\)
+            </div>
+            <ul class="space-y-3 text-slate-600 dark:text-slate-300">
+              <li>
+                <i class="fas fa-check text-blue-500 mr-2"></i>Hấp thụ năng
+                lượng từ môi trường.
+              </li>
+              <li>
+                <i class="fas fa-check text-blue-500 mr-2"></i>Làm môi trường
+                xung quanh lạnh đi.
+              </li>
+              <li>
+                <i class="fas fa-check text-blue-500 mr-2"></i>VD: Nhiệt phân
+                \(CaCO_3\), hòa tan \(NH_4NO_3\).
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Definitions Card -->
+        <div
+          class="mt-8 bg-slate-100 dark:bg-slate-800/50 p-6 rounded-xl border border-slate-200 dark:border-slate-700"
+        >
+          <h4 class="font-bold text-lg mb-2 text-slate-800 dark:text-white">
+            <i class="fas fa-book-open mr-2 text-amber-500"></i>Khái Niệm Quan
+            Trọng
+          </h4>
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <strong class="text-amber-600"
+                >Enthalpy tạo thành chuẩn (\(\Delta_f H^0_{298}\)):</strong
+              >
+              <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                Là lượng nhiệt kèm theo phản ứng tạo thành 1 mol chất từ các đơn
+                chất bền nhất ở điều kiện chuẩn (25°C, 1 bar).
+              </p>
+              <p class="text-xs mt-1 text-slate-500">
+                Lưu ý: \(\Delta_f H^0_{298}\) của đơn chất bền (VD: \(O_2,
+                N_2\)) bằng 0.
+              </p>
+            </div>
+            <div>
+              <strong class="text-amber-600"
+                >Biến thiên Enthalpy phản ứng (\(\Delta_r H^0_{298}\)):</strong
+              >
+              <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                Là nhiệt lượng tỏa ra hay thu vào của phản ứng ở điều kiện
+                chuẩn.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- II. BIỂU ĐỒ NĂNG LƯỢNG -->
+      <section id="bieu-do" class="scroll-mt-28">
+        <h2 class="text-3xl font-bold mb-8 text-center">
+          II. Biến Thiên Năng Lượng
+        </h2>
+
+        <div
+          class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-2xl border border-slate-200 dark:border-slate-700"
+        >
+          <div class="flex justify-center gap-4 mb-8">
+            <button
+              onclick="setChart('exo')"
+              id="btn-exo"
+              class="px-6 py-2 rounded-full font-bold transition bg-red-100 text-red-600 border border-red-200"
+            >
+              Tỏa Nhiệt
+            </button>
+            <button
+              onclick="setChart('endo')"
+              id="btn-endo"
+              class="px-6 py-2 rounded-full font-bold transition bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200"
+            >
+              Thu Nhiệt
+            </button>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-8">
+            <div
+              class="md:col-span-2 relative h-[350px] bg-slate-50 dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-700"
+            >
+              <!-- Y Axis Label -->
+              <div
+                class="absolute top-4 left-4 text-xs font-bold text-slate-400 rotate-0"
+              >
+                Năng Lượng (E)
+              </div>
+              <!-- X Axis Label -->
+              <div
+                class="absolute bottom-4 right-4 text-xs font-bold text-slate-400"
+              >
+                Tiến trình phản ứng
+              </div>
+
+              <!-- Chart Area -->
+              <div class="chart-container h-full w-full relative">
+                <div
+                  id="level-reactants"
+                  class="energy-level reactants top-[30%]"
+                >
+                  <span
+                    class="absolute -top-6 left-0 text-sm font-bold text-blue-600"
+                    >Chất đầu (CĐ)</span
+                  >
+                </div>
+                <div
+                  id="level-products"
+                  class="energy-level products top-[70%]"
+                >
+                  <span
+                    class="absolute -top-6 right-0 text-sm font-bold text-red-600"
+                    >Sản phẩm (SP)</span
+                  >
+                </div>
+                <!-- Arrow Delta H -->
+                <div
+                  id="arrow-delta"
+                  class="absolute left-[130px] w-2 bg-slate-300 transition-all duration-1000 flex items-center justify-center"
+                >
+                  <span
+                    id="label-delta"
+                    class="absolute left-4 whitespace-nowrap font-bold text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 px-2 rounded shadow border text-sm"
+                  >
+                    \(\Delta_r H < 0\)
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-col justify-center">
+              <div id="desc-exo" class="transition-opacity duration-500">
+                <h4 class="text-xl font-bold text-red-500 mb-2">
+                  Phản ứng Tỏa Nhiệt
+                </h4>
+                <p class="text-slate-600 dark:text-slate-300 text-sm">
+                  Năng lượng chất đầu <strong>cao hơn</strong> năng lượng sản
+                  phẩm.
+                </p>
+                <p class="text-slate-600 dark:text-slate-300 text-sm mt-2">
+                  \(\sum E(\text{cđ}) > \sum E(\text{sp})\)
+                </p>
+                <div
+                  class="mt-4 p-3 bg-red-50 dark:bg-red-900/20 rounded border border-red-100 text-sm"
+                >
+                  Phần năng lượng dư thừa được giải phóng dưới dạng nhiệt.
+                </div>
+              </div>
+              <div
+                id="desc-endo"
+                class="hidden transition-opacity duration-500"
+              >
+                <h4 class="text-xl font-bold text-blue-500 mb-2">
+                  Phản ứng Thu Nhiệt
+                </h4>
+                <p class="text-slate-600 dark:text-slate-300 text-sm">
+                  Năng lượng chất đầu <strong>thấp hơn</strong> năng lượng sản
+                  phẩm.
+                </p>
+                <p class="text-slate-600 dark:text-slate-300 text-sm mt-2">
+                  \(\sum E(\text{cđ}) < \sum E(\text{sp})\)
+                </p>
+                <div
+                  class="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-100 text-sm"
+                >
+                  Cần cung cấp năng lượng để phản ứng xảy ra.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- III. TÍNH TOÁN -->
+      <section id="tinh-toan" class="scroll-mt-28">
+        <h2 class="text-3xl font-bold mb-8 text-center">
+          III. Công Thức Tính \(\Delta_r H^0_{298}\)
+        </h2>
+
+        <div
+          class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-700"
+        >
+          <!-- Tab Headers -->
+          <div
+            class="flex border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50"
+          >
+            <button
+              onclick="switchTab('method-1')"
+              id="tab-1"
+              class="tab-btn active flex-1 py-4 font-bold text-center transition border-b-4"
+            >
+              1. Dựa vào Nhiệt Tạo Thành (\(\Delta_f H^0\))
+            </button>
+            <button
+              onclick="switchTab('method-2')"
+              id="tab-2"
+              class="tab-btn flex-1 py-4 font-bold text-center transition border-b-4 border-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500"
+            >
+              2. Dựa vào Năng Lượng Liên Kết (\(E_b\))
+            </button>
+          </div>
+
+          <!-- Method 1: Formation Enthalpy -->
+          <div id="method-1" class="tab-content p-6 md:p-10">
+            <div
+              class="bg-amber-50 dark:bg-amber-900/10 p-6 rounded-xl border border-amber-200 dark:border-amber-800 mb-8"
+            >
+              <h3
+                class="text-lg font-bold text-amber-800 dark:text-amber-400 mb-2"
+              >
+                Định luật Hess (Hệ quả)
+              </h3>
+              <div
+                class="text-xl md:text-2xl text-center py-4 font-mono font-bold text-slate-800 dark:text-white"
+              >
+                $$ \Delta_r H^0_{298} = \sum \Delta_f H^0(\text{sp}) - \sum
+                \Delta_f H^0(\text{cđ}) $$
+              </div>
+              <p class="text-center text-sm text-slate-600 dark:text-slate-400">
+                Tổng nhiệt tạo thành SẢN PHẨM trừ Tổng nhiệt tạo thành CHẤT ĐẦU.
+              </p>
+            </div>
+
+            <!-- Wizard Example -->
+            <div class="border-t pt-6 dark:border-slate-700">
+              <h4 class="font-bold mb-4">
+                Ví dụ: Đốt cháy Metan \(CH_4(g) + 2O_2(g) \rightarrow CO_2(g) +
+                2H_2O(l)\)
+              </h4>
+              <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                  <p class="mb-2 text-sm text-slate-500">
+                    Cho biết \(\Delta_f H^0_{298}\) (kJ/mol):
+                  </p>
+                  <ul
+                    class="text-sm font-mono space-y-1 bg-slate-100 dark:bg-slate-900 p-3 rounded"
+                  >
+                    <li>\(CH_4(g): -74.8\)</li>
+                    <li>\(O_2(g): 0\) (Đơn chất bền)</li>
+                    <li>\(CO_2(g): -393.5\)</li>
+                    <li>\(H_2O(l): -285.8\)</li>
+                  </ul>
+                </div>
+                <div class="flex flex-col justify-center">
+                  <div
+                    class="bg-white dark:bg-slate-700 p-4 rounded shadow border border-slate-200 dark:border-slate-600"
+                  >
+                    <p class="font-bold text-blue-600 mb-2">Lời giải:</p>
+                    <div class="text-sm space-y-2">
+                      <p>
+                        \(\Delta_r H^0 = [1 \times (-393.5) + 2 \times (-285.8)]
+                        - [1 \times (-74.8) + 2 \times 0]\)
+                      </p>
+                      <p>\(\Delta_r H^0 = [-393.5 - 571.6] - [-74.8]\)</p>
+                      <p class="font-bold text-red-500 text-lg">
+                        \(\Delta_r H^0 = -890.3 \text{ kJ}\)
+                      </p>
+                    </div>
+                    <p class="mt-2 text-xs text-slate-500 italic">
+                      Kết quả âm \(\rightarrow\) Phản ứng tỏa nhiệt mạnh.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Method 2: Bond Energy -->
+          <div id="method-2" class="tab-content hidden p-6 md:p-10">
+            <div
+              class="bg-blue-50 dark:bg-blue-900/10 p-6 rounded-xl border border-blue-200 dark:border-blue-800 mb-8"
+            >
+              <h3
+                class="text-lg font-bold text-blue-800 dark:text-blue-400 mb-2"
+              >
+                Dựa vào Năng lượng liên kết (Chỉ áp dụng cho phản ứng khí)
+              </h3>
+              <div
+                class="text-xl md:text-2xl text-center py-4 font-mono font-bold text-slate-800 dark:text-white"
+              >
+                $$ \Delta_r H^0_{298} = \sum E_b(\text{cđ}) - \sum
+                E_b(\text{sp}) $$
+              </div>
+              <p class="text-center text-sm text-slate-600 dark:text-slate-400">
+                Tổng năng lượng liên kết CHẤT ĐẦU (Phá vỡ) trừ Tổng năng lượng
+                liên kết SẢN PHẨM (Hình thành).
+              </p>
+            </div>
+
+            <!-- Wizard Example -->
+            <div class="border-t pt-6 dark:border-slate-700">
+              <h4 class="font-bold mb-4">
+                Ví dụ: \(H_2(g) + Cl_2(g) \rightarrow 2HCl(g)\)
+              </h4>
+              <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                  <p class="mb-2 text-sm text-slate-500">
+                    Cho biết \(E_b\) (kJ/mol):
+                  </p>
+                  <ul
+                    class="text-sm font-mono space-y-1 bg-slate-100 dark:bg-slate-900 p-3 rounded"
+                  >
+                    <li>\(H-H: 436\)</li>
+                    <li>\(Cl-Cl: 243\)</li>
+                    <li>\(H-Cl: 432\)</li>
+                  </ul>
+                </div>
+                <div class="flex flex-col justify-center">
+                  <div
+                    class="bg-white dark:bg-slate-700 p-4 rounded shadow border border-slate-200 dark:border-slate-600"
+                  >
+                    <p class="font-bold text-blue-600 mb-2">Lời giải:</p>
+                    <div class="text-sm space-y-2">
+                      <p>
+                        Tổng \(E_b(\text{cđ}) = 1 \times E_b(H-H) + 1 \times
+                        E_b(Cl-Cl) = 436 + 243 = 679\)
+                      </p>
+                      <p>
+                        Tổng \(E_b(\text{sp}) = 2 \times E_b(H-Cl) = 2 \times
+                        432 = 864\)
+                      </p>
+                      <p>\(\Delta_r H^0 = 679 - 864\)</p>
+                      <p class="font-bold text-red-500 text-lg">
+                        \(\Delta_r H^0 = -185 \text{ kJ}\)
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Note Box -->
+        <div
+          class="mt-8 p-4 border-l-4 border-amber-500 bg-amber-50 dark:bg-amber-900/10 text-sm text-slate-700 dark:text-slate-300"
+        >
+          <strong>Lưu ý:</strong> Công thức \(E_b\) là:
+          <strong>TRƯỚC - SAU</strong> (Phá vỡ tốn năng lượng - Hình thành tỏa
+          năng lượng).<br />
+          Công thức \(\Delta_f H\) là: <strong>SAU - TRƯỚC</strong>. <br />Đừng
+          nhầm lẫn 2 công thức này!
+        </div>
+      </section>
+
+      <!-- IV. ỨNG DỤNG -->
+      <section id="thuc-tien" class="scroll-mt-28">
+        <h2 class="text-3xl font-bold mb-8 text-center">
+          IV. Ý Nghĩa Thực Tiễn
+        </h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <!-- Card 1 -->
+          <div
+            class="bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl shadow-lg p-6 text-white transform hover:-translate-y-1 transition"
+          >
+            <div class="flex items-center gap-4 mb-4">
+              <div
+                class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-2xl"
+              >
+                <i class="fas fa-burn"></i>
+              </div>
+              <h3 class="text-xl font-bold">Nhiên Liệu & Sự Cháy</h3>
+            </div>
+            <p class="text-orange-100 text-sm leading-relaxed">
+              Phản ứng đốt cháy (xăng, gas, than) luôn có \(\Delta_r H < 0\) rất
+              lớn (tỏa nhiệt mạnh). Nhiệt lượng này dùng để chạy động cơ, nấu
+              ăn, sưởi ấm.
+            </p>
+            <div class="mt-4 bg-white/10 p-2 rounded text-xs font-mono">
+              \(C_3H_8 + 5O_2 \rightarrow 3CO_2 + 4H_2O\) (Gas)
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div
+            class="bg-gradient-to-br from-green-500 to-emerald-700 rounded-2xl shadow-lg p-6 text-white transform hover:-translate-y-1 transition"
+          >
+            <div class="flex items-center gap-4 mb-4">
+              <div
+                class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-2xl"
+              >
+                <i class="fas fa-leaf"></i>
+              </div>
+              <h3 class="text-xl font-bold">Quang Hợp</h3>
+            </div>
+            <p class="text-green-100 text-sm leading-relaxed">
+              Cây xanh hấp thụ năng lượng mặt trời để tổng hợp chất hữu cơ. Đây
+              là phản ứng thu nhiệt điển hình (\(\Delta_r H > 0\)).
+            </p>
+            <div class="mt-4 bg-white/10 p-2 rounded text-xs font-mono">
+              \(6CO_2 + 6H_2O \xrightarrow{h\nu} C_6H_{12}O_6 + 6O_2\)
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Quiz Modal -->
+    <div id="quiz-modal" class="fixed inset-0 z-[100] hidden">
+      <div
+        class="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        onclick="closeQuiz()"
+      ></div>
+      <div
+        class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-lg p-4"
+      >
+        <div
+          class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+        >
+          <div
+            class="bg-gradient-to-r from-amber-500 to-orange-600 p-6 text-white flex justify-between items-center"
+          >
+            <h3 class="text-xl font-bold">
+              <i class="fas fa-clipboard-check mr-2"></i> Trắc Nghiệm Chương 5
+            </h3>
+            <button
+              onclick="closeQuiz()"
+              class="hover:bg-white/20 p-2 rounded-full transition"
+            >
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+          <div class="p-6 overflow-y-auto" id="quiz-content">
+            <div id="quiz-question-container">
+              <div
+                class="mb-4 flex justify-between text-sm font-bold text-slate-500"
+              >
+                <span id="quiz-progress">Câu 1/5</span>
+                <span id="quiz-score">Điểm: 0</span>
+              </div>
+              <h4
+                id="question-text"
+                class="text-lg font-bold mb-6 text-slate-800 dark:text-white leading-relaxed"
+              >
+                ...
+              </h4>
+              <div class="space-y-3" id="options-container">
+                <!-- Options -->
+              </div>
+            </div>
+
+            <div id="quiz-result" class="hidden text-center py-8">
+              <div class="text-6xl mb-4">🔥</div>
+              <h3 class="text-2xl font-bold mb-2">Hoàn Thành!</h3>
+              <p class="text-slate-600 dark:text-slate-400 mb-6">
+                Bạn đã trả lời đúng
+                <span id="final-score" class="font-bold text-amber-600 text-xl"
+                  >0</span
+                >
+                câu.
+              </p>
+              <button
+                onclick="restartQuiz()"
+                class="bg-amber-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-amber-700 transition"
+              >
+                Làm lại
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer
+      class="bg-slate-900 text-slate-400 py-12 mt-20 border-t border-slate-800"
+    >
+      <div class="max-w-7xl mx-auto px-4 text-center">
+        <p class="mb-4 text-slate-500">
+          Nội dung được tổng hợp theo chuẩn kiến thức Hóa Học 10 - Chương trình
+          mới.
+        </p>
+        <p>&copy; 2025 AI Education. Energy Chapter.</p>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+      // --- Dark Mode ---
+      function toggleDarkMode() {
+        document.documentElement.classList.toggle("dark");
+      }
+      if (
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+      ) {
+        document.documentElement.classList.add("dark");
+      }
+
+      function scrollToSection(id) {
+        document
+          .getElementById(id)
+          .scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      // --- Chart Logic ---
+      function setChart(type) {
+        const levelR = document.getElementById("level-reactants");
+        const levelP = document.getElementById("level-products");
+        const arrow = document.getElementById("arrow-delta");
+        const label = document.getElementById("label-delta");
+        const descExo = document.getElementById("desc-exo");
+        const descEndo = document.getElementById("desc-endo");
+        const btnExo = document.getElementById("btn-exo");
+        const btnEndo = document.getElementById("btn-endo");
+
+        if (type === "exo") {
+          // UI
+          btnExo.classList.add("bg-red-100", "text-red-600", "border-red-200");
+          btnExo.classList.remove(
+            "bg-slate-100",
+            "text-slate-600",
+            "border-slate-200"
+          );
+          btnEndo.classList.remove(
+            "bg-blue-100",
+            "text-blue-600",
+            "border-blue-200"
+          );
+          btnEndo.classList.add(
+            "bg-slate-100",
+            "text-slate-600",
+            "border-slate-200"
+          );
+
+          // Chart Position
+          levelR.style.top = "30%";
+          levelP.style.top = "70%";
+
+          // Arrow
+          arrow.style.top = "30%";
+          arrow.style.height = "40%";
+          label.innerHTML = "\\(\\Delta_r H < 0\\)";
+
+          // Desc
+          descExo.classList.remove("hidden");
+          descEndo.classList.add("hidden");
+        } else {
+          // UI
+          btnEndo.classList.add(
+            "bg-blue-100",
+            "text-blue-600",
+            "border-blue-200"
+          );
+          btnEndo.classList.remove(
+            "bg-slate-100",
+            "text-slate-600",
+            "border-slate-200"
+          );
+          btnExo.classList.remove(
+            "bg-red-100",
+            "text-red-600",
+            "border-red-200"
+          );
+          btnExo.classList.add(
+            "bg-slate-100",
+            "text-slate-600",
+            "border-slate-200"
+          );
+
+          // Chart Position
+          levelR.style.top = "70%";
+          levelP.style.top = "30%";
+
+          // Arrow
+          arrow.style.top = "30%";
+          arrow.style.height = "40%"; // Actually arrow points up, but simple representation
+          label.innerHTML = "\\(\\Delta_r H > 0\\)";
+
+          // Desc
+          descEndo.classList.remove("hidden");
+          descExo.classList.add("hidden");
+        }
+        if (window.MathJax) MathJax.typesetPromise();
+      }
+
+      // --- Tab Logic ---
+      function switchTab(tabId) {
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((el) => el.classList.add("hidden"));
+        document.getElementById(tabId).classList.remove("hidden");
+
+        document.querySelectorAll(".tab-btn").forEach((el) => {
+          el.classList.remove("active", "border-amber-500");
+          el.classList.add("border-transparent", "text-slate-500");
+        });
+
+        const activeBtn = document.getElementById(
+          tabId === "method-1" ? "tab-1" : "tab-2"
+        );
+        activeBtn.classList.add("active");
+        activeBtn.classList.remove("text-slate-500", "border-transparent");
+      }
+
+      // --- Quiz System (Updated for Energy) ---
+      const quizQuestions = [
+        {
+          q: "Phản ứng nào sau đây là phản ứng thu nhiệt?",
+          o: [
+            "Đốt cháy cồn",
+            "Nhiệt phân CaCO₃",
+            "Trung hòa Acid-Base",
+            "Hô hấp tế bào",
+          ],
+          a: 1,
+        },
+        {
+          q: "Biến thiên Enthalpy tạo thành chuẩn của đơn chất bền (VD: O₂) bằng bao nhiêu?",
+          o: ["0 kJ/mol", "100 kJ/mol", "-100 kJ/mol", "Không xác định"],
+          a: 0,
+        },
+        {
+          q: "Nếu ΔH < 0, phản ứng này là?",
+          o: ["Thu nhiệt", "Tỏa nhiệt", "Không thay đổi nhiệt", "Cân bằng"],
+          a: 1,
+        },
+        {
+          q: "Công thức tính ΔH dựa vào nhiệt tạo thành (ΔfH) là:",
+          o: [
+            "Tổng CĐ - Tổng SP",
+            "Tổng SP - Tổng CĐ",
+            "Tổng SP + Tổng CĐ",
+            "Tổng CĐ / Tổng SP",
+          ],
+          a: 1,
+        },
+        {
+          q: "Quá trình nước đóng băng (lỏng -> rắn) là quá trình:",
+          o: [
+            "Thu nhiệt (làm lạnh)",
+            "Tỏa nhiệt (giải phóng nhiệt)",
+            "Không đổi",
+            "Hấp thụ nhiệt",
+          ],
+          a: 1,
+        },
+      ];
+      let quizIndex = 0;
+      let score = 0;
+
+      function openQuiz() {
+        document.getElementById("quiz-modal").classList.remove("hidden");
+        restartQuiz();
+      }
+      function closeQuiz() {
+        document.getElementById("quiz-modal").classList.add("hidden");
+      }
+
+      function restartQuiz() {
+        quizIndex = 0;
+        score = 0;
+        document.getElementById("quiz-result").classList.add("hidden");
+        document
+          .getElementById("quiz-question-container")
+          .classList.remove("hidden");
+        showQuestion();
+      }
+
+      function showQuestion() {
+        const q = quizQuestions[quizIndex];
+        document.getElementById("quiz-progress").innerText = `Câu ${
+          quizIndex + 1
+        }/${quizQuestions.length}`;
+        document.getElementById("quiz-score").innerText = `Điểm: ${score}`;
+        document.getElementById("question-text").innerText = q.q;
+
+        const opts = document.getElementById("options-container");
+        opts.innerHTML = "";
+        q.o.forEach((opt, idx) => {
+          const btn = document.createElement("button");
+          btn.className =
+            "quiz-option w-full text-left p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-amber-50 dark:hover:bg-slate-700 hover:border-amber-500 transition flex items-center group";
+          btn.innerHTML = `<span class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-600 text-slate-500 dark:text-slate-300 flex items-center justify-center mr-3 font-bold group-hover:bg-amber-500 group-hover:text-white transition">${String.fromCharCode(
+            65 + idx
+          )}</span> ${opt}`;
+          btn.onclick = () => handleAnswer(idx);
+          opts.appendChild(btn);
+        });
+      }
+
+      function handleAnswer(idx) {
+        if (idx === quizQuestions[quizIndex].a) score++;
+        quizIndex++;
+        if (quizIndex < quizQuestions.length) {
+          showQuestion();
+        } else {
+          showResult();
+        }
+      }
+    </script>
+  </body>
+</html>

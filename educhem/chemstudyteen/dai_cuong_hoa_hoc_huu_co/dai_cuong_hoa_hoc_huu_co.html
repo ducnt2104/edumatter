@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chương 3: Đại Cương Hóa Học Hữu Cơ - Interactive</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js cho Phổ IR -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap");
+
+      body {
+        font-family: "Be Vietnam Pro", sans-serif;
+        background-color: #f1f5f9;
+        color: #334155;
+        scroll-behavior: smooth;
+      }
+
+      .mono-font {
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      /* Card Styles */
+      .interactive-card {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+      }
+
+      .interactive-card:hover {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        transform: translateY(-2px);
+      }
+
+      /* Animation cho phần tách chất */
+      @keyframes bubble {
+        0% {
+          transform: translateY(0) scale(1);
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-40px) scale(1.2);
+          opacity: 0;
+        }
+      }
+      .bubble {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 50%;
+        animation: bubble 2s infinite ease-in;
+      }
+
+      @keyframes drip {
+        0% {
+          top: 0;
+          opacity: 1;
+          height: 5px;
+        }
+        100% {
+          top: 100%;
+          opacity: 0;
+          height: 15px;
+        }
+      }
+      .drip {
+        position: absolute;
+        width: 4px;
+        background: #3b82f6;
+        left: 50%;
+        transform: translateX(-50%);
+        animation: drip 1.5s infinite linear;
+      }
+
+      /* Chromatography Animation */
+      @keyframes climb {
+        0% {
+          bottom: 0;
+        }
+        100% {
+          bottom: var(--final-height);
+        }
+      }
+      .chroma-dot {
+        animation: climb 3s ease-out forwards;
+      }
+
+      /* Tab Styles */
+      .tab-btn.active {
+        background-color: #4f46e5;
+        color: white;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body onload="initApp()">
+    <!-- Navigation -->
+    <nav class="bg-indigo-900 text-white sticky top-0 z-50 shadow-lg">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center gap-2">
+            <i data-lucide="flask-conical" class="w-8 h-8 text-yellow-400"></i>
+            <span class="font-bold text-lg tracking-wide"
+              >HÓA HỌC HỮU CƠ 11</span
+            >
+          </div>
+          <div class="hidden md:flex space-x-4 text-sm font-medium">
+            <a href="#khainiem" class="hover:text-yellow-400 transition"
+              >Khái niệm</a
+            >
+            <a href="#nhomchuc" class="hover:text-yellow-400 transition"
+              >Nhóm chức & IR</a
+            >
+            <a href="#tachchat" class="hover:text-yellow-400 transition"
+              >Tách chất</a
+            >
+            <a href="#congthuc" class="hover:text-yellow-400 transition"
+              >Công thức PT</a
+            >
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-12">
+      <!-- Header Hero -->
+      <header class="text-center py-10">
+        <h1
+          class="text-4xl sm:text-5xl font-extrabold text-slate-800 mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600"
+        >
+          ĐẠI CƯƠNG HÓA HỌC HỮU CƠ
+        </h1>
+        <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+          Khám phá thế giới của Carbon thông qua các mô phỏng tương tác, biểu đồ
+          trực quan và công cụ tính toán thông minh.
+        </p>
+      </header>
+
+      <!-- PHẦN I: KHÁI NIỆM -->
+      <section id="khainiem" class="grid md:grid-cols-2 gap-8 items-start">
+        <div class="space-y-4">
+          <h2
+            class="text-2xl font-bold text-indigo-700 flex items-center gap-2"
+          >
+            <i data-lucide="book-open" class="w-6 h-6"></i> I. Khái niệm & Đặc
+            điểm
+          </h2>
+          <div class="prose text-slate-600 text-justify">
+            <p>
+              <strong>Hợp chất hữu cơ</strong> là hợp chất của Carbon (trừ CO,
+              CO₂, muối carbonate, cyanide, carbide...).
+            </p>
+            <ul class="list-disc pl-5 mt-2 space-y-1">
+              <li>
+                <strong>Thành phần:</strong> Chủ yếu C, H, thường có O, N, S,
+                Halogen.
+              </li>
+              <li><strong>Liên kết:</strong> Chủ yếu là cộng hóa trị.</li>
+              <li>
+                <strong>Tính chất vật lý:</strong> $T_{nc}, T_{sôi}$ thấp, kém
+                bền với nhiệt, dễ bay hơi.
+              </li>
+              <li>
+                <strong>Tính chất hóa học:</strong> Dễ cháy, phản ứng thường
+                chậm và xảy ra theo nhiều hướng (tạo hỗn hợp sản phẩm).
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Interactive Quiz Card -->
+        <div class="interactive-card bg-indigo-50 border-indigo-200 p-6">
+          <h3
+            class="font-bold text-lg text-indigo-800 mb-3 flex items-center gap-2"
+          >
+            <i data-lucide="brain-circuit" class="w-5 h-5"></i> Kiểm tra nhanh
+          </h3>
+          <p class="text-sm text-slate-600 mb-4">
+            Chất nào sau đây là hợp chất hữu cơ?
+          </p>
+          <div class="grid grid-cols-2 gap-3" id="quiz-container">
+            <button
+              onclick="checkQuiz(this, false)"
+              class="p-3 bg-white rounded shadow hover:bg-slate-50 transition border border-slate-200 font-mono"
+            >
+              CaCO₃
+            </button>
+            <button
+              onclick="checkQuiz(this, true)"
+              class="p-3 bg-white rounded shadow hover:bg-slate-50 transition border border-slate-200 font-mono"
+            >
+              C₂H₅OH
+            </button>
+            <button
+              onclick="checkQuiz(this, false)"
+              class="p-3 bg-white rounded shadow hover:bg-slate-50 transition border border-slate-200 font-mono"
+            >
+              CO₂
+            </button>
+            <button
+              onclick="checkQuiz(this, false)"
+              class="p-3 bg-white rounded shadow hover:bg-slate-50 transition border border-slate-200 font-mono"
+            >
+              NH₄Cl
+            </button>
+          </div>
+          <p id="quiz-result" class="mt-3 text-sm font-semibold h-6"></p>
+        </div>
+      </section>
+
+      <!-- PHẦN II: NHÓM CHỨC & PHỔ IR (Interactive) -->
+      <section id="nhomchuc" class="space-y-6">
+        <h2
+          class="text-2xl font-bold text-indigo-700 flex items-center gap-2 border-b pb-2 border-slate-200"
+        >
+          <i data-lucide="activity" class="w-6 h-6"></i> II. Nhóm chức & Phổ
+          Hồng Ngoại (IR)
+        </h2>
+
+        <div class="grid lg:grid-cols-3 gap-8">
+          <!-- Cột trái: Danh sách nhóm chức -->
+          <div class="lg:col-span-1 space-y-3">
+            <p class="text-sm text-slate-500 mb-2">
+              Chọn một nhóm chức để xem chi tiết:
+            </p>
+            <div class="grid grid-cols-1 gap-2">
+              <button
+                onclick="loadFuncGroup('alcohol')"
+                class="func-btn group p-3 text-left rounded-lg bg-white border hover:border-indigo-500 hover:shadow-md transition flex justify-between items-center active"
+              >
+                <span class="font-bold text-slate-700">Alcohol</span>
+                <span
+                  class="mono-font text-xs bg-slate-100 px-2 py-1 rounded text-indigo-600"
+                  >-OH</span
+                >
+              </button>
+              <button
+                onclick="loadFuncGroup('aldehyde')"
+                class="func-btn group p-3 text-left rounded-lg bg-white border hover:border-indigo-500 hover:shadow-md transition flex justify-between items-center"
+              >
+                <span class="font-bold text-slate-700">Aldehyde</span>
+                <span
+                  class="mono-font text-xs bg-slate-100 px-2 py-1 rounded text-indigo-600"
+                  >-CHO</span
+                >
+              </button>
+              <button
+                onclick="loadFuncGroup('ketone')"
+                class="func-btn group p-3 text-left rounded-lg bg-white border hover:border-indigo-500 hover:shadow-md transition flex justify-between items-center"
+              >
+                <span class="font-bold text-slate-700">Ketone</span>
+                <span
+                  class="mono-font text-xs bg-slate-100 px-2 py-1 rounded text-indigo-600"
+                  >>C=O</span
+                >
+              </button>
+              <button
+                onclick="loadFuncGroup('acid')"
+                class="func-btn group p-3 text-left rounded-lg bg-white border hover:border-indigo-500 hover:shadow-md transition flex justify-between items-center"
+              >
+                <span class="font-bold text-slate-700">Carboxylic Acid</span>
+                <span
+                  class="mono-font text-xs bg-slate-100 px-2 py-1 rounded text-indigo-600"
+                  >-COOH</span
+                >
+              </button>
+              <button
+                onclick="loadFuncGroup('amine')"
+                class="func-btn group p-3 text-left rounded-lg bg-white border hover:border-indigo-500 hover:shadow-md transition flex justify-between items-center"
+              >
+                <span class="font-bold text-slate-700">Amine</span>
+                <span
+                  class="mono-font text-xs bg-slate-100 px-2 py-1 rounded text-indigo-600"
+                  >-NH₂</span
+                >
+              </button>
+              <button
+                onclick="loadFuncGroup('ester')"
+                class="func-btn group p-3 text-left rounded-lg bg-white border hover:border-indigo-500 hover:shadow-md transition flex justify-between items-center"
+              >
+                <span class="font-bold text-slate-700">Ester</span>
+                <span
+                  class="mono-font text-xs bg-slate-100 px-2 py-1 rounded text-indigo-600"
+                  >-COO-</span
+                >
+              </button>
+            </div>
+          </div>
+
+          <!-- Cột phải: Hiển thị chi tiết & Biểu đồ -->
+          <div class="lg:col-span-2 space-y-6">
+            <!-- Info Box -->
+            <div
+              id="func-info"
+              class="bg-gradient-to-r from-blue-50 to-indigo-50 p-5 rounded-xl border border-blue-100"
+            >
+              <div class="flex justify-between items-start">
+                <div>
+                  <h3 id="info-name" class="text-xl font-bold text-indigo-800">
+                    Alcohol
+                  </h3>
+                  <p id="info-desc" class="text-sm text-slate-600 mt-1">
+                    Hợp chất hữu cơ có nhóm hydroxyl (-OH) liên kết trực tiếp
+                    với nguyên tử carbon no.
+                  </p>
+                </div>
+                <div
+                  id="info-mol"
+                  class="mono-font text-2xl font-bold text-indigo-600 bg-white px-3 py-1 rounded shadow-sm"
+                >
+                  R-OH
+                </div>
+              </div>
+              <div class="mt-4 flex gap-4 text-sm">
+                <div class="bg-white px-3 py-2 rounded border border-blue-100">
+                  <span class="text-slate-400 block text-xs"
+                    >Tín hiệu IR đặc trưng</span
+                  >
+                  <span id="info-ir" class="font-bold text-orange-600"
+                    >3200 - 3500 cm⁻¹</span
+                  >
+                </div>
+                <div class="bg-white px-3 py-2 rounded border border-blue-100">
+                  <span class="text-slate-400 block text-xs">Ví dụ</span>
+                  <span id="info-ex" class="font-bold text-slate-700"
+                    >Ethanol (C₂H₅OH)</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- IR Chart Simulation -->
+            <div class="interactive-card p-4">
+              <div class="flex justify-between items-center mb-2">
+                <h4 class="font-bold text-slate-700 text-sm">
+                  Mô phỏng Phổ Hồng Ngoại (IR Spectrum)
+                </h4>
+                <span class="text-xs text-slate-400 italic"
+                  >Trục Y: Độ truyền qua (%) - Trục X: Số sóng (cm⁻¹)</span
+                >
+              </div>
+              <div class="relative h-64 w-full">
+                <canvas id="irChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PHẦN III: TÁCH CHẤT (Lab Simulation) -->
+      <section id="tachchat" class="space-y-6">
+        <h2 class="text-2xl font-bold text-indigo-700 flex items-center gap-2">
+          <i data-lucide="flask-conical-off" class="w-6 h-6"></i> III. Phương
+          pháp Tách & Tinh chế
+        </h2>
+
+        <div class="interactive-card">
+          <!-- Tabs -->
+          <div class="flex border-b border-slate-200 overflow-x-auto">
+            <button
+              onclick="switchLabTab('chungcat')"
+              class="lab-tab-btn active px-6 py-4 font-medium text-slate-600 hover:bg-slate-50 transition whitespace-nowrap"
+            >
+              1. Chưng cất
+            </button>
+            <button
+              onclick="switchLabTab('chiet')"
+              class="lab-tab-btn px-6 py-4 font-medium text-slate-600 hover:bg-slate-50 transition whitespace-nowrap"
+            >
+              2. Chiết
+            </button>
+            <button
+              onclick="switchLabTab('ketinh')"
+              class="lab-tab-btn px-6 py-4 font-medium text-slate-600 hover:bg-slate-50 transition whitespace-nowrap"
+            >
+              3. Kết tinh
+            </button>
+            <button
+              onclick="switchLabTab('sacky')"
+              class="lab-tab-btn px-6 py-4 font-medium text-slate-600 hover:bg-slate-50 transition whitespace-nowrap"
+            >
+              4. Sắc ký cột
+            </button>
+          </div>
+
+          <!-- Content Area -->
+          <div class="p-6 grid md:grid-cols-2 gap-8 min-h-[300px]">
+            <!-- Simulation Visualization (Left) -->
+            <div
+              id="lab-visual"
+              class="bg-slate-100 rounded-xl relative overflow-hidden flex items-center justify-center border border-slate-200"
+            >
+              <!-- Content injected via JS -->
+            </div>
+
+            <!-- Explanation (Right) -->
+            <div class="flex flex-col justify-center">
+              <h3 id="lab-title" class="text-xl font-bold text-slate-800 mb-3">
+                Chưng cất
+              </h3>
+              <p id="lab-desc" class="text-slate-600 mb-4">
+                Phương pháp tách dựa trên sự khác nhau về nhiệt độ sôi của các
+                chất lỏng hòa tan vào nhau.
+              </p>
+
+              <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
+                <p class="text-sm text-yellow-800 font-medium">Nguyên tắc:</p>
+                <p id="lab-principle" class="text-sm text-yellow-700 italic">
+                  Đun nóng → Hóa hơi → Ngưng tụ → Thu hồi.
+                </p>
+              </div>
+
+              <button
+                id="lab-action-btn"
+                class="self-start px-5 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition shadow-lg flex items-center gap-2"
+              >
+                <i data-lucide="play" class="w-4 h-4"></i> Bắt đầu mô phỏng
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PHẦN IV: CÔNG THỨC & CẤU TẠO -->
+      <section id="congthuc" class="grid lg:grid-cols-2 gap-8">
+        <!-- Theory: Structure & Isomers -->
+        <div class="space-y-4">
+          <h2
+            class="text-2xl font-bold text-indigo-700 flex items-center gap-2"
+          >
+            <i data-lucide="layout-grid" class="w-6 h-6"></i> IV. Cấu tạo hóa
+            học
+          </h2>
+          <div class="prose text-slate-600">
+            <h3 class="font-bold text-slate-800">
+              1. Thuyết cấu tạo (Butlerov)
+            </h3>
+            <ul class="list-decimal pl-5 text-sm space-y-2">
+              <li>Nguyên tử liên kết theo trật tự nhất định (cấu tạo).</li>
+              <li>Tính chất phụ thuộc thành phần và cấu tạo.</li>
+              <li>Thay đổi trật tự liên kết → chất mới.</li>
+            </ul>
+
+            <h3 class="font-bold text-slate-800 mt-4">
+              2. Đồng phân & Đồng đẳng
+            </h3>
+            <div class="grid grid-cols-2 gap-4 mt-2">
+              <div class="bg-white p-3 rounded border shadow-sm">
+                <strong class="text-purple-600 text-sm block mb-1"
+                  >Đồng đẳng</strong
+                >
+                <p class="text-xs text-slate-500">
+                  Cùng công thức chung, tính chất hóa học tương tự, hơn kém nhau
+                  nhóm $CH_2$.
+                </p>
+              </div>
+              <div class="bg-white p-3 rounded border shadow-sm">
+                <strong class="text-red-600 text-sm block mb-1"
+                  >Đồng phân</strong
+                >
+                <p class="text-xs text-slate-500">
+                  Cùng công thức phân tử, khác cấu tạo → khác tính chất.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tool: Empirical Formula Calculator -->
+        <div
+          class="interactive-card bg-slate-900 text-white p-6 border-slate-700"
+        >
+          <h3
+            class="text-xl font-bold text-yellow-400 mb-4 flex items-center gap-2"
+          >
+            <i data-lucide="calculator" class="w-5 h-5"></i> Máy tính Công thức
+            phân tử
+          </h3>
+          <p class="text-sm text-slate-400 mb-4">
+            Nhập % khối lượng và Phân tử khối (M) để tìm công thức.
+          </p>
+
+          <div class="grid grid-cols-3 gap-3 mb-4">
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">% Carbon</label>
+              <input
+                type="number"
+                id="inp-c"
+                placeholder="VD: 40"
+                class="w-full bg-slate-800 border border-slate-600 rounded p-2 text-white focus:border-yellow-400 outline-none"
+              />
+            </div>
+            <div>
+              <label class="block text-xs text-slate-400 mb-1"
+                >% Hydrogen</label
+              >
+              <input
+                type="number"
+                id="inp-h"
+                placeholder="VD: 6.67"
+                class="w-full bg-slate-800 border border-slate-600 rounded p-2 text-white focus:border-yellow-400 outline-none"
+              />
+            </div>
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">% Oxygen</label>
+              <input
+                type="number"
+                id="inp-o"
+                placeholder="VD: 53.33"
+                class="w-full bg-slate-800 border border-slate-600 rounded p-2 text-white focus:border-yellow-400 outline-none"
+              />
+            </div>
+          </div>
+          <div class="mb-6">
+            <label class="block text-xs text-slate-400 mb-1"
+              >Phân tử khối (M) (Tùy chọn)</label
+            >
+            <input
+              type="number"
+              id="inp-m"
+              placeholder="VD: 60, 180..."
+              class="w-full bg-slate-800 border border-slate-600 rounded p-2 text-white focus:border-yellow-400 outline-none"
+            />
+          </div>
+
+          <button
+            onclick="calculateFormula()"
+            class="w-full py-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-slate-900 font-bold rounded shadow-lg hover:from-yellow-400 hover:to-orange-400 transition"
+          >
+            XÁC ĐỊNH CÔNG THỨC
+          </button>
+
+          <div
+            id="calc-result"
+            class="mt-6 p-4 bg-slate-800 rounded border border-slate-700 hidden"
+          >
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm text-slate-400"
+                >Công thức đơn giản nhất:</span
+              >
+              <span
+                id="res-empirical"
+                class="font-mono text-lg font-bold text-white"
+              ></span>
+            </div>
+            <div
+              class="flex justify-between items-center border-t border-slate-600 pt-2"
+            >
+              <span class="text-sm text-slate-400">Công thức phân tử:</span>
+              <span
+                id="res-molecular"
+                class="font-mono text-xl font-bold text-yellow-400"
+              ></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="text-center py-8 border-t border-slate-200 mt-12">
+        <p class="text-slate-500 text-sm">Interactive Learning Module © 2024</p>
+        <p class="text-slate-400 text-xs mt-1">
+          Được xây dựng với HTML5, TailwindCSS và Chart.js
+        </p>
+      </footer>
+    </div>
+
+    <script>
+      // --- Initialization ---
+      function initApp() {
+        lucide.createIcons();
+        loadFuncGroup("alcohol"); // Default Selection
+        switchLabTab("chungcat"); // Default Lab
+      }
+
+      // --- Quiz Logic ---
+      function checkQuiz(btn, isCorrect) {
+        const container = document.getElementById("quiz-container");
+        const result = document.getElementById("quiz-result");
+
+        // Reset styles
+        const buttons = container.querySelectorAll("button");
+        buttons.forEach((b) => {
+          b.className =
+            "p-3 bg-white rounded shadow border border-slate-200 font-mono opacity-50 cursor-not-allowed";
+          b.disabled = true;
+        });
+
+        // Highlight chosen
+        btn.style.opacity = "1";
+
+        if (isCorrect) {
+          btn.classList.add(
+            "bg-green-100",
+            "border-green-500",
+            "text-green-800"
+          );
+          result.textContent =
+            "🎉 Chính xác! C₂H₅OH (Ethanol) là dẫn xuất hydrocarbon.";
+          result.className = "mt-3 text-sm font-semibold h-6 text-green-600";
+        } else {
+          btn.classList.add("bg-red-100", "border-red-500", "text-red-800");
+          result.textContent = "❌ Sai rồi. Đây là hợp chất vô cơ.";
+          result.className = "mt-3 text-sm font-semibold h-6 text-red-600";
+        }
+      }
+
+      // --- Functional Groups & IR Logic ---
+      const funcData = {
+        alcohol: {
+          name: "Alcohol (Ancol)",
+          desc: "Nhóm Hydroxyl (-OH) liên kết với nguyên tử Carbon no.",
+          mol: "R-OH",
+          irRange: "3200-3500 (Rộng)",
+          example: "Ethanol (C₂H₅OH)",
+          irData: [
+            { x: 3350, y: 10, w: 200 },
+            { x: 2950, y: 30, w: 50 },
+            { x: 1050, y: 20, w: 60 },
+          ], // Fake peak data points
+        },
+        aldehyde: {
+          name: "Aldehyde",
+          desc: "Nhóm Carbonyl (-CHO) liên kết với H và gốc Hydrocarbon.",
+          mol: "R-CHO",
+          irRange: "1720-1740 (Mạnh)",
+          example: "Acetaldehyde (CH₃CHO)",
+          irData: [
+            { x: 2850, y: 40, w: 50 },
+            { x: 2750, y: 40, w: 50 },
+            { x: 1725, y: 5, w: 30 },
+          ],
+        },
+        ketone: {
+          name: "Ketone",
+          desc: "Nhóm Carbonyl (>C=O) liên kết với 2 gốc Hydrocarbon.",
+          mol: "R-CO-R'",
+          irRange: "1705-1725 (Mạnh)",
+          example: "Acetone (CH₃COCH₃)",
+          irData: [
+            { x: 2950, y: 30, w: 50 },
+            { x: 1715, y: 5, w: 30 },
+            { x: 1200, y: 40, w: 100 },
+          ],
+        },
+        acid: {
+          name: "Carboxylic Acid",
+          desc: "Nhóm Carboxyl (-COOH). Có tính axit yếu.",
+          mol: "R-COOH",
+          irRange: "2500-3000 (Rất rộng), 1700",
+          example: "Acetic Acid (CH₃COOH)",
+          irData: [
+            { x: 3000, y: 20, w: 400 },
+            { x: 1710, y: 5, w: 30 },
+            { x: 1250, y: 30, w: 80 },
+          ],
+        },
+        amine: {
+          name: "Amine",
+          desc: "Dẫn xuất của Ammonia (NH₃) khi thay thế H bằng gốc hydrocarbon.",
+          mol: "R-NH₂",
+          irRange: "3300-3500 (Trung bình)",
+          example: "Methylamine (CH₃NH₂)",
+          irData: [
+            { x: 3400, y: 30, w: 80 },
+            { x: 3300, y: 30, w: 80 },
+            { x: 1600, y: 50, w: 40 },
+          ],
+        },
+        ester: {
+          name: "Ester",
+          desc: "Sản phẩm thay thế nhóm OH ở nhóm carboxyl bằng nhóm OR'.",
+          mol: "R-COO-R'",
+          irRange: "1735-1750 (Mạnh)",
+          example: "Ethyl Acetate (CH₃COOC₂H₅)",
+          irData: [
+            { x: 2950, y: 30, w: 50 },
+            { x: 1740, y: 5, w: 30 },
+            { x: 1240, y: 15, w: 60 },
+          ],
+        },
+      };
+
+      let irChartInstance = null;
+
+      function loadFuncGroup(key) {
+        const data = funcData[key];
+
+        // Update Text Info
+        document.getElementById("info-name").textContent = data.name;
+        document.getElementById("info-desc").textContent = data.desc;
+        document.getElementById("info-mol").textContent = data.mol;
+        document.getElementById("info-ir").textContent = data.irRange + " cm⁻¹";
+        document.getElementById("info-ex").textContent = data.example;
+
+        // Update UI Active State
+        document.querySelectorAll(".func-btn").forEach((btn) => {
+          btn.classList.remove(
+            "border-indigo-500",
+            "bg-indigo-50",
+            "ring-1",
+            "ring-indigo-500"
+          );
+        });
+        event.target
+          .closest("button")
+          .classList.add(
+            "border-indigo-500",
+            "bg-indigo-50",
+            "ring-1",
+            "ring-indigo-500"
+          );
+
+        // Draw Chart
+        drawIRChart(data.irData, data.name);
+      }
+
+      function drawIRChart(peaks, label) {
+        const ctx = document.getElementById("irChart").getContext("2d");
+
+        // Generate basic baseline data (approximate an IR spectrum line)
+        let labels = [];
+        let dataPoints = [];
+
+        // IR Spectrum goes from 4000 to 400 (reversed usually, but here we plot left to right 4000->500 for simplicity or reverse x-axis)
+        // Let's create points every 50 units
+        for (let i = 4000; i >= 500; i -= 20) {
+          labels.push(i);
+
+          // Base transmission is high (~95-100%)
+          let transmission = 98 + Math.random() * 2;
+
+          // Apply peaks logic (Simplified gaussian-ish dip)
+          peaks.forEach((p) => {
+            if (Math.abs(i - p.x) < p.w) {
+              const depth = p.y; // Lowest point
+              const dist = Math.abs(i - p.x);
+              // Simple inverted parabolic shape for peak
+              const drop = (1 - dist / p.w) * (100 - depth);
+              if (drop > 0) transmission -= drop;
+            }
+          });
+
+          if (transmission < 0) transmission = 0;
+          dataPoints.push(transmission);
+        }
+
+        if (irChartInstance) irChartInstance.destroy();
+
+        irChartInstance = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: `Phổ IR mô phỏng: ${label}`,
+                data: dataPoints,
+                borderColor: "#4f46e5",
+                borderWidth: 2,
+                pointRadius: 0,
+                tension: 0.4,
+                fill: false,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                title: { display: true, text: "Số sóng (cm⁻¹)" },
+                ticks: { maxTicksLimit: 10 },
+              },
+              y: {
+                title: { display: true, text: "Độ truyền qua (%)" },
+                min: 0,
+                max: 105,
+                reverse: false, // Usually IR is Transmission vs Wavenumber
+              },
+            },
+            plugins: {
+              legend: { display: true },
+              tooltip: { enabled: true, intersect: false, mode: "index" },
+            },
+          },
+        });
+      }
+
+      // --- Lab Simulation Logic ---
+      const labData = {
+        chungcat: {
+          title: "1. Chưng cất (Distillation)",
+          desc: "Tách các chất lỏng có nhiệt độ sôi khác nhau đáng kể (thường >25°C).",
+          principle:
+            "Đun nóng hỗn hợp → Chất có nhiệt độ sôi thấp hơn bay hơi trước → Ngưng tụ và thu hồi.",
+          html: `
+                    <div class="relative w-40 h-52 flex flex-col items-center">
+                        <!-- Thermometer -->
+                        <div class="absolute top-0 right-8 w-2 h-20 bg-slate-300 rounded border border-slate-400">
+                             <div class="w-full bg-red-500 rounded-b transition-all duration-[3s]" style="height: 20%" id="sim-temp"></div>
+                        </div>
+                        <!-- Flask -->
+                        <div class="w-24 h-24 rounded-full border-4 border-slate-400 border-t-0 mt-auto bg-blue-100 relative overflow-hidden" id="flask-liquid">
+                             <div class="absolute bottom-0 w-full h-full bg-blue-300 transition-all duration-[5s]" style="height: 80%"></div>
+                             <!-- Bubbles container -->
+                             <div id="bubbles-area"></div>
+                        </div>
+                        <!-- Heater -->
+                        <div class="w-28 h-4 bg-orange-600 mt-1 rounded"></div>
+                        
+                        <!-- Condenser Tube (Simplified) -->
+                        <div class="absolute top-10 -right-16 w-24 h-4 bg-slate-300 -rotate-12 rounded border border-slate-400"></div>
+                        
+                        <!-- Collection Flask -->
+                         <div class="absolute top-20 -right-28 w-12 h-16 border-2 border-slate-400 rounded-b-lg bg-transparent flex items-end justify-center overflow-hidden">
+                             <div id="collect-liquid" class="w-full bg-blue-500 h-0 transition-all duration-[5s]"></div>
+                         </div>
+                         <div id="drip-area"></div>
+                    </div>
+                `,
+          action: () => {
+            const btn = document.getElementById("lab-action-btn");
+            btn.disabled = true;
+            btn.innerHTML =
+              '<i data-lucide="loader-2" class="animate-spin w-4 h-4"></i> Đang đun nóng...';
+            lucide.createIcons();
+
+            // 1. Heat up thermometer
+            document.getElementById("sim-temp").style.height = "90%";
+
+            // 2. Create Bubbles
+            const bubbleArea = document.getElementById("bubbles-area");
+            const interval = setInterval(() => {
+              const b = document.createElement("div");
+              b.className = "bubble w-3 h-3";
+              b.style.left = Math.random() * 80 + "%";
+              b.style.bottom = "10px";
+              bubbleArea.appendChild(b);
+              setTimeout(() => b.remove(), 2000);
+            }, 300);
+
+            // 3. Decrease source liquid, Increase collection
+            setTimeout(() => {
+              const dripArea = document.getElementById("drip-area");
+              // Create drips
+              const dripInterval = setInterval(() => {
+                const d = document.createElement("div");
+                d.className = "drip h-2 bg-blue-500 rounded";
+                d.style.top = "70px"; // Approx end of condenser
+                d.style.right = "-90px"; // Approx position of flask
+                d.style.position = "absolute";
+                dripArea.appendChild(d);
+                setTimeout(() => d.remove(), 1500);
+              }, 400);
+
+              document.querySelector("#flask-liquid > div").style.height =
+                "40%";
+              document.querySelector("#collect-liquid").style.height = "60%";
+
+              // Finish
+              setTimeout(() => {
+                clearInterval(interval);
+                clearInterval(dripInterval);
+                btn.disabled = false;
+                btn.innerHTML =
+                  '<i data-lucide="rotate-ccw" class="w-4 h-4"></i> Làm lại';
+                lucide.createIcons();
+              }, 5000);
+            }, 1500);
+          },
+        },
+        chiet: {
+          title: "2. Chiết (Extraction)",
+          desc: "Tách chất dựa vào độ tan khác nhau trong 2 dung môi không hòa tan (vd: dầu và nước).",
+          principle:
+            "Chất tan chuyển từ dung môi này sang dung môi khác. Dùng phễu chiết để tách lớp.",
+          html: `
+                    <div class="relative flex flex-col items-center">
+                        <!-- Funnel -->
+                        <div class="relative w-0 h-0 border-l-[40px] border-r-[40px] border-t-[80px] border-l-transparent border-r-transparent border-t-slate-300 opacity-30 absolute top-0"></div>
+                        <div class="w-20 h-32 border-2 border-slate-400 rounded-b-[40px] relative overflow-hidden bg-white mb-2" id="funnel-body">
+                            <!-- Layers -->
+                            <div id="layer-top" class="w-full h-1/2 bg-yellow-300 transition-all duration-1000 flex items-center justify-center text-xs text-yellow-800 font-bold opacity-90">Dầu (Hữu cơ)</div>
+                            <div id="layer-bottom" class="w-full h-1/2 bg-blue-400 transition-all duration-1000 flex items-center justify-center text-xs text-white font-bold opacity-90">Nước</div>
+                        </div>
+                        <!-- Tap -->
+                        <div class="w-2 h-6 bg-slate-500"></div>
+                        
+                        <!-- Beaker -->
+                        <div class="w-16 h-20 border-2 border-slate-400 border-t-0 mt-2 bg-transparent flex items-end relative overflow-hidden">
+                             <div id="beaker-liquid" class="w-full bg-blue-400 h-0 transition-all"></div>
+                        </div>
+                    </div>
+                `,
+          action: () => {
+            const btn = document.getElementById("lab-action-btn");
+            const top = document.getElementById("layer-top");
+            const bottom = document.getElementById("layer-bottom");
+            const beaker = document.getElementById("beaker-liquid");
+
+            // Reset
+            top.style.height = "50%";
+            bottom.style.height = "50%";
+            beaker.style.height = "0";
+
+            // 1. Shake animation (Simulated by blurring/mixing colors conceptually)
+            btn.disabled = true;
+            btn.innerHTML = "Đang lắc & Tách lớp...";
+
+            top.classList.add("animate-pulse");
+            bottom.classList.add("animate-pulse");
+
+            setTimeout(() => {
+              top.classList.remove("animate-pulse");
+              bottom.classList.remove("animate-pulse");
+              btn.innerHTML = "Mở khóa phễu...";
+
+              // 2. Drain bottom layer
+              bottom.style.height = "0%";
+              beaker.style.height = "40%";
+
+              setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML =
+                  '<i data-lucide="rotate-ccw" class="w-4 h-4"></i> Làm lại';
+                lucide.createIcons();
+              }, 2000);
+            }, 1500);
+          },
+        },
+        sacky: {
+          title: "4. Sắc ký cột (Chromatography)",
+          desc: "Tách chất dựa trên khả năng hấp phụ khác nhau lên bề mặt pha tĩnh.",
+          principle:
+            "Chất hấp phụ kém sẽ di chuyển nhanh hơn theo pha động chảy qua cột.",
+          html: `
+                    <div class="relative flex flex-col items-center">
+                        <!-- Column -->
+                        <div class="w-12 h-64 border-2 border-slate-400 bg-white relative overflow-hidden rounded-sm" id="column-body">
+                            <!-- Silica Gel background -->
+                            <div class="absolute inset-0 bg-slate-100 opacity-50"></div>
+                            
+                            <!-- Initial Mix Band -->
+                            <div id="band-mix" class="absolute top-2 left-0 w-full h-2 bg-purple-900 z-10"></div>
+                            
+                            <!-- Separating Bands (Hidden initially) -->
+                            <div id="band-fast" class="absolute top-2 left-0 w-full h-2 bg-red-500 opacity-0 z-10 rounded-full blur-[1px]"></div>
+                            <div id="band-slow" class="absolute top-2 left-0 w-full h-2 bg-blue-600 opacity-0 z-10 rounded-full blur-[1px]"></div>
+                        </div>
+                         <!-- Tap -->
+                        <div class="w-1 h-4 bg-slate-500"></div>
+                    </div>
+                `,
+          action: () => {
+            const btn = document.getElementById("lab-action-btn");
+            const mix = document.getElementById("band-mix");
+            const fast = document.getElementById("band-fast");
+            const slow = document.getElementById("band-slow");
+
+            btn.disabled = true;
+            btn.innerHTML = "Dung môi đang chảy...";
+
+            // Reset
+            mix.style.opacity = 1;
+            fast.style.opacity = 0;
+            fast.style.top = "8px";
+            slow.style.opacity = 0;
+            slow.style.top = "8px";
+
+            // Start
+            setTimeout(() => {
+              mix.style.transition = "opacity 0.5s";
+              mix.style.opacity = 0;
+
+              fast.style.opacity = 1;
+              slow.style.opacity = 1;
+
+              // Animate down
+              fast.style.transition = "top 3s linear";
+              slow.style.transition = "top 5s linear"; // Slower
+
+              fast.style.top = "240px"; // Bottom of column
+              slow.style.top = "150px"; // Middle
+
+              setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML =
+                  '<i data-lucide="rotate-ccw" class="w-4 h-4"></i> Làm lại';
+                lucide.createIcons();
+              }, 5100);
+            }, 500);
+          },
+        },
+        ketinh: {
+          title: "3. Kết tinh (Crystallization)",
+          desc: "Tinh chế chất rắn dựa trên độ tan thay đổi theo nhiệt độ.",
+          principle:
+            "Tan tốt khi nóng, ít tan khi lạnh → Làm lạnh dung dịch bão hòa để tách tinh thể.",
+          html: `
+                    <div class="flex flex-col items-center justify-end h-64">
+                         <div class="w-32 h-24 border-2 border-slate-400 border-t-0 bg-blue-200 relative flex items-center justify-center overflow-hidden transition-colors duration-[3s]" id="crystal-beaker">
+                             <span id="sol-text" class="text-xs text-blue-800 font-bold z-10">Dung dịch nóng</span>
+                             <!-- Crystals -->
+                             <div id="crystals-area" class="absolute bottom-0 w-full h-full flex flex-wrap justify-center items-end p-2 gap-1">
+                                 <!-- JS will add crystals here -->
+                             </div>
+                         </div>
+                         <div class="mt-2 text-sm text-slate-500 flex gap-2">
+                             <span id="temp-indicator" class="text-red-500 font-bold">80°C</span>
+                         </div>
+                    </div>
+                `,
+          action: () => {
+            const btn = document.getElementById("lab-action-btn");
+            const beaker = document.getElementById("crystal-beaker");
+            const temp = document.getElementById("temp-indicator");
+            const area = document.getElementById("crystals-area");
+            const text = document.getElementById("sol-text");
+
+            // Reset
+            area.innerHTML = "";
+            beaker.classList.remove("bg-blue-50");
+            beaker.classList.add("bg-blue-200");
+            temp.textContent = "80°C";
+            temp.className = "text-red-500 font-bold";
+            text.style.opacity = 1;
+
+            btn.disabled = true;
+            btn.innerHTML = "Đang làm lạnh...";
+
+            // Animation
+            let t = 80;
+            const interval = setInterval(() => {
+              t -= 2;
+              temp.textContent = t + "°C";
+              if (t < 30) temp.className = "text-blue-500 font-bold";
+
+              // Change color to lighter (less soluble/cleaner)
+              if (t === 50) {
+                beaker.classList.remove("bg-blue-200");
+                beaker.classList.add("bg-blue-50");
+                text.style.opacity = 0;
+              }
+
+              // Add crystals
+              if (t < 60 && t % 5 === 0) {
+                const c = document.createElement("div");
+                c.className =
+                  "w-4 h-4 bg-white border border-slate-300 rotate-45 transform transition-all duration-500 scale-0";
+                area.appendChild(c);
+                setTimeout(() => c.classList.remove("scale-0"), 50);
+              }
+
+              if (t <= 20) {
+                clearInterval(interval);
+                btn.disabled = false;
+                btn.innerHTML =
+                  '<i data-lucide="rotate-ccw" class="w-4 h-4"></i> Làm lại';
+                lucide.createIcons();
+              }
+            }, 100);
+          },
+        },
+      };
+
+      function switchLabTab(key) {
+        // UI Tabs
+        document
+          .querySelectorAll(".lab-tab-btn")
+          .forEach((btn) =>
+            btn.classList.remove("active", "bg-indigo-600", "text-white")
+          );
+        event.target.classList.add("active"); // CSS handles styling via .active class
+
+        const data = labData[key];
+
+        // Render Content
+        document.getElementById("lab-visual").innerHTML = data.html;
+        document.getElementById("lab-title").textContent = data.title;
+        document.getElementById("lab-desc").textContent = data.desc;
+        document.getElementById("lab-principle").textContent = data.principle;
+
+        // Attach Action
+        const btn = document.getElementById("lab-action-btn");
+        btn.innerHTML =
+          '<i data-lucide="play" class="w-4 h-4"></i> Bắt đầu mô phỏng';
+        btn.onclick = data.action;
+        lucide.createIcons();
+      }
+
+      // --- Calculator Logic ---
+      function calculateFormula() {
+        const pcC = parseFloat(document.getElementById("inp-c").value) || 0;
+        const pcH = parseFloat(document.getElementById("inp-h").value) || 0;
+        const pcO = parseFloat(document.getElementById("inp-o").value) || 0;
+        const M = parseFloat(document.getElementById("inp-m").value) || 0;
+
+        const resDiv = document.getElementById("calc-result");
+        const empSpan = document.getElementById("res-empirical");
+        const molSpan = document.getElementById("res-molecular");
+
+        if (pcC === 0) {
+          alert("Vui lòng nhập ít nhất % Carbon!");
+          return;
+        }
+
+        // 1. Calculate mole ratios
+        const nC = pcC / 12;
+        const nH = pcH / 1;
+        const nO = pcO / 16;
+
+        // 2. Find smallest
+        let min = nC;
+        if (nH > 0 && nH < min) min = nH;
+        if (nO > 0 && nO < min) min = nO;
+
+        // 3. Simple integer ratio
+        let x = Math.round(nC / min);
+        let y = Math.round(nH / min);
+        let z = nO > 0 ? Math.round(nO / min) : 0;
+
+        let empirical = `C${x}H${y}`;
+        if (z > 0) empirical += `O${z}`;
+
+        // Calculate Empirical Mass
+        const empMass = 12 * x + 1 * y + 16 * z;
+
+        empSpan.textContent = empirical + ` (M = ${empMass})`;
+
+        // 4. Molecular Formula
+        if (M > 0) {
+          const factor = Math.round(M / empMass);
+          let molForm = `C${x * factor}H${y * factor}`;
+          if (z > 0) molForm += `O${z * factor}`;
+          molSpan.textContent = molForm;
+        } else {
+          molSpan.textContent = `(C${x}H${y}${z > 0 ? "O" + z : ""})n`;
+        }
+
+        resDiv.classList.remove("hidden");
+      }
+    </script>
+  </body>
+</html>

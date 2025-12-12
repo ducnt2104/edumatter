@@ -3,706 +3,1218 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chuyên Đề: Cấu Tạo Nguyên Tử</title>
-
-    <script src="https://cdn.tailwindcss.com"></script>
-
+    <title>Học Tốt Hóa Học 10 - Cấu Tạo Nguyên Tử Toàn Tập</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Inter:wght@400;700&display=swap"
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [
-            ["$", "$"],
-            ["\\(", "\\)"],
-          ],
-        },
-      };
-    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script
       id="MathJax-script"
       async
       src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
     ></script>
-
     <style>
+      :root {
+        --primary: #4361ee;
+        --secondary: #3f37c9;
+        --accent: #f72585;
+        --bg: #f8f9fa;
+        --text: #2b2d42;
+        --card-bg: #ffffff;
+        --success: #4cc9f0;
+        --metal: #ffcdb2;
+        --nonmetal: #b5e48c;
+        --gas: #caf0f8;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
       body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f3f4f6;
+        font-family: "Inter", "Poppins", sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
       }
-      .tab-btn.active {
-        background-color: white;
-        color: #2563eb;
-        border-bottom: 2px solid #2563eb;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+      /* Header */
+      header {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 2rem;
+        text-align: center;
+        border-radius: 0 0 30px 30px;
+        box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
       }
-      .solution-content {
-        transition: max-height 0.3s ease-out;
-        max-height: 0;
+      header h1 {
+        margin: 0;
+        font-size: 2rem;
+      }
+      header p {
+        opacity: 0.9;
+        margin-top: 5px;
+      }
+
+      /* Nav */
+      .nav-container {
+        display: flex;
+        justify-content: center;
+        margin-top: -25px;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding: 0 10px;
+      }
+      .nav-btn {
+        background: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+        color: var(--text);
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: 0.3s;
+      }
+      .nav-btn.active {
+        background: var(--accent);
+        color: white;
+        transform: translateY(-3px);
+      }
+      .nav-btn:hover:not(.active) {
+        transform: translateY(-2px);
+      }
+
+      /* Main */
+      main {
+        max-width: 1000px;
+        margin: 30px auto;
+        padding: 0 20px;
+        flex: 1;
+        width: 100%;
+      }
+      .tab-content {
+        display: none;
+        animation: fadeIn 0.5s ease;
+      }
+      .tab-content.active {
+        display: block;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Cards */
+      .card {
+        background: var(--card-bg);
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        border-left: 5px solid var(--primary);
+      }
+      .card h2 {
+        color: var(--secondary);
+        margin-top: 0;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 10px;
+      }
+      .card h3 {
+        color: var(--accent);
+        margin-top: 20px;
+      }
+
+      /* Theory Styles */
+      .theory-text p {
+        line-height: 1.6;
+        margin-bottom: 10px;
+      }
+      .highlight-box {
+        background: #eef;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid var(--accent);
+        margin: 10px 0;
+      }
+
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 0.9rem;
+      }
+      .data-table th,
+      .data-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+      }
+      .data-table th {
+        background: #f1f3f5;
+        color: var(--primary);
+      }
+
+      /* Interactive Widgets */
+      .interactive-tool {
+        background: #fff;
+        border: 2px dashed var(--primary);
+        padding: 20px;
+        border-radius: 12px;
+        margin: 15px 0;
+        transition: 0.3s;
+      }
+      .interactive-tool:hover {
+        border-color: var(--accent);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+      .interactive-tool h4 {
+        margin-top: 0;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .tool-controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+      .tool-controls input {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        flex: 1;
+        min-width: 120px;
+      }
+      .tool-btn {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      .tool-btn:hover {
+        background: var(--secondary);
+      }
+
+      .tool-result {
+        background: #e3f2fd;
+        padding: 10px;
+        border-radius: 6px;
+        color: var(--text);
+        font-weight: bold;
+        display: none;
+        margin-top: 10px;
+      }
+
+      /* Details/Summary */
+      details {
+        margin-bottom: 10px;
+        border: 1px solid #eee;
+        border-radius: 8px;
         overflow: hidden;
       }
-      .solution-content.show {
-        max-height: 1000px; /* Đủ lớn để hiện nội dung */
+      summary {
+        background: #f8f9fa;
+        padding: 15px;
+        cursor: pointer;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        list-style: none;
       }
-      /* Custom scrollbar */
-      ::-webkit-scrollbar {
-        width: 8px;
+      summary:hover {
+        background: #f1f3f5;
       }
-      ::-webkit-scrollbar-track {
-        background: #f1f1f1;
+      summary::after {
+        content: "+";
+        font-size: 1.2rem;
+        color: var(--primary);
       }
-      ::-webkit-scrollbar-thumb {
-        background: #888;
+      details[open] summary::after {
+        content: "-";
+      }
+      .details-body {
+        padding: 15px;
+        background: white;
+      }
+
+      /* Periodic Table Mini */
+      .periodic-grid {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 4px;
+      }
+      .element {
+        aspect-ratio: 1;
+        border: 1px solid #eee;
         border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        cursor: pointer;
+        background: white;
       }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #555;
+      .element:hover {
+        transform: scale(1.1);
+        z-index: 2;
+        border-color: var(--accent);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+      .type-metal {
+        background: var(--metal);
+      }
+      .type-nonmetal {
+        background: var(--nonmetal);
+      }
+      .type-gas {
+        background: var(--gas);
+      }
+
+      /* 3D Container */
+      #atom-container {
+        width: 100%;
+        height: 400px;
+        background: #0d1b2a;
+        border-radius: 12px;
+        margin-top: 15px;
+        position: relative;
+      }
+
+      /* Quiz */
+      .quiz-item {
+        margin-bottom: 20px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 15px;
+      }
+      .quiz-options label {
+        display: block;
+        padding: 8px;
+        margin: 5px 0;
+        border: 1px solid #eee;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .quiz-options label:hover {
+        background: #f8f9fa;
+      }
+      .quiz-options label.correct {
+        background: #d4edda;
+        border-color: #c3e6cb;
+      }
+      .quiz-options label.wrong {
+        background: #f8d7da;
+        border-color: #f5c6cb;
       }
     </style>
   </head>
-  <body class="text-gray-800">
-    <header
-      class="bg-gradient-to-r from-blue-700 to-indigo-800 text-white shadow-lg sticky top-0 z-50"
-    >
-      <div
-        class="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center"
-      >
-        <div class="flex items-center gap-3 mb-3 md:mb-0">
-          <i
-            class="fa-solid fa-atom text-3xl animate-spin-slow"
-            style="animation-duration: 10s"
-          ></i>
-          <div>
-            <h1 class="text-2xl font-bold">Cấu Tạo Nguyên Tử</h1>
-            <p class="text-xs text-blue-200">
-              Hệ thống kiến thức & Bài tập chuyên sâu
-            </p>
-          </div>
-        </div>
-
-        <nav class="flex gap-2 bg-blue-900/30 p-1 rounded-lg">
-          <button
-            onclick="switchTab('theory')"
-            id="tab-theory"
-            class="tab-btn active px-4 py-2 rounded-md font-semibold transition-all hover:bg-white/10"
-          >
-            <i class="fa-solid fa-book mr-1"></i> Lý Thuyết
-          </button>
-          <button
-            onclick="switchTab('exercises')"
-            id="tab-exercises"
-            class="tab-btn px-4 py-2 rounded-md font-semibold transition-all hover:bg-white/10"
-          >
-            <i class="fa-solid fa-pen-to-square mr-1"></i> Tự Luận
-          </button>
-          <button
-            onclick="switchTab('quiz')"
-            id="tab-quiz"
-            class="tab-btn px-4 py-2 rounded-md font-semibold transition-all hover:bg-white/10"
-          >
-            <i class="fa-solid fa-list-check mr-1"></i> Trắc Nghiệm
-          </button>
-        </nav>
-      </div>
+  <body>
+    <header>
+      <h1>Cấu Tạo Nguyên Tử Toàn Tập</h1>
+      <p>Chủ đề 1 - Hóa Học 10 (Phiên bản đầy đủ & Tương tác)</p>
     </header>
 
-    <main class="container mx-auto px-4 py-8 max-w-5xl min-h-screen">
-      <div id="content-theory" class="block animate-fade-in">
-        <div
-          class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden mb-6"
-        >
-          <div
-            class="bg-blue-50 px-6 py-3 border-b border-blue-100 flex items-center gap-3"
-          >
-            <div
-              class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold"
-            >
-              I
+    <div class="nav-container">
+      <button class="nav-btn active" onclick="switchTab('lythuyet')">
+        📖 Lý Thuyết & Tương Tác
+      </button>
+      <button class="nav-btn" onclick="switchTab('mo_phong_3d')">
+        ✨ Mô Phỏng 3D
+      </button>
+      <button class="nav-btn" onclick="switchTab('bangtuanhoan')">
+        🧪 Bảng Tra Cứu
+      </button>
+      <button class="nav-btn" onclick="switchTab('tracnghiem')">
+        📝 Trắc Nghiệm
+      </button>
+    </div>
+
+    <main>
+      <!-- TAB 1: LÝ THUYẾT CHI TIẾT -->
+      <div id="lythuyet" class="tab-content active">
+        <!-- I. THÀNH PHẦN NGUYÊN TỬ -->
+        <div class="card">
+          <h2>I. THÀNH PHẦN CỦA NGUYÊN TỬ</h2>
+
+          <details open>
+            <summary>1. Thành phần cấu tạo nguyên tử</summary>
+            <div class="details-body theory-text">
+              <p>Nguyên tử gồm 2 phần chính:</p>
+              <ul>
+                <li>
+                  <strong>Hạt nhân:</strong> Mang điện dương, nằm ở tâm, gồm
+                  <strong>proton (p)</strong> và <strong>neutron (n)</strong>.
+                </li>
+                <li>
+                  <strong>Vỏ electron (e):</strong> Các electron mang điện âm
+                  chuyển động xung quanh hạt nhân.
+                </li>
+              </ul>
+              <div class="highlight-box" style="text-align: center">
+                <strong>Tổng thể trung hòa điện: Số p = Số e</strong>
+              </div>
             </div>
-            [cite_start]
-            <h2 class="text-xl font-bold text-gray-800">
-              Thành phần cấu tạo nguyên tử [cite: 1105]
-            </h2>
-          </div>
-          <div class="p-6 space-y-4">
-            <p>
-              Nguyên tử gồm hạt nhân (mang điện dương) và vỏ electron (mang điện
-              âm).
-            </p>
-            <div class="overflow-x-auto">
-              <table
-                class="min-w-full border-collapse border border-gray-300 text-sm"
-              >
+          </details>
+
+          <details>
+            <summary>2. Electron (e)</summary>
+            <div class="details-body theory-text">
+              <ul>
+                <li>
+                  <strong>Điện tích:</strong> Âm. $q_e = -1.6 \times 10^{-19}
+                  C$. Quy ước là <strong>-1</strong>.
+                </li>
+                <li>
+                  <strong>Khối lượng:</strong> Cực nhỏ. $m_e \approx 1/1836 m_p
+                  \approx 9.11 \times 10^{-28}g$.
+                </li>
+                <li>
+                  <em>(Gần như bỏ qua khi tính khối lượng nguyên tử).</em>
+                </li>
+                <li>
+                  <strong>Chuyển động:</strong> Rất nhanh trong vùng không gian
+                  gọi là orbital.
+                </li>
+              </ul>
+              <div class="highlight-box">
+                💡 Điểm cốt lõi: Electron quyết định tính chất hóa học của
+                nguyên tử.
+              </div>
+            </div>
+          </details>
+
+          <details>
+            <summary>3. Hạt nhân & 4. Cấu tạo hạt nhân</summary>
+            <div class="details-body theory-text">
+              <p>
+                Mang điện dương $\rightarrow$ quyết định danh tính nguyên tố.
+              </p>
+              <ul>
+                <li>
+                  <strong>Điện tích hạt nhân:</strong> $Z+$. (Z là số proton).
+                </li>
+                <li>
+                  <strong>Thành phần:</strong> Proton (+1) và Neutron (không
+                  mang điện).
+                </li>
+                <li>
+                  Hạt nhân nặng và chiếm gần toàn bộ khối lượng nguyên tử.
+                </li>
+              </ul>
+
+              <!-- INTERACTIVE TOOL: TÍNH SỐ KHỐI -->
+              <div class="interactive-tool">
+                <h4>🧮 Tương tác: Tính Số Khối (A)</h4>
+                <p>Công thức: $A = Z + N$</p>
+                <div class="tool-controls">
+                  <input
+                    type="number"
+                    id="calc-z"
+                    placeholder="Nhập số Proton (Z)"
+                  />
+                  <input
+                    type="number"
+                    id="calc-n"
+                    placeholder="Nhập số Neutron (N)"
+                  />
+                  <button class="tool-btn" onclick="calcMassNumber()">
+                    Tính A
+                  </button>
+                </div>
+                <div id="res-mass-num" class="tool-result"></div>
+              </div>
+            </div>
+          </details>
+
+          <details>
+            <summary>5. Kích thước và khối lượng</summary>
+            <div class="details-body">
+              <ul>
+                <li>Đường kính nguyên tử $\approx 10^{-10}m$.</li>
+                <li>Đường kính hạt nhân $\approx 10^{-15}m$.</li>
+                <li>
+                  $\Rightarrow$
+                  <strong>Nguyên tử rỗng gần như hoàn toàn.</strong>
+                </li>
+              </ul>
+              <table class="data-table">
                 <thead>
-                  <tr class="bg-gray-100">
-                    <th class="border border-gray-300 p-2">Hạt</th>
-                    <th class="border border-gray-300 p-2">Vị trí</th>
-                    <th class="border border-gray-300 p-2">Khối lượng (amu)</th>
-                    <th class="border border-gray-300 p-2">Điện tích</th>
+                  <tr>
+                    <th>Hạt</th>
+                    <th>Điện tích</th>
+                    <th>Khối lượng (amu)</th>
+                    <th>Khối lượng (g)</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td
-                      class="border border-gray-300 p-2 font-bold text-red-600"
-                    >
-                      Proton (p)
-                    </td>
-                    <td class="border border-gray-300 p-2">Hạt nhân</td>
-                    <td class="border border-gray-300 p-2">$\approx 1$</td>
-                    <td class="border border-gray-300 p-2">+1</td>
+                    <td>p</td>
+                    <td>+1</td>
+                    <td>1</td>
+                    <td>$1.673 \times 10^{-24}$</td>
                   </tr>
                   <tr>
-                    <td
-                      class="border border-gray-300 p-2 font-bold text-gray-600"
-                    >
-                      Neutron (n)
-                    </td>
-                    <td class="border border-gray-300 p-2">Hạt nhân</td>
-                    <td class="border border-gray-300 p-2">$\approx 1$</td>
-                    <td class="border border-gray-300 p-2">0</td>
+                    <td>n</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>$1.675 \times 10^{-24}$</td>
                   </tr>
                   <tr>
-                    <td
-                      class="border border-gray-300 p-2 font-bold text-blue-600"
-                    >
-                      Electron (e)
-                    </td>
-                    <td class="border border-gray-300 p-2">Vỏ</td>
-                    <td class="border border-gray-300 p-2">
-                      $\approx 0,00055$
-                    </td>
-                    <td class="border border-gray-300 p-2">-1</td>
+                    <td>e</td>
+                    <td>-1</td>
+                    <td>$\approx 0$ (1/1840)</td>
+                    <td>$9.11 \times 10^{-28}$</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-3 text-sm">
-              [cite_start]<strong>Lưu ý:</strong> [cite: 1113] Khối lượng
-              electron rất nhỏ không đáng kể, nên khối lượng nguyên tử tập trung
-              hầu hết ở hạt nhân ($m_{nt} \approx m_p + m_n$).
-            </div>
-          </div>
+          </details>
         </div>
 
-        <div
-          class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden mb-6"
-        >
-          <div
-            class="bg-blue-50 px-6 py-3 border-b border-blue-100 flex items-center gap-3"
-          >
-            <div
-              class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold"
-            >
-              II
-            </div>
-            [cite_start]
-            <h2 class="text-xl font-bold text-gray-800">
-              Đồng vị & Nguyên tử khối [cite: 1143]
-            </h2>
-          </div>
-          <div class="p-6 space-y-4">
-            <h3 class="font-bold text-blue-800">1. Đồng vị</h3>
-            <p>
-              Là các nguyên tử có cùng số proton (Z) nhưng khác nhau về số
-              neutron (N), dẫn đến số khối (A) khác nhau.
-            </p>
-            <p>
-              <em>Ví dụ:</em> Hydrogen có 3 đồng vị: $^1H$ (Protium), $^2H$
-              (Deuterium), $^3H$ (Tritium).
-            </p>
+        <!-- II. NGUYÊN TỐ HÓA HỌC -->
+        <div class="card">
+          <h2>II. NGUYÊN TỐ HÓA HỌC</h2>
 
-            <h3 class="font-bold text-blue-800 mt-4">
-              2. [cite_start]Nguyên tử khối trung bình ($\overline{A}$) [cite:
-              1164]
-            </h3>
-            <p>
-              Giả sử nguyên tố X có 2 đồng vị X và Y với phần trăm số nguyên tử
-              tương ứng là a% và b%.
-            </p>
-            <div
-              class="bg-gray-100 p-4 rounded text-center text-lg font-mono border border-gray-300"
-            >
-              $\overline{A} = \frac{a \cdot A_X + b \cdot A_Y}{100}$
-            </div>
-          </div>
-        </div>
-
-        <div
-          class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden mb-6"
-        >
-          <div
-            class="bg-blue-50 px-6 py-3 border-b border-blue-100 flex items-center gap-3"
-          >
-            <div
-              class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold"
-            >
-              III
-            </div>
-            [cite_start]
-            <h2 class="text-xl font-bold text-gray-800">
-              Cấu hình Electron [cite: 1223]
-            </h2>
-          </div>
-          <div class="p-6 space-y-4">
-            <p><strong>Thứ tự mức năng lượng (Quy tắc Klechkowski):</strong></p>
-            <div
-              class="bg-indigo-900 text-white p-3 rounded text-center font-bold tracking-wider"
-            >
-              1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p ...
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-4 mt-4">
-              <div class="border p-3 rounded-lg bg-gray-50">
-                <h4 class="font-bold text-red-600">Nguyên lý Pauli</h4>
-                <p class="text-sm">
-                  Mỗi obitan chứa tối đa 2 electron có chiều tự quay ngược nhau.
-                </p>
-              </div>
-              <div class="border p-3 rounded-lg bg-gray-50">
-                <h4 class="font-bold text-green-600">Quy tắc Hund</h4>
-                <p class="text-sm">
-                  Trong cùng một phân lớp, electron phân bố sao cho số electron
-                  độc thân là tối đa.
-                </p>
+          <details>
+            <summary>1, 2. Khái niệm Nguyên tố</summary>
+            <div class="details-body theory-text">
+              <p>
+                <strong>Hạt nhân quyết định:</strong> Số hiệu nguyên tử (Z), Tên
+                và tính chất hóa học.
+              </p>
+              <div class="highlight-box">
+                <strong>Định nghĩa:</strong> Nguyên tố hóa học là tập hợp các
+                nguyên tử có <strong>cùng số proton (Z)</strong>.<br />
+                <em
+                  >(Dù số neutron thay đổi $\rightarrow$ vẫn là 1 nguyên
+                  tố).</em
+                >
               </div>
             </div>
+          </details>
 
-            <div class="bg-red-50 p-4 rounded border border-red-200 mt-4">
-              [cite_start]
-              <h4 class="font-bold text-red-700 mb-2">
-                <i class="fa-solid fa-triangle-exclamation"></i> Trường hợp
-                ngoại lệ (Bão hòa sớm) [cite: 1291]
-              </h4>
-              <ul class="list-disc ml-5 space-y-1">
-                <li>
-                  <strong>Cr (Z=24):</strong> $[Ar]3d^5 4s^1$ (bán bão hòa bền
-                  hơn $3d^4 4s^2$)
-                </li>
-                <li>
-                  <strong>Cu (Z=29):</strong> $[Ar]3d^{10} 4s^1$ (bão hòa bền
-                  hơn $3d^9 4s^2$)
-                </li>
+          <details>
+            <summary>3. Đồng vị</summary>
+            <div class="details-body theory-text">
+              <p>
+                <strong>Đồng vị:</strong> Các nguyên tử cùng Z, khác N
+                $\rightarrow$ Khác số khối A.
+              </p>
+              <ul>
+                <li>Tính chất hóa học giống nhau (do e giống nhau).</li>
+                <li>Tính chất vật lý khác nhau (do khối lượng khác nhau).</li>
               </ul>
             </div>
-          </div>
-        </div>
+          </details>
 
-        <div
-          class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden mb-6"
-        >
-          <div
-            class="bg-blue-50 px-6 py-3 border-b border-blue-100 flex items-center gap-3"
-          >
-            <div
-              class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold"
-            >
-              IV
-            </div>
-            [cite_start]
-            <h2 class="text-xl font-bold text-gray-800">
-              Phản ứng hạt nhân [cite: 1360]
-            </h2>
-          </div>
-          <div class="p-6 space-y-4">
-            <ul class="list-disc ml-5">
-              <li>
-                <strong>Tia Alpha ($\alpha$):</strong> Hạt nhân $^4_2He$. Lùi 2
-                ô trong bảng tuần hoàn.
-              </li>
-              <li>
-                <strong>Tia Beta ($\beta^-$):</strong> Electron $^0_{-1}e$. Tiến
-                1 ô trong bảng tuần hoàn.
-              </li>
-              <li>
-                <strong>Tia Gamma ($\gamma$):</strong> Sóng điện từ năng lượng
-                cao.
-              </li>
-            </ul>
-            <div class="bg-gray-100 p-3 rounded mt-2">
-              [cite_start]
-              <p><strong>Định luật phóng xạ[cite: 1400]:</strong></p>
-              <p class="text-center text-lg my-2">$N = N_0 \cdot 2^{-t/T}$</p>
-              <p class="text-sm italic text-center">
-                (T: Chu kỳ bán rã, t: Thời gian, N: Số hạt còn lại)
+          <details open>
+            <summary>4. Nguyên tử khối & Trung bình</summary>
+            <div class="details-body theory-text">
+              <p>
+                <strong>Nguyên tử khối trung bình ($\bar{A}$):</strong> Dùng cho
+                nguyên tố có nhiều đồng vị.
               </p>
+              <p>
+                $\bar{A} = \frac{aA_1 + bA_2 + \dots}{100}$ (a, b là % số nguyên
+                tử)
+              </p>
+
+              <!-- INTERACTIVE TOOL: MÁY TÍNH NGUYÊN TỬ KHỐI -->
+              <div class="interactive-tool">
+                <h4>🧮 Máy tính Nguyên tử khối TB</h4>
+                <div class="tool-controls">
+                  <input
+                    type="number"
+                    id="iso1-m"
+                    placeholder="Số khối ĐV 1 (VD: 35)"
+                  />
+                  <input
+                    type="number"
+                    id="iso1-p"
+                    placeholder="% ĐV 1 (VD: 75)"
+                  />
+                </div>
+                <div class="tool-controls">
+                  <input
+                    type="number"
+                    id="iso2-m"
+                    placeholder="Số khối ĐV 2 (VD: 37)"
+                  />
+                  <input
+                    type="number"
+                    id="iso2-p"
+                    placeholder="% ĐV 2 (Tự động)"
+                    readonly
+                  />
+                </div>
+                <button class="tool-btn" onclick="calcAvgMass()">
+                  Tính toán
+                </button>
+                <div id="res-avg-mass" class="tool-result"></div>
+              </div>
             </div>
-          </div>
+          </details>
+        </div>
+
+        <!-- III. CẤU TRÚC VỎ NGUYÊN TỬ -->
+        <div class="card">
+          <h2>III. CẤU TRÚC VỎ NGUYÊN TỬ</h2>
+
+          <details>
+            <summary>1. Chuyển động electron</summary>
+            <div class="details-body theory-text">
+              <p>
+                Electron không chạy theo quỹ đạo tròn (kiểu Bohr) mà tồn tại
+                trong <strong>Orbital (AO)</strong> - vùng xác suất tìm thấy e
+                cao nhất.
+              </p>
+              <p>Tuân theo: Cơ học lượng tử, Pauli, Hund, Aufbau.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>2. Lớp và Phân lớp</summary>
+            <div class="details-body theory-text">
+              <p>Vỏ e chia thành các lớp n = 1(K), 2(L), 3(M)...</p>
+              <p>Mỗi lớp có các phân lớp s, p, d, f.</p>
+              <table class="data-table">
+                <tr>
+                  <th>Phân lớp</th>
+                  <th>s</th>
+                  <th>p</th>
+                  <th>d</th>
+                  <th>f</th>
+                </tr>
+                <tr>
+                  <th>Số e tối đa</th>
+                  <td>2</td>
+                  <td>6</td>
+                  <td>10</td>
+                  <td>14</td>
+                </tr>
+                <tr>
+                  <th>Hình dạng</th>
+                  <td>Cầu</td>
+                  <td>Số 8</td>
+                  <td>Cánh hoa</td>
+                  <td>Phức tạp</td>
+                </tr>
+              </table>
+
+              <!-- INTERACTIVE TOOL: SỐ E TỐI ĐA -->
+              <div class="interactive-tool">
+                <h4>🔢 Tính số e tối đa của lớp n</h4>
+                <p>Công thức: $2n^2$ (với $n \le 4$)</p>
+                <div class="tool-controls">
+                  <input
+                    type="number"
+                    id="shell-n"
+                    placeholder="Nhập lớp n (1-4)"
+                    max="4"
+                    min="1"
+                  />
+                  <button class="tool-btn" onclick="calcMaxE()">
+                    Tính số e tối đa
+                  </button>
+                </div>
+                <div id="res-max-e" class="tool-result"></div>
+              </div>
+            </div>
+          </details>
+
+          <details open>
+            <summary>3. Cấu hình Electron</summary>
+            <div class="details-body theory-text">
+              <p><strong>Nguyên tắc:</strong></p>
+              <ol>
+                <li>
+                  Mức năng lượng: 1s 2s 2p 3s 3p 4s 3d 4p... (Sáng Sớm Pha Sữa
+                  Pha Sữa Đi Pha...)
+                </li>
+                <li>Pauli: Mỗi AO tối đa 2e.</li>
+                <li>Hund: Điền e đơn lẻ trước.</li>
+              </ol>
+              <div class="highlight-box">
+                Mẹo: 4s điền trước 3d, nhưng khi mất e thì mất 4s trước.
+              </div>
+
+              <!-- INTERACTIVE TOOL: VIẾT CẤU HÌNH -->
+              <div class="interactive-tool">
+                <h4>⚡ Tương tác: Viết Cấu hình Electron</h4>
+                <p>Nhập Z (1-20) để xem cấu hình và tính chất:</p>
+                <div class="tool-controls">
+                  <input
+                    type="number"
+                    id="config-z"
+                    placeholder="Nhập Z (VD: 11)"
+                  />
+                  <button class="tool-btn" onclick="genConfig()">
+                    Phân tích
+                  </button>
+                </div>
+                <div
+                  id="res-config"
+                  class="tool-result"
+                  style="display: none"
+                ></div>
+              </div>
+            </div>
+          </details>
+
+          <details>
+            <summary>4. Đặc điểm lớp ngoài cùng</summary>
+            <div class="details-body theory-text">
+              <ul>
+                <li><strong>1-3 e:</strong> Kim loại.</li>
+                <li><strong>5-7 e:</strong> Phi kim.</li>
+                <li><strong>8 e:</strong> Khí hiếm (He có 2e).</li>
+                <li><strong>4 e:</strong> Kim loại hoặc Phi kim.</li>
+              </ul>
+
+              <!-- INTERACTIVE TOOL: DỰ ĐOÁN TÍNH CHẤT -->
+              <div class="interactive-tool">
+                <h4>🔍 Dự đoán tính chất</h4>
+                <div class="tool-controls">
+                  <input
+                    type="number"
+                    id="val-e"
+                    placeholder="Số e lớp ngoài cùng"
+                    max="8"
+                  />
+                  <button class="tool-btn" onclick="predictProp()">
+                    Dự đoán
+                  </button>
+                </div>
+                <div id="res-prop" class="tool-result"></div>
+              </div>
+            </div>
+          </details>
         </div>
       </div>
 
-      <div id="content-exercises" class="hidden animate-fade-in">
-        <div
-          class="bg-yellow-50 border border-yellow-200 p-4 rounded-lg mb-6 flex items-start gap-3"
-        >
-          <i class="fa-solid fa-lightbulb text-yellow-600 mt-1"></i>
-          <div>
-            <h3 class="font-bold text-yellow-800">Hướng dẫn</h3>
-            <p class="text-sm text-yellow-800">
-              Hãy thử tự làm ra giấy trước khi bấm xem đáp án. Các bài tập được
-              trích xuất từ tài liệu ôn thi học sinh giỏi và đại học.
-            </p>
+      <!-- TAB 2: MÔ PHỎNG 3D -->
+      <div id="mo_phong_3d" class="tab-content">
+        <div class="card" style="border-left-color: var(--secondary)">
+          <h2>Mô Hình Nguyên Tử 3D</h2>
+          <p>
+            Trực quan hóa sự chuyển động của electron theo mô hình hành tinh
+            (Bohr cải tiến).
+          </p>
+          <div style="margin-bottom: 10px">
+            <label><strong>Chọn nguyên tố:</strong> </label>
+            <select
+              id="atom-selector"
+              onchange="update3DModel(this.value)"
+              style="padding: 5px; border-radius: 4px"
+            >
+              <option value="1">Hydrogen (Z=1)</option>
+              <option value="2">Helium (Z=2)</option>
+              <option value="3">Lithium (Z=3)</option>
+              <option value="6" selected>Carbon (Z=6)</option>
+              <option value="8">Oxygen (Z=8)</option>
+              <option value="11">Sodium (Z=11)</option>
+              <option value="13">Aluminium (Z=13)</option>
+              <option value="17">Chlorine (Z=17)</option>
+              <option value="20">Calcium (Z=20)</option>
+            </select>
           </div>
+          <div id="atom-container"></div>
+          <p
+            style="
+              text-align: center;
+              font-size: 0.8rem;
+              color: #666;
+              margin-top: 5px;
+            "
+          >
+            *Thao tác: Xoay (Chuột trái), Di chuyển (Chuột phải), Zoom (Lăn
+            chuột).
+          </p>
         </div>
-
-        <div id="exercises-container" class="space-y-4"></div>
       </div>
 
-      <div id="content-quiz" class="hidden animate-fade-in">
-        <div class="bg-white p-6 rounded-xl shadow-md text-center mb-8">
-          <h2 class="text-2xl font-bold text-gray-800 mb-2">
-            Kiểm tra kiến thức
-          </h2>
-          <p class="text-gray-600">
-            Chọn đáp án đúng nhất cho các câu hỏi dưới đây.
+      <!-- TAB 3: BẢNG TUẦN HOÀN -->
+      <div id="bangtuanhoan" class="tab-content">
+        <div class="card">
+          <h2>Bảng Tra Cứu Nhanh (20 nguyên tố đầu)</h2>
+          <p>
+            Click vào nguyên tố để xem nhanh thông tin Z, cấu hình và tính chất.
           </p>
           <div
-            id="quiz-score"
-            class="hidden mt-4 text-xl font-bold text-blue-600"
+            id="element-quick-info"
+            class="tool-result"
+            style="display: none; margin-bottom: 15px"
           ></div>
+          <div class="periodic-grid" id="periodic-grid"></div>
+          <div
+            style="
+              margin-top: 10px;
+              display: flex;
+              gap: 15px;
+              font-size: 0.8rem;
+            "
+          >
+            <span style="color: #d35400">■ Kim loại</span>
+            <span style="color: #27ae60">■ Phi kim</span>
+            <span style="color: #2980b9">■ Khí hiếm</span>
+          </div>
         </div>
+      </div>
 
-        <div id="quiz-container" class="max-w-3xl mx-auto space-y-6"></div>
-
-        <div class="text-center mt-8 pb-8">
+      <!-- TAB 4: TRẮC NGHIỆM -->
+      <div id="tracnghiem" class="tab-content">
+        <div class="card">
+          <h2>Kiểm Tra Kiến Thức</h2>
+          <div id="quiz-list"></div>
           <button
-            onclick="submitQuiz()"
-            id="btn-submit"
-            class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:scale-105 transition-transform"
+            class="tool-btn"
+            onclick="checkQuiz()"
+            style="margin-top: 20px"
           >
-            Nộp bài & Xem kết quả
+            Nộp bài & Chấm điểm
           </button>
-          <button
-            onclick="resetQuiz()"
-            id="btn-reset"
-            class="hidden bg-gray-500 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-gray-600 transition-transform ml-4"
-          >
-            Làm lại
-          </button>
+          <div id="quiz-score" class="tool-result"></div>
         </div>
       </div>
     </main>
 
-    <footer class="bg-gray-800 text-gray-400 py-8 text-center text-sm mt-auto">
-      <p class="font-semibold text-gray-200">Ứng dụng học tập Hóa học 10</p>
-      <p class="mt-2">
-        Dữ liệu được số hóa từ tài liệu chuyên đề: "Cấu tạo nguyên tử"
-      </p>
-      <p class="mt-1 text-xs">Phát triển bởi AI Assistant</p>
-    </footer>
-
     <script>
-      // --- DỮ LIỆU BÀI TẬP TỰ LUẬN ---
-      const exercisesData = [
-          {
-              id: 1,
-              title: "Dạng 1: Tính % đồng vị (Bài toán Đồng)",
-              question: "Nguyên tử khối trung bình của Đồng (Cu) là 63,54. Đồng tồn tại trong tự nhiên dưới hai dạng đồng vị $^{63}Cu$ và $^{65}Cu$. Tính thành phần phần trăm về khối lượng của $^{63}Cu$ có trong tinh thể $Cu(OH)_2 \\cdot CuCO_3$? (Cho H=1, C=12, O=16) [cite_start][cite: 2743].",
-              solution: `
-                  <p><strong>Bước 1: Tính % số nguyên tử của mỗi đồng vị Cu.</strong></p>
-                  <p>Gọi x là % số nguyên tử của $^{63}Cu$. Ta có % của $^{65}Cu$ là $(100-x)$.</p>
-                  <p>$$\\overline{A} = \\frac{63x + 65(100-x)}{100} = 63,54$$</p>
-                  <p>$\\Rightarrow 63x + 6500 - 65x = 6354 \\Rightarrow 2x = 146 \\Rightarrow x = 73\\%$.</p>
-                  <p>Vậy $^{63}Cu$ chiếm 73% về số mol.</p>
-                  <br>
-                  <p><strong>Bước 2: Tính % khối lượng trong hợp chất.</strong></p>
-                  <p>Công thức phân tử: $Cu_2(OH)_2CO_3$ (Gom lại từ $Cu(OH)_2 \\cdot CuCO_3$).</p>
-                  <p>Phân tử khối $M = 2 \\cdot 63,54 + 2(17) + 60 = 221,08$.</p>
-                  <p>Trong 1 mol hợp chất có 2 mol Cu. Số mol $^{63}Cu = 2 \\cdot 73\\% = 1,46$ mol.</p>
-                  <p>$$\\%m_{^{63}Cu} = \\frac{1,46 \\cdot 63}{221,08} \\cdot 100\\% \\approx 41,6\\%$$</p>
-              `
-          },
-          {
-              id: 2,
-              [cite_start]title: "Dạng 2: Bán kính & Khối lượng riêng [cite: 3310]",
-              question: "Trong tinh thể, các nguyên tử Sắt (Fe) là những hình cầu chiếm 74% thể tích tinh thể, phần còn lại là các khe rỗng. Cho khối lượng nguyên tử của Fe là 55,85. Khối lượng riêng của Fe là $7,87 g/cm^3$. Tính bán kính nguyên tử gần đúng của Fe (theo Angstrom). Biết $N_A = 6,022 \\cdot 10^{23}$.",
-              solution: `
-                  <p><strong>Bước 1: Tính thể tích 1 mol tinh thể Fe.</strong></p>
-                  <p>$V_{mol} = \\frac{M}{D} = \\frac{55,85}{7,87} \\approx 7,097 \\, cm^3$.</p>
-                  <br>
-                  <p><strong>Bước 2: Tính thể tích thực của các nguyên tử Fe trong 1 mol (chỉ chiếm 74%).</strong></p>
-                  <p>$V_{thuc} = 7,097 \\cdot 74\\% \\approx 5,25 \\, cm^3$.</p>
-                  <br>
-                  <p><strong>Bước 3: Tính thể tích 1 nguyên tử Fe.</strong></p>
-                  <p>$V_{1nt} = \\frac{5,25}{6,022 \\cdot 10^{23}} \\approx 8,72 \\cdot 10^{-24} \\, cm^3$.</p>
-                  <br>
-                  <p><strong>Bước 4: Tính bán kính r.</strong></p>
-                  <p>Ta có $V = \\frac{4}{3}\\pi r^3 \\Rightarrow r = \\sqrt[3]{\\frac{3V}{4\\pi}}$</p>
-                  <p>$r = \\sqrt[3]{\\frac{3 \\cdot 8,72 \\cdot 10^{-24}}{4 \\cdot 3,14}} \\approx 1,28 \\cdot 10^{-8} \\, cm$.</p>
-                  <p>Đổi ra Angstrom: $r = 1,28 \\mathring{A}$.</p>
-              `
-          },
-          {
-              id: 3,
-              [cite_start]title: "Dạng 3: Xác định nguyên tố qua số hạt [cite: 1731]",
-              question: "Tổng số hạt (p, n, e) trong hai nguyên tử kim loại A và B là 142, trong đó tổng số hạt mang điện nhiều hơn số hạt không mang điện là 42. Số hạt mang điện của B nhiều hơn của A là 12. Xác định A và B.",
-              solution: `
-                  <p>Gọi $p_A, n_A, e_A$ và $p_B, n_B, e_B$ là số hạt của A và B (với $p=e$).</p>
-                  <p>Theo đề bài ta có hệ phương trình:</p>
-                  <ul class="list-disc ml-6 mb-2">
-                      <li>Tổng hạt: $(2p_A + n_A) + (2p_B + n_B) = 142$ (1)</li>
-                      <li>Hiệu mang điện/không mang điện: $(2p_A + 2p_B) - (n_A + n_B) = 42$ (2)</li>
-                      <li>Chênh lệch mang điện: $2p_B - 2p_A = 12 \\Rightarrow p_B - p_A = 6$ (3)</li>
-                  </ul>
-                  <p><strong>Giải:</strong></p>
-                  <p>Lấy (1) + (2): $4(p_A + p_B) = 184 \\Rightarrow p_A + p_B = 46$ (4).</p>
-                  <p>Từ (3) và (4):</p>
-                  <p>$\\begin{cases} p_B - p_A = 6 \\\\ p_B + p_A = 46 \\end{cases} \\Rightarrow \\begin{cases} p_B = 26 \\\\ p_A = 20 \\end{cases}$</p>
-                  <p>Vậy A là <strong>Canxi (Ca)</strong>, B là <strong>Sắt (Fe)</strong>.</p>
-              `
-          },
-          {
-              id: 4,
-              [cite_start]title: "Dạng 4: Cấu hình Electron Ion [cite: 2130]",
-              question: "Viết cấu hình electron của $Fe$ (Z=26) và $Fe^{3+}$. Giải thích tại sao ion $Fe^{3+}$ bền hơn $Fe^{2+}$?",
-              solution: `
-                  <p><strong>1. Cấu hình Fe (Z=26):</strong></p>
-                  <p>Thứ tự năng lượng: $1s^2 2s^2 2p^6 3s^2 3p^6 4s^2 3d^6$</p>
-                  <p>Sắp xếp lại: $[Ar] 3d^6 4s^2$.</p>
-                  <br>
-                  <p><strong>2. Cấu hình ion:</strong></p>
-                  <p>- $Fe^{2+}$ (mất 2e ở 4s): $[Ar] 3d^6$.</p>
-                  <p>- $Fe^{3+}$ (mất thêm 1e ở 3d): $[Ar] 3d^5$.</p>
-                  <br>
-                  <p><strong>3. Giải thích:</strong></p>
-                  <p>Cấu hình $3d^5$ là cấu hình <strong>bán bão hòa</strong> (mỗi obitan d chứa đúng 1e độc thân), trạng thái này rất bền vững về mặt năng lượng. Do đó $Fe^{3+}$ bền hơn $Fe^{2+}$.</p>
-              `
-          },
-          {
-              id: 5,
-              [cite_start]title: "Dạng 5: Phản ứng hạt nhân - Tính tuổi mẫu vật [cite: 3237]",
-              question: "Một mẫu đá chứa 13,2 $\\mu g$ Uranium ($^{238}U$) và 3,42 $\\mu g$ Chì ($^{206}Pb$). Biết chu kỳ bán hủy của U là $4,51 \\cdot 10^9$ năm. Hãy tính tuổi của mẫu đá trên (giả sử toàn bộ chì sinh ra là do U phân rã).",
-              solution: `
-                  <p>Số mol Pb hiện có: $n_{Pb} = \\frac{3,42 \\cdot 10^{-6}}{206} \\approx 1,66 \\cdot 10^{-8}$ mol.</p>
-                  <p>Số mol U còn lại: $n_{U(dư)} = \\frac{13,2 \\cdot 10^{-6}}{238} \\approx 5,55 \\cdot 10^{-8}$ mol.</p>
-                  <p>Số mol U ban đầu ($N_0$): $n_0 = n_{Pb} + n_{U(dư)} = 7,21 \\cdot 10^{-8}$ mol.</p>
-                  <p>Áp dụng định luật phóng xạ: $N = N_0 \\cdot 2^{-t/T}$</p>
-                  <p>$\\Rightarrow 5,55 = 7,21 \\cdot 2^{-t/4,51 \\cdot 10^9}$</p>
-                  <p>$\\Rightarrow 2^{-t/T} = 0,7697 \\Rightarrow -t/T = \\log_2(0,7697) \\approx -0,377$</p>
-                  <p>$\\Rightarrow t = 0,377 \\cdot 4,51 \\cdot 10^9 \\approx 1,7 \\cdot 10^9$ năm.</p>
-              `
-          }
-      ];
-
-      // --- DỮ LIỆU TRẮC NGHIỆM ---
-      const quizData = [
-          {
-              id: 1,
-              [cite_start]question: "Nguyên tử của nguyên tố X có tổng số hạt là 40. Tổng số hạt mang điện nhiều hơn số hạt không mang điện là 12. Nguyên tố X là: [cite: 1639]",
-              options: ["Na (Z=11)", "Mg (Z=12)", "Al (Z=13)", "Ca (Z=20)"],
-              correct: 2,
-              explain: "Ta có hệ: 2Z + N = 40 và 2Z - N = 12. Cộng vế theo vế: 4Z = 52 => Z = 13 (Al)."
-          },
-          {
-              id: 2,
-              [cite_start]question: "Cấu hình electron nào sau đây vi phạm quy tắc Hund? [cite: 1263]",
-              options: ["1s²", "1s² 2s² 2p³ (các e ở 2p độc thân)", "1s² 2s² 2p⁴ (1 ô ghép đôi, 2 ô độc thân)", "1s² 2s² (2p: ↑↓  _  ↑)"],
-              correct: 3,
-              explain: "Quy tắc Hund: Electron phải phân bố sao cho số e độc thân tối đa. Đáp án D sai vì 2p có 3e phải điền vào 3 ô (↑)(↑)(↑) thay vì ghép đôi sớm."
-          },
-          {
-              id: 3,
-              question: "Ion M²⁺ có cấu hình electron lớp ngoài cùng là 3d⁹. [cite_start]Cấu hình của nguyên tử M là: [cite: 1294]",
-              options: ["[Ar] 3d⁹ 4s²", "[Ar] 3d¹⁰ 4s¹", "[Ar] 3d¹⁰ 4s²", "[Ar] 4s² 3d⁹"],
-              correct: 1,
-              explain: "Ion M2+ (mất 2e) còn 3d9. Vậy M ban đầu có thêm 2e. Theo thứ tự năng lượng là 4s2 3d9 => Chuyển thành cấu hình bền (bão hòa): 3d10 4s1 (Cu - Đồng)."
-          },
-          {
-              id: 4,
-              [cite_start]question: "Số orbital trong phân lớp d là: [cite: 1218]",
-              options: ["1", "3", "5", "7"],
-              correct: 2,
-              explain: "Phân lớp s: 1 AO, p: 3 AO, d: 5 AO, f: 7 AO."
-          },
-          {
-              id: 5,
-              question: "Nguyên tử X có ký hiệu $^{56}_{26}Fe$. Số neutron trong hạt nhân là:",
-              options: ["26", "30", "56", "82"],
-              correct: 1,
-              explain: "N = A - Z = 56 - 26 = 30."
-          },
-          {
-              id: 6,
-              question: "Phản ứng hạt nhân: $^{27}_{13}Al + \\alpha \\rightarrow ^{30}_{15}P + X$. [cite_start]Hạt X là: [cite: 1386]",
-              options: ["Proton", "Neutron", "Electron", "Positron"],
-              correct: 1,
-              explain: "Tia alpha là He(4,2). Bảo toàn số khối: 27+4 = 30+A => A=1. Bảo toàn điện tích: 13+2 = 15+Z => Z=0. Hạt (1;0) là Neutron."
-          },
-          {
-              id: 7,
-              question: "Một nguyên tử X có tổng số electron ở các phân lớp p là 11. X là nguyên tố nào?",
-              options: ["Cl (Z=17)", "S (Z=16)", "P (Z=15)", "Ar (Z=18)"],
-              correct: 0,
-              explain: "Cấu hình e: 1s² 2s² 2p⁶ 3s² 3p⁵. Tổng e ở p = 6 + 5 = 11. Tổng Z = 2+2+6+2+5 = 17 (Cl)."
-          }
-      ];
-
-      // --- HÀM XỬ LÝ GIAO DIỆN ---
-
-      // 1. Render Bài tập tự luận
-      function renderExercises() {
-          const container = document.getElementById('exercises-container');
-          let html = '';
-          exercisesData.forEach((ex, index) => {
-              html += `
-                  <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all hover:shadow-md">
-                      <button onclick="toggleSolution('sol-${ex.id}')" class="w-full text-left p-5 flex justify-between items-start focus:outline-none">
-                          <div>
-                              <span class="inline-block px-2 py-1 bg-indigo-100 text-indigo-700 text-xs font-bold rounded mb-2">
-                                  ${ex.title}
-                              </span>
-                              <p class="text-gray-800 font-medium">${ex.question}</p>
-                          </div>
-                          <div id="icon-sol-${ex.id}" class="ml-4 mt-1 text-gray-400 transform transition-transform">
-                              <i class="fa-solid fa-chevron-down"></i>
-                          </div>
-                      </button>
-                      <div id="sol-${ex.id}" class="solution-content bg-blue-50/50 border-t border-gray-100">
-                          <div class="p-5 text-gray-700">
-                              <h4 class="font-bold text-green-700 mb-2 flex items-center gap-2">
-                                  <i class="fa-solid fa-check-circle"></i> Lời giải:
-                              </h4>
-                              <div class="prose max-w-none text-sm md:text-base">
-                                  ${ex.solution}
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              `;
-          });
-          container.innerHTML = html;
-      }
-
-      // 2. Render Trắc nghiệm
-      function renderQuiz() {
-          const container = document.getElementById('quiz-container');
-          let html = '';
-          quizData.forEach((q, index) => {
-              html += `
-                  <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-200 relative overflow-hidden" id="q-card-${q.id}">
-                      <h3 class="font-bold text-gray-800 mb-3 flex gap-2">
-                          <span class="bg-blue-100 text-blue-800 w-6 h-6 flex items-center justify-center rounded-full text-sm flex-shrink-0">${index + 1}</span>
-                          ${q.question}
-                      </h3>
-                      <div class="space-y-2 ml-8">
-                          ${q.options.map((opt, i) => `
-                              <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors" id="label-${q.id}-${i}">
-                                  <input type="radio" name="q-${q.id}" value="${i}" class="mr-3 h-4 w-4 text-blue-600">
-                                  <span>${opt}</span>
-                              </label>
-                          `).join('')}
-                      </div>
-                      <div id="explain-${q.id}" class="hidden mt-4 ml-8 p-3 bg-gray-100 rounded text-sm text-gray-700 border-l-4">
-                          <span class="font-bold">Giải thích:</span> ${q.explain}
-                      </div>
-                  </div>
-              `;
-          });
-          container.innerHTML = html;
-      }
-
-      // 3. Logic Accordion (Ẩn/Hiện lời giải)
-      function toggleSolution(id) {
-          const content = document.getElementById(id);
-          const icon = document.getElementById('icon-' + id);
-
-          if (content.classList.contains('show')) {
-              content.classList.remove('show');
-              icon.style.transform = 'rotate(0deg)';
-          } else {
-              content.classList.add('show');
-              icon.style.transform = 'rotate(180deg)';
-          }
-      }
-
-      // 4. Logic Chấm điểm Quiz
-      function submitQuiz() {
-          let score = 0;
-          let answered = 0;
-
-          quizData.forEach(q => {
-              const selected = document.querySelector(`input[name="q-${q.id}"]:checked`);
-              const card = document.getElementById(`q-card-${q.id}`);
-              const explainDiv = document.getElementById(`explain-${q.id}`);
-
-              // Reset styles
-              card.classList.remove('border-green-500', 'border-red-500');
-              explainDiv.classList.add('hidden');
-
-              // Disable inputs
-              const inputs = document.querySelectorAll(`input[name="q-${q.id}"]`);
-              inputs.forEach(inp => inp.disabled = true);
-
-              if (selected) {
-                  answered++;
-                  const val = parseInt(selected.value);
-                  const correctLabel = document.getElementById(`label-${q.id}-${q.correct}`);
-                  const selectedLabel = document.getElementById(`label-${q.id}-${val}`);
-
-                  if (val === q.correct) {
-                      score++;
-                      card.classList.add('border-green-500', 'border-2');
-                      selectedLabel.classList.add('bg-green-100', 'border-green-500', 'text-green-800');
-                      explainDiv.classList.remove('hidden');
-                      explainDiv.classList.add('border-green-500', 'bg-green-50');
-                  } else {
-                      card.classList.add('border-red-500', 'border-2');
-                      selectedLabel.classList.add('bg-red-100', 'border-red-500', 'text-red-800');
-                      correctLabel.classList.add('bg-green-100', 'border-green-500', 'text-green-800'); // Show correct answer
-                      explainDiv.classList.remove('hidden');
-                      explainDiv.classList.add('border-red-500', 'bg-red-50');
-                  }
-              }
-          });
-
-          const scoreDiv = document.getElementById('quiz-score');
-          scoreDiv.classList.remove('hidden');
-          scoreDiv.innerHTML = `Kết quả: ${score}/${quizData.length}`;
-
-          document.getElementById('btn-submit').classList.add('hidden');
-          document.getElementById('btn-reset').classList.remove('hidden');
-
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-
-      function resetQuiz() {
-          renderQuiz();
-          document.getElementById('quiz-score').classList.add('hidden');
-          document.getElementById('btn-submit').classList.remove('hidden');
-          document.getElementById('btn-reset').classList.add('hidden');
-          // Re-render mathjax for quiz
-          MathJax.typesetPromise();
-      }
-
-      // 5. Logic chuyển Tab
+      // === PHẦN 1: LOGIC ĐIỀU HƯỚNG TAB ===
       function switchTab(tabId) {
-          // Hide all content
-          ['theory', 'exercises', 'quiz'].forEach(id => {
-              document.getElementById(`content-${id}`).classList.add('hidden');
-              document.getElementById(`tab-${id}`).classList.remove('active', 'bg-white', 'text-blue-700');
-              document.getElementById(`tab-${id}`).classList.add('text-white');
-          });
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((t) => t.classList.remove("active"));
+        document
+          .querySelectorAll(".nav-btn")
+          .forEach((b) => b.classList.remove("active"));
 
-          // Show selected
-          document.getElementById(`content-${tabId}`).classList.remove('hidden');
-          const activeBtn = document.getElementById(`tab-${tabId}`);
-          activeBtn.classList.add('active', 'bg-white', 'text-blue-700');
-          activeBtn.classList.remove('text-white');
+        document.getElementById(tabId).classList.add("active");
 
-          // Trigger MathJax render when tab changes (to ensure formulas appear)
-          MathJax.typesetPromise();
+        // Active button tương ứng
+        const tabs = ["lythuyet", "mo_phong_3d", "bangtuanhoan", "tracnghiem"];
+        const idx = tabs.indexOf(tabId);
+        if (idx >= 0)
+          document.querySelectorAll(".nav-btn")[idx].classList.add("active");
+
+        // Fix resize cho 3D canvas khi hiện tab
+        if (tabId === "mo_phong_3d") setTimeout(onWindowResize, 100);
       }
 
-      // --- KHỞI CHẠY ---
-      document.addEventListener('DOMContentLoaded', () => {
-          renderExercises();
-          renderQuiz();
-          // Mặc định tab Lý thuyết
-          switchTab('theory');
-      });
+      // === PHẦN 2: CÁC CÔNG CỤ TƯƠNG TÁC LÝ THUYẾT ===
+
+      // 1. Tính số khối
+      function calcMassNumber() {
+        const z = parseInt(document.getElementById("calc-z").value);
+        const n = parseInt(document.getElementById("calc-n").value);
+        const res = document.getElementById("res-mass-num");
+        res.style.display = "block";
+        if (!z || !n) res.innerHTML = "Vui lòng nhập đủ Z và N.";
+        else
+          res.innerHTML = `Số khối A = ${z} (p) + ${n} (n) = <strong>${
+            z + n
+          }</strong>`;
+      }
+
+      // 2. Tính nguyên tử khối trung bình
+      function calcAvgMass() {
+        const m1 = parseFloat(document.getElementById("iso1-m").value);
+        const p1 = parseFloat(document.getElementById("iso1-p").value);
+        const m2 = parseFloat(document.getElementById("iso2-m").value);
+
+        if (!m1 || !p1 || !m2) {
+          alert("Vui lòng nhập đầy đủ thông tin.");
+          return;
+        }
+        const p2 = 100 - p1;
+        document.getElementById("iso2-p").value = p2;
+        const avg = (m1 * p1 + m2 * p2) / 100;
+        const res = document.getElementById("res-avg-mass");
+        res.style.display = "block";
+        res.innerHTML = `Nguyên tử khối trung bình = <strong>${avg.toFixed(
+          4
+        )}</strong>`;
+      }
+
+      // 3. Tính số e tối đa lớp n
+      function calcMaxE() {
+        const n = parseInt(document.getElementById("shell-n").value);
+        const res = document.getElementById("res-max-e");
+        res.style.display = "block";
+        if (!n || n < 1 || n > 4) res.innerHTML = "Vui lòng nhập n từ 1 đến 4.";
+        else
+          res.innerHTML = `Số e tối đa lớp n=${n} là $2n^2$ = 2×${n}² = <strong>${
+            2 * n * n
+          }</strong> electron.`;
+        // Rerender MathJax
+        if (window.MathJax) MathJax.typesetPromise();
+      }
+
+      // 4. Viết cấu hình e
+      function genConfig() {
+        const Z = parseInt(document.getElementById("config-z").value);
+        const res = document.getElementById("res-config");
+        res.style.display = "block";
+
+        if (!Z || Z < 1 || Z > 20) {
+          res.innerHTML = "Công cụ hỗ trợ Z từ 1 đến 20.";
+          return;
+        }
+
+        let rem = Z,
+          config = "",
+          layers = [0, 0, 0, 0];
+        // Quy tắc Aufbau sơ bộ cho Z<=20: 1s 2s 2p 3s 3p 4s
+        const caps = [2, 2, 6, 2, 6, 2];
+        const names = ["1s", "2s", "2p", "3s", "3p", "4s"];
+
+        for (let i = 0; i < caps.length; i++) {
+          if (rem <= 0) break;
+          let fill = Math.min(rem, caps[i]);
+          config += `${names[i]}<sup>${fill}</sup> `;
+          rem -= fill;
+          // Tính e lớp ngoài cùng
+          if (i == 0) layers[0] += fill; // n=1
+          else if (i == 1 || i == 2) layers[1] += fill; // n=2
+          else if (i == 3 || i == 4) layers[2] += fill; // n=3
+          else if (i == 5) layers[3] += fill; // n=4
+        }
+
+        let ve = 0,
+          n = 0;
+        for (let j = 3; j >= 0; j--) {
+          if (layers[j] > 0) {
+            ve = layers[j];
+            n = j + 1;
+            break;
+          }
+        }
+
+        let type = "";
+        if (ve <= 3) type = "Kim loại";
+        else if (ve >= 5 && ve < 8) type = "Phi kim";
+        else if (ve === 8 || Z === 2) type = "Khí hiếm";
+        else type = "Kim loại/Phi kim";
+        if (Z === 1) type = "Phi kim";
+
+        res.innerHTML = `
+             <p>Cấu hình: <strong>${config}</strong></p>
+             <p>Lớp ngoài cùng (n=${n}) có <strong>${ve} e</strong> $\\rightarrow$ Là <strong>${type}</strong>.</p>
+          `;
+        if (window.MathJax) MathJax.typesetPromise();
+      }
+
+      // 5. Dự đoán tính chất
+      function predictProp() {
+        const e = parseInt(document.getElementById("val-e").value);
+        const res = document.getElementById("res-prop");
+        res.style.display = "block";
+        if (!e || e < 1 || e > 8) {
+          res.innerHTML = "Số e lớp ngoài cùng từ 1-8.";
+          return;
+        }
+
+        let msg = "";
+        if (e <= 3) msg = "Kim loại";
+        else if (e >= 5 && e < 8) msg = "Phi kim";
+        else if (e === 8) msg = "Khí hiếm";
+        else msg = "Phi kim hoặc Kim loại (thường là phi kim)";
+
+        res.innerHTML = `Có ${e} electron lớp ngoài cùng $\\rightarrow$ <strong>${msg}</strong>`;
+        if (window.MathJax) MathJax.typesetPromise();
+      }
+
+      // === PHẦN 3: LOGIC BẢNG TUẦN HOÀN MINI ===
+      const elements = [
+        { z: 1, s: "H", t: "nonmetal" },
+        { z: 2, s: "He", t: "gas" },
+        { z: 3, s: "Li", t: "metal" },
+        { z: 4, s: "Be", t: "metal" },
+        { z: 5, s: "B", t: "nonmetal" },
+        { z: 6, s: "C", t: "nonmetal" },
+        { z: 7, s: "N", t: "nonmetal" },
+        { z: 8, s: "O", t: "nonmetal" },
+        { z: 9, s: "F", t: "nonmetal" },
+        { z: 10, s: "Ne", t: "gas" },
+        { z: 11, s: "Na", t: "metal" },
+        { z: 12, s: "Mg", t: "metal" },
+        { z: 13, s: "Al", t: "metal" },
+        { z: 14, s: "Si", t: "nonmetal" },
+        { z: 15, s: "P", t: "nonmetal" },
+        { z: 16, s: "S", t: "nonmetal" },
+        { z: 17, s: "Cl", t: "nonmetal" },
+        { z: 18, s: "Ar", t: "gas" },
+        { z: 19, s: "K", t: "metal" },
+        { z: 20, s: "Ca", t: "metal" },
+      ];
+
+      function initTable() {
+        const grid = document.getElementById("periodic-grid");
+        // Row 1
+        createElBox(grid, elements[0]);
+        for (let i = 0; i < 6; i++)
+          grid.appendChild(document.createElement("div"));
+        createElBox(grid, elements[1]);
+        // Rows
+        for (let i = 2; i < elements.length; i++)
+          createElBox(grid, elements[i]);
+      }
+
+      function createElBox(grid, el) {
+        const div = document.createElement("div");
+        div.className = `element type-${el.t}`;
+        div.innerHTML = `<strong>${el.s}</strong><div>${el.z}</div>`;
+        div.onclick = () => {
+          const info = document.getElementById("element-quick-info");
+          info.style.display = "block";
+          let typeName =
+            el.t === "metal"
+              ? "Kim loại"
+              : el.t === "gas"
+              ? "Khí hiếm"
+              : "Phi kim";
+          info.innerHTML = `Nguyên tố: <strong>${el.s}</strong> (Z=${el.z}) | Loại: <strong>${typeName}</strong>`;
+          // Tự động điền vào công cụ cấu hình
+          document.getElementById("config-z").value = el.z;
+          genConfig(); // Chạy thử luôn
+          // Chuyển sang tab 3D nếu muốn
+          document.getElementById("atom-selector").value = el.z;
+          update3DModel(el.z);
+        };
+        grid.appendChild(div);
+      }
+      initTable();
+
+      // === PHẦN 4: LOGIC TRẮC NGHIỆM ===
+      const quizData = [
+        {
+          q: "Hạt nhân nguyên tử mang điện tích gì?",
+          a: ["Dương (+)", "Âm (-)", "Không mang điện", "Tùy nguyên tố"],
+          c: 0,
+        },
+        {
+          q: "Hạt nào có khối lượng không đáng kể trong nguyên tử?",
+          a: ["Proton", "Neutron", "Electron", "Cả 3 hạt"],
+          c: 2,
+        },
+        {
+          q: "Đồng vị là những nguyên tử có cùng số ... nhưng khác số ...?",
+          a: [
+            "neutron, proton",
+            "proton, neutron",
+            "electron, neutron",
+            "proton, electron",
+          ],
+          c: 1,
+        },
+        {
+          q: "Nguyên tử có 11 proton. Lớp ngoài cùng có bao nhiêu electron?",
+          a: ["1e", "2e", "3e", "8e"],
+          c: 0,
+        },
+        {
+          q: "Nguyên tử X có cấu hình 1s²2s²2p³. X là?",
+          a: ["Kim loại", "Phi kim", "Khí hiếm", "Không xác định"],
+          c: 1,
+        }, // N (Z=7) -> 5e ngoài cùng -> Phi kim
+      ];
+
+      function initQuiz() {
+        const container = document.getElementById("quiz-list");
+        quizData.forEach((item, idx) => {
+          let html = `<div class="quiz-item" id="q${idx}"><p><strong>Câu ${
+            idx + 1
+          }:</strong> ${item.q}</p><div class="quiz-options">`;
+          item.a.forEach((opt, optIdx) => {
+            html += `<label><input type="radio" name="q${idx}" value="${optIdx}"> ${opt}</label>`;
+          });
+          html += `</div></div>`;
+          container.innerHTML += html;
+        });
+      }
+      initQuiz();
+
+      function checkQuiz() {
+        let score = 0;
+        quizData.forEach((item, idx) => {
+          const qDiv = document.getElementById(`q${idx}`);
+          const selected = qDiv.querySelector(`input[name="q${idx}"]:checked`);
+          const labels = qDiv.querySelectorAll("label");
+
+          // Reset
+          labels.forEach((l) => l.classList.remove("correct", "wrong"));
+
+          if (selected) {
+            const val = parseInt(selected.value);
+            if (val === item.c) {
+              score++;
+              labels[val].classList.add("correct");
+            } else {
+              labels[val].classList.add("wrong");
+              labels[item.c].classList.add("correct"); // Show correct
+            }
+          } else {
+            labels[item.c].classList.add("correct"); // Show answer if skipped
+          }
+        });
+        const res = document.getElementById("quiz-score");
+        res.style.display = "block";
+        res.innerHTML = `Kết quả: <strong>${score}/${quizData.length}</strong> câu đúng.`;
+      }
+
+      // === PHẦN 5: MÔ PHỎNG 3D ===
+      let scene, camera, renderer, controls, atomGroup;
+
+      function init3D() {
+        const container = document.getElementById("atom-container");
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0d1b2a);
+
+        camera = new THREE.PerspectiveCamera(
+          75,
+          container.clientWidth / container.clientHeight,
+          0.1,
+          1000
+        );
+        camera.position.z = 12;
+
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+
+        // Lights
+        const ambient = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambient);
+        const point = new THREE.PointLight(0xffffff, 1.5);
+        point.position.set(5, 5, 5);
+        scene.add(point);
+
+        atomGroup = new THREE.Group();
+        scene.add(atomGroup);
+
+        createAtomModel(6); // Default Carbon
+        animate();
+      }
+
+      function createAtomModel(Z) {
+        // Clear old
+        while (atomGroup.children.length > 0)
+          atomGroup.remove(atomGroup.children[0]);
+
+        // Nucleus
+        const nGeo = new THREE.SphereGeometry(1, 32, 32);
+        const nMat = new THREE.MeshPhongMaterial({
+          color: 0xff4d4d,
+          emissive: 0x550000,
+        });
+        const nucleus = new THREE.Mesh(nGeo, nMat);
+        atomGroup.add(nucleus);
+
+        // Electrons & Shells
+        let rem = Z;
+        // Simplified shells: 2, 8, 8, 2
+        const shells = [
+          { max: 2, r: 3, color: 0x4cc9f0 },
+          { max: 8, r: 5, color: 0x4cc9f0 },
+          { max: 8, r: 7, color: 0x4cc9f0 },
+          { max: 2, r: 9, color: 0x4cc9f0 },
+        ];
+
+        shells.forEach((shell, sIdx) => {
+          if (rem <= 0) return;
+          const nE = Math.min(rem, shell.max);
+          rem -= nE;
+
+          // Orbit path
+          const pathGeo = new THREE.TorusGeometry(shell.r, 0.03, 16, 100);
+          const pathMat = new THREE.MeshBasicMaterial({
+            color: shell.color,
+            transparent: true,
+            opacity: 0.3,
+          });
+          const path = new THREE.Mesh(pathGeo, pathMat);
+          // Rotate slightly for 3D effect
+          path.rotation.x = Math.PI / 2;
+          path.rotation.y = (sIdx % 2) * 0.2;
+          atomGroup.add(path);
+
+          // Electrons
+          const eGeo = new THREE.SphereGeometry(0.2, 16, 16);
+          const eMat = new THREE.MeshPhongMaterial({ color: 0xffff00 });
+
+          for (let i = 0; i < nE; i++) {
+            const angle = (i / nE) * Math.PI * 2;
+            const e = new THREE.Mesh(eGeo, eMat);
+            e.userData = {
+              r: shell.r,
+              angle: angle,
+              speed: 0.02 + Math.random() * 0.01,
+            };
+
+            // Init pos
+            e.position.x = shell.r * Math.cos(angle);
+            e.position.z = shell.r * Math.sin(angle);
+            // Tilting logic matching orbit
+            let yTilt = (sIdx % 2) * 0.2;
+            // (Simplified physics, visual only)
+
+            atomGroup.add(e);
+          }
+        });
+      }
+
+      function update3DModel(Z) {
+        createAtomModel(parseInt(Z));
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+
+        atomGroup.children.forEach((child) => {
+          // Rotate electrons
+          if (child.geometry.type === "SphereGeometry" && child.userData.r) {
+            child.userData.angle += child.userData.speed;
+            child.position.x =
+              child.userData.r * Math.cos(child.userData.angle);
+            child.position.z =
+              child.userData.r * Math.sin(child.userData.angle);
+          }
+        });
+        renderer.render(scene, camera);
+      }
+
+      function onWindowResize() {
+        const c = document.getElementById("atom-container");
+        if (camera && renderer) {
+          camera.aspect = c.clientWidth / c.clientHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(c.clientWidth, c.clientHeight);
+        }
+      }
+      window.addEventListener("resize", onWindowResize);
+      window.onload = init3D;
     </script>
   </body>
 </html>
