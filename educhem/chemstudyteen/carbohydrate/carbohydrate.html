@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hóa học 12 - Chương 2: Carbohydrate</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+    <style>
+      :root {
+        --primary: #2563eb;
+        --secondary: #1e40af;
+        --accent: #f59e0b;
+        --bg: #f3f4f6;
+        --text: #1f2937;
+        --white: #ffffff;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+      }
+
+      /* Header */
+      header {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: var(--white);
+        padding: 2rem 1rem;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 2.5rem;
+      }
+      p.subtitle {
+        margin-top: 0.5rem;
+        opacity: 0.9;
+      }
+
+      /* Navigation */
+      nav {
+        display: flex;
+        justify-content: center;
+        background: var(--white);
+        padding: 1rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        flex-wrap: wrap;
+      }
+
+      .nav-btn {
+        background: transparent;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        margin: 0 0.5rem;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text);
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s;
+      }
+
+      .nav-btn:hover {
+        color: var(--primary);
+      }
+      .nav-btn.active {
+        border-bottom-color: var(--primary);
+        color: var(--primary);
+      }
+
+      /* Main Content */
+      main {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        min-height: 60vh;
+      }
+
+      .section {
+        display: none;
+        animation: fadeIn 0.5s;
+      }
+      .section.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Cards & Layout */
+      .card {
+        background: var(--white);
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      h2 {
+        color: var(--secondary);
+        border-left: 5px solid var(--accent);
+        padding-left: 1rem;
+      }
+      h3 {
+        color: var(--primary);
+        margin-top: 1.5rem;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+      }
+
+      /* Simulation Area */
+      .lab-bench {
+        background: #e5e7eb;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-top: 1rem;
+        border: 2px dashed #9ca3af;
+        text-align: center;
+      }
+
+      .test-tube-container {
+        height: 200px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        margin-bottom: 1rem;
+      }
+
+      .test-tube {
+        width: 40px;
+        height: 120px;
+        border: 2px solid #555;
+        border-top: none;
+        border-radius: 0 0 20px 20px;
+        background: rgba(255, 255, 255, 0.8);
+        position: relative;
+        overflow: hidden;
+        margin: 0 10px;
+        transition: background 1s;
+      }
+
+      .liquid {
+        width: 100%;
+        height: 40%;
+        background: #d1d5db; /* Clear/Water */
+        position: absolute;
+        bottom: 0;
+        transition: height 0.5s, background-color 1s;
+      }
+
+      .precipitate {
+        width: 100%;
+        height: 10px;
+        background: transparent;
+        position: absolute;
+        bottom: 0;
+        transition: background 1s;
+      }
+
+      .btn-action {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        margin: 5px;
+        font-weight: bold;
+        transition: background 0.2s;
+      }
+
+      .btn-action:hover {
+        background: var(--secondary);
+      }
+      .btn-reset {
+        background: #6b7280;
+      }
+
+      /* Tables */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+      }
+      th,
+      td {
+        border: 1px solid #d1d5db;
+        padding: 0.75rem;
+        text-align: left;
+      }
+      th {
+        background: #eff6ff;
+        color: var(--secondary);
+      }
+
+      /* Specific Graphics */
+      .starch-coil {
+        font-family: monospace;
+        color: var(--primary);
+        font-size: 1.2rem;
+        white-space: pre;
+        text-align: center;
+        line-height: 0.8;
+      }
+
+      /* Footer */
+      footer {
+        text-align: center;
+        padding: 2rem;
+        color: #6b7280;
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 768px) {
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .note-box {
+        background-color: #fffbeb;
+        border-left: 4px solid #f59e0b;
+        padding: 1rem;
+        margin: 1rem 0;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>CHƯƠNG 2: CARBOHYDRATE</h1>
+      <p class="subtitle">Tương tác - Mô phỏng - Thí nghiệm ảo</p>
+    </header>
+
+    <nav>
+      <button class="nav-btn active" onclick="switchTab('overview')">
+        Tổng Quan
+      </button>
+      <button class="nav-btn" onclick="switchTab('glucose')">
+        I. Glucose & Fructose
+      </button>
+      <button class="nav-btn" onclick="switchTab('saccharose')">
+        II. Saccharose & Maltose
+      </button>
+      <button class="nav-btn" onclick="switchTab('starch')">
+        III. Tinh bột & Cellulose
+      </button>
+    </nav>
+
+    <main>
+      <div id="overview" class="section active">
+        <div class="card">
+          <h2>1. Khái niệm Carbohydrate</h2>
+          <p>
+            <strong>Định nghĩa:</strong> Là hợp chất hữu cơ tạp chức, thường có
+            công thức chung là \( C_n(H_2O)_m \).
+          </p>
+          <div class="note-box">
+            <p>
+              <strong>Điểm cốt lõi:</strong> Carbohydrate là "Đường - Bột". Cấu
+              trúc dựa trên vòng Pyranose (6 cạnh) hoặc Furanose (5 cạnh). Tính
+              chất hóa học xoay quanh phản ứng của nhóm Alcohol (-OH) và
+              Carbonyl (C=O/CHO).
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>2. Phân loại (3 nhóm chính)</h2>
+          <table>
+            <tr>
+              <th>Nhóm</th>
+              <th>Đặc điểm</th>
+              <th>Ví dụ</th>
+            </tr>
+            <tr>
+              <td><strong>Monosaccharide</strong><br />(Đường đơn)</td>
+              <td>Không thủy phân được nữa.</td>
+              <td>Glucose, Fructose</td>
+            </tr>
+            <tr>
+              <td><strong>Disaccharide</strong><br />(Đường đôi)</td>
+              <td>Thủy phân tạo 2 monosaccharide.</td>
+              <td>Saccharose, Maltose</td>
+            </tr>
+            <tr>
+              <td><strong>Polysaccharide</strong><br />(Đa đường)</td>
+              <td>Polymer của nhiều gốc glucose.</td>
+              <td>Tinh bột, Cellulose</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div id="glucose" class="section">
+        <div class="card">
+          <h2>So sánh Glucose và Fructose</h2>
+          <div class="grid-2">
+            <div>
+              <h3>Glucose (Đường nho)</h3>
+              <ul>
+                <li><strong>CTPT:</strong> \( C_6H_{12}O_6 \)</li>
+                <li><strong>Loại:</strong> Aldohexose (có nhóm -CHO).</li>
+                <li>
+                  <strong>Cấu tạo:</strong> Chủ yếu vòng Pyranose (6 cạnh).
+                </li>
+                <li><strong>Nguồn:</strong> Nho, máu (0.1%), mật ong (30%).</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Fructose (Đường mật)</h3>
+              <ul>
+                <li>
+                  <strong>CTPT:</strong> \( C_6H_{12}O_6 \) (Đồng phân của
+                  Glucose).
+                </li>
+                <li><strong>Loại:</strong> Ketohexose (có nhóm C=O ở C2).</li>
+                <li>
+                  <strong>Cấu tạo:</strong> Chủ yếu vòng Furanose (5 cạnh).
+                </li>
+                <li><strong>Nguồn:</strong> Mật ong (40%), trái cây ngọt.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="note-box">
+            <strong>Chuyển hóa:</strong> Trong môi trường kiềm, Glucose
+            \(\leftrightarrow\) Fructose. Do đó Fructose vẫn tráng bạc được dù
+            là cetone.
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Phòng thí nghiệm ảo: Tính chất hóa học</h2>
+          <p>Chọn thí nghiệm để quan sát hiện tượng:</p>
+
+          <div class="lab-bench">
+            <div class="test-tube-container">
+              <div class="test-tube" id="tube-glu">
+                <div class="liquid" id="liquid-glu"></div>
+                <div class="precipitate" id="precip-glu"></div>
+              </div>
+            </div>
+            <div
+              id="reaction-text-glu"
+              style="margin-bottom: 10px; font-weight: bold; min-height: 24px"
+            >
+              Trạng thái ban đầu: Dung dịch Glucose không màu
+            </div>
+
+            <button class="btn-action" onclick="runExpGlu(1)">
+              + Cu(OH)2 (Thường)
+            </button>
+            <button class="btn-action" onclick="runExpGlu(2)">
+              + Cu(OH)2 (Đun nóng)
+            </button>
+            <button class="btn-action" onclick="runExpGlu(3)">
+              + AgNO3/NH3 (Tráng bạc)
+            </button>
+            <button class="btn-action btn-reset" onclick="resetExpGlu()">
+              Làm lại
+            </button>
+          </div>
+
+          <div style="margin-top: 1rem">
+            <h3>Giải thích hiện tượng:</h3>
+            <ul id="explanation-glu">
+              <li>Chưa có thí nghiệm nào được thực hiện.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div id="saccharose" class="section">
+        <div class="card">
+          <h2>II. Saccharose và Maltose</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Tiêu chí</th>
+                <th>Saccharose (Đường mía)</th>
+                <th>Maltose (Đường mạch nha)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Cấu tạo</strong></td>
+                <td>
+                  \(\alpha\)-Glucose + \(\beta\)-Fructose<br />(liên kết 1-2)
+                </td>
+                <td>
+                  \(\alpha\)-Glucose + \(\alpha\)-Glucose<br />(liên kết
+                  \(\alpha\)-1,4)
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Nhóm Hemiacetal</strong></td>
+                <td>
+                  Không còn nhóm tự do <br />➡
+                  <strong>Không có tính khử</strong>
+                </td>
+                <td>Còn 1 nhóm tự do <br />➡ <strong>Có tính khử</strong></td>
+              </tr>
+              <tr>
+                <td><strong>Thủy phân</strong></td>
+                <td>Ra Glucose + Fructose</td>
+                <td>Ra 2 Glucose</td>
+              </tr>
+              <tr>
+                <td><strong>Tráng bạc/Cu(OH)2 nóng</strong></td>
+                <td>❌ Không phản ứng</td>
+                <td>✅ Có kết tủa đỏ gạch (Cu₂O)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h2>Mô phỏng phản ứng đặc trưng</h2>
+          <div class="grid-2">
+            <div class="lab-bench">
+              <h3>Saccharose + H₂SO₄ đặc</h3>
+              <div class="test-tube-container">
+                <div class="test-tube" style="background: white; width: 60px">
+                  <div
+                    id="sac-carbon"
+                    style="
+                      width: 100%;
+                      height: 0%;
+                      background: black;
+                      position: absolute;
+                      bottom: 0;
+                      transition: height 2s;
+                    "
+                  ></div>
+                </div>
+              </div>
+              <button class="btn-action" onclick="runSacCarbon()">
+                Thí nghiệm Than hóa
+              </button>
+              <p id="sac-text">
+                Hiện tượng: Đường bị mất nước hóa đen, khí sủi lên.
+              </p>
+            </div>
+
+            <div class="lab-bench">
+              <h3>Maltose + Cu(OH)₂ đun nóng</h3>
+              <div class="test-tube-container">
+                <div class="test-tube">
+                  <div
+                    class="liquid"
+                    id="mal-liquid"
+                    style="background: #e0f2fe; height: 40%"
+                  ></div>
+                  <div class="precipitate" id="mal-precip"></div>
+                </div>
+              </div>
+              <button class="btn-action" onclick="runMalRed()">Đun nóng</button>
+              <p id="mal-text">Maltose có tính khử giống Glucose.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="starch" class="section">
+        <div class="card">
+          <h2>III. Tinh bột và Cellulose</h2>
+          <div class="grid-2">
+            <div>
+              <h3>Tinh bột \((C_6H_{10}O_5)_n\)</h3>
+              <ul>
+                <li><strong>Nguồn:</strong> Gạo, ngô, khoai, sắn.</li>
+                <li>
+                  <strong>Cấu tạo:</strong> \(\alpha\)-glucose.
+                  <ul>
+                    <li><em>Amylose:</em> Mạch thẳng, xoắn lò xo.</li>
+                    <li><em>Amylopectin:</em> Mạch phân nhánh.</li>
+                  </ul>
+                </li>
+                <li>
+                  <strong>Tính chất:</strong>
+                  <ul>
+                    <li>Thủy phân \(\rightarrow\) Glucose.</li>
+                    <li>Phản ứng màu với I\(_2\) \(\rightarrow\) Xanh tím.</li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3>Cellulose \((C_6H_{10}O_5)_n\)</h3>
+              <ul>
+                <li><strong>Nguồn:</strong> Bông, gỗ, tre.</li>
+                <li>
+                  <strong>Cấu tạo:</strong> \(\beta\)-glucose, mạch thẳng, không
+                  xoắn.
+                </li>
+                <li>
+                  <strong>Tính chất:</strong>
+                  <ul>
+                    <li>
+                      Rất bền, chỉ thủy phân nhờ acid hoặc enzyme (mối, trâu
+                      bò).
+                    </li>
+                    <li>Tạo thuốc súng không khói, tơ nhân tạo.</li>
+                    <li><strong>Không</strong> phản ứng màu với I\(_2\).</li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Thí nghiệm: Phản ứng màu với Iot</h2>
+          <p>Nhỏ dung dịch Iot vào mẫu vật:</p>
+
+          <div class="grid-2">
+            <div
+              class="lab-bench"
+              style="cursor: pointer"
+              onclick="testIodine('starch')"
+            >
+              <h4>Mẫu Tinh bột (Khoai tây)</h4>
+              <div
+                id="sample-starch"
+                style="
+                  width: 100px;
+                  height: 100px;
+                  background: #fcd34d;
+                  border-radius: 50%;
+                  margin: 0 auto;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  transition: background 1s;
+                "
+              >
+                Mặt cắt
+              </div>
+              <button class="btn-action" style="margin-top: 10px">
+                Nhỏ Iot
+              </button>
+            </div>
+
+            <div
+              class="lab-bench"
+              style="cursor: pointer"
+              onclick="testIodine('cell')"
+            >
+              <h4>Mẫu Cellulose (Bông)</h4>
+              <div
+                id="sample-cell"
+                style="
+                  width: 100px;
+                  height: 100px;
+                  background: #fff;
+                  border: 1px solid #ccc;
+                  border-radius: 50%;
+                  margin: 0 auto;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  transition: background 1s;
+                "
+              >
+                Bông
+              </div>
+              <button class="btn-action" style="margin-top: 10px">
+                Nhỏ Iot
+              </button>
+            </div>
+          </div>
+          <p
+            style="text-align: center; margin-top: 1rem; font-weight: bold"
+            id="iodine-result"
+          >
+            Kết quả: ...
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>© 2024 Hóa học 12 - Trực quan hóa kiến thức.</p>
+    </footer>
+
+    <script>
+      // Tab Navigation Logic
+      function switchTab(tabId) {
+        // Hide all sections
+        document
+          .querySelectorAll(".section")
+          .forEach((sec) => sec.classList.remove("active"));
+        // Deactivate all buttons
+        document
+          .querySelectorAll(".nav-btn")
+          .forEach((btn) => btn.classList.remove("active"));
+
+        // Show selected section
+        document.getElementById(tabId).classList.add("active");
+        // Activate button (find based on onclick attribute text matching is a bit hacky but works for simple sites, better to pass `this`)
+        // Simple iteration to match index or ID approach:
+        const indexMap = { overview: 0, glucose: 1, saccharose: 2, starch: 3 };
+        document
+          .querySelectorAll(".nav-btn")
+          [indexMap[tabId]].classList.add("active");
+      }
+
+      // GLUCOSE EXPERIMENTS
+      function runExpGlu(type) {
+        const liquid = document.getElementById("liquid-glu");
+        const precip = document.getElementById("precip-glu");
+        const text = document.getElementById("reaction-text-glu");
+        const explain = document.getElementById("explanation-glu");
+
+        // Reset first
+        liquid.style.height = "40%";
+        precip.style.background = "transparent";
+
+        if (type === 1) {
+          // Cu(OH)2 thường
+          liquid.style.backgroundColor = "#2563eb"; // Blue
+          text.innerText = "Dung dịch xanh lam (Phức đồng - Glucose)";
+          explain.innerHTML =
+            "<li><strong>Hiện tượng:</strong> Tạo dung dịch màu xanh lam trong suốt.</li><li><strong>Giải thích:</strong> Glucose có nhiều nhóm -OH kề nhau, hòa tan Cu(OH)₂ ở nhiệt độ thường.</li>";
+        } else if (type === 2) {
+          // Cu(OH)2 nhiệt độ
+          liquid.style.backgroundColor = "#2563eb";
+          text.innerText = "Đang đun nóng...";
+          setTimeout(() => {
+            liquid.style.backgroundColor = "#9ca3af"; // fade blue
+            precip.style.backgroundColor = "#b91c1c"; // Red brick Cu2O
+            text.innerText = "Kết tủa đỏ gạch (Cu₂O)";
+            explain.innerHTML =
+              "<li><strong>Hiện tượng:</strong> Xuất hiện kết tủa màu đỏ gạch.</li><li><strong>Giải thích:</strong> Nhóm -CHO bị oxi hóa bởi Cu(OH)₂ trong môi trường kiềm khi đun nóng tạo Cu₂O.</li>";
+          }, 1000);
+        } else if (type === 3) {
+          // Silver Mirror
+          liquid.style.backgroundColor = "#d1d5db";
+          text.innerText = "Đang phản ứng...";
+          setTimeout(() => {
+            liquid.style.background =
+              "linear-gradient(to bottom, #d1d5db, #e5e7eb)";
+            document.getElementById("tube-glu").style.background =
+              "linear-gradient(135deg, #e2e8f0 0%, #94a3b8 50%, #e2e8f0 100%)"; // Shiny silver look
+            text.innerText = "Lớp bạc sáng bóng bám vào thành ống";
+            explain.innerHTML =
+              "<li><strong>Hiện tượng:</strong> Có lớp bạc kim loại bám lên thành ống nghiệm.</li><li><strong>Giải thích:</strong> Nhóm -CHO khử Ag⁺ thành Ag kim loại.</li>";
+          }, 1000);
+        }
+      }
+
+      function resetExpGlu() {
+        document.getElementById("liquid-glu").style.backgroundColor = "#d1d5db";
+        document.getElementById("precip-glu").style.backgroundColor =
+          "transparent";
+        document.getElementById("tube-glu").style.background =
+          "rgba(255, 255, 255, 0.8)";
+        document.getElementById("reaction-text-glu").innerText =
+          "Trạng thái ban đầu: Dung dịch Glucose không màu";
+        document.getElementById("explanation-glu").innerHTML =
+          "<li>Chưa có thí nghiệm nào được thực hiện.</li>";
+      }
+
+      // SACCHAROSE / MALTOSE SIMS
+      function runSacCarbon() {
+        const carbon = document.getElementById("sac-carbon");
+        const text = document.getElementById("sac-text");
+
+        text.innerText = "H₂SO₄ đặc hút nước mạnh...";
+        setTimeout(() => {
+          carbon.style.height = "120%"; // Overflow
+          carbon.style.borderRadius = "10px 10px 0 0";
+          text.innerText =
+            "Đường bị than hóa đen sì và dâng lên do khí SO₂, CO₂!";
+        }, 500);
+      }
+
+      function runMalRed() {
+        const liquid = document.getElementById("mal-liquid");
+        const precip = document.getElementById("mal-precip");
+
+        liquid.style.backgroundColor = "#2563eb";
+        setTimeout(() => {
+          precip.style.backgroundColor = "#b91c1c"; // Red brick
+          document.getElementById("mal-text").innerHTML =
+            "<strong>Kết quả:</strong> Kết tủa đỏ gạch. Maltose có tính khử (do còn nhóm -OH hemiacetal).";
+        }, 1000);
+      }
+
+      // IODINE TEST
+      function testIodine(type) {
+        const result = document.getElementById("iodine-result");
+        if (type === "starch") {
+          document.getElementById("sample-starch").style.backgroundColor =
+            "#1e1b4b"; // Dark blue/purple
+          result.innerText =
+            "Kết quả: Tinh bột chuyển màu Xanh Tím (do cấu trúc xoắn hấp phụ Iot).";
+        } else {
+          document.getElementById("sample-cell").style.backgroundColor =
+            "#fcd34d"; // Stay kinda yellow from iodine
+          result.innerText =
+            "Kết quả: Cellulose không đổi màu xanh tím (chỉ dính màu nâu của Iot).";
+        }
+      }
+    </script>
+  </body>
+</html>
