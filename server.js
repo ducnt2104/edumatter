@@ -65,9 +65,13 @@ app.post("/upload", upload.single("file"), (req, res) => {
 io.on("connection", (socket) => {
   console.log(`✅ User kết nối: ${socket.id}`);
 
-  // Gửi danh sách phòng ngay khi user vừa vào
+  // 💡 Đã làm: Gửi danh sách phòng ngay khi user vừa vào (Đúng, nhưng client có thể chưa sẵn sàng)
   socket.emit("update_rooms", getRoomList());
 
+  // 💡 BƯỚC SỬA 1: Xử lý yêu cầu lấy danh sách phòng từ client sau khi login
+  socket.on("get_initial_rooms", () => {
+    socket.emit("update_rooms", getRoomList());
+  });
   // Tạo phòng mới
   socket.on("create_room", ({ name, password, owner }) => {
     const roomId = "room_" + Date.now();
