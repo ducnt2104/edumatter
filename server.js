@@ -9,7 +9,7 @@ const multer = require("multer");
 const fs = require("fs");
 
 // --- 1. CẤU HÌNH ---
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const uploadDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 
