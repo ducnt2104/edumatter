@@ -1,1012 +1,1683 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hóa Học 12: Chương 4 - Polymer</title>
+    <title>ChemStudy Teen - Chương 4: Polymer</title>
+    <link rel="icon" href="../../../favicon/educhem.svg" type="image/svg+xml" />
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for Icons -->
+
+    <!-- Three.js cho 3D -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- FontAwesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+
     <!-- Google Fonts -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;900&display=swap"
       rel="stylesheet"
     />
+
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Be Vietnam Pro", "sans-serif"],
+            },
+            colors: {
+              chem: {
+                light: "#3b82f6",
+                dark: "#60a5fa",
+                bgLight: "#f0f9ff",
+                bgDark: "#0f172a",
+                surfaceLight: "#ffffff",
+                surfaceDark: "#1e293b",
+              },
+            },
+            animation: {
+              "spin-slow": "spin 10s linear infinite",
+              float: "float 6s ease-in-out infinite",
+              "pulse-fast": "pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+            },
+          },
+        },
+      };
+    </script>
 
     <style>
       body {
         font-family: "Be Vietnam Pro", sans-serif;
-        scroll-behavior: smooth;
+        overflow-x: hidden;
       }
-      .polymer-chain {
-        display: flex;
-        align-items: center;
-        overflow-x: auto;
-        padding: 20px;
-        background: #f0f9ff;
-        border-radius: 10px;
-        min-height: 120px;
-        border: 2px dashed #3b82f6;
-      }
-      .monomer {
-        width: 60px;
-        height: 60px;
-        background: linear-gradient(135deg, #60a5fa, #2563eb);
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: white;
-        font-weight: bold;
-        margin-right: 5px;
-        position: relative;
-        animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        flex-shrink: 0;
-      }
-      .monomer::after {
-        content: "-";
-        position: absolute;
-        right: -10px;
-        color: #2563eb;
-        font-weight: bold;
-        font-size: 20px;
-      }
-      .monomer:last-child::after {
-        display: none;
-      }
-      @keyframes popIn {
-        0% {
-          transform: scale(0);
-          opacity: 0;
-        }
-        100% {
-          transform: scale(1);
-          opacity: 1;
-        }
-      }
-      .glass-panel {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-      }
-      .gradient-text {
-        background: linear-gradient(to right, #2563eb, #0891b2);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-      /* Custom Scrollbar */
+
       ::-webkit-scrollbar {
         width: 8px;
-        height: 8px;
       }
       ::-webkit-scrollbar-track {
-        background: #f1f1f1;
+        background: transparent;
       }
       ::-webkit-scrollbar-thumb {
-        background: #888;
+        background: #cbd5e1;
         border-radius: 4px;
       }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #555;
+      .dark ::-webkit-scrollbar-thumb {
+        background: #475569;
+      }
+
+      .glass-panel {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+      .dark .glass-panel {
+        background: rgba(30, 41, 59, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .lab-screen {
+        background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+      }
+
+      .neon-text {
+        text-shadow: 0 0 5px #60a5fa, 0 0 10px #60a5fa;
       }
     </style>
   </head>
-  <body class="bg-slate-50 text-slate-800">
+  <body
+    class="bg-chem-bgLight text-slate-800 dark:bg-chem-bgDark dark:text-slate-100 transition-colors duration-300"
+  >
     <!-- Navigation -->
-    <nav class="fixed top-0 w-full bg-white/90 backdrop-blur shadow-md z-50">
+    <nav
+      class="fixed top-0 w-full z-50 glass-panel border-b border-gray-200 dark:border-gray-800 transition-all duration-300"
+    >
       <div
         class="container mx-auto px-4 py-3 flex justify-between items-center"
       >
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-flask text-blue-600 text-2xl"></i>
-          <span class="text-xl font-bold text-blue-900">Polymer Lab</span>
-        </div>
-        <div class="hidden md:flex gap-6 font-medium text-slate-600">
-          <a href="#dai-cuong" class="hover:text-blue-600 transition"
-            >Đại Cương</a
-          >
-          <a href="#chat-deo" class="hover:text-blue-600 transition"
-            >Chất Dẻo & Composite</a
-          >
-          <a href="#to-cao-su" class="hover:text-blue-600 transition"
-            >Tơ & Cao Su</a
-          >
+        <div class="flex items-center gap-4">
           <a
-            href="#game"
-            class="px-4 py-1 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
-            >Thí nghiệm ảo</a
+            href="../chemstudyteen.html"
+            class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+            title="Quay về"
           >
+            <i
+              class="fa-solid fa-arrow-left text-xl text-blue-600 dark:text-blue-400"
+            ></i>
+          </a>
+          <div class="flex items-center gap-2">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/883/883039.png"
+              class="h-8 w-8 animate-spin-slow"
+              alt="Logo"
+            />
+            <span
+              class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-cyan-500 dark:from-blue-400 dark:to-cyan-300"
+            >
+              ChemStudy Teen
+            </span>
+          </div>
         </div>
-        <button class="md:hidden text-2xl text-blue-600">
-          <i class="fa-solid fa-bars"></i>
-        </button>
+
+        <div
+          class="hidden md:flex gap-6 font-semibold text-sm uppercase tracking-wide"
+        >
+          <a
+            href="#general"
+            class="hover:text-blue-500 transition relative group"
+          >
+            Đại cương
+            <span
+              class="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-500 transition-all group-hover:w-full"
+            ></span>
+          </a>
+          <a
+            href="#lab-center"
+            class="hover:text-blue-500 transition relative group text-blue-600 dark:text-blue-400"
+          >
+            <i class="fa-solid fa-flask"></i> Phòng Thí Nghiệm
+            <span
+              class="absolute -bottom-1 left-0 w-full h-0.5 bg-blue-500"
+            ></span>
+          </a>
+          <a
+            href="#plastics"
+            class="hover:text-blue-500 transition relative group"
+          >
+            Chất dẻo
+            <span
+              class="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-500 transition-all group-hover:w-full"
+            ></span>
+          </a>
+          <a
+            href="#fibers"
+            class="hover:text-blue-500 transition relative group"
+          >
+            Tơ - Cao su - Keo
+            <span
+              class="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-500 transition-all group-hover:w-full"
+            ></span>
+          </a>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button
+            id="theme-toggle"
+            class="relative inline-flex items-center cursor-pointer"
+          >
+            <i
+              class="fa-solid fa-sun text-yellow-500 mr-2 text-lg dark:hidden"
+            ></i>
+            <i
+              class="fa-solid fa-moon text-blue-300 mr-2 text-lg hidden dark:block"
+            ></i>
+          </button>
+        </div>
       </div>
     </nav>
 
     <!-- Hero Section -->
-    <header
-      class="pt-32 pb-20 px-4 bg-gradient-to-br from-blue-50 to-cyan-100 relative overflow-hidden"
-    >
+    <header class="relative pt-32 pb-20 overflow-hidden">
       <div
-        class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none"
-      >
-        <i
-          class="fa-solid fa-share-nodes absolute top-10 left-10 text-6xl animate-bounce"
-        ></i>
-        <i
-          class="fa-solid fa-circle-nodes absolute bottom-20 right-20 text-8xl animate-pulse"
-        ></i>
-      </div>
-      <div class="container mx-auto text-center relative z-10">
+        id="canvas-container"
+        class="absolute top-0 left-0 w-full h-full -z-10 opacity-60"
+      ></div>
+      <div class="container mx-auto px-4 text-center z-10 relative">
         <span
-          class="text-blue-600 font-bold tracking-wider uppercase mb-2 block"
-          >Hóa học 12 - Chương 4</span
+          class="inline-block py-1 px-3 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 text-xs font-bold mb-4 tracking-widest uppercase"
         >
-        <h1 class="text-5xl md:text-7xl font-extrabold mb-6 gradient-text">
-          POLYMER
+          Hóa Học 12 - Chương 4
+        </span>
+        <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight">
+          Thế Giới <br class="md:hidden" />
+          <span
+            class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500"
+            >POLYMER</span
+          >
         </h1>
-        <p class="text-xl text-slate-600 max-w-2xl mx-auto mb-10">
-          Khám phá thế giới của các phân tử khổng lồ, từ túi nilon hàng ngày đến
-          vật liệu composite siêu bền trên máy bay.
+        <p
+          class="text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-10"
+        >
+          Toàn bộ lý thuyết từ cấu tạo mắt xích đến ứng dụng thực tiễn, kết hợp
+          20+ mô phỏng tương tác.
         </p>
         <div class="flex flex-wrap justify-center gap-4">
           <a
-            href="#dai-cuong"
-            class="px-8 py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition transform hover:-translate-y-1 font-semibold"
+            href="#lab-center"
+            class="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl shadow-lg hover:shadow-blue-500/50 hover:scale-105 transition transform font-bold flex items-center gap-2"
           >
-            Bắt đầu học
+            <i class="fa-solid fa-atom"></i> Vào Phòng Thí Nghiệm
           </a>
-          <button
-            onclick="scrollToSimulation()"
-            class="px-8 py-3 bg-white text-blue-600 border border-blue-200 rounded-lg shadow-sm hover:shadow-md transition font-semibold"
+          <a
+            href="#general"
+            class="px-8 py-4 bg-white dark:bg-slate-800 text-slate-700 dark:text-white rounded-xl shadow border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition font-bold"
           >
-            <i class="fa-solid fa-flask-vial mr-2"></i> Chế tạo Polymer
-          </button>
+            Lý thuyết Đại cương
+          </a>
         </div>
       </div>
     </header>
 
-    <!-- PART I: ĐẠI CƯƠNG -->
-    <main class="container mx-auto px-4 py-12 space-y-24">
-      <section id="dai-cuong">
-        <div class="flex items-center gap-4 mb-8">
-          <div
-            class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 text-xl font-bold"
-          >
-            I
-          </div>
-          <h2 class="text-3xl font-bold text-slate-800">
-            Đại Cương Về Polymer
-          </h2>
+    <!-- SECTION 1: ĐẠI CƯƠNG (General) -->
+    <section id="general" class="py-16 container mx-auto px-4">
+      <div class="flex items-center gap-3 mb-8">
+        <div
+          class="w-10 h-10 rounded-lg bg-blue-500 flex items-center justify-center text-white font-bold text-xl"
+        >
+          I
         </div>
+        <h2 class="text-3xl font-bold">Đại Cương Về Polymer</h2>
+      </div>
 
-        <!-- Khái niệm Cards -->
-        <div class="grid md:grid-cols-3 gap-6 mb-12">
+      <!-- 3D Concept Grid -->
+      <div class="grid md:grid-cols-2 gap-6 mb-12">
+        <!-- Card 1: Khái niệm -->
+        <div
+          class="group glass-panel p-6 rounded-2xl shadow-sm hover:shadow-xl transition relative overflow-hidden"
+        >
+          <i class="fa-solid fa-link text-4xl text-blue-500 mb-4"></i>
+          <h3 class="text-xl font-bold mb-2">1. Khái niệm & Cấu trúc</h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mb-2">
+            Polymer là phân tử rất lớn gồm nhiều <b>đơn vị nhỏ (monomer)</b> lặp
+            lại.
+          </p>
           <div
-            class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition"
+            class="bg-slate-100 dark:bg-slate-800 p-3 rounded-lg border-l-4 border-blue-500"
           >
-            <div class="text-blue-500 text-4xl mb-4">
-              <i class="fa-solid fa-shapes"></i>
-            </div>
-            <h3 class="text-xl font-bold mb-2">Khái niệm</h3>
-            <p class="text-slate-600">
-              Polymer là những phân tử rất lớn gồm nhiều đơn vị nhỏ (monomer)
-              lặp đi lặp lại.
-            </p>
-          </div>
-          <div
-            class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition"
-          >
-            <div class="text-indigo-500 text-4xl mb-4">
-              <i class="fa-solid fa-link"></i>
-            </div>
-            <h3 class="text-xl font-bold mb-2">Cấu tạo</h3>
-            <p class="text-slate-600">
-              Mắt xích: <code>–(M)–</code><br />Công thức:
-              <code>[–M–]ₙ</code> (n = 10³–10⁶)
-            </p>
-          </div>
-          <div
-            class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition"
-          >
-            <div class="text-cyan-500 text-4xl mb-4">
-              <i class="fa-solid fa-layer-group"></i>
-            </div>
-            <h3 class="text-xl font-bold mb-2">Phân loại</h3>
-            <ul class="text-slate-600 text-sm list-disc pl-4 space-y-1">
-              <li><b>Thiên nhiên:</b> Tinh bột, protein.</li>
-              <li><b>Nhân tạo:</b> Tơ visco.</li>
-              <li><b>Tổng hợp:</b> PE, PVC.</li>
+            <div class="font-mono font-bold text-blue-600 mb-1">[–M–]ₙ</div>
+            <ul class="text-xs text-slate-500 list-disc ml-4">
+              <li><b>Mắt xích:</b> –M– (đơn vị lặp)</li>
+              <li><b>n:</b> Hệ số polymer hóa (rất lớn, n = 10³ - 10⁶)</li>
             </ul>
           </div>
         </div>
 
-        <!-- Table Polymer Tiêu Biểu -->
+        <!-- Card 2: Phân loại -->
         <div
-          class="bg-white rounded-2xl shadow-lg overflow-hidden border border-slate-200 mb-12"
+          class="group glass-panel p-6 rounded-2xl shadow-sm hover:shadow-xl transition relative overflow-hidden"
         >
+          <i class="fa-solid fa-layer-group text-4xl text-green-500 mb-4"></i>
+          <h3 class="text-xl font-bold mb-2">2. Phân loại (Quan trọng)</h3>
           <div
-            class="bg-slate-800 text-white p-4 font-bold text-lg flex justify-between items-center"
+            class="grid grid-cols-2 gap-4 text-sm text-slate-600 dark:text-slate-400"
           >
-            <span
-              ><i class="fa-solid fa-table mr-2"></i> Các Polymer Tiêu
-              Biểu</span
-            >
-            <span class="text-xs bg-slate-600 px-2 py-1 rounded"
-              >Cuộn ngang để xem thêm</span
-            >
+            <div>
+              <h4 class="font-bold text-green-600 mb-1">Theo nguồn gốc:</h4>
+              <ul class="list-disc ml-4 space-y-1">
+                <li><b>Thiên nhiên:</b> Xenlulozơ, tinh bột, protein.</li>
+                <li><b>Nhân tạo (Bán tổng hợp):</b> Tơ visco, tơ axetat.</li>
+                <li><b>Tổng hợp:</b> PE, PVC, Nylon...</li>
+              </ul>
+            </div>
+            <div>
+              <h4 class="font-bold text-purple-600 mb-1">Theo phản ứng:</h4>
+              <ul class="list-disc ml-4 space-y-1">
+                <li>
+                  <b>Trùng hợp:</b> Cộng hợp, không tách chất phụ (PE, PVC).
+                </li>
+                <li><b>Trùng ngưng:</b> Tách H₂O, NH₃... (Nilon-6,6).</li>
+              </ul>
+            </div>
           </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-              <thead>
-                <tr
-                  class="bg-slate-50 text-slate-600 text-sm uppercase tracking-wider border-b"
-                >
-                  <th class="p-4 font-bold">Polymer</th>
-                  <th class="p-4 font-bold">Viết tắt</th>
-                  <th class="p-4 font-bold">Mắt xích (Unit)</th>
-                  <th class="p-4 font-bold">Monomer</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-100 text-sm md:text-base">
-                <tr class="hover:bg-blue-50 transition">
-                  <td class="p-4 font-medium text-blue-700">Polyetylen</td>
-                  <td class="p-4 font-bold text-slate-500">PE</td>
-                  <td class="p-4 font-mono bg-slate-50 rounded">CH₂–CH₂</td>
-                  <td class="p-4 text-green-600">Etylen</td>
-                </tr>
-                <tr class="hover:bg-blue-50 transition">
-                  <td class="p-4 font-medium text-blue-700">
-                    Polyvinyl clorua
-                  </td>
-                  <td class="p-4 font-bold text-slate-500">PVC</td>
-                  <td class="p-4 font-mono bg-slate-50 rounded">CH₂–CHCl</td>
-                  <td class="p-4 text-green-600">Vinyl clorua</td>
-                </tr>
-                <tr class="hover:bg-blue-50 transition">
-                  <td class="p-4 font-medium text-blue-700">Polystyren</td>
-                  <td class="p-4 font-bold text-slate-500">PS</td>
-                  <td class="p-4 font-mono bg-slate-50 rounded">
-                    CH₂–CH(C₆H₅)
-                  </td>
-                  <td class="p-4 text-green-600">Stiren</td>
-                </tr>
-                <tr class="hover:bg-blue-50 transition">
-                  <td class="p-4 font-medium text-blue-700">
-                    Poly(metyl metacrylat)
-                  </td>
-                  <td class="p-4 font-bold text-slate-500">PMMA</td>
-                  <td class="p-4 font-mono bg-slate-50 rounded">
-                    CH₂–C(CH₃)(COOCH₃)
-                  </td>
-                  <td class="p-4 text-green-600">Metyl metacrylat</td>
-                </tr>
-                <tr class="hover:bg-blue-50 transition">
-                  <td class="p-4 font-medium text-blue-700">Nilon-6,6</td>
-                  <td class="p-4 font-bold text-slate-500">-</td>
-                  <td
-                    class="p-4 font-mono bg-slate-50 rounded text-xs md:text-sm"
-                  >
-                    NH(CH₂)₆NHCO(CH₂)₄CO
-                  </td>
-                  <td class="p-4 text-green-600 text-xs">
-                    Hexametylenđiamin + Axit adipic
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+        </div>
+      </div>
+
+      <!-- Bảng Polymer Tiêu Biểu (Full) -->
+      <div
+        class="glass-panel rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 mb-12"
+      >
+        <div
+          class="bg-slate-100 dark:bg-slate-800 p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center"
+        >
+          <h3 class="font-bold">
+            <i class="fa-solid fa-table mr-2"></i> Các Polymer Tiêu Biểu
+          </h3>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead>
+              <tr
+                class="text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900"
+              >
+                <th class="p-4">Polymer</th>
+                <th class="p-4">Viết tắt</th>
+                <th class="p-4">Mắt xích (Unit)</th>
+                <th class="p-4">Monomer</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+              <tr class="hover:bg-blue-50 dark:hover:bg-slate-700/50">
+                <td class="p-4 font-bold text-blue-600">Polyetylen</td>
+                <td class="p-4">PE</td>
+                <td class="p-4 font-mono">–CH₂–CH₂–</td>
+                <td class="p-4">Etylen: CH₂=CH₂</td>
+              </tr>
+              <tr class="hover:bg-blue-50 dark:hover:bg-slate-700/50">
+                <td class="p-4 font-bold text-blue-600">Polyvinyl clorua</td>
+                <td class="p-4">PVC</td>
+                <td class="p-4 font-mono">–CH₂–CHCl–</td>
+                <td class="p-4">Vinyl clorua: CH₂=CHCl</td>
+              </tr>
+              <tr class="hover:bg-blue-50 dark:hover:bg-slate-700/50">
+                <td class="p-4 font-bold text-blue-600">Polypropylen</td>
+                <td class="p-4">PP</td>
+                <td class="p-4 font-mono">–CH₂–CH(CH₃)–</td>
+                <td class="p-4">Propilen: CH₂=CH–CH₃</td>
+              </tr>
+              <tr class="hover:bg-blue-50 dark:hover:bg-slate-700/50">
+                <td class="p-4 font-bold text-blue-600">Polystyren</td>
+                <td class="p-4">PS</td>
+                <td class="p-4 font-mono">–CH₂–CH(C₆H₅)–</td>
+                <td class="p-4">Stiren: C₆H₅CH=CH₂</td>
+              </tr>
+              <tr class="hover:bg-blue-50 dark:hover:bg-slate-700/50">
+                <td class="p-4 font-bold text-blue-600">
+                  Poly(metyl metacrylat)
+                </td>
+                <td class="p-4">PMMA</td>
+                <td class="p-4 font-mono">–CH₂–C(CH₃)(COOCH₃)–</td>
+                <td class="p-4">Metyl metacrylat</td>
+              </tr>
+              <tr class="hover:bg-blue-50 dark:hover:bg-slate-700/50">
+                <td class="p-4 font-bold text-blue-600">Nilon-6,6</td>
+                <td class="p-4">-</td>
+                <td class="p-4 font-mono text-xs">–NH(CH₂)₆NHCO(CH₂)₄CO–</td>
+                <td class="p-4 text-xs">Hexametylenđiamin + Axit adipic</td>
+              </tr>
+              <tr class="hover:bg-blue-50 dark:hover:bg-slate-700/50">
+                <td class="p-4 font-bold text-blue-600">Teflon</td>
+                <td class="p-4">PTFE</td>
+                <td class="p-4 font-mono">–CF₂–CF₂–</td>
+                <td class="p-4">Tetrafluoroetylen</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tính Chất & Tổng Hợp -->
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Tính chất -->
+        <div class="glass-panel p-6 rounded-2xl">
+          <h3 class="text-xl font-bold text-red-500 mb-4">
+            <i class="fa-solid fa-fire-burner mr-2"></i>3. Tính Chất
+          </h3>
+          <div class="space-y-4 text-sm text-slate-600 dark:text-slate-300">
+            <details
+              class="group bg-slate-50 dark:bg-slate-800 rounded-lg p-3 cursor-pointer"
+            >
+              <summary class="font-bold flex justify-between">
+                Vật Lý <i class="fa-solid fa-chevron-down"></i>
+              </summary>
+              <div class="mt-2 pl-4 border-l-2 border-red-300">
+                <p>• Rắn, không bay hơi, nhiệt độ nóng chảy không xác định.</p>
+                <p>
+                  • <b>Độ bền:</b> Mạch thẳng (PE-HD) bền dai > Mạch nhánh
+                  (PE-LD) mềm.
+                </p>
+                <p>
+                  • <b>Độ kết tinh:</b> Cao (bền cứng) vs Vô định hình (PMMA
+                  trong suốt).
+                </p>
+                <p>• <b>Cách điện/nhiệt:</b> Tốt (PE, PVC).</p>
+              </div>
+            </details>
+            <details
+              class="group bg-slate-50 dark:bg-slate-800 rounded-lg p-3 cursor-pointer"
+            >
+              <summary class="font-bold flex justify-between">
+                Hóa Học <i class="fa-solid fa-chevron-down"></i>
+              </summary>
+              <div class="mt-2 pl-4 border-l-2 border-red-300">
+                <p>• <b>Phản ứng giữ mạch:</b> PVC thế Cl, PS thế vòng thơm.</p>
+                <p>
+                  • <b>Phản ứng cắt mạch:</b> PMMA (nhóm este) bị thủy phân;
+                  Polymer bị lão hóa bởi nhiệt/UV.
+                </p>
+                <p>• <b>Đặc biệt:</b> Teflon siêu bền, trơ hóa học.</p>
+              </div>
+            </details>
           </div>
         </div>
 
-        <!-- Tính chất & Tổng hợp (Interactive Tabs) -->
-        <div class="grid md:grid-cols-2 gap-8">
-          <!-- Vật lí & Hóa học -->
-          <div
-            class="bg-gradient-to-br from-white to-blue-50 p-6 rounded-2xl border border-blue-100"
-          >
-            <h3
-              class="text-xl font-bold text-blue-800 mb-4 border-b border-blue-200 pb-2"
-            >
-              Tính Chất
-            </h3>
-            <div class="space-y-4">
-              <details
-                class="group bg-white rounded-lg shadow-sm open:shadow-md transition-all duration-300"
+        <!-- Phương pháp tổng hợp -->
+        <div class="glass-panel p-6 rounded-2xl">
+          <h3 class="text-xl font-bold text-purple-500 mb-4">
+            <i class="fa-solid fa-flask mr-2"></i>4. Tổng Hợp
+          </h3>
+          <div class="space-y-3 text-sm">
+            <div class="border-b dark:border-slate-700 pb-2">
+              <span class="font-bold text-purple-600"
+                >A. Trùng hợp (Polymerization):</span
               >
-                <summary
-                  class="flex justify-between items-center cursor-pointer p-4 font-medium text-slate-700 list-none"
-                >
-                  <span
-                    ><i class="fa-solid fa-cube text-blue-500 mr-2"></i> Vật
-                    lý</span
-                  >
-                  <span class="transition group-open:rotate-180"
-                    ><i class="fa-solid fa-chevron-down"></i
-                  ></span>
-                </summary>
-                <div class="text-slate-600 px-4 pb-4 animate-fadeIn">
-                  <ul class="list-disc pl-5 space-y-1">
-                    <li>Chất rắn, không bay hơi.</li>
-                    <li>Nhiệt độ nóng chảy không xác định.</li>
-                    <li>Cách điện, cách nhiệt tốt.</li>
-                    <li>Độ bền: Mạch thẳng (bền) > Mạch nhánh.</li>
-                  </ul>
-                </div>
-              </details>
-              <details
-                class="group bg-white rounded-lg shadow-sm open:shadow-md transition-all duration-300"
+              Monomer có liên kết đôi C=C.
+              <div
+                class="font-mono text-xs bg-slate-100 dark:bg-slate-900 p-2 mt-1 rounded"
               >
-                <summary
-                  class="flex justify-between items-center cursor-pointer p-4 font-medium text-slate-700 list-none"
-                >
-                  <span
-                    ><i class="fa-solid fa-flask text-red-500 mr-2"></i> Hóa
-                    học</span
-                  >
-                  <span class="transition group-open:rotate-180"
-                    ><i class="fa-solid fa-chevron-down"></i
-                  ></span>
-                </summary>
-                <div class="text-slate-600 px-4 pb-4">
-                  <ul class="list-disc pl-5 space-y-1">
-                    <li>Phản ứng giữ nguyên mạch (Thế Cl trong PVC).</li>
-                    <li>Phản ứng phân cắt mạch (Thủy phân, nhiệt phân).</li>
-                    <li>Phản ứng khâu mạch (Lưu hóa cao su).</li>
-                  </ul>
-                </div>
-              </details>
+                nCH₂=CH₂ → –(CH₂–CH₂)ₙ– (PE)
+              </div>
+            </div>
+            <div class="border-b dark:border-slate-700 pb-2">
+              <span class="font-bold text-purple-600"
+                >B. Trùng ngưng (Polycondensation):</span
+              >
+              Monomer có >= 2 nhóm chức. Giải phóng H₂O.
+              <div
+                class="font-mono text-xs bg-slate-100 dark:bg-slate-900 p-2 mt-1 rounded"
+              >
+                nH₂N-[..]-NH₂ + nHOOC-[..]-COOH → Polyamit + 2nH₂O
+              </div>
+            </div>
+            <div>
+              <span class="font-bold text-purple-600">C. Đồng trùng hợp:</span>
+              2 monomer cùng tạo polymer (VD: Cao su Buna-S).
             </div>
           </div>
+        </div>
+      </div>
+    </section>
 
-          <!-- Phương pháp tổng hợp -->
-          <div
-            class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm"
+    <!-- MEGA LAB CENTER: THE CORE INTERACTIVE FEATURE -->
+    <section
+      id="lab-center"
+      class="py-12 bg-slate-900 text-white relative overflow-hidden"
+    >
+      <!-- Background decorative elements -->
+      <div
+        class="absolute top-0 right-0 w-96 h-96 bg-blue-600 rounded-full blur-[120px] opacity-20"
+      ></div>
+      <div
+        class="absolute bottom-0 left-0 w-96 h-96 bg-purple-600 rounded-full blur-[120px] opacity-20"
+      ></div>
+
+      <div class="container mx-auto px-4 relative z-10">
+        <div class="text-center mb-10">
+          <span
+            class="text-blue-400 font-bold tracking-widest text-sm uppercase mb-2 block"
+            >Interactive Lab</span
           >
-            <h3 class="text-xl font-bold text-blue-800 mb-4 border-b pb-2">
-              Phương Pháp Tổng Hợp
-            </h3>
+          <h2 class="text-4xl font-black mb-4 neon-text">
+            PHÒNG THÍ NGHIỆM ẢO
+          </h2>
+          <p class="text-slate-400 max-w-2xl mx-auto">
+            Chọn vật liệu và tác nhân để thực hiện thí nghiệm. Hệ thống sẽ mô
+            phỏng kết quả tương ứng.
+          </p>
+        </div>
 
-            <div class="mb-6">
-              <div class="flex items-center gap-2 mb-2">
-                <span
-                  class="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded"
-                  >A</span
+        <!-- The Main Interface -->
+        <div
+          class="grid lg:grid-cols-12 gap-6 bg-slate-800 rounded-3xl p-2 border border-slate-700 shadow-2xl"
+        >
+          <!-- Left: Controls (Inputs) -->
+          <div
+            class="lg:col-span-3 bg-slate-900/50 rounded-2xl p-6 flex flex-col gap-6"
+          >
+            <div>
+              <h4 class="text-xs font-bold text-slate-500 uppercase mb-3">
+                1. Chọn Vật Liệu (Sample)
+              </h4>
+              <div class="grid grid-cols-2 gap-2" id="material-selector">
+                <button
+                  class="mat-btn p-3 rounded-lg bg-slate-800 hover:bg-blue-600 border border-slate-700 text-sm font-semibold transition text-left"
+                  data-mat="PE"
                 >
-                <h4 class="font-bold">Trùng hợp (Polymerization)</h4>
-              </div>
-              <p class="text-sm text-slate-600 mb-2">
-                Cộng hợp nhiều monomer giống nhau (có liên kết đôi).
-              </p>
-              <div
-                class="bg-slate-100 p-3 rounded font-mono text-xs md:text-sm border-l-4 border-green-500"
-              >
-                nCH₂=CH₂
-                <i class="fa-solid fa-arrow-right mx-1 text-slate-400"></i>
-                –(CH₂–CH₂)ₙ–
+                  PE (Nhựa)
+                </button>
+                <button
+                  class="mat-btn p-3 rounded-lg bg-slate-800 hover:bg-blue-600 border border-slate-700 text-sm font-semibold transition text-left"
+                  data-mat="PVC"
+                >
+                  PVC (Ống)
+                </button>
+                <button
+                  class="mat-btn p-3 rounded-lg bg-slate-800 hover:bg-blue-600 border border-slate-700 text-sm font-semibold transition text-left"
+                  data-mat="RUBBER"
+                >
+                  Cao su
+                </button>
+                <button
+                  class="mat-btn p-3 rounded-lg bg-slate-800 hover:bg-blue-600 border border-slate-700 text-sm font-semibold transition text-left"
+                  data-mat="COMPOSITE"
+                >
+                  Composite
+                </button>
+                <button
+                  class="mat-btn p-3 rounded-lg bg-slate-800 hover:bg-blue-600 border border-slate-700 text-sm font-semibold transition text-left"
+                  data-mat="NILON"
+                >
+                  Nilon-6,6
+                </button>
+                <button
+                  class="mat-btn p-3 rounded-lg bg-slate-800 hover:bg-blue-600 border border-slate-700 text-sm font-semibold transition text-left"
+                  data-mat="BAKELIT"
+                >
+                  Bakelit
+                </button>
               </div>
             </div>
 
             <div>
-              <div class="flex items-center gap-2 mb-2">
-                <span
-                  class="bg-orange-100 text-orange-800 text-xs font-bold px-2 py-1 rounded"
-                  >B</span
+              <h4 class="text-xs font-bold text-slate-500 uppercase mb-3">
+                2. Chọn Tác Động (Action)
+              </h4>
+              <div class="grid grid-cols-1 gap-2" id="action-selector">
+                <button
+                  class="act-btn p-3 rounded-lg bg-slate-800 hover:bg-purple-600 border border-slate-700 text-sm font-semibold transition flex items-center gap-3"
+                  data-act="HEAT"
                 >
-                <h4 class="font-bold">Trùng ngưng (Polycondensation)</h4>
-              </div>
-              <p class="text-sm text-slate-600 mb-2">
-                Monomer có 2 nhóm chức trở lên, giải phóng phân tử nhỏ (H₂O).
-              </p>
-              <div
-                class="bg-slate-100 p-3 rounded font-mono text-xs md:text-sm border-l-4 border-orange-500"
-              >
-                Tạo Nilon-6,6 + nH₂O
+                  <i class="fa-solid fa-fire text-red-400"></i> Đun nóng (Nhiệt)
+                </button>
+                <button
+                  class="act-btn p-3 rounded-lg bg-slate-800 hover:bg-purple-600 border border-slate-700 text-sm font-semibold transition flex items-center gap-3"
+                  data-act="ACID"
+                >
+                  <i class="fa-solid fa-flask-vial text-green-400"></i> Ngâm
+                  Axit/Kiềm
+                </button>
+                <button
+                  class="act-btn p-3 rounded-lg bg-slate-800 hover:bg-purple-600 border border-slate-700 text-sm font-semibold transition flex items-center gap-3"
+                  data-act="FORCE"
+                >
+                  <i class="fa-solid fa-weight-hanging text-yellow-400"></i> Tác
+                  dụng lực
+                </button>
+                <button
+                  class="act-btn p-3 rounded-lg bg-slate-800 hover:bg-purple-600 border border-slate-700 text-sm font-semibold transition flex items-center gap-3"
+                  data-act="STRUCTURE"
+                >
+                  <i class="fa-solid fa-microscope text-cyan-400"></i> Soi cấu
+                  trúc
+                </button>
               </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      <!-- SIMULATION: POLYMER BUILDER -->
-      <section
-        id="game"
-        class="bg-slate-900 rounded-3xl p-8 text-white relative overflow-hidden shadow-2xl"
-      >
-        <div
-          class="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full blur-3xl opacity-20 -mr-20 -mt-20"
-        ></div>
-
-        <div class="relative z-10">
-          <h2
-            class="text-3xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300"
-          >
-            <i class="fa-solid fa-gamepad mr-2"></i> Phòng Thí Nghiệm Ảo: Trùng
-            Hợp PE
-          </h2>
-          <p class="text-slate-300 mb-6">
-            Hãy thêm các monomer Etylen (CH₂=CH₂) và kích hoạt phản ứng để tạo
-            thành Polyetylen.
-          </p>
-
-          <div class="flex flex-col md:flex-row gap-8 items-start">
-            <!-- Controls -->
+          <!-- Center: Screen (Output) -->
+          <div class="lg:col-span-9 flex flex-col">
             <div
-              class="w-full md:w-1/3 bg-slate-800 p-6 rounded-xl border border-slate-700"
+              class="relative w-full h-[400px] lg:h-[500px] bg-black rounded-2xl overflow-hidden lab-screen border border-slate-600"
+              id="simulation-screen"
             >
-              <div class="flex justify-between items-center mb-4">
-                <span class="text-sm text-slate-400"
-                  >Số lượng Monomer:
-                  <span id="monomer-count" class="text-white font-bold"
-                    >0</span
-                  ></span
+              <!-- Canvas for interactive rendering -->
+              <canvas
+                id="labCanvas"
+                class="w-full h-full object-cover"
+              ></canvas>
+
+              <!-- Overlay Text -->
+              <div
+                id="sim-info"
+                class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/90 to-transparent pointer-events-none"
+              >
+                <h3 id="sim-title" class="text-2xl font-bold text-white mb-2">
+                  Chào mừng đến phòng thí nghiệm
+                </h3>
+                <p id="sim-desc" class="text-slate-300 text-sm">
+                  Vui lòng chọn Vật liệu và Hành động bên trái để bắt đầu mô
+                  phỏng.
+                </p>
+              </div>
+
+              <!-- Interactive Controls inside Screen (Hidden by default) -->
+              <div
+                id="screen-controls"
+                class="absolute top-4 right-4 bg-slate-900/80 p-3 rounded-lg border border-slate-600 hidden"
+              >
+                <label class="text-xs text-slate-300 block mb-1"
+                  >Cường độ:</label
                 >
-              </div>
-              <button
-                onclick="addMonomer()"
-                class="w-full py-3 bg-blue-600 hover:bg-blue-500 rounded-lg font-bold mb-3 transition shadow-lg shadow-blue-900/50 flex items-center justify-center gap-2"
-              >
-                <i class="fa-solid fa-plus-circle"></i> Thêm Etylen
-              </button>
-              <button
-                onclick="polymerize()"
-                id="poly-btn"
-                class="w-full py-3 bg-green-600 hover:bg-green-500 rounded-lg font-bold transition shadow-lg shadow-green-900/50 opacity-50 cursor-not-allowed"
-                disabled
-              >
-                <i class="fa-solid fa-bolt"></i> Kích hoạt Trùng Hợp
-              </button>
-              <button
-                onclick="resetLab()"
-                class="w-full mt-3 py-2 border border-slate-600 text-slate-400 hover:text-white hover:border-white rounded-lg transition"
-              >
-                Làm lại
-              </button>
-              <div
-                class="mt-4 p-3 bg-slate-900/50 rounded text-xs text-slate-400"
-              >
-                *Cần ít nhất 3 monomer để trùng hợp.
+                <input
+                  type="range"
+                  id="intensity-slider"
+                  min="0"
+                  max="100"
+                  value="50"
+                  class="w-32 h-2 bg-slate-600 rounded-lg appearance-none cursor-pointer"
+                />
               </div>
             </div>
 
-            <!-- Visualizer -->
-            <div class="w-full md:w-2/3">
-              <div
-                class="bg-white rounded-xl p-1 h-40 relative flex items-center justify-center overflow-hidden"
-                style="
-                  background-image: radial-gradient(
-                    #cbd5e1 1px,
-                    transparent 1px
-                  );
-                  background-size: 20px 20px;
-                "
-              >
-                <div
-                  id="reaction-chamber"
-                  class="flex flex-wrap gap-4 items-center justify-center w-full h-full p-4 transition-all duration-1000"
+            <!-- Quick Experiment Buttons -->
+            <div class="mt-4 overflow-x-auto pb-2">
+              <h4 class="text-xs font-bold text-slate-500 uppercase mb-2">
+                Thí nghiệm nhanh (Presets)
+              </h4>
+              <div class="flex gap-3 w-max">
+                <button
+                  onclick="runPreset('SYN_PE')"
+                  class="px-4 py-2 bg-slate-700 rounded-lg text-xs font-bold hover:bg-blue-600 transition border border-slate-600"
                 >
-                  <span class="text-slate-400 italic">Chưa có monomer...</span>
-                </div>
+                  Tổng hợp PE
+                </button>
+                <button
+                  onclick="runPreset('VULCAN')"
+                  class="px-4 py-2 bg-slate-700 rounded-lg text-xs font-bold hover:bg-blue-600 transition border border-slate-600"
+                >
+                  Lưu hóa cao su
+                </button>
+                <button
+                  onclick="runPreset('GLUE')"
+                  class="px-4 py-2 bg-slate-700 rounded-lg text-xs font-bold hover:bg-blue-600 transition border border-slate-600"
+                >
+                  Keo 502 vs Gỗ
+                </button>
+                <button
+                  onclick="runPreset('BURNING')"
+                  class="px-4 py-2 bg-slate-700 rounded-lg text-xs font-bold hover:bg-blue-600 transition border border-slate-600"
+                >
+                  Đốt PVC (Khí độc)
+                </button>
+                <button
+                  onclick="runPreset('COMPOSITE_LAYER')"
+                  class="px-4 py-2 bg-slate-700 rounded-lg text-xs font-bold hover:bg-blue-600 transition border border-slate-600"
+                >
+                  Cấu tạo Composite
+                </button>
+                <button
+                  onclick="runPreset('NYLON_SYN')"
+                  class="px-4 py-2 bg-slate-700 rounded-lg text-xs font-bold hover:bg-blue-600 transition border border-slate-600"
+                >
+                  Trùng ngưng Nylon-6,6
+                </button>
               </div>
-              <div
-                id="result-text"
-                class="mt-4 text-center font-mono text-green-400 min-h-[1.5rem]"
-              ></div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- PART II: CHẤT DẺO -->
-      <section id="chat-deo">
-        <div class="flex items-center gap-4 mb-8">
-          <div
-            class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600 text-xl font-bold"
-          >
-            II
-          </div>
-          <h2 class="text-3xl font-bold text-slate-800">
-            Chất Dẻo & Vật Liệu Composite
-          </h2>
-        </div>
-
-        <!-- Phân loại Chất dẻo -->
-        <div class="grid md:grid-cols-2 gap-8 mb-12">
-          <div class="bg-orange-50 p-6 rounded-xl border border-orange-100">
-            <h3 class="text-xl font-bold text-orange-800 mb-2">
-              Nhựa Nhiệt Dẻo
-            </h3>
-            <p class="text-sm text-slate-600 mb-4">
-              Nóng chảy khi đun nóng, đông cứng khi nguội. Tái chế được.
-            </p>
-            <div class="flex gap-2">
-              <span
-                class="px-3 py-1 bg-white rounded shadow text-sm font-bold text-orange-600"
-                >PE</span
-              >
-              <span
-                class="px-3 py-1 bg-white rounded shadow text-sm font-bold text-orange-600"
-                >PVC</span
-              >
-              <span
-                class="px-3 py-1 bg-white rounded shadow text-sm font-bold text-orange-600"
-                >PP</span
-              >
-            </div>
-          </div>
-          <div class="bg-purple-50 p-6 rounded-xl border border-purple-100">
-            <h3 class="text-xl font-bold text-purple-800 mb-2">
-              Nhựa Nhiệt Rắn
-            </h3>
-            <p class="text-sm text-slate-600 mb-4">
-              Chịu nhiệt cao, không nóng chảy lại, phân hủy ở nhiệt độ rất cao.
-              Không tái chế.
-            </p>
-            <div class="flex gap-2">
-              <span
-                class="px-3 py-1 bg-white rounded shadow text-sm font-bold text-purple-600"
-                >Bakelit</span
-              >
-              <span
-                class="px-3 py-1 bg-white rounded shadow text-sm font-bold text-purple-600"
-                >Nhựa Ure-Fomanđehit</span
-              >
-            </div>
-          </div>
-        </div>
-
-        <!-- Composite Visualization -->
+    <!-- SECTION 2: CHẤT DẺO & COMPOSITE -->
+    <section
+      id="plastics"
+      class="py-16 container mx-auto px-4 bg-white dark:bg-slate-900 transition-colors"
+    >
+      <div class="flex items-center gap-3 mb-8">
         <div
-          class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden mb-12 flex flex-col md:flex-row"
+          class="w-10 h-10 rounded-lg bg-green-500 flex items-center justify-center text-white font-bold text-xl"
         >
-          <div class="md:w-1/2 p-8 flex flex-col justify-center">
-            <h3 class="text-2xl font-bold mb-4">Vật Liệu Composite</h3>
-            <p class="text-slate-600 mb-6">
-              Là vật liệu tổ hợp từ hai hay nhiều vật liệu khác nhau, tạo nên
-              tính chất vượt trội.
-            </p>
-            <ul class="space-y-3">
-              <li class="flex items-center">
-                <span
-                  class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mr-3 font-bold"
-                  >1</span
+          II
+        </div>
+        <h2 class="text-3xl font-bold">Chất Dẻo & Vật Liệu Composite</h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-12">
+        <!-- Chất dẻo -->
+        <div>
+          <h3 class="text-xl font-bold mb-4 text-blue-600 dark:text-blue-400">
+            1. Chất dẻo (Plastic)
+          </h3>
+          <p class="text-sm mb-4">
+            Là polymer + phụ gia (chất ổn định, chất màu, chất hóa dẻo...).
+          </p>
+          <div class="space-y-4">
+            <div
+              class="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-xl border border-orange-200 dark:border-orange-800"
+            >
+              <h4 class="font-bold text-orange-700 dark:text-orange-400">
+                Nhiệt dẻo (Thermoplastic)
+              </h4>
+              <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                Nóng chảy khi đun, đông cứng khi nguội. Tái chế được.
+              </p>
+              <div class="mt-2 text-xs font-bold text-slate-500">
+                VD: PE, PVC, PP, PMMA
+              </div>
+            </div>
+            <div
+              class="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl border border-purple-200 dark:border-purple-800"
+            >
+              <h4 class="font-bold text-purple-700 dark:text-purple-400">
+                Nhiệt rắn (Thermosetting)
+              </h4>
+              <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                Chịu nhiệt, không nóng chảy lại, phân hủy nhiệt cao. Không tái
+                chế.
+              </p>
+              <div class="mt-2 text-xs font-bold text-slate-500">
+                VD: Nhựa Bakelit, Nhựa Ure-Fomanđehit
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Composite -->
+        <div class="relative">
+          <h3 class="text-xl font-bold mb-4 text-green-600 dark:text-green-400">
+            2. Vật liệu Composite
+          </h3>
+          <div
+            class="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-700 text-center relative overflow-hidden group"
+          >
+            <div class="relative z-10">
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/2682/2682540.png"
+                class="w-24 h-24 mx-auto mb-4 animate-float"
+                alt="Composite"
+              />
+              <p class="mb-2 text-slate-600 dark:text-slate-300 font-bold">
+                Tính chất vượt trội so với từng thành phần riêng lẻ.
+              </p>
+              <div class="text-left text-sm space-y-2 mb-4">
+                <p>• <b>Pha Nền:</b> Polymer/Kim loại/Gốm (Liên kết).</p>
+                <p>• <b>Pha Cốt:</b> Sợi thủy tinh, carbon (Chịu lực).</p>
+              </div>
+              <div class="flex justify-center gap-2 text-xs">
+                <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded"
+                  >Vỏ tàu (Sợi thủy tinh)</span
                 >
-                <span><b>Pha nền (Matrix):</b> Nhựa, polymer (Liên kết)</span>
-              </li>
-              <li class="flex items-center">
-                <span
-                  class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center mr-3 font-bold"
-                  >2</span
+                <span class="bg-gray-200 text-gray-800 px-2 py-1 rounded"
+                  >Máy bay (Composite Carbon)</span
                 >
-                <span
-                  ><b>Pha cốt (Reinforcement):</b> Sợi thủy tinh, carbon (Chịu
-                  lực)</span
-                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Environment -->
+          <div
+            class="mt-6 p-4 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 rounded-xl"
+          >
+            <h4 class="font-bold text-red-600 mb-2">
+              <i class="fa-solid fa-recycle mr-2"></i>Bảo vệ môi trường
+            </h4>
+            <ul class="text-xs space-y-1 text-slate-600 dark:text-slate-400">
+              <li>• Hạn chế rác thải nhựa, vi nhựa.</li>
+              <li>• Không đốt PVC (sinh khí độc Dioxin, HCl).</li>
+              <li>
+                • Giải pháp: Tái chế, dùng nhựa phân hủy sinh học (PHA, PLA).
               </li>
             </ul>
           </div>
-          <div
-            class="md:w-1/2 bg-slate-100 p-8 flex items-center justify-center relative"
-          >
-            <!-- Interactive Layer View -->
-            <div
-              class="relative w-64 h-48 perspective-1000 group cursor-pointer"
-            >
-              <div
-                class="absolute inset-0 bg-blue-500 rounded-lg shadow-lg transform translate-y-8 translate-z-0 transition-transform duration-500 group-hover:translate-y-16 flex items-center justify-center text-white font-bold z-10 border-2 border-white"
-              >
-                Pha Nền (Nhựa)
-              </div>
-              <div
-                class="absolute inset-0 bg-slate-800 rounded-lg shadow-lg transform translate-y-4 translate-z-0 transition-transform duration-500 group-hover:translate-y-0 flex items-center justify-center text-white font-bold z-20 opacity-90 border-2 border-white"
-                style="
-                  background-image: repeating-linear-gradient(
-                    45deg,
-                    #333 0,
-                    #333 10px,
-                    #444 10px,
-                    #444 20px
-                  );
-                "
-              >
-                Pha Cốt (Sợi Carbon)
-              </div>
-              <div
-                class="absolute inset-0 bg-transparent border-4 border-green-500 rounded-lg shadow-xl transform translate-y-6 transition-transform z-30 flex items-center justify-center pointer-events-none"
-              >
-                <span class="bg-green-500 text-white px-2 py-1 rounded text-xs"
-                  >Composite Hoàn Chỉnh</span
-                >
-              </div>
-              <div
-                class="absolute -bottom-10 w-full text-center text-xs text-slate-500"
-              >
-                Di chuột để tách lớp
-              </div>
-            </div>
-          </div>
         </div>
+      </div>
+    </section>
 
-        <!-- Environment -->
-        <div class="grid md:grid-cols-4 gap-4">
+    <!-- SECTION 3: TƠ & CAO SU -->
+    <section id="fibers" class="py-16 bg-slate-50 dark:bg-slate-800/50">
+      <div class="container mx-auto px-4">
+        <div class="flex items-center gap-3 mb-8">
           <div
-            class="md:col-span-1 bg-red-50 p-4 rounded-lg text-center border border-red-100"
-          >
-            <i
-              class="fa-solid fa-triangle-exclamation text-3xl text-red-500 mb-2"
-            ></i>
-            <h4 class="font-bold text-red-800">Hiểm họa</h4>
-            <p class="text-xs text-red-600">
-              Rác thải trắng, vi nhựa, khí độc khi đốt.
-            </p>
-          </div>
-          <div
-            class="md:col-span-3 bg-green-50 p-4 rounded-lg border border-green-100 flex flex-col md:flex-row items-center justify-around"
-          >
-            <div class="text-center mb-2 md:mb-0">
-              <i class="fa-solid fa-recycle text-3xl text-green-600 mb-2"></i>
-              <h4 class="font-bold text-green-800">Tái chế (3R)</h4>
-            </div>
-            <div class="text-center mb-2 md:mb-0">
-              <i class="fa-solid fa-leaf text-3xl text-green-600 mb-2"></i>
-              <h4 class="font-bold text-green-800">Nhựa phân hủy sinh học</h4>
-            </div>
-            <div class="text-center">
-              <i class="fa-solid fa-ban text-3xl text-green-600 mb-2"></i>
-              <h4 class="font-bold text-green-800">Hạn chế nhựa 1 lần</h4>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- PART III: TƠ - CAO SU - KEO -->
-      <section id="to-cao-su">
-        <div class="flex items-center gap-4 mb-8">
-          <div
-            class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 text-xl font-bold"
+            class="w-10 h-10 rounded-lg bg-purple-500 flex items-center justify-center text-white font-bold text-xl"
           >
             III
           </div>
-          <h2 class="text-3xl font-bold text-slate-800">
-            Tơ, Cao Su & Keo Dán
-          </h2>
+          <h2 class="text-3xl font-bold">Tơ - Cao Su - Keo Dán</h2>
         </div>
 
-        <div class="grid md:grid-cols-3 gap-8">
+        <div class="grid md:grid-cols-3 gap-6">
           <!-- Tơ -->
-          <div class="md:col-span-1 space-y-4">
-            <h3 class="text-xl font-bold border-l-4 border-purple-500 pl-3">
-              1. Tơ (Fibers)
+          <div
+            class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border-t-4 border-pink-500"
+          >
+            <h3 class="font-bold text-xl mb-3">
+              <i class="fa-solid fa-shirt mr-2 text-pink-500"></i> 1. Tơ
+              (Fibers)
             </h3>
-            <div
-              class="bg-white p-4 rounded-lg shadow border-l-4 border-green-400"
-            >
-              <h4 class="font-bold text-green-700">Thiên nhiên</h4>
-              <p class="text-sm text-slate-600">Bông, len, tơ tằm.</p>
-            </div>
-            <div
-              class="bg-white p-4 rounded-lg shadow border-l-4 border-blue-400"
-            >
-              <h4 class="font-bold text-blue-700">Hóa học - Nhân tạo</h4>
-              <p class="text-sm text-slate-600">
-                Visco, Axetat (Nguồn gốc Cellulose).
-              </p>
-            </div>
-            <div
-              class="bg-white p-4 rounded-lg shadow border-l-4 border-purple-400"
-            >
-              <h4 class="font-bold text-purple-700">Hóa học - Tổng hợp</h4>
-              <p class="text-sm text-slate-600">
-                Nilon-6,6 (Polyamit), Nitron (Vinyl).
-              </p>
-            </div>
-          </div>
-
-          <!-- Cao Su Simulation -->
-          <div class="md:col-span-2 bg-slate-900 rounded-2xl p-6 text-white">
-            <div class="flex justify-between items-center mb-4">
-              <h3 class="text-xl font-bold">
-                <i class="fa-solid fa-bacterium mr-2"></i> 2. Cao Su & Lưu Hóa
-              </h3>
-              <span
-                class="text-xs bg-yellow-600 px-2 py-1 rounded text-white font-bold"
-                >Mô phỏng</span
-              >
-            </div>
-
-            <p class="text-sm text-slate-400 mb-4">
-              Cao su thô (Isopren) có tính đàn hồi thấp. Quá trình lưu hóa dùng
-              <b>Lưu huỳnh (S)</b> tạo cầu nối disulfur (-S-S-) giúp mạch
-              polymer không bị trượt lên nhau -> Tăng đàn hồi, chịu nhiệt.
+            <p class="text-xs mb-2 italic">
+              Tính chất: Dai, bền, ít thấm nước.
             </p>
-
-            <div class="flex flex-col items-center">
-              <canvas
-                id="rubberCanvas"
-                width="500"
-                height="200"
-                class="bg-slate-800 rounded-lg w-full max-w-lg mb-4 cursor-crosshair border border-slate-700"
-              ></canvas>
-
-              <div class="w-full max-w-lg flex items-center gap-4">
-                <span class="text-sm">Lượng Lưu Huỳnh:</span>
-                <input
-                  type="range"
-                  id="sulfurSlider"
-                  min="0"
-                  max="10"
-                  value="0"
-                  class="flex-grow h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
-                />
-                <span id="sulfurValue" class="text-yellow-400 font-bold w-8"
-                  >0%</span
+            <ul class="text-sm space-y-3 text-slate-600 dark:text-slate-300">
+              <li class="border-b pb-2 dark:border-slate-700">
+                <span class="font-bold block text-slate-800 dark:text-white"
+                  >Thiên nhiên</span
                 >
+                Bông, Len, Tơ tằm.
+              </li>
+              <li class="border-b pb-2 dark:border-slate-700">
+                <span class="font-bold block text-slate-800 dark:text-white"
+                  >Nhân tạo (Bán tổng hợp)</span
+                >
+                Tơ Visco, Tơ Axetat (từ Xenlulozơ).
+              </li>
+              <li>
+                <span class="font-bold block text-slate-800 dark:text-white"
+                  >Tổng hợp</span
+                >
+                • <b>Nilon-6,6:</b> Axit adipic + Hexametylenđiamin.<br />
+                • <b>Nilon-6:</b> Từ Caprolactam.<br />
+                • <b>Nitron (PAN):</b> Dai, giữ nhiệt tốt (may áo ấm).
+              </li>
+            </ul>
+          </div>
+
+          <!-- Cao su -->
+          <div
+            class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border-t-4 border-yellow-500"
+          >
+            <h3 class="font-bold text-xl mb-3">
+              <i class="fa-solid fa-car-side mr-2 text-yellow-500"></i> 2. Cao
+              Su
+            </h3>
+            <div class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+              <div>
+                <span class="font-bold block text-slate-800 dark:text-white"
+                  >Cao su thiên nhiên</span
+                >
+                Monomer: Isopren CH₂=C(CH₃)-CH=CH₂.<br />
+                Cấu trúc: cis-1,4-polyisopren.
               </div>
-              <p class="text-xs text-center mt-2 text-slate-500 italic">
-                Kéo thanh trượt để xem cầu nối S-S hình thành
-              </p>
+              <div>
+                <span class="font-bold block text-slate-800 dark:text-white"
+                  >Cao su tổng hợp</span
+                >
+                • <b>SBR:</b> Đồng trùng hợp Butadien + Stiren.<br />
+                • <b>Buna-N:</b> Butadien + Acrylonitril (chịu dầu).
+              </div>
+              <div class="bg-yellow-50 dark:bg-yellow-900/20 p-2 rounded">
+                <span class="font-bold text-yellow-700">Lưu hóa cao su:</span>
+                Đun với lưu huỳnh (S) → tạo cầu nối S-S → Tăng tính đàn hồi,
+                chịu nhiệt.
+              </div>
+            </div>
+            <button
+              onclick="runPreset('VULCAN')"
+              class="w-full mt-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded font-bold transition text-sm"
+            >
+              Mô phỏng Lưu hóa (S-S)
+            </button>
+          </div>
+
+          <!-- Keo dán -->
+          <div
+            class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border-t-4 border-blue-500"
+          >
+            <h3 class="font-bold text-xl mb-3">
+              <i class="fa-solid fa-jar mr-2 text-blue-500"></i> 3. Keo Dán
+            </h3>
+            <p class="text-xs mb-3">
+              Kết dính nhờ tương tác phân cực, liên kết H hoặc khóa cơ học.
+            </p>
+            <div class="space-y-2 text-sm">
+              <div class="flex flex-col">
+                <span class="font-bold text-blue-600">Keo Epoxy (Keo AB):</span>
+                Siêu bền, chịu lực/nhiệt tốt.
+              </div>
+              <div class="flex flex-col">
+                <span class="font-bold text-blue-600"
+                  >Keo 502 (Cyanoacrylate):</span
+                >
+                Đông cứng siêu nhanh nhờ hơi nước.
+              </div>
+              <div class="flex flex-col">
+                <span class="font-bold text-blue-600">Keo PVA (Keo sữa):</span>
+                Polyvinyl ancol.
+              </div>
+              <div class="flex flex-col">
+                <span class="font-bold text-blue-600">Nhựa vá:</span>
+                Dung dịch polymer trong dung môi.
+              </div>
             </div>
           </div>
-        </div>
-
-        <!-- Keo Dán -->
-        <div class="mt-12 bg-yellow-50 rounded-xl p-6 border border-yellow-200">
-          <h3 class="text-xl font-bold text-yellow-800 mb-4">
-            3. Keo Dán Tổng Hợp
-          </h3>
-          <div class="grid md:grid-cols-3 gap-6">
-            <div class="text-center">
-              <div
-                class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow text-2xl"
-              >
-                🥛
-              </div>
-              <h4 class="font-bold">Nhựa Vá (Keo 502)</h4>
-              <p class="text-xs text-slate-600">
-                Cyanoacrylate. Đông cứng nhanh nhờ hơi nước trong không khí.
-              </p>
-            </div>
-            <div class="text-center">
-              <div
-                class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow text-2xl"
-              >
-                🪵
-              </div>
-              <h4 class="font-bold">Keo Ure-Fomanđehit</h4>
-              <p class="text-xs text-slate-600">
-                Dán gỗ, bền với nước. Dùng trong ván ép.
-              </p>
-            </div>
-            <div class="text-center">
-              <div
-                class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow text-2xl"
-              >
-                🔧
-              </div>
-              <h4 class="font-bold">Keo Epoxy (Keo AB)</h4>
-              <p class="text-xs text-slate-600">
-                Hai thành phần. Siêu bền, chịu lực, chịu nhiệt tốt.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-slate-900 text-white py-12">
-      <div class="container mx-auto px-4 text-center">
-        <h2 class="text-2xl font-bold mb-4">Hóa Học 12</h2>
-        <p class="text-slate-400 mb-8">
-          Học tập hiệu quả với mô hình trực quan.
-        </p>
-        <div class="flex justify-center gap-4 text-2xl text-slate-500">
-          <i
-            class="fa-brands fa-facebook hover:text-white cursor-pointer transition"
-          ></i>
-          <i
-            class="fa-brands fa-youtube hover:text-white cursor-pointer transition"
-          ></i>
-          <i
-            class="fa-solid fa-envelope hover:text-white cursor-pointer transition"
-          ></i>
-        </div>
-        <div class="mt-8 text-sm text-slate-600 border-t border-slate-800 pt-8">
-          © 2024 Polymer Lab. Designed for Education.
         </div>
       </div>
-    </footer>
+    </section>
 
-    <!-- Scripts -->
+    <!-- SCRIPTS -->
     <script>
-      // --- 1. POLYMER BUILDER LOGIC ---
-      let monomers = [];
-      const reactionChamber = document.getElementById("reaction-chamber");
-      const monomerCountEl = document.getElementById("monomer-count");
-      const polyBtn = document.getElementById("poly-btn");
-      const resultText = document.getElementById("result-text");
+      // --- 1. DARK MODE LOGIC ---
+      const themeToggleBtn = document.getElementById("theme-toggle");
+      const htmlElement = document.documentElement;
 
-      function addMonomer() {
-        if (monomers.length < 8) {
-          // Limit for visual
-          monomers.push("CH₂=CH₂");
-          renderMonomers();
-          updateUI();
+      themeToggleBtn.addEventListener("click", () => {
+        htmlElement.classList.toggle("dark");
+        if (htmlElement.classList.contains("dark")) {
+          localStorage.setItem("theme", "dark");
         } else {
-          resultText.innerText = "Đã đầy buồng phản ứng!";
-          resultText.className = "mt-4 text-center font-mono text-yellow-400";
+          localStorage.setItem("theme", "light");
         }
+      });
+
+      // Check local storage
+      if (
+        localStorage.getItem("theme") === "dark" ||
+        (!("theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        htmlElement.classList.add("dark");
+      } else {
+        htmlElement.classList.remove("dark");
       }
 
-      function updateUI() {
-        monomerCountEl.innerText = monomers.length;
-        if (monomers.length >= 3) {
-          polyBtn.classList.remove("opacity-50", "cursor-not-allowed");
-          polyBtn.classList.add("animate-pulse");
-          polyBtn.disabled = false;
-        } else {
-          polyBtn.classList.add("opacity-50", "cursor-not-allowed");
-          polyBtn.classList.remove("animate-pulse");
-          polyBtn.disabled = true;
-        }
-      }
+      // --- 2. THREE.JS BACKGROUND HERO ---
+      const initThreeJS = () => {
+        const container = document.getElementById("canvas-container");
+        if (!container) return;
 
-      function renderMonomers(isPolymer = false) {
-        reactionChamber.innerHTML = "";
-
-        if (monomers.length === 0) {
-          reactionChamber.innerHTML =
-            '<span class="text-slate-400 italic">Chưa có monomer...</span>';
-          return;
-        }
-
-        // Container for the chain or free floating
-        const container = document.createElement("div");
-        container.className = isPolymer
-          ? "flex items-center bg-blue-900/50 p-4 rounded-full border border-blue-400 shadow-lg transition-all duration-1000"
-          : "flex flex-wrap gap-4 justify-center";
-
-        monomers.forEach((m, index) => {
-          const el = document.createElement("div");
-          // Styles based on state
-          if (isPolymer) {
-            el.className =
-              "w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg transform transition-all duration-500 scale-100 relative mx-[-5px] z-10 border-2 border-white";
-            el.innerHTML = "CH₂";
-            // Add bond line
-            if (index < monomers.length - 1) {
-              const bond = document.createElement("div");
-              bond.className = "absolute -right-4 w-6 h-1 bg-white z-0";
-              el.appendChild(bond);
-            }
-          } else {
-            el.className =
-              "w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-white font-xs font-bold shadow-lg animate-bounce";
-            el.style.animationDelay = `${index * 0.1}s`;
-            el.innerHTML = "C=C";
-          }
-          container.appendChild(el);
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(
+          75,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          1000
+        );
+        const renderer = new THREE.WebGLRenderer({
+          alpha: true,
+          antialias: true,
         });
 
-        reactionChamber.appendChild(container);
-      }
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
 
-      function polymerize() {
-        if (monomers.length < 3) return;
+        // Particles (Molecules)
+        const geometry = new THREE.IcosahedronGeometry(1, 0);
+        const material = new THREE.MeshBasicMaterial({
+          color: 0x3b82f6,
+          wireframe: true,
+          transparent: true,
+          opacity: 0.3,
+        });
 
-        // Visual transition
-        resultText.innerText = "Đang xúc tác nhiệt độ & áp suất...";
-        resultText.className = "mt-4 text-center font-mono text-yellow-400";
+        const particles = [];
+        for (let i = 0; i < 20; i++) {
+          const mesh = new THREE.Mesh(geometry, material);
+          mesh.position.set(
+            (Math.random() - 0.5) * 30,
+            (Math.random() - 0.5) * 30,
+            (Math.random() - 0.5) * 30
+          );
+          mesh.rotation.set(
+            Math.random() * Math.PI,
+            Math.random() * Math.PI,
+            0
+          );
+          const scale = Math.random() * 2;
+          mesh.scale.set(scale, scale, scale);
+          scene.add(mesh);
+          particles.push({ mesh, speed: Math.random() * 0.01 + 0.002 });
+        }
 
-        setTimeout(() => {
-          renderMonomers(true);
-          resultText.innerHTML = `<span class="text-green-400 font-bold">THÀNH CÔNG!</span> Đã tạo ra Polyetylen (PE). Liên kết đôi C=C đã bị phá vỡ thành liên kết đơn.`;
-          polyBtn.disabled = true;
-          polyBtn.classList.add("opacity-50");
-          polyBtn.classList.remove("animate-pulse");
-        }, 800);
-      }
+        camera.position.z = 15;
 
-      function resetLab() {
-        monomers = [];
-        updateUI();
-        renderMonomers();
-        resultText.innerText = "";
-      }
+        const animate = () => {
+          requestAnimationFrame(animate);
+          particles.forEach((p) => {
+            p.mesh.rotation.x += p.speed;
+            p.mesh.rotation.y += p.speed;
+            p.mesh.position.y += Math.sin(Date.now() * 0.001) * 0.02;
+          });
+          renderer.render(scene, camera);
+        };
 
-      function scrollToSimulation() {
-        document.getElementById("game").scrollIntoView({ behavior: "smooth" });
-      }
+        animate();
 
-      // --- 2. RUBBER VULCANIZATION SIMULATION (CANVAS) ---
-      const canvas = document.getElementById("rubberCanvas");
+        // Resize handle
+        window.addEventListener("resize", () => {
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+      };
+
+      // Defer loading ThreeJS visuals slightly
+      setTimeout(initThreeJS, 100);
+
+      // --- 3. THE LAB SIMULATION ENGINE (MATRIX SYSTEM) ---
+
+      const canvas = document.getElementById("labCanvas");
       const ctx = canvas.getContext("2d");
-      const slider = document.getElementById("sulfurSlider");
-      const sulfurVal = document.getElementById("sulfurValue");
+      const simTitle = document.getElementById("sim-title");
+      const simDesc = document.getElementById("sim-desc");
+      const screenControls = document.getElementById("screen-controls");
+      const slider = document.getElementById("intensity-slider");
 
-      let sulfurLevel = 0;
-      let offset = 0;
+      // Resize canvas
+      function resizeCanvas() {
+        canvas.width = canvas.parentElement.offsetWidth;
+        canvas.height = canvas.parentElement.offsetHeight;
+      }
+      window.addEventListener("resize", resizeCanvas);
+      resizeCanvas();
 
-      function drawRubber() {
+      let currentAnimId = null;
+      let currentState = { mat: null, act: null };
+
+      // Selection Logic
+      document.querySelectorAll(".mat-btn").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          document
+            .querySelectorAll(".mat-btn")
+            .forEach((b) =>
+              b.classList.remove("ring-2", "ring-blue-400", "bg-blue-700")
+            );
+          e.target.classList.add("ring-2", "ring-blue-400", "bg-blue-700");
+          currentState.mat = e.target.getAttribute("data-mat");
+          checkAndRun();
+        });
+      });
+
+      document.querySelectorAll(".act-btn").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          document
+            .querySelectorAll(".act-btn")
+            .forEach((b) =>
+              b.classList.remove("ring-2", "ring-purple-400", "bg-purple-700")
+            );
+          e.target
+            .closest("button")
+            .classList.add("ring-2", "ring-purple-400", "bg-purple-700");
+          currentState.act = e.target
+            .closest("button")
+            .getAttribute("data-act");
+          checkAndRun();
+        });
+      });
+
+      function checkAndRun() {
+        if (currentState.mat && currentState.act) {
+          runSimulation(currentState.mat, currentState.act);
+        }
+      }
+
+      // --- SIMULATION LIBRARY (The Core "20 Simulations" Logic) ---
+      // We define specific draw functions for combinations
+
+      function runSimulation(mat, act) {
+        cancelAnimationFrame(currentAnimId);
+        screenControls.classList.add("hidden");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Drawing settings
-        const chains = 3;
-        const amplitude = 20 - sulfurLevel * 1.5; // Sulfur makes it straighter (less messy)
-        const frequency = 0.05;
-        const startY = 50;
-        const gap = 50;
+        // Logic Matrix
+        if (act === "STRUCTURE") {
+          runStructureSim(mat);
+        } else if (act === "HEAT") {
+          runHeatSim(mat);
+        } else if (act === "ACID") {
+          runAcidSim(mat);
+        } else if (act === "FORCE") {
+          runForceSim(mat);
+        }
+      }
 
-        ctx.lineWidth = 4;
-        ctx.lineCap = "round";
+      function runPreset(presetName) {
+        // Mapping shortcuts to visual outputs
+        const presets = {
+          SYN_PE: () => {
+            simTitle.innerText = "Tổng hợp Polyetylen (PE)";
+            simDesc.innerHTML =
+              "Phản ứng Trùng hợp: n(CH₂=CH₂) → -(CH₂-CH₂)-n <br> Nhiệt độ, Áp suất, Xúc tác.";
+            startParticleAnim("polymerization");
+          },
+          VULCAN: () => {
+            simTitle.innerText = "Lưu hóa Cao Su";
+            simDesc.innerText =
+              "Kéo thanh trượt để thêm cầu nối Lưu huỳnh (S-S). Tăng tính đàn hồi.";
+            screenControls.classList.remove("hidden");
+            startRubberSim();
+          },
+          GLUE: () => {
+            simTitle.innerText = "Cơ chế dán dính";
+            simDesc.innerText =
+              "Keo len lỏi vào bề mặt vật liệu và đông cứng (liên kết cơ học & hóa học).";
+            startGlueSim();
+          },
+          BURNING: () => {
+            simTitle.innerText = "Đốt cháy PVC";
+            simDesc.innerHTML =
+              "<span class='text-red-500'>CẢNH BÁO:</span> Sinh ra khí HCl và Dioxin cực độc. Không nên đốt rác thải nhựa!";
+            startSmokeSim();
+          },
+          COMPOSITE_LAYER: () => {
+            simTitle.innerText = "Cấu trúc Composite";
+            simDesc.innerText = "Nhựa nền bao bọc các sợi cốt chịu lực.";
+            drawCompositeStatic();
+          },
+          NYLON_SYN: () => {
+            simTitle.innerText = "Tổng hợp Nylon-6,6";
+            simDesc.innerText = "Phản ứng Trùng ngưng: Tách nước H2O.";
+            startCondensationSim();
+          },
+        };
+        if (presets[presetName]) presets[presetName]();
+      }
 
-        for (let i = 0; i < chains; i++) {
-          ctx.beginPath();
-          ctx.strokeStyle = "#cbd5e1"; // Slate-300
+      // --- VISUALIZATION HELPERS ---
 
-          let yBase = startY + i * gap;
+      function runStructureSim(mat) {
+        simTitle.innerText = `Cấu trúc phân tử: ${mat}`;
+        simDesc.innerText = "Quan sát dạng mạch polymer.";
 
-          for (let x = 0; x < canvas.width; x++) {
-            // Create wavy line (Amorphous structure)
-            // If sulfur increases, waves synchronize and flatten slightly simulating structure order
-            let y =
-              yBase + Math.sin(x * frequency + offset + i * 2) * amplitude;
-            if (x === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
+        // Generic Chain Drawer
+        const isBranched = mat === "PE"; // Simplified: PE usually linear but can be branched (LDPE)
+        const isNetwork = mat === "BAKELIT" || mat === "RUBBER";
+        const hasSideGroup = mat === "PVC" || mat === "PS";
+
+        let offset = 0;
+        function animate() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.strokeStyle = "#4ade80";
+          ctx.lineWidth = 4;
+          ctx.lineCap = "round";
+
+          const cy = canvas.height / 2;
+
+          // Draw multiple chains
+          for (let i = 0; i < 3; i++) {
+            ctx.beginPath();
+            let yBase = cy + (i - 1) * 60;
+            for (let x = 0; x < canvas.width; x += 5) {
+              let y = yBase + Math.sin((x + offset + i * 100) * 0.02) * 15;
+              if (x === 0) ctx.moveTo(x, y);
+              else ctx.lineTo(x, y);
+
+              // Side groups (Cl, Benzene)
+              if (hasSideGroup && x % 40 === 0) {
+                ctx.fillStyle = mat === "PVC" ? "#facc15" : "#f472b6"; // Yellow for Cl, Pink for Benzene
+                ctx.beginPath();
+                ctx.arc(x, y - 15, 6, 0, Math.PI * 2);
+                ctx.fill();
+              }
+            }
+            ctx.stroke();
+
+            // Cross-links for network
+            if (isNetwork && i < 2) {
+              ctx.strokeStyle = "#fcd34d"; // Yellow bridges
+              for (let x = 50; x < canvas.width; x += 100) {
+                ctx.beginPath();
+                ctx.moveTo(
+                  x,
+                  yBase + Math.sin((x + offset + i * 100) * 0.02) * 15
+                );
+                ctx.lineTo(
+                  x,
+                  yBase +
+                    60 +
+                    Math.sin((x + offset + (i + 1) * 100) * 0.02) * 15
+                );
+                ctx.stroke();
+              }
+              ctx.strokeStyle = "#4ade80"; // Reset
+            }
           }
+          offset += 2;
+          currentAnimId = requestAnimationFrame(animate);
+        }
+        animate();
+      }
+
+      function runHeatSim(mat) {
+        const isThermoplastic = ["PE", "PVC", "NILON", "PMMA"].includes(mat);
+        simTitle.innerText = isThermoplastic
+          ? `${mat}: Nhựa Nhiệt Dẻo`
+          : `${mat}: Nhựa Nhiệt Rắn`;
+        simDesc.innerText = isThermoplastic
+          ? "Đun nóng -> Chảy mềm. Để nguội -> Rắn lại."
+          : "Chịu nhiệt tốt, không nóng chảy mà bị phân hủy ở nhiệt độ rất cao.";
+
+        let heat = 0;
+        let melted = false;
+
+        function animate() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          // Fire source
+          ctx.fillStyle = `rgba(255, ${100 + Math.random() * 100}, 0, 0.8)`;
+          ctx.beginPath();
+          ctx.arc(
+            canvas.width / 2,
+            canvas.height - 50,
+            40 + Math.random() * 10,
+            0,
+            Math.PI * 2
+          );
+          ctx.fill();
+
+          // Object
+          ctx.fillStyle = "#3b82f6";
+          let yPos = canvas.height / 2;
+
+          if (isThermoplastic) {
+            heat += 0.5;
+            if (heat > 100) melted = true;
+          }
+
+          if (melted) {
+            // Blob effect
+            ctx.beginPath();
+            ctx.moveTo(canvas.width / 2 - 50, yPos);
+            ctx.bezierCurveTo(
+              canvas.width / 2 - 70,
+              yPos + heat / 2,
+              canvas.width / 2 + 70,
+              yPos + heat / 2,
+              canvas.width / 2 + 50,
+              yPos
+            );
+            ctx.fill();
+            ctx.fillStyle = "white";
+            ctx.fillText("Đã nóng chảy", canvas.width / 2 - 40, yPos - 20);
+          } else {
+            // Solid Block
+            ctx.fillRect(canvas.width / 2 - 50, yPos - 25, 100, 50);
+            if (!isThermoplastic) {
+              ctx.fillStyle = "white";
+              ctx.fillText(
+                "Vẫn cứng (Nhiệt rắn)",
+                canvas.width / 2 - 60,
+                yPos - 40
+              );
+            }
+          }
+
+          currentAnimId = requestAnimationFrame(animate);
+        }
+        animate();
+      }
+
+      function runAcidSim(mat) {
+        simTitle.innerText = `Thử nghiệm Axit với ${mat}`;
+        const isResistant = ["PE", "PVC", "COMPOSITE", "PTFE"].includes(mat); // Simplified
+        simDesc.innerText = isResistant
+          ? "Không phản ứng. Bền với môi trường axit."
+          : "Bị ăn mòn hoặc thủy phân (đặc biệt là Nilon, PMMA).";
+
+        let drops = [];
+        function animate() {
+          ctx.fillStyle = "rgba(0,0,0,0.1)"; // Fade effect
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          // Material Surface
+          ctx.fillStyle = isResistant ? "#4ade80" : "#f87171"; // Green good, Red bad
+          ctx.fillRect(0, canvas.height - 100, canvas.width, 100);
+
+          // Acid Drops
+          if (Math.random() < 0.1)
+            drops.push({ x: Math.random() * canvas.width, y: 0 });
+
+          ctx.fillStyle = "#ffff00";
+          drops.forEach((d, i) => {
+            d.y += 5;
+            ctx.beginPath();
+            ctx.arc(d.x, d.y, 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            if (d.y > canvas.height - 100) {
+              // Impact
+              if (!isResistant) {
+                ctx.fillStyle = "white"; // Fizz
+                ctx.beginPath();
+                ctx.arc(
+                  d.x,
+                  canvas.height - 100,
+                  Math.random() * 10,
+                  0,
+                  Math.PI * 2
+                );
+                ctx.fill();
+              }
+              drops.splice(i, 1);
+            }
+          });
+
+          currentAnimId = requestAnimationFrame(animate);
+        }
+        animate();
+      }
+
+      function runForceSim(mat) {
+        simTitle.innerText = `Tác dụng lực lên ${mat}`;
+        const isElastic = mat === "RUBBER";
+        const isBrittle = mat === "BAKELIT" || mat === "PS";
+
+        simDesc.innerText = isElastic
+          ? "Biến dạng đàn hồi (Co giãn tốt)."
+          : isBrittle
+          ? "Cứng, giòn, dễ vỡ khi lực quá mạnh."
+          : "Dẻo, biến dạng không hồi phục (biến dạng dẻo).";
+
+        let time = 0;
+        function animate() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          let stretch = Math.sin(time) * 50;
+          let centerX = canvas.width / 2;
+          let centerY = canvas.height / 2;
+
+          if (isElastic) {
+            // Rubber band behavior
+            ctx.fillStyle = "#fbbf24";
+            ctx.fillRect(
+              centerX - 50 - Math.abs(stretch),
+              centerY - 25 + Math.abs(stretch) / 4,
+              100 + Math.abs(stretch) * 2,
+              50 - Math.abs(stretch) / 2
+            );
+          } else if (isBrittle) {
+            // Does not move much, then cracks? (Simplified: just rigid shake)
+            let shake = Math.sin(time * 10) * 2;
+            ctx.fillStyle = "#475569";
+            ctx.fillRect(centerX - 50 + shake, centerY - 25, 100, 50);
+          } else {
+            // Plastic deformation (Stretches but stays)
+            ctx.fillStyle = "#3b82f6";
+            ctx.fillRect(
+              centerX - 50,
+              centerY - 25,
+              100 + Math.abs(stretch),
+              50
+            );
+          }
+
+          time += 0.05;
+          currentAnimId = requestAnimationFrame(animate);
+        }
+        animate();
+      }
+
+      // --- SPECIFIC PRESET SIMULATIONS ---
+
+      function startParticleAnim(type) {
+        let particles = [];
+        for (let i = 0; i < 30; i++) {
+          particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 2,
+            vy: (Math.random() - 0.5) * 2,
+            linked: false,
+          });
+        }
+
+        function animate() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          // Draw particles
+          particles.forEach((p) => {
+            if (!p.linked) {
+              p.x += p.vx;
+              p.y += p.vy;
+              // Bounce
+              if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+              if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+            }
+
+            ctx.fillStyle = "#60a5fa";
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "white";
+            ctx.font = "10px Arial";
+            ctx.fillText("M", p.x - 4, p.y + 3);
+          });
+
+          // Draw Chain formation
+          ctx.strokeStyle = "white";
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          // Simple visualization: connect close particles
+          particles.forEach((p1, i) => {
+            particles.forEach((p2, j) => {
+              if (i !== j) {
+                let dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
+                if (dist < 60) {
+                  ctx.moveTo(p1.x, p1.y);
+                  ctx.lineTo(p2.x, p2.y);
+                  p1.linked = true;
+                  p2.linked = true;
+                  // Pull together
+                  let dx = p2.x - p1.x;
+                  let dy = p2.y - p1.y;
+                  p1.x += dx * 0.01;
+                  p1.y += dy * 0.01;
+                }
+              }
+            });
+          });
+          ctx.stroke();
+
+          currentAnimId = requestAnimationFrame(animate);
+        }
+        animate();
+      }
+
+      function startRubberSim() {
+        let offset = 0;
+        function animate() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const sLevel = slider.value / 10; // 0 to 10
+
+          ctx.lineWidth = 5;
+          ctx.lineCap = "round";
+
+          // Draw 3 chains
+          for (let i = 0; i < 3; i++) {
+            ctx.strokeStyle = "#94a3b8";
+            ctx.beginPath();
+            let yBase = 100 + i * 80;
+            for (let x = 0; x < canvas.width; x += 5) {
+              // If high sulfur, less wavy (more rigid structure)
+              let amp = 20 - sLevel;
+              let y = yBase + Math.sin((x + offset + i * 50) * 0.03) * amp;
+              if (x === 0) ctx.moveTo(x, y);
+              else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+          }
+
+          // Draw Sulfur bridges
+          if (sLevel > 1) {
+            ctx.strokeStyle = "#facc15"; // Yellow
+            let bridges = Math.floor(sLevel * 2);
+            let spacing = canvas.width / (bridges + 1);
+
+            for (let i = 0; i < 2; i++) {
+              let yTop = 100 + i * 80;
+              let yBot = 100 + (i + 1) * 80;
+              for (let b = 1; b <= bridges; b++) {
+                let x = b * spacing;
+                // Calculate simple Y positions
+                let yt =
+                  yTop + Math.sin((x + offset + i * 50) * 0.03) * (20 - sLevel);
+                let yb =
+                  yBot +
+                  Math.sin((x + offset + (i + 1) * 50) * 0.03) * (20 - sLevel);
+
+                ctx.beginPath();
+                ctx.moveTo(x, yt);
+                ctx.lineTo(x, yb);
+                ctx.stroke();
+
+                // S atoms
+                ctx.fillStyle = "yellow";
+                ctx.beginPath();
+                ctx.arc(x, yt + (yb - yt) / 2, 4, 0, Math.PI * 2);
+                ctx.fill();
+              }
+            }
+          }
+
+          offset += 2;
+          currentAnimId = requestAnimationFrame(animate);
+        }
+        animate();
+      }
+
+      function startSmokeSim() {
+        let particles = [];
+        function animate() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          // Base PVC
+          ctx.fillStyle = "#334155";
+          ctx.fillRect(canvas.width / 2 - 40, canvas.height - 50, 80, 50);
+
+          // Fire
+          ctx.fillStyle = "orange";
+          ctx.beginPath();
+          ctx.arc(
+            canvas.width / 2,
+            canvas.height - 50,
+            30 + Math.random() * 5,
+            0,
+            Math.PI * 2
+          );
+          ctx.fill();
+
+          // Smoke (Toxic)
+          particles.push({
+            x: canvas.width / 2 + (Math.random() - 0.5) * 20,
+            y: canvas.height - 80,
+            vx: (Math.random() - 0.5) * 2,
+            vy: -1 - Math.random(),
+            life: 100,
+            isHCL: Math.random() > 0.5,
+          });
+
+          particles.forEach((p, i) => {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.life--;
+
+            ctx.fillStyle = p.isHCL
+              ? `rgba(20, 255, 20, ${p.life / 100})`
+              : `rgba(100,100,100, ${p.life / 100})`;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.isHCL ? 3 : 8, 0, Math.PI * 2);
+            ctx.fill();
+
+            if (p.isHCL && p.life > 80) {
+              ctx.fillStyle = "white";
+              ctx.font = "10px Arial";
+              ctx.fillText("HCl", p.x, p.y);
+            }
+
+            if (p.life <= 0) particles.splice(i, 1);
+          });
+
+          currentAnimId = requestAnimationFrame(animate);
+        }
+        animate();
+      }
+
+      function startGlueSim() {
+        let particles = [];
+        let frame = 0;
+        function animate() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          // Draw Surface (Wood - rough)
+          ctx.fillStyle = "#a0522d"; // Brown
+          ctx.beginPath();
+          ctx.moveTo(0, canvas.height - 50);
+          for (let x = 0; x < canvas.width; x += 10) {
+            ctx.lineTo(x, canvas.height - 50 + Math.random() * 5);
+          }
+          ctx.lineTo(canvas.width, canvas.height);
+          ctx.lineTo(0, canvas.height);
+          ctx.fill();
+
+          // Draw Glue Drops penetrating
+          if (frame < 100) {
+            ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+            ctx.beginPath();
+            ctx.moveTo(canvas.width / 2 - 40, canvas.height - 100);
+            ctx.bezierCurveTo(
+              canvas.width / 2 - 60,
+              canvas.height - 50,
+              canvas.width / 2 + 60,
+              canvas.height - 50,
+              canvas.width / 2 + 40,
+              canvas.height - 100
+            );
+            ctx.fill();
+            ctx.fillStyle = "white";
+            ctx.fillText(
+              "Keo lỏng thấm vào khe nứt",
+              canvas.width / 2 - 60,
+              canvas.height - 110
+            );
+          } else {
+            ctx.fillStyle = "rgba(255, 255, 255, 1)";
+            ctx.fillRect(canvas.width / 2 - 40, canvas.height - 80, 80, 40);
+
+            // Arrows showing mechanical lock
+            ctx.strokeStyle = "yellow";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(canvas.width / 2, canvas.height - 40);
+            ctx.lineTo(canvas.width / 2, canvas.height - 20); // Into wood
+            ctx.stroke();
+
+            ctx.fillStyle = "yellow";
+            ctx.fillText(
+              "Đông cứng & Khóa cơ học",
+              canvas.width / 2 - 60,
+              canvas.height - 90
+            );
+          }
+
+          frame++;
+          currentAnimId = requestAnimationFrame(animate);
+        }
+        animate();
+      }
+
+      function startCondensationSim() {
+        let mols = [];
+        // Generate Acid and Amine molecules
+        for (let i = 0; i < 10; i++) {
+          mols.push({ x: 50 + i * 60, y: 200, type: "ACID" });
+          mols.push({ x: 80 + i * 60, y: 200, type: "AMINE" });
+        }
+
+        let step = 0;
+
+        function animate() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          mols.forEach((m, i) => {
+            ctx.fillStyle = m.type === "ACID" ? "#f87171" : "#60a5fa";
+            ctx.fillRect(m.x, m.y, 20, 20);
+            ctx.fillStyle = "white";
+            ctx.font = "10px Arial";
+            ctx.fillText(m.type === "ACID" ? "COOH" : "NH2", m.x - 2, m.y + 12);
+          });
+
+          if (step > 50) {
+            ctx.fillStyle = "white";
+            ctx.font = "14px Arial";
+            ctx.fillText("Tách nước (H2O)", canvas.width / 2 - 40, 150);
+
+            // Draw water dropping
+            ctx.fillStyle = "#38bdf8";
+            for (let i = 0; i < 10; i++) {
+              ctx.beginPath();
+              ctx.arc(80 + i * 60, 230 + (step - 50) * 2, 5, 0, Math.PI * 2);
+              ctx.fill();
+            }
+
+            // Draw Link
+            ctx.fillStyle = "#4ade80"; // Polymer chain color
+            ctx.fillRect(50, 200, 580, 20);
+            ctx.fillStyle = "black";
+            ctx.fillText("Polyamit (Nilon-6,6)", 300, 215);
+          } else {
+            // Move closer
+            mols.forEach((m, i) => {
+              if (i % 2 !== 0) m.x -= 0.5;
+              else m.x += 0.5;
+            });
+          }
+
+          step++;
+          currentAnimId = requestAnimationFrame(animate);
+        }
+        animate();
+      }
+
+      function drawCompositeStatic() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+
+        // Draw Matrix (Resin)
+        ctx.fillStyle = "#3b82f6";
+        ctx.fillRect(cx - 100, cy - 100, 200, 200);
+
+        // Draw Reinforcement (Fibers)
+        ctx.strokeStyle = "#1e293b";
+        ctx.lineWidth = 4;
+
+        // Grid pattern for Carbon fibers
+        for (let i = 0; i < 10; i++) {
+          // Horizontal
+          ctx.beginPath();
+          ctx.moveTo(cx - 100, cy - 100 + i * 20);
+          ctx.lineTo(cx + 100, cy - 100 + i * 20);
+          ctx.stroke();
+
+          // Vertical
+          ctx.beginPath();
+          ctx.moveTo(cx - 100 + i * 20, cy - 100);
+          ctx.lineTo(cx - 100 + i * 20, cy + 100);
           ctx.stroke();
         }
 
-        // Draw Sulfur Bridges
-        if (sulfurLevel > 0) {
-          const bridgeCount = Math.floor(sulfurLevel * 1.5); // Number of bridges based on slider
-          const bridgeSpacing = canvas.width / (bridgeCount + 1);
-
-          for (let i = 0; i < chains - 1; i++) {
-            let yBaseTop = startY + i * gap;
-            let yBaseBottom = startY + (i + 1) * gap;
-
-            for (let b = 1; b <= bridgeCount; b++) {
-              let x = b * bridgeSpacing;
-
-              // Calculate exact Y points on the sine waves
-              let yTop =
-                yBaseTop + Math.sin(x * frequency + offset + i * 2) * amplitude;
-              let yBottom =
-                yBaseBottom +
-                Math.sin(x * frequency + offset + (i + 1) * 2) * amplitude;
-
-              // Draw S-S bond
-              ctx.beginPath();
-              ctx.strokeStyle = "#facc15"; // Yellow
-              ctx.moveTo(x, yTop);
-              ctx.lineTo(x, yBottom);
-              ctx.stroke();
-
-              // Draw S atoms
-              ctx.fillStyle = "#facc15";
-              ctx.beginPath();
-              ctx.arc(x, yTop + (yBottom - yTop) / 2, 4, 0, Math.PI * 2);
-              ctx.fill();
-            }
-          }
-        }
-
-        offset += 0.05; // Animation speed
-        requestAnimationFrame(drawRubber);
+        // Label
+        ctx.fillStyle = "white";
+        ctx.font = "16px Arial";
+        ctx.fillText("Pha Nền (Nhựa)", cx - 80, cy - 120);
+        ctx.fillText("Pha Cốt (Sợi)", cx + 110, cy);
       }
 
-      slider.addEventListener("input", (e) => {
-        sulfurLevel = parseInt(e.target.value);
-        sulfurVal.innerText = sulfurLevel + "0%";
-      });
+      // --- EXTERNAL FUNCTION CALLER FROM TABLE ---
+      window.loadSimulation = (type) => {
+        document.getElementById("lab-center").scrollIntoView();
+        // Simulate button click
+        currentState.mat = type;
+        runStructureSim(type);
+      };
 
-      // Start Animation
-      drawRubber();
+      // Initialize First Lab State
+      checkAndRun();
     </script>
   </body>
 </html>

@@ -1,11 +1,62 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" class="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hóa Học 11: Nitrogen & Sulfur (Full)</title>
+    <title>ChemStudy Teen - Nitrogen & Sulfur</title>
+    <link rel="icon" href="../../../favicon/educhem.svg" type="image/svg+xml" />
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              chem: {
+                100: "#e0f2fe",
+                500: "#0ea5e9",
+                600: "#0284c7",
+                900: "#0c4a6e",
+              },
+              nitro: "#8b5cf6", // Purple for Nitrogen
+              sulfur: "#eab308", // Yellow for Sulfur
+              acid: "#ef4444",
+              base: "#3b82f6",
+            },
+            animation: {
+              float: "float 3s ease-in-out infinite",
+              fume: "fume 2s infinite",
+              drip: "drip 1.5s infinite",
+              burn: "burn 0.5s infinite alternate",
+            },
+            keyframes: {
+              float: {
+                "0%, 100%": { transform: "translateY(0)" },
+                "50%": { transform: "translateY(-10px)" },
+              },
+              fume: {
+                "0%": { transform: "translateY(0) scale(1)", opacity: 0.8 },
+                "100%": {
+                  transform: "translateY(-20px) scale(1.5)",
+                  opacity: 0,
+                },
+              },
+              drip: {
+                "0%": { transform: "translateY(0)" },
+                "100%": { transform: "translateY(20px)" },
+              },
+              burn: {
+                "0%": { transform: "scale(1)", opacity: 0.9 },
+                "100%": { transform: "scale(1.1)", opacity: 1 },
+              },
+            },
+          },
+        },
+      };
+    </script>
+
     <!-- React & ReactDOM -->
     <script
       crossorigin
@@ -15,9 +66,9 @@
       crossorigin
       src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
     ></script>
-    <!-- Babel for JSX -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- Lucide Icons -->
+
+    <!-- Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
@@ -26,70 +77,794 @@
 
       body {
         font-family: "Be Vietnam Pro", sans-serif;
-        background-color: #f8fafc;
-        color: #1e293b;
-      }
-
-      .glass-panel {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(226, 232, 240, 0.8);
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-          0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      }
-
-      .chem-equation {
-        font-family: "JetBrains Mono", monospace;
-        background-color: #f1f5f9;
-        padding: 0.5rem 0.75rem;
-        border-radius: 0.5rem;
-        border-left: 4px solid #3b82f6;
-        font-size: 0.9rem;
-        color: #0f172a;
-        overflow-x: auto;
-        white-space: nowrap;
-      }
-
-      /* Animations */
-      @keyframes float {
-        0% {
-          transform: translateY(0px);
-        }
-        50% {
-          transform: translateY(-5px);
-        }
-        100% {
-          transform: translateY(0px);
-        }
+        transition: background-color 0.3s, color 0.3s;
       }
 
       /* Custom Scrollbar */
       ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
+        width: 6px;
+        height: 6px;
       }
       ::-webkit-scrollbar-track {
-        background: #f1f1f1;
+        background: transparent;
       }
       ::-webkit-scrollbar-thumb {
         background: #cbd5e1;
-        border-radius: 4px;
+        border-radius: 3px;
       }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8;
+      .dark ::-webkit-scrollbar-thumb {
+        background: #475569;
+      }
+
+      /* Glassmorphism */
+      .glass {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+      .dark .glass {
+        background: rgba(15, 23, 42, 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .chem-eq {
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .tab-btn-active {
+        background-color: #0ea5e9;
+        color: white;
+        box-shadow: 0 2px 4px rgba(14, 165, 233, 0.3);
+      }
+      .tab-btn-inactive {
+        color: #64748b;
+      }
+      .tab-btn-inactive:hover {
+        background-color: #f1f5f9;
+        color: #334155;
+      }
+      .dark .tab-btn-inactive:hover {
+        background-color: #1e293b;
+        color: #e2e8f0;
       }
     </style>
   </head>
-  <body>
+  <body
+    class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen"
+  >
     <div id="root"></div>
 
     <script type="text/babel">
-      const { useState, useEffect } = React;
+      const { useState, useEffect, useRef } = React;
 
-      // --- COMPONENTS ---
+      // --- COMPONENTS & UTILS ---
+      const Icon = ({ name, size = 20, className = "" }) => {
+        useEffect(() => {
+          lucide.createIcons();
+        }, [name]);
+        return (
+          <i
+            data-lucide={name}
+            width={size}
+            height={size}
+            className={className}
+          ></i>
+        );
+      };
 
-      const Header = ({ activeTab, setActiveTab }) => {
-        const navItems = [
+      const ExperimentCard = ({ title, children, color = "blue" }) => {
+        const colors = {
+          blue: "border-l-blue-500 text-blue-600 dark:text-blue-400",
+          red: "border-l-red-500 text-red-600 dark:text-red-400",
+          yellow: "border-l-yellow-500 text-yellow-600 dark:text-yellow-400",
+          orange: "border-l-orange-500 text-orange-600 dark:text-orange-400",
+          purple: "border-l-purple-500 text-purple-600 dark:text-purple-400",
+          green: "border-l-green-500 text-green-600 dark:text-green-400",
+        };
+        return (
+          <div
+            className={`glass p-5 rounded-xl my-6 border-l-4 shadow-md transition-all hover:shadow-lg ${
+              colors[color].split(" ")[0]
+            }`}
+          >
+            <h3
+              className={`text-lg font-bold mb-4 flex items-center gap-2 ${colors[
+                color
+              ]
+                .split(" ")
+                .slice(1)
+                .join(" ")}`}
+            >
+              <Icon name="flask-conical" size={22} /> {title}
+            </h3>
+            {children}
+          </div>
+        );
+      };
+
+      // --- SIMULATION 1: LIGHTNING CYCLE (NITROGEN FIXATION) ---
+      const LightningSim = () => {
+        const [step, setStep] = useState(0);
+        const [flashing, setFlashing] = useState(false);
+
+        const trigger = () => {
+          if (step > 0) return;
+          setStep(1);
+          setFlashing(true);
+          setTimeout(() => setFlashing(false), 300);
+          setTimeout(() => setStep(2), 2000); // Oxidation
+          setTimeout(() => setStep(3), 4500); // Rain
+          setTimeout(() => setStep(4), 7000); // Soil
+          setTimeout(() => setStep(0), 10000); // Reset
+        };
+
+        return (
+          <ExperimentCard
+            title="Thí nghiệm 1: Cung cấp Nitrate từ sấm sét"
+            color="yellow"
+          >
+            <div className="relative h-60 bg-gradient-to-b from-slate-800 to-slate-900 rounded-lg overflow-hidden border border-slate-700">
+              <div
+                className={`absolute inset-0 bg-white transition-opacity duration-100 pointer-events-none z-10 ${
+                  flashing ? "opacity-80" : "opacity-0"
+                }`}
+              ></div>
+
+              {/* Clouds */}
+              <div className="absolute top-4 left-10 text-slate-400 opacity-80">
+                <Icon name="cloud" size={48} />
+              </div>
+              <div className="absolute top-8 right-20 text-slate-500 opacity-80">
+                <Icon name="cloud" size={64} />
+              </div>
+
+              {/* Rain */}
+              {step >= 3 && (
+                <div className="absolute inset-0 z-0">
+                  {Array.from({ length: 40 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="absolute w-0.5 h-3 bg-blue-400 opacity-50 animate-[drip_1s_infinite_linear]"
+                      style={{
+                        left: `${Math.random() * 100}%`,
+                        top: `${Math.random() * 50}%`,
+                        animationDelay: `${Math.random()}s`,
+                      }}
+                    ></div>
+                  ))}
+                </div>
+              )}
+
+              {/* Molecules/Text */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center z-20 space-y-4">
+                {step === 0 && (
+                  <div className="text-white font-mono animate-float">
+                    N₂ + O₂ (Không khí)
+                  </div>
+                )}
+                {step >= 1 && step < 2 && (
+                  <div className="text-yellow-400 font-bold text-2xl animate-pulse">
+                    3000°C: N₂ + O₂ → 2NO
+                  </div>
+                )}
+                {step >= 2 && step < 3 && (
+                  <div className="text-orange-400 font-bold text-xl transition-all duration-500">
+                    2NO + O₂ → 2NO₂ (Màu nâu)
+                  </div>
+                )}
+                {step >= 3 && step < 4 && (
+                  <div className="text-blue-300 font-bold text-xl">
+                    2NO₂ + H₂O + [O] → HNO₃
+                  </div>
+                )}
+                {step === 4 && (
+                  <div className="text-green-400 font-bold text-xl bg-slate-900/80 p-2 rounded">
+                    Đất: HNO₃ → NO₃⁻ (Phân đạm)
+                  </div>
+                )}
+              </div>
+
+              {/* Ground */}
+              <div className="absolute bottom-0 w-full h-12 bg-emerald-900 border-t border-emerald-700 flex items-center justify-center">
+                <span className="text-xs text-emerald-300">
+                  Đất trồng / Cây cối
+                </span>
+              </div>
+            </div>
+            <div className="mt-4 text-center">
+              <button
+                onClick={trigger}
+                disabled={step !== 0}
+                className="px-4 py-2 bg-yellow-500 text-slate-900 font-bold rounded-lg hover:bg-yellow-400 disabled:opacity-50 transition shadow-lg w-full md:w-auto"
+              >
+                {step === 0
+                  ? "Tạo sấm sét (3000°C)"
+                  : "Quá trình đang diễn ra..."}
+              </button>
+            </div>
+          </ExperimentCard>
+        );
+      };
+
+      // --- SIMULATION 2: MG BURNING IN N2 ---
+      const MgN2Sim = () => {
+        const [burning, setBurning] = useState(false);
+
+        const start = () => {
+          setBurning(true);
+          setTimeout(() => setBurning(false), 3000);
+        };
+
+        return (
+          <ExperimentCard
+            title="Thí nghiệm 2: Magnesium cháy trong Nitrogen"
+            color="orange"
+          >
+            <div className="flex gap-4 items-center">
+              <div className="w-40 h-56 bg-white/20 border-2 border-slate-300 rounded-lg relative overflow-hidden flex items-end justify-center">
+                <div className="absolute top-2 left-2 text-xs text-slate-500">
+                  Bình khí N₂
+                </div>
+                {/* Mg Ribbon */}
+                <div className="w-1 h-32 bg-slate-400"></div>
+                {/* Flame */}
+                {burning && (
+                  <div className="absolute bottom-20 w-8 h-8 bg-white rounded-full blur-sm animate-[burn_0.1s_infinite]">
+                    <div className="absolute inset-0 bg-yellow-200 blur-md opacity-70"></div>
+                  </div>
+                )}
+                {/* Ash */}
+                <div
+                  className={`absolute bottom-0 w-full h-4 bg-gray-200 transition-opacity duration-1000 ${
+                    burning ? "opacity-0" : "opacity-100"
+                  }`}
+                ></div>
+              </div>
+              <div className="flex-1 space-y-3">
+                <p className="text-sm">
+                  Ở nhiệt độ cao, Nitrogen phản ứng với kim loại mạnh như Mg.
+                </p>
+                <code className="text-xs block bg-slate-100 dark:bg-slate-800 p-2 rounded border border-slate-300 dark:border-slate-700">
+                  3Mg + N₂ → Mg₃N₂ (Magnesium nitride)
+                </code>
+                <button
+                  onClick={start}
+                  disabled={burning}
+                  className="px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700 disabled:opacity-50"
+                >
+                  Đốt nóng Mg
+                </button>
+              </div>
+            </div>
+          </ExperimentCard>
+        );
+      };
+
+      // --- SIMULATION 3: AMMONIA FOUNTAIN ---
+      const FountainSim = () => {
+        const [active, setActive] = useState(false);
+
+        return (
+          <ExperimentCard
+            title="Thí nghiệm 3: Vòi phun Ammonia (Tính tan)"
+            color="blue"
+          >
+            <div className="flex flex-col md:flex-row gap-8 items-center justify-center">
+              <div className="relative w-40 h-64 border-b-4 border-slate-400 rounded-b-lg bg-slate-100 dark:bg-slate-800 overflow-hidden shadow-inner">
+                <div className="absolute top-0 w-full text-center text-xs text-slate-400 pt-2">
+                  Bình chứa khí NH₃
+                </div>
+                <div
+                  className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-2 bg-pink-500 transition-all duration-1000 ${
+                    active ? "h-full" : "h-0"
+                  }`}
+                ></div>
+                {active && (
+                  <div className="absolute top-10 left-1/2 -translate-x-1/2 w-32 h-32 bg-pink-500/30 blur-xl rounded-full animate-pulse"></div>
+                )}
+              </div>
+              <div className="flex-1 space-y-4">
+                <p className="text-sm">
+                  <strong>Nguyên lý:</strong> NH₃ tan cực nhiều trong nước tạo
+                  áp suất thấp, hút nước pha Phenolphthalein lên.
+                </p>
+                <code className="bg-slate-200 dark:bg-slate-700 px-1 rounded text-xs chem-eq">
+                  NH₃ + H₂O ⇌ NH₄⁺ + OH⁻ (Hồng)
+                </code>
+                <button
+                  onClick={() => setActive(!active)}
+                  className={`px-4 py-2 rounded-lg font-bold text-white transition ${
+                    active ? "bg-slate-500" : "bg-blue-600 hover:bg-blue-500"
+                  }`}
+                >
+                  {active ? "Làm lại" : "Kích hoạt thí nghiệm"}
+                </button>
+              </div>
+            </div>
+          </ExperimentCard>
+        );
+      };
+
+      // --- SIMULATION 4: AMMONIA SMOKE (NH3 + HCl) ---
+      const SmokeSim = () => {
+        const [active, setActive] = useState(false);
+        return (
+          <ExperimentCard
+            title="Thí nghiệm 4: Khói trắng (NH₃ + HCl)"
+            color="purple"
+          >
+            <div className="relative h-40 bg-slate-900 rounded-lg flex items-center justify-center overflow-hidden">
+              {/* Swabs */}
+              <div
+                className={`absolute left-0 w-1/3 h-4 bg-slate-500 transition-all duration-1000 ${
+                  active ? "translate-x-[40%]" : "translate-x-[-100%]"
+                }`}
+              >
+                <div className="absolute right-0 w-4 h-6 -top-1 bg-white rounded-full opacity-80"></div>
+                <span className="absolute -top-6 right-0 text-white text-xs">
+                  NH₃
+                </span>
+              </div>
+              <div
+                className={`absolute right-0 w-1/3 h-4 bg-slate-500 transition-all duration-1000 ${
+                  active ? "translate-x-[-40%]" : "translate-x-[100%]"
+                }`}
+              >
+                <div className="absolute left-0 w-4 h-6 -top-1 bg-white rounded-full opacity-80"></div>
+                <span className="absolute -top-6 left-0 text-white text-xs">
+                  HCl
+                </span>
+              </div>
+              {/* Smoke */}
+              <div
+                className={`w-32 h-32 bg-white blur-xl rounded-full transition-opacity duration-2000 ${
+                  active ? "opacity-80" : "opacity-0"
+                }`}
+              ></div>
+              {active && (
+                <div className="absolute text-slate-900 font-bold z-10">
+                  NH₄Cl
+                </div>
+              )}
+            </div>
+            <div className="mt-4 flex justify-between items-center">
+              <code className="text-sm">
+                NH₃(k) + HCl(k) → NH₄Cl(r) (Khói trắng)
+              </code>
+              <button
+                onClick={() => setActive(!active)}
+                className="px-3 py-1 bg-purple-600 text-white rounded text-sm"
+              >
+                {active ? "Làm lại" : "Đưa lại gần"}
+              </button>
+            </div>
+          </ExperimentCard>
+        );
+      };
+
+      // --- SIMULATION 5: HABER PROCESS ---
+      const HaberSim = () => {
+        const [temp, setTemp] = useState(450);
+        const [pressure, setPressure] = useState(200);
+
+        const calculateYield = () => {
+          const tempFactor = Math.max(0, (600 - temp) / 300);
+          const pressFactor = pressure / 400;
+          const baseYield = (tempFactor * 0.6 + pressFactor * 0.4) * 100;
+          return Math.min(98, Math.max(5, baseYield)).toFixed(1);
+        };
+
+        return (
+          <ExperimentCard
+            title="Thí nghiệm 5: Quy trình Haber (Tổng hợp NH₃)"
+            color="green"
+          >
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="space-y-4">
+                <div>
+                  <label className="flex justify-between text-xs font-bold mb-1">
+                    <span>Nhiệt độ: {temp}°C</span>
+                    <Icon name="thermometer" size={14} />
+                  </label>
+                  <input
+                    type="range"
+                    min="300"
+                    max="600"
+                    step="10"
+                    value={temp}
+                    onChange={(e) => setTemp(parseInt(e.target.value))}
+                    className="w-full accent-red-500"
+                  />
+                </div>
+                <div>
+                  <label className="flex justify-between text-xs font-bold mb-1">
+                    <span>Áp suất: {pressure} atm</span>
+                    <Icon name="gauge" size={14} />
+                  </label>
+                  <input
+                    type="range"
+                    min="50"
+                    max="400"
+                    step="10"
+                    value={pressure}
+                    onChange={(e) => setPressure(parseInt(e.target.value))}
+                    className="w-full accent-blue-500"
+                  />
+                </div>
+              </div>
+              <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-xl flex flex-col justify-center gap-2">
+                <div className="flex justify-between text-sm">
+                  <span>Hiệu suất:</span>
+                  <span className="font-bold text-green-600">
+                    {calculateYield()}%
+                  </span>
+                </div>
+                <div className="w-full h-3 bg-slate-300 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-green-500 transition-all duration-300"
+                    style={{ width: `${calculateYield()}%` }}
+                  ></div>
+                </div>
+                <p className="text-[10px] text-slate-500 italic mt-1">
+                  *Công nghiệp: 450°C, 200atm, xúc tác Fe.
+                </p>
+              </div>
+            </div>
+          </ExperimentCard>
+        );
+      };
+
+      // --- SIMULATION 6: HNO3 + Cu ---
+      const HNO3Sim = () => {
+        const [acidType, setAcidType] = useState("dilute");
+        const [reacting, setReacting] = useState(false);
+
+        const startReaction = (type) => {
+          setAcidType(type);
+          setReacting(true);
+          setTimeout(() => setReacting(false), 4000);
+        };
+
+        return (
+          <ExperimentCard
+            title="Thí nghiệm 6: Đồng tác dụng với Acid Nitric"
+            color="red"
+          >
+            <div className="flex gap-4">
+              <div className="w-32 h-40 bg-slate-200 dark:bg-slate-800 rounded-lg relative flex items-end justify-center overflow-hidden border-2 border-slate-300 mx-auto">
+                <div
+                  className={`w-full transition-colors duration-[2000ms] absolute bottom-0 h-24 ${
+                    reacting ? "bg-blue-500/80" : "bg-transparent"
+                  }`}
+                ></div>
+                <div
+                  className={`w-8 h-2 bg-orange-600 rounded mb-4 z-10 transition-transform duration-[3000ms] ${
+                    reacting ? "scale-0" : "scale-100"
+                  }`}
+                ></div>
+                {reacting && (
+                  <div className="absolute top-4 w-full flex flex-col items-center">
+                    {acidType === "conc" ? (
+                      <>
+                        <div className="text-xs font-bold text-amber-700 animate-float">
+                          NO₂ (Nâu)
+                        </div>
+                        <div className="w-20 h-20 bg-amber-700/40 blur-xl rounded-full animate-pulse"></div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="text-xs font-bold text-slate-500 animate-float">
+                          NO (K.Màu)
+                        </div>
+                        <div className="w-12 h-12 bg-slate-400/20 blur-xl rounded-full animate-pulse"></div>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+              <div className="flex-1 flex flex-col justify-center gap-2">
+                <button
+                  onClick={() => startReaction("conc")}
+                  disabled={reacting}
+                  className="w-full py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs disabled:opacity-50"
+                >
+                  HNO₃ Đặc → NO₂ (Nâu)
+                </button>
+                <button
+                  onClick={() => startReaction("dilute")}
+                  disabled={reacting}
+                  className="w-full py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs disabled:opacity-50"
+                >
+                  HNO₃ Loãng → NO (K.màu)
+                </button>
+              </div>
+            </div>
+          </ExperimentCard>
+        );
+      };
+
+      // --- SIMULATION 7: EUTROPHICATION ---
+      const EutrophicationSim = () => {
+        const [nutrients, setNutrients] = useState(1);
+
+        // 1: Clean, 3: Algae Bloom, 5: Dead Zone
+        const algaeOpacity = (nutrients - 1) / 4;
+        const fishCount = Math.max(0, 5 - nutrients);
+
+        return (
+          <ExperimentCard
+            title="Thí nghiệm 7: Hiện tượng Phú dưỡng"
+            color="green"
+          >
+            <div
+              className="relative h-48 bg-cyan-200 dark:bg-cyan-900 rounded-lg overflow-hidden border border-cyan-400 transition-colors duration-1000"
+              style={{
+                backgroundColor: `rgb(${200 - nutrients * 30}, ${
+                  255 - nutrients * 10
+                }, 255)`,
+              }}
+            >
+              {/* Algae Layer */}
+              <div
+                className="absolute inset-0 bg-green-500 mix-blend-multiply transition-opacity duration-500 pointer-events-none"
+                style={{ opacity: algaeOpacity }}
+              ></div>
+
+              {/* Fish */}
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div
+                  key={i}
+                  className={`absolute transition-all duration-1000 ${
+                    i < fishCount
+                      ? "animate-float"
+                      : "rotate-180 translate-y-10 opacity-50"
+                  }`}
+                  style={{
+                    left: `${20 + i * 15}%`,
+                    top: `${40 + (i % 2) * 20}%`,
+                  }}
+                >
+                  <Icon
+                    name="fish"
+                    size={24}
+                    className={
+                      i < fishCount ? "text-orange-500" : "text-gray-600"
+                    }
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="mt-4">
+              <label className="text-sm font-bold block mb-1">
+                Mức độ ô nhiễm (Nitrate/Phosphate): {nutrients}
+              </label>
+              <input
+                type="range"
+                min="1"
+                max="5"
+                value={nutrients}
+                onChange={(e) => setNutrients(parseInt(e.target.value))}
+                className="w-full accent-green-600"
+              />
+              <p className="text-xs text-slate-500 mt-1">
+                {nutrients < 3
+                  ? "Nước sạch, hệ sinh thái cân bằng."
+                  : nutrients < 5
+                  ? "Tảo bùng phát (Nở hoa), che kín mặt nước."
+                  : "Thiếu khí Oxi, cá chết hàng loạt."}
+              </p>
+            </div>
+          </ExperimentCard>
+        );
+      };
+
+      // --- SIMULATION 8: BURNING SULFUR ---
+      const SulfurBurnSim = () => {
+        const [burning, setBurning] = useState(false);
+
+        const start = () => {
+          setBurning(true);
+          setTimeout(() => setBurning(false), 4000);
+        };
+
+        return (
+          <ExperimentCard
+            title="Thí nghiệm 8: Đốt cháy Lưu huỳnh"
+            color="yellow"
+          >
+            <div className="flex items-center gap-4">
+              <div className="relative w-32 h-48 bg-white/10 border-2 border-slate-300 rounded-full flex items-center justify-center overflow-hidden">
+                <span className="absolute top-2 text-xs text-slate-400">
+                  Bình O₂
+                </span>
+                {/* Spoon */}
+                <div
+                  className={`w-1 h-24 bg-gray-400 absolute top-0 transition-transform duration-1000 ${
+                    burning ? "translate-y-10" : "-translate-y-full"
+                  }`}
+                >
+                  <div className="w-4 h-2 bg-yellow-400 rounded-b absolute bottom-0 -left-1.5"></div>
+                  {burning && (
+                    <div className="absolute -bottom-4 -left-3 w-8 h-10 bg-blue-500 blur-md rounded-full animate-pulse opacity-80"></div>
+                  )}
+                </div>
+                {/* Gas */}
+                {burning && (
+                  <div className="absolute inset-0 bg-slate-200/30 animate-[fume_3s_infinite]"></div>
+                )}
+              </div>
+              <div className="flex-1 space-y-2">
+                <p className="text-sm">
+                  S cháy trong O₂ với ngọn lửa màu{" "}
+                  <span className="text-blue-500 font-bold">XANH DƯƠNG</span>.
+                </p>
+                <code className="text-xs block bg-slate-100 dark:bg-slate-800 p-2 rounded">
+                  S + O₂ → SO₂ (Khí mùi hắc)
+                </code>
+                <button
+                  onClick={start}
+                  disabled={burning}
+                  className="px-4 py-2 bg-yellow-500 text-black font-bold rounded text-sm disabled:opacity-50"
+                >
+                  Đốt Sulfur
+                </button>
+              </div>
+            </div>
+          </ExperimentCard>
+        );
+      };
+
+      // --- SIMULATION 9: SO2 + H2S ---
+      const SO2H2SSim = () => {
+        const [mixed, setMixed] = useState(false);
+        return (
+          <ExperimentCard
+            title="Thí nghiệm 9: SO₂ + H₂S (Tạo kết tủa)"
+            color="orange"
+          >
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-20 h-24 border border-slate-300 rounded bg-white relative flex items-center justify-center">
+                <span className="text-xs font-bold text-slate-500">SO₂</span>
+              </div>
+              <span className="text-2xl">+</span>
+              <div className="w-20 h-24 border border-slate-300 rounded bg-white relative flex items-center justify-center">
+                <span className="text-xs font-bold text-slate-500">H₂S</span>
+              </div>
+              <span className="text-2xl">→</span>
+              <div className="w-24 h-32 border border-slate-300 rounded bg-white relative overflow-hidden flex items-end justify-center">
+                <div
+                  className={`w-full bg-yellow-400 transition-all duration-1000 ${
+                    mixed ? "h-1/2 opacity-100" : "h-0 opacity-0"
+                  }`}
+                ></div>
+                <span className="absolute top-2 text-xs font-bold text-slate-500 z-10">
+                  {mixed ? "S↓ (Vàng)" : ""}
+                </span>
+              </div>
+            </div>
+            <div className="mt-4 text-center">
+              <code className="block mb-2 text-sm">
+                SO₂ + 2H₂S → 3S↓ + 2H₂O
+              </code>
+              <button
+                onClick={() => setMixed(!mixed)}
+                className="px-4 py-2 bg-orange-500 text-white rounded font-bold text-sm"
+              >
+                {mixed ? "Làm lại" : "Trộn khí"}
+              </button>
+            </div>
+          </ExperimentCard>
+        );
+      };
+
+      // --- SIMULATION 10: SUGAR SNAKE ---
+      const SugarSnakeSim = () => {
+        const [step, setStep] = useState(0);
+
+        const run = () => {
+          if (step > 0) return;
+          setStep(1);
+          setTimeout(() => setStep(2), 1000);
+          setTimeout(() => setStep(3), 2500);
+          setTimeout(() => setStep(0), 6000);
+        };
+
+        return (
+          <ExperimentCard
+            title="Thí nghiệm 10: Than hóa đường (H₂SO₄ đặc)"
+            color="purple"
+          >
+            <div className="flex gap-4">
+              <div className="w-24 h-32 border-x-2 border-b-2 border-slate-400 bg-white relative mx-auto overflow-hidden">
+                <div
+                  className={`absolute bottom-0 w-full bg-white transition-colors duration-1000 ${
+                    step >= 2 ? "bg-black" : "bg-slate-100"
+                  }`}
+                  style={{ height: "30%" }}
+                ></div>
+                {step === 1 && (
+                  <div className="absolute top-0 left-1/2 w-2 h-full bg-yellow-100 opacity-50"></div>
+                )}
+                <div
+                  className={`absolute bottom-0 w-full bg-black rounded-t-lg transition-all duration-[3000ms] ease-out ${
+                    step === 3 ? "h-[150%] scale-110" : "h-0"
+                  }`}
+                ></div>
+                {step === 3 && (
+                  <div className="absolute -top-10 left-0 w-full h-20 bg-gray-500/40 blur-xl animate-pulse"></div>
+                )}
+              </div>
+              <div className="flex-1 flex flex-col justify-center gap-2">
+                <p className="text-xs">
+                  H₂SO₄ đặc hút nước từ đường, biến nó thành than và đẩy lên
+                  cao.
+                </p>
+                <button
+                  onClick={run}
+                  disabled={step > 0}
+                  className="px-4 py-2 bg-purple-600 text-white rounded font-bold text-sm disabled:opacity-50"
+                >
+                  Thực hiện
+                </button>
+              </div>
+            </div>
+          </ExperimentCard>
+        );
+      };
+
+      // --- SIMULATION 11: SULFATE TEST ---
+      const SulfateSim = () => {
+        const [added, setAdded] = useState(false);
+        return (
+          <ExperimentCard
+            title="Thí nghiệm 11: Nhận biết gốc Sulfate (SO₄²⁻)"
+            color="blue"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-20 h-32 border-2 border-slate-300 rounded bg-white relative overflow-hidden flex items-end">
+                <div className="w-full h-1/2 bg-transparent absolute bottom-0"></div>
+                {/* Precipitate */}
+                <div
+                  className={`w-full bg-white opacity-90 transition-all duration-1000 ${
+                    added ? "h-1/3 animate-[drip_2s_infinite]" : "h-0"
+                  }`}
+                ></div>
+                <span className="absolute bottom-2 w-full text-center text-xs font-bold z-10">
+                  {added ? "BaSO₄↓" : ""}
+                </span>
+              </div>
+              <div className="flex-1 space-y-2">
+                <p className="text-sm">
+                  Dùng dung dịch chứa Ba²⁺ (như BaCl₂) để nhận biết. Kết tủa
+                  trắng BaSO₄ không tan trong acid.
+                </p>
+                <code className="block text-xs bg-slate-100 dark:bg-slate-800 p-2 rounded">
+                  Na₂SO₄ + BaCl₂ → BaSO₄↓ + 2NaCl
+                </code>
+                <button
+                  onClick={() => setAdded(!added)}
+                  className="w-full px-4 py-2 bg-blue-600 text-white rounded text-sm font-bold"
+                >
+                  {added ? "Làm lại" : "Nhỏ BaCl₂"}
+                </button>
+              </div>
+            </div>
+          </ExperimentCard>
+        );
+      };
+
+      // --- MAIN APP ---
+      const App = () => {
+        const [activeTab, setActiveTab] = useState("nitrogen");
+        const [darkMode, setDarkMode] = useState(false);
+
+        useEffect(() => {
+          if (darkMode) document.documentElement.classList.add("dark");
+          else document.documentElement.classList.remove("dark");
+        }, [darkMode]);
+
+        const tabs = [
           { id: "nitrogen", label: "I. Nitrogen (N₂)", icon: "wind" },
           { id: "ammonia", label: "II. Ammonia & Muối", icon: "atom" },
           { id: "nox", label: "III. Hợp chất Oxygen", icon: "cloud-rain" },
@@ -101,618 +876,287 @@
           },
         ];
 
-        return (
-          <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex flex-col md:flex-row justify-between items-center py-3 md:h-16 gap-3">
-                <div className="flex items-center gap-2">
-                  <div className="bg-gradient-to-br from-purple-600 to-blue-600 text-white p-2 rounded-lg shadow-md">
-                    <i data-lucide="book-open" className="w-6 h-6"></i>
-                  </div>
-                  <div>
-                    <h1 className="font-bold text-lg text-slate-800 leading-tight">
-                      Chương 2
-                    </h1>
-                    <p className="text-xs text-slate-500 font-medium">
-                      Nitrogen & Sulfur
-                    </p>
-                  </div>
-                </div>
-                <nav className="flex space-x-1 overflow-x-auto no-scrollbar w-full md:w-auto pb-1 md:pb-0">
-                  {navItems.map((item) => (
-                    <button
-                      key={item.id}
-                      onClick={() => setActiveTab(item.id)}
-                      className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap flex items-center gap-2 ${
-                        activeTab === item.id
-                          ? "bg-blue-50 text-blue-700 ring-1 ring-blue-200 shadow-sm"
-                          : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                      }`}
-                    >
-                      <i data-lucide={item.icon} className="w-4 h-4"></i>
-                      {item.label}
-                    </button>
-                  ))}
-                </nav>
-              </div>
-            </div>
-          </header>
-        );
-      };
-
-      const LightningSim = () => {
-        const [step, setStep] = useState(0);
-
-        const playCycle = () => {
-          if (step > 0) return;
-          setStep(1);
-          setTimeout(() => setStep(2), 2000);
-          setTimeout(() => setStep(3), 4000);
-          setTimeout(() => setStep(4), 6000);
-          setTimeout(() => setStep(0), 9000);
-        };
-
-        return (
-          <div className="bg-slate-900 rounded-xl overflow-hidden relative text-white border border-slate-700 shadow-xl my-6">
-            <div className="p-6 relative z-10">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="text-xl font-bold text-yellow-400 flex items-center gap-2">
-                    <i data-lucide="zap" className="w-5 h-5"></i>
-                    Cung cấp Nitrate từ nước mưa
-                  </h3>
-                  <p className="text-sm text-slate-400 mt-1">
-                    Cơ chế tự nhiên "bón phân từ trời"
-                  </p>
-                </div>
-                <button
-                  onClick={playCycle}
-                  disabled={step > 0}
-                  className="bg-yellow-500 hover:bg-yellow-400 text-slate-900 px-4 py-2 rounded-lg font-bold text-sm transition-colors disabled:opacity-50"
-                >
-                  {step > 0 ? "Đang diễn ra..." : "Xem quá trình"}
-                </button>
-              </div>
-
-              <div className="space-y-3 font-mono text-sm md:text-base bg-black/30 p-4 rounded-lg min-h-[160px]">
-                <div
-                  className={`transition-all duration-500 ${
-                    step >= 1
-                      ? "opacity-100 translate-x-0"
-                      : "opacity-0 -translate-x-4"
-                  }`}
-                >
-                  <span className="text-yellow-500 font-bold">
-                    1. Sấm sét (3000°C):
-                  </span>
-                  <br />
-                  N₂ + O₂ → 2NO
-                </div>
-                <div
-                  className={`transition-all duration-500 ${
-                    step >= 2
-                      ? "opacity-100 translate-x-0"
-                      : "opacity-0 -translate-x-4"
-                  }`}
-                >
-                  <span className="text-orange-400 font-bold">
-                    2. Oxi hóa trong không khí:
-                  </span>
-                  <br />
-                  2NO + O₂ → 2NO₂
-                </div>
-                <div
-                  className={`transition-all duration-500 ${
-                    step >= 3
-                      ? "opacity-100 translate-x-0"
-                      : "opacity-0 -translate-x-4"
-                  }`}
-                >
-                  <span className="text-blue-400 font-bold">
-                    3. Tác dụng với nước mưa:
-                  </span>
-                  <br />
-                  2NO₂ + H₂O → HNO₃ + HNO₂
-                </div>
-                <div
-                  className={`transition-all duration-500 ${
-                    step >= 4
-                      ? "opacity-100 translate-x-0"
-                      : "opacity-0 -translate-x-4"
-                  }`}
-                >
-                  <span className="text-green-400 font-bold">
-                    4. Xuống đất tạo muối Nitrate:
-                  </span>
-                  <br />
-                  HNO₃ + CaCO₃ → Ca(NO₃)₂ + CO₂ + H₂O
-                </div>
-              </div>
-            </div>
-
-            {/* Visual Effects */}
-            {step === 1 && (
-              <div className="absolute inset-0 bg-yellow-500/20 animate-pulse z-0"></div>
-            )}
-            {step >= 3 && (
-              <div className="absolute inset-0 pointer-events-none z-0">
-                {Array.from({ length: 30 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="absolute w-0.5 h-4 bg-blue-400/50"
-                    style={{
-                      left: `${Math.random() * 100}%`,
-                      top: `${Math.random() * 100}%`,
-                      animation: `float ${1 + Math.random()}s infinite`,
-                    }}
-                  ></div>
-                ))}
-              </div>
-            )}
-          </div>
-        );
-      };
-
-      const SugarSnakeSim = () => {
-        const [active, setActive] = useState(false);
-
-        return (
-          <div className="flex flex-col md:flex-row gap-6 items-center bg-orange-50 p-6 rounded-xl border border-orange-200">
-            <div className="flex-1">
-              <h3 className="font-bold text-orange-900 text-lg mb-2">
-                Thí nghiệm: H₂SO₄ đặc + Đường
-              </h3>
-              <p className="text-sm text-orange-800 mb-4">
-                Tính háo nước cực mạnh và tính oxi hóa.
-              </p>
-              <div className="space-y-2">
-                <div className="chem-equation border-l-orange-500 bg-white">
-                  1. Hút nước: C₁₂H₂₂O₁₁ + H₂SO₄(đặc) → 12C (đen) + H₂O
-                </div>
-                <div className="chem-equation border-l-orange-500 bg-white">
-                  2. Đẩy cột than: C + 2H₂SO₄ → CO₂↑ + 2SO₂↑ + 2H₂O
-                </div>
-              </div>
-              <button
-                onClick={() => setActive(!active)}
-                className="mt-4 bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
-              >
-                {active ? "Làm lại" : "Nhỏ Acid"}
-              </button>
-            </div>
-            <div className="w-32 h-40 bg-white border-2 border-slate-300 rounded-b-xl relative overflow-hidden flex items-end justify-center shadow-inner">
-              <div
-                className={`w-full bg-white transition-colors duration-1000 absolute bottom-0 h-10 border-t ${
-                  active ? "bg-black" : ""
-                }`}
-              ></div>
-              <div
-                className={`w-16 bg-neutral-800 rounded-t-lg transition-all duration-[3s] ease-out absolute bottom-10 ${
-                  active ? "h-32" : "h-0"
-                }`}
-              ></div>
-              {active && (
-                <div className="absolute top-0 w-full h-full bg-gray-500/20 animate-pulse"></div>
-              )}
-            </div>
-          </div>
-        );
-      };
-
-      // --- CONTENT SECTIONS ---
-
-      const SectionNitrogen = () => (
-        <div className="space-y-6 animate-fade-in">
-          <div className="glass-panel p-6 rounded-xl border-l-4 border-l-purple-500">
-            <h2 className="text-2xl font-bold text-slate-800 mb-4">
-              1. Trạng thái tự nhiên & Tính chất vật lí
-            </h2>
-            <ul className="list-disc pl-5 space-y-2 text-slate-700">
-              <li>
-                <strong>Trạng thái:</strong> Chiếm 78% thể tích khí quyển. Tồn
-                tại chủ yếu dạng tự do N₂ vì liên kết ba N≡N rất bền.
-              </li>
-              <li>
-                <strong>Vật lí:</strong> Khí không màu, không mùi, không vị. Rất
-                khó hóa lỏng (T sôi thấp). Tan rất ít trong nước.
-              </li>
-              <li>
-                <strong>Ứng dụng:</strong> Tạo môi trường trơ (bảo quản thực
-                phẩm, luyện kim), sản xuất Ammonia, làm lạnh sâu (N₂ lỏng).
-              </li>
-            </ul>
-          </div>
-
-          <div className="glass-panel p-6 rounded-xl">
-            <h2 className="text-2xl font-bold text-slate-800 mb-4">
-              2. Tính chất hóa học
-            </h2>
-            <p className="mb-4 text-slate-600 italic">
-              Nitrogen khá trơ ở nhiệt độ thường. Chỉ phản ứng khi có nhiệt độ
-              cao, xúc tác hoặc tia lửa.
-            </p>
-
-            <div className="grid gap-4">
-              <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                <strong className="text-blue-700 block mb-2">
-                  a. Tác dụng với Hydrogen (H₂)
-                </strong>
-                <div className="chem-equation">
-                  N₂ + 3H₂ ⇌ 2NH₃ (xt Fe, t°, P)
-                </div>
-              </div>
-              <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                <strong className="text-red-700 block mb-2">
-                  b. Tác dụng với Oxygen (O₂)
-                </strong>
-                <div className="chem-equation">
-                  N₂ + O₂ ⇌ 2NO (3000°C hoặc tia lửa điện)
-                </div>
-              </div>
-              <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                <strong className="text-slate-700 block mb-2">
-                  c. Tác dụng với Kim loại mạnh
-                </strong>
-                <div className="chem-equation">
-                  3Mg + N₂ → Mg₃N₂ (Magnesium nitride)
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <LightningSim />
-        </div>
-      );
-
-      const SectionAmmonia = () => (
-        <div className="space-y-6 animate-fade-in">
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="glass-panel p-6 rounded-xl">
-              <h2 className="text-xl font-bold text-slate-800 mb-3">
-                1. Cấu tạo phân tử NH₃
-              </h2>
-              <ul className="list-disc pl-5 space-y-1 text-slate-700 text-sm">
-                <li>
-                  N ở trạng thái lai hóa <strong>sp³</strong>.
-                </li>
-                <li>Còn 1 cặp electron tự do.</li>
-                <li>
-                  Hình học: <strong>Chóp tam giác</strong>.
-                </li>
-                <li>
-                  Phân tử cực mạnh → Dễ tạo liên kết Hydrogen (tan nhiều trong
-                  nước).
-                </li>
-              </ul>
-            </div>
-            <div className="glass-panel p-6 rounded-xl">
-              <h2 className="text-xl font-bold text-slate-800 mb-3">
-                2. Tính chất vật lí
-              </h2>
-              <ul className="list-disc pl-5 space-y-1 text-slate-700 text-sm">
-                <li>
-                  Khí không màu, <strong>mùi khai</strong> đặc trưng.
-                </li>
-                <li>Tan cực nhiều trong nước → Dung dịch Ammonia (NH₃·H₂O).</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="glass-panel p-6 rounded-xl">
-            <h2 className="text-2xl font-bold text-slate-800 mb-4">
-              3. Tính chất hóa học
-            </h2>
-            <div className="space-y-4">
-              <div className="p-4 bg-blue-50 rounded border border-blue-200">
-                <strong className="text-blue-800">a. Tính Base yếu</strong>
-                <div className="mt-2 space-y-2">
-                  <div className="chem-equation">NH₃ + H₂O ⇌ NH₄⁺ + OH⁻</div>
-                  <div className="chem-equation">
-                    NH₃ + HCl → NH₄Cl (Khói trắng)
-                  </div>
-                  <div className="chem-equation">
-                    Tác dụng với muối → Kết tủa hydroxide
-                  </div>
-                </div>
-              </div>
-              <div className="p-4 bg-orange-50 rounded border border-orange-200">
-                <strong className="text-orange-800">
-                  b. Tính Khử (do N có số oxi hóa -3)
-                </strong>
-                <div className="mt-2">
-                  <div className="chem-equation">
-                    3CuO + 2NH₃ → 3Cu + N₂ + 3H₂O
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="glass-panel p-6 rounded-xl bg-gradient-to-r from-slate-800 to-slate-900 text-white">
-            <h2 className="text-xl font-bold mb-3">
-              4. Tổng hợp Ammonia (Quy trình Haber)
-            </h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <div className="chem-equation bg-white/10 text-white border-l-yellow-400">
-                  N₂ + 3H₂ ⇌ 2NH₃ + Q
-                </div>
-                <p className="mt-2 text-sm text-slate-300">
-                  Ý nghĩa: Sản xuất phân đạm nuôi sống nhân loại.
-                </p>
-              </div>
-              <div className="text-sm space-y-1 text-slate-300">
-                <p>
-                  <strong>Điều kiện tối ưu:</strong>
-                </p>
-                <ul className="list-disc pl-5">
-                  <li>Nhiệt độ: 450 - 500°C</li>
-                  <li>Áp suất: 200 - 300 atm</li>
-                  <li>Xúc tác: Sắt (Fe)</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <div className="glass-panel p-6 rounded-xl">
-            <h2 className="text-xl font-bold text-slate-800 mb-3">
-              5. Muối Ammonium
-            </h2>
-            <ul className="list-disc pl-5 space-y-2 text-slate-700 mb-4">
-              <li>Tan tốt trong nước.</li>
-              <li>
-                Dung dịch muối ammonium của acid mạnh có tính acid nhẹ (pH &lt;
-                7): <br />
-                <code className="bg-slate-100 px-1">
-                  NH₄⁺ + H₂O ⇌ NH₃ + H₃O⁺
-                </code>
-              </li>
-              <li>
-                <strong>Bị nhiệt phân:</strong>
-              </li>
-            </ul>
-            <div className="chem-equation mb-2">NH₄Cl → NH₃ + HCl</div>
-            <div className="chem-equation">
-              NH₄NO₃ → N₂O + 2H₂O (Nguy cơ nổ)
-            </div>
-          </div>
-        </div>
-      );
-
-      const SectionNOx = () => (
-        <div className="space-y-6 animate-fade-in">
-          <div className="glass-panel p-6 rounded-xl">
-            <h2 className="text-2xl font-bold text-slate-800 mb-4">
-              1. Các Oxide của Nitrogen
-            </h2>
-            <div className="flex flex-wrap gap-2 mb-4">
-              {["NO", "NO₂", "N₂O (khí cười)", "N₂O₃", "N₂O₅"].map((ox) => (
-                <span
-                  key={ox}
-                  className="bg-slate-100 px-3 py-1 rounded-full text-sm font-medium border border-slate-300 shadow-sm"
-                >
-                  {ox}
-                </span>
-              ))}
-            </div>
-            <div className="bg-red-50 p-4 rounded-lg border border-red-200">
-              <h3 className="font-bold text-red-800 flex items-center gap-2 mb-2">
-                <i data-lucide="cloud-rain" className="w-5 h-5"></i> Mưa Acid
-                (pH &lt; 5.6)
-              </h3>
-              <p className="text-sm text-red-700 mb-2">
-                Thủ phạm chính: NO₂ và SO₂.
-              </p>
-              <div className="chem-equation bg-white">
-                2NO₂ + H₂O → HNO₃ + HNO₂
-              </div>
-              <p className="text-sm text-red-700 mt-2">
-                Hậu quả: Ăn mòn kim loại, tượng đá vôi (CaCO₃), hủy hoại cây
-                cối, axit hóa hồ nước.
-              </p>
-            </div>
-          </div>
-
-          <div className="glass-panel p-6 rounded-xl">
-            <h2 className="text-2xl font-bold text-slate-800 mb-4">
-              2. Nitric Acid (HNO₃)
-            </h2>
-            <p className="mb-3 text-slate-700">
-              Là acid mạnh, điện li hoàn toàn. Có tính oxi hóa{" "}
-              <strong>cực mạnh</strong> ngay cả khi loãng.
-            </p>
-            <div className="chem-equation mb-4">
-              Cu + 4HNO₃ (loãng) → Cu(NO₃)₂ + 2NO₂ + 2H₂O
-            </div>
-            <div className="bg-yellow-50 p-4 rounded border border-yellow-200">
-              <strong className="text-yellow-800">Ứng dụng:</strong>
-              <ul className="list-disc pl-5 text-sm text-yellow-900 mt-1">
-                <li>Sản xuất phân đạm (NH₄NO₃).</li>
-                <li>Sản xuất thuốc nổ (TNT).</li>
-                <li>Tẩy rửa rỉ sét kim loại.</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="glass-panel p-6 rounded-xl border-l-4 border-green-500">
-            <h2 className="text-xl font-bold text-green-800 mb-2">
-              3. Hiện tượng Phú dưỡng
-            </h2>
-            <p className="text-slate-700 text-sm">
-              Nguyên nhân: Dư thừa NO₃⁻, NH₄⁺, PO₄³⁻ từ phân bón/nước thải.
-              <br />→ Tảo bùng phát → Che ánh sáng → Tảo chết phân hủy tiêu thụ
-              O₂ → Cá chết hàng loạt → Mất cân bằng sinh thái.
-            </p>
-          </div>
-        </div>
-      );
-
-      const SectionSulfur = () => (
-        <div className="space-y-6 animate-fade-in">
-          <div className="glass-panel p-6 rounded-xl">
-            <h2 className="text-2xl font-bold text-slate-800 mb-4">
-              1. Đơn chất Sulfur (S)
-            </h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <strong className="block text-slate-700 mb-2">
-                  Trạng thái & Vật lí:
-                </strong>
-                <ul className="list-disc pl-5 space-y-1 text-sm text-slate-600">
-                  <li>Tồn tại dạng mỏ lưu huỳnh hoặc quặng (FeS₂, CaSO₄).</li>
-                  <li>Chất rắn màu vàng.</li>
-                  <li>Không tan trong nước.</li>
-                  <li>Tan trong dung môi hữu cơ (CS₂).</li>
-                </ul>
-              </div>
-              <div>
-                <strong className="block text-slate-700 mb-2">
-                  Tính chất hóa học:
-                </strong>
-                <div className="space-y-2">
-                  <div className="chem-equation text-xs md:text-sm">
-                    S + O₂ → SO₂ (Tính khử)
-                  </div>
-                  <div className="chem-equation text-xs md:text-sm">
-                    S + H₂ → H₂S (Tính oxi hóa)
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="glass-panel p-6 rounded-xl">
-            <h2 className="text-2xl font-bold text-slate-800 mb-4">
-              2. Sulfur Dioxide (SO₂)
-            </h2>
-            <ul className="list-disc pl-5 space-y-2 text-slate-700 mb-4">
-              <li>
-                Khí không màu, <strong>mùi hắc</strong>, gây ngạt, độc hại.
-              </li>
-              <li>Vừa có tính oxi hóa, vừa có tính khử.</li>
-              <li>
-                <strong>Tính tẩy màu:</strong> Ứng dụng tẩy trắng giấy, bột
-                giấy.
-              </li>
-            </ul>
-            <div className="chem-equation">SO₂ + 2H₂S → 3S + 2H₂O</div>
-          </div>
-        </div>
-      );
-
-      const SectionSulfuric = () => (
-        <div className="space-y-6 animate-fade-in">
-          <div className="glass-panel p-6 rounded-xl border-l-4 border-orange-600">
-            <h2 className="text-2xl font-bold text-slate-800 mb-4">
-              1. Sulfuric Acid (H₂SO₄)
-            </h2>
-            <p className="mb-4 text-slate-700">
-              Acid mạnh, điện li hoàn toàn. Dạng đặc có tính chất đặc biệt:
-            </p>
-
-            <div className="grid md:grid-cols-2 gap-4 mb-6">
-              <div className="bg-orange-50 p-4 rounded border border-orange-200">
-                <strong className="text-orange-900 block mb-2">
-                  Tính Háo Nước
-                </strong>
-                <p className="text-xs text-orange-800 mb-2">
-                  Hút nước từ hợp chất hữu cơ (đường, da, vải...).
-                </p>
-                <div className="chem-equation text-xs">
-                  C₁₂H₂₂O₁₁ → 12C + 11H₂O
-                </div>
-              </div>
-              <div className="bg-red-50 p-4 rounded border border-red-200">
-                <strong className="text-red-900 block mb-2">
-                  Tính Oxi hóa mạnh (Đặc, nóng)
-                </strong>
-                <div className="chem-equation text-xs break-all">
-                  Cu + 2H₂SO₄ → CuSO₄ + SO₂ + 2H₂O
-                </div>
-              </div>
-            </div>
-
-            <SugarSnakeSim />
-          </div>
-
-          <div className="glass-panel p-6 rounded-xl">
-            <h2 className="text-2xl font-bold text-slate-800 mb-4">
-              2. Muối Sulfate & Nhận biết
-            </h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <strong className="block text-slate-700 mb-2">Tính tan:</strong>
-                <ul className="list-disc pl-5 space-y-1 text-sm text-slate-600">
-                  <li>Đa số tan: Na₂SO₄, K₂SO₄, (NH₄)₂SO₄...</li>
-                  <li>
-                    Không tan (Kết tủa): <strong>BaSO₄</strong> (trắng), PbSO₄.
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <strong className="block text-slate-700 mb-2">
-                  Phản ứng nhận biết ion SO₄²⁻:
-                </strong>
-                <div className="chem-equation">
-                  Ba²⁺ + SO₄²⁻ → BaSO₄↓ (trắng)
-                </div>
-                <p className="text-xs text-slate-500 mt-2 italic">
-                  Kết tủa BaSO₄ không tan trong acid mạnh.
-                </p>
-              </div>
-            </div>
-            <div className="mt-4 bg-blue-50 p-4 rounded border border-blue-200">
-              <strong className="text-blue-800">Ứng dụng:</strong>
-              <ul className="list-disc pl-5 text-sm text-blue-700 mt-1 grid grid-cols-2">
-                <li>BaSO₄: Chụp X-quang đường tiêu hóa.</li>
-                <li>Na₂SO₄: Sản xuất thủy tinh.</li>
-                <li>(NH₄)₂SO₄: Phân bón.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      );
-
-      // --- APP CONTAINER ---
-
-      const App = () => {
-        const [activeTab, setActiveTab] = useState("nitrogen");
-
-        useEffect(() => {
-          if (window.lucide) window.lucide.createIcons();
-        }, [activeTab]);
-
         const renderContent = () => {
           switch (activeTab) {
             case "nitrogen":
-              return <SectionNitrogen />;
+              return (
+                <div className="space-y-6 animate-[fume_0.5s_ease-out_reverse]">
+                  <div className="glass p-6 rounded-xl border-l-4 border-chem-500">
+                    <h2 className="text-2xl font-bold mb-4 text-chem-600 dark:text-chem-400">
+                      1. Đơn chất Nitrogen (N₂)
+                    </h2>
+                    <ul className="list-disc pl-5 space-y-2 text-slate-700 dark:text-slate-300">
+                      <li>
+                        <strong>Trạng thái:</strong> Chiếm 78% khí quyển, khá
+                        trơ ở nhiệt độ thường do liên kết ba (N≡N) rất bền.
+                      </li>
+                      <li>
+                        <strong>Tính chất vật lý:</strong> Khí không màu, không
+                        mùi, không vị, ít tan trong nước, hóa lỏng ở -196°C.
+                      </li>
+                      <li>
+                        <strong>Tính chất hóa học:</strong>
+                        <ul className="list-circle pl-5 mt-1 space-y-1 text-sm">
+                          <li>
+                            Tác dụng với H₂ (thuận nghịch, xt, t°, p) tạo NH₃.
+                          </li>
+                          <li>
+                            Tác dụng với O₂ (3000°C hoặc tia lửa điện) tạo NO.
+                          </li>
+                          <li>
+                            Tác dụng với kim loại mạnh (Li, Mg, Ca) tạo muối
+                            Nitride.
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <LightningSim />
+                    <MgN2Sim />
+                  </div>
+                </div>
+              );
             case "ammonia":
-              return <SectionAmmonia />;
+              return (
+                <div className="space-y-6 animate-[fume_0.5s_ease-out_reverse]">
+                  <div className="glass p-6 rounded-xl border-l-4 border-blue-500">
+                    <h2 className="text-2xl font-bold mb-4 text-blue-600">
+                      2. Ammonia (NH₃) & Muối Ammonium
+                    </h2>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div>
+                        <h3 className="font-bold mb-2">Ammonia (NH₃)</h3>
+                        <ul className="list-disc pl-5 text-sm space-y-1">
+                          <li>Cấu tạo chóp tam giác, phân cực mạnh.</li>
+                          <li>Khí mùi khai, tan nhiều trong nước.</li>
+                          <li>
+                            <strong>Tính Base yếu:</strong> Tác dụng với nước,
+                            acid, muối.
+                          </li>
+                          <li>
+                            <strong>Tính Khử:</strong> Tác dụng với O₂, Cl₂,
+                            oxide kim loại.
+                          </li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h3 className="font-bold mb-2">Muối Ammonium (NH₄⁺)</h3>
+                        <ul className="list-disc pl-5 text-sm space-y-1">
+                          <li>Tất cả đều tan tốt trong nước.</li>
+                          <li>Bị nhiệt phân hủy (tạo NH₃ hoặc N₂/N₂O).</li>
+                          <li>Tác dụng với kiềm giải phóng khí NH₃.</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <FountainSim />
+                    <SmokeSim />
+                  </div>
+                  <HaberSim />
+
+                  <div className="glass p-4 rounded-xl border-l-4 border-orange-500">
+                    <h3 className="font-bold mb-2">Nhiệt phân muối Ammonium</h3>
+                    <div className="grid md:grid-cols-2 gap-4 text-sm font-mono">
+                      <div className="bg-white dark:bg-slate-800 p-2 rounded">
+                        NH₄Cl → NH₃ + HCl (Khói trắng)
+                      </div>
+                      <div className="bg-white dark:bg-slate-800 p-2 rounded">
+                        NH₄NO₃ → N₂O + 2H₂O (Nổ)
+                      </div>
+                      <div className="bg-white dark:bg-slate-800 p-2 rounded">
+                        NH₄HCO₃ → NH₃ + CO₂ + H₂O (Bột nở)
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
             case "nox":
-              return <SectionNOx />;
+              return (
+                <div className="space-y-6 animate-[fume_0.5s_ease-out_reverse]">
+                  <div className="glass p-6 rounded-xl border-l-4 border-red-500">
+                    <h2 className="text-2xl font-bold mb-4 text-red-600">
+                      3. Hợp chất Oxygen & Acid Nitric
+                    </h2>
+                    <ul className="list-disc pl-5 space-y-2 mb-4">
+                      <li>
+                        <strong>Oxide Nitrogen:</strong> NO (không màu, hóa nâu
+                        trong kk), NO₂ (nâu đỏ, độc).
+                      </li>
+                      <li>
+                        <strong>Acid Nitric (HNO₃):</strong> Acid mạnh, tính oxi
+                        hóa rất mạnh.
+                        <ul className="pl-5 text-sm mt-1 list-circle">
+                          <li>
+                            Tác dụng với hầu hết kim loại (trừ Au, Pt) không
+                            giải phóng H₂.
+                          </li>
+                          <li>
+                            Sản phẩm khử: NO₂ (với acid đặc), NO (loãng), N₂O,
+                            N₂, NH₄NO₃ (với kim loại mạnh như Mg, Al, Zn).
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <HNO3Sim />
+                    <EutrophicationSim />
+                  </div>
+                </div>
+              );
             case "sulfur":
-              return <SectionSulfur />;
+              return (
+                <div className="space-y-6 animate-[fume_0.5s_ease-out_reverse]">
+                  <div className="glass p-6 rounded-xl border-l-4 border-yellow-500">
+                    <h2 className="text-2xl font-bold mb-4 text-yellow-600 dark:text-yellow-400">
+                      4. Sulfur (S) & SO₂
+                    </h2>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div>
+                        <h3 className="font-bold mb-2">Sulfur (Lưu huỳnh)</h3>
+                        <ul className="list-disc pl-5 text-sm space-y-1">
+                          <li>Rắn, màu vàng, không tan trong nước.</li>
+                          <li>
+                            <strong>Tính Oxi hóa:</strong> Tác dụng kim loại (Hg
+                            ở t° thường) và H₂.
+                          </li>
+                          <li>
+                            <strong>Tính Khử:</strong> Tác dụng với O₂ (cháy
+                            ngọn lửa xanh), F₂.
+                          </li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h3 className="font-bold mb-2">Sulfur Dioxide (SO₂)</h3>
+                        <ul className="list-disc pl-5 text-sm space-y-1">
+                          <li>Khí mùi hắc, độc, tan trong nước tạo H₂SO₃.</li>
+                          <li>
+                            Vừa có tính oxi hóa (với H₂S, Mg), vừa có tính khử
+                            (với O₂, Cl₂).
+                          </li>
+                          <li>Dùng tẩy trắng giấy, chống nấm mốc.</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <SulfurBurnSim />
+                    <SO2H2SSim />
+                  </div>
+                </div>
+              );
             case "sulfuric":
-              return <SectionSulfuric />;
+              return (
+                <div className="space-y-6 animate-[fume_0.5s_ease-out_reverse]">
+                  <div className="glass p-6 rounded-xl border-l-4 border-orange-500">
+                    <h2 className="text-2xl font-bold mb-4 text-orange-600">
+                      5. Sulfuric Acid & Muối Sulfate
+                    </h2>
+                    <p className="mb-4">
+                      H₂SO₄ là hóa chất quan trọng nhất trong công nghiệp.
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                      <div className="bg-white dark:bg-slate-800 p-4 rounded shadow-sm">
+                        <h4 className="font-bold text-orange-500">Háo nước</h4>
+                        <p className="text-xs">
+                          Hút nước từ hợp chất hữu cơ (than hóa đường, giấy).
+                        </p>
+                      </div>
+                      <div className="bg-white dark:bg-slate-800 p-4 rounded shadow-sm">
+                        <h4 className="font-bold text-red-500">Oxi hóa mạnh</h4>
+                        <p className="text-xs">
+                          Đặc nóng tác dụng hầu hết kim loại tạo muối hóa trị
+                          cao nhất + SO₂.
+                        </p>
+                      </div>
+                      <div className="bg-white dark:bg-slate-800 p-4 rounded shadow-sm">
+                        <h4 className="font-bold text-blue-500">Độ mạnh</h4>
+                        <p className="text-xs">
+                          Acid mạnh, điện li hoàn toàn nấc 1, mạnh nấc 2.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <SugarSnakeSim />
+                    <SulfateSim />
+                  </div>
+                </div>
+              );
             default:
-              return <SectionNitrogen />;
+              return null;
           }
         };
 
         return (
-          <div className="min-h-screen flex flex-col">
-            <Header activeTab={activeTab} setActiveTab={setActiveTab} />
+          <div className="flex flex-col min-h-screen">
+            {/* Header */}
+            <header className="sticky top-0 z-50 glass shadow-sm backdrop-blur-md">
+              <div className="max-w-6xl mx-auto px-4 py-3">
+                <div className="flex justify-between items-center mb-4 md:mb-0">
+                  <div className="flex items-center gap-2">
+                    <div className="bg-gradient-to-br from-chem-500 to-indigo-600 p-2 rounded-lg text-white shadow">
+                      <Icon name="atom" />
+                    </div>
+                    <div>
+                      <h1 className="font-bold text-xl leading-none text-slate-800 dark:text-white">
+                        ChemStudy Teen
+                      </h1>
+                      <span className="text-xs text-slate-500 dark:text-slate-400">
+                        Chương 2: Nitrogen & Sulfur
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setDarkMode(!darkMode)}
+                      className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+                    >
+                      <Icon name={darkMode ? "sun" : "moon"} />
+                    </button>
+                    <a
+                      href="../chemstudyteen.html"
+                      className="hidden md:flex items-center gap-1 text-sm font-medium bg-slate-800 text-white px-3 py-1.5 rounded hover:bg-slate-700 transition"
+                    >
+                      <Icon name="arrow-left" size={16} /> Quay về
+                    </a>
+                  </div>
+                </div>
+                {/* Tabs */}
+                <nav className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+                  {tabs.map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
+                        activeTab === tab.id
+                          ? "tab-btn-active"
+                          : "tab-btn-inactive"
+                      }`}
+                    >
+                      <Icon name={tab.icon} size={16} /> {tab.label}
+                    </button>
+                  ))}
+                </nav>
+              </div>
+            </header>
 
-            <main className="flex-grow max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+            {/* Main */}
+            <main className="flex-grow max-w-5xl mx-auto w-full px-4 py-8">
               {renderContent()}
             </main>
 
-            <footer className="bg-slate-900 text-slate-400 py-8 text-center text-sm">
-              <p>© 2024 Hóa Học 11 - Chương 2: Nitrogen & Sulfur</p>
-              <p className="mt-1 opacity-75">
-                Tài liệu học tập tương tác trực quan
-              </p>
-            </footer>
+            {/* Footer for Mobile Back Button */}
+            <div className="md:hidden p-4 text-center">
+              <a
+                href="../chemstudyteen.html"
+                className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-800"
+              >
+                <Icon name="arrow-left" size={16} /> Quay về trang chủ
+              </a>
+            </div>
           </div>
         );
       };
