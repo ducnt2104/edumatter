@@ -1,23 +1,11 @@
-/* ================================
-        HELPER SHORTCUTS
-================================ */
 const qs = (s) => document.querySelector(s);
 const qsa = (s) => [...document.querySelectorAll(s)];
-
-/* ================================
-        DOM ELEMENTS
-================================ */
 const header = qs("#header");
 const themeBtn = qs("#themeToggle");
 const menuBtn = qs("#menuToggle");
 const footer = qs("#footer");
 const sidebar = qs("#sidebar");
-
-/* ================================
-        1. GRADIENT HEADER
-================================ */
 const randomHSL = () => `hsl(${Math.random() * 360}, 85%, 55%)`;
-
 function shadeColor(hex, percent) {
   let f = parseInt(hex.slice(1), 16),
     t = percent < 0 ? 0 : 255,
@@ -25,7 +13,6 @@ function shadeColor(hex, percent) {
     R = f >> 16,
     G = (f >> 8) & 0xff,
     B = f & 0xff;
-
   return (
     "#" +
     (
@@ -38,33 +25,22 @@ function shadeColor(hex, percent) {
       .slice(1)
   );
 }
-
 function setRandomHeader() {
   header.style.background = `linear-gradient(135deg, ${randomHSL()}, ${randomHSL()}, ${randomHSL()})`;
   header.style.backgroundSize = "300% 300%";
 }
-
 function setHeaderBySubject() {
   const base = document.body.dataset.subject;
   if (!header) return;
-
   if (!base) return setRandomHeader();
-
   const hex = base.startsWith("#") ? base : `#${base}`;
-
   const g1 = hex;
   const g2 = shadeColor(hex, 0.25);
   const g3 = shadeColor(hex, -0.2);
-
   const gradient = `linear-gradient(135deg, ${g1}, ${g2}, ${g3})`;
-
   header.style.background = gradient;
   header.style.backgroundSize = "300% 300%";
 }
-
-/* ================================
-        2. HEADER GLOW
-================================ */
 function enableHeaderGlow() {
   if (!header) return;
   header.addEventListener("mousemove", (e) => {
@@ -73,29 +49,18 @@ function enableHeaderGlow() {
     header.style.setProperty("--hy", e.clientY - r.top + "px");
   });
 }
-
 function animateSiteTitle() {
   const t = qs(".site-title");
   if (t) t.classList.add("scan-animate");
 }
-
-/* ================================
-        3. SIDEBAR TOGGLE
-================================ */
 function toggleSidebar() {
   if (!menuBtn || !sidebar) return;
   menuBtn.onclick = () => sidebar.classList.toggle("open");
 }
-
-/* ================================
-        4. THEME MODE (LIGHT/DARK)
-================================ */
 function setupTheme() {
   const body = document.body;
   const saved = localStorage.getItem("theme");
-
   body.classList.add(saved || "light");
-
   themeBtn?.addEventListener("click", () => {
     body.classList.toggle("dark");
     body.classList.toggle("light");
@@ -106,39 +71,26 @@ function setupTheme() {
     setHeaderBySubject();
   });
 }
-
-/* ================================
-        5. CARD EFFECTS
-================================ */
 function setupCards() {
   const cards = qsa(".card");
-
   cards.forEach((card) => {
     const color = card.dataset.color || "#3b82f6";
     card.style.setProperty("--accent", color);
-
-    /* spotlight */
     card.addEventListener("mousemove", (e) => {
       const r = card.getBoundingClientRect();
       card.style.setProperty("--mx", e.clientX - r.left + "px");
       card.style.setProperty("--my", e.clientY - r.top + "px");
       card.classList.add("hovering");
     });
-
-    /* on enter */
     card.addEventListener("mouseenter", () => {
       card.classList.add("active");
       cards.forEach(
         (c) => c !== card && c.classList.remove("active", "hovering")
       );
     });
-
-    /* leave */
     card.addEventListener("mouseleave", () =>
       card.classList.remove("active", "hovering")
     );
-
-    /* click */
     card.addEventListener("click", () => {
       if (card.dataset.link) window.location.href = card.dataset.link;
       document.body.dataset.subject = color;
@@ -146,10 +98,6 @@ function setupCards() {
     });
   });
 }
-
-/* ================================
-        6. COLLAPSIBLE SECTION
-================================ */
 function setupSectionToggle() {
   qsa(".section").forEach((sec) => {
     const head = sec.querySelector(".section-header");
@@ -158,23 +106,14 @@ function setupSectionToggle() {
     head.addEventListener("click", () => sec.classList.toggle("closed"));
   });
 }
-
-/* ================================
-        7. FOOTER GLOW
-================================ */
 function enableFooterGlow() {
   if (!footer) return;
-
   footer.addEventListener("mousemove", (e) => {
     const r = footer.getBoundingClientRect();
     footer.style.setProperty("--fx", e.clientX - r.left + "px");
     footer.style.setProperty("--fy", e.clientY - r.top + "px");
   });
 }
-
-/* ================================
-        INIT
-================================ */
 function init() {
   setHeaderBySubject();
   enableHeaderGlow();
@@ -184,10 +123,8 @@ function init() {
   setupCards();
   setupSectionToggle();
   enableFooterGlow();
-
   if (header) header.style.animation = "headerFlow 12s linear infinite";
 }
-
 document.readyState === "loading"
   ? document.addEventListener("DOMContentLoaded", init)
   : init();

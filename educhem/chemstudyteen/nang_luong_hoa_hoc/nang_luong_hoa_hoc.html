@@ -1,498 +1,428 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chương 5: Năng Lượng Hóa Học</title>
+    <title>ChemStudyTeen - Chương 5: Năng Lượng Hóa Học</title>
+    <link rel="icon" href="../../../favicon/educhem.svg" type="image/svg+xml" />
+
+    <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
       rel="stylesheet"
     />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- MathJax -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              chem: {
+                amber: "#F59E0B",
+                red: "#EF4444",
+                blue: "#3B82F6",
+                dark: "#0F172A",
+              },
+            },
+            animation: {
+              float: "float 6s ease-in-out infinite",
+              shake: "shake 0.5s cubic-bezier(.36,.07,.19,.97) both",
+              steam: "steam 2s infinite ease-out",
+            },
+            keyframes: {
+              float: {
+                "0%, 100%": { transform: "translateY(0)" },
+                "50%": { transform: "translateY(-20px)" },
+              },
+              shake: {
+                "10%, 90%": { transform: "translate3d(-1px, 0, 0)" },
+                "20%, 80%": { transform: "translate3d(2px, 0, 0)" },
+                "30%, 50%, 70%": { transform: "translate3d(-4px, 0, 0)" },
+                "40%, 60%": { transform: "translate3d(4px, 0, 0)" },
+              },
+              steam: {
+                "0%": { transform: "translateY(0) scale(1)", opacity: "0.8" },
+                "100%": {
+                  transform: "translateY(-20px) scale(1.5)",
+                  opacity: "0",
+                },
+              },
+            },
+          },
+        },
+      };
+    </script>
+
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap");
-
       body {
-        font-family: "Be Vietnam Pro", sans-serif;
-        scroll-behavior: smooth;
+        font-family: "Segoe UI", sans-serif;
       }
-
-      /* Hero Animation - Energy Particles */
-      .energy-container {
-        position: relative;
-        width: 200px;
-        height: 200px;
-        margin: 0 auto;
-      }
-      .core {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 60px;
-        height: 60px;
-        background: radial-gradient(circle, #f59e0b, #ef4444);
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
-        box-shadow: 0 0 30px rgba(239, 68, 68, 0.6);
-        z-index: 10;
-        animation: pulse-core 2s infinite ease-in-out;
-      }
-      .particle-ring {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 100%;
-        height: 100%;
-        transform: translate(-50%, -50%);
-        border: 2px dashed rgba(245, 158, 11, 0.3);
-        border-radius: 50%;
-        animation: spin 10s linear infinite;
-      }
-      .particle {
-        position: absolute;
-        width: 10px;
-        height: 10px;
-        background: #fbbf24;
-        border-radius: 50%;
-        box-shadow: 0 0 10px #fbbf24;
-      }
-
-      @keyframes pulse-core {
-        0%,
-        100% {
-          transform: translate(-50%, -50%) scale(1);
-          box-shadow: 0 0 30px rgba(239, 68, 68, 0.6);
-        }
-        50% {
-          transform: translate(-50%, -50%) scale(1.1);
-          box-shadow: 0 0 50px rgba(239, 68, 68, 0.8);
-        }
-      }
-      @keyframes spin {
-        100% {
-          transform: translate(-50%, -50%) rotate(360deg);
-        }
-      }
-
-      /* Energy Diagram Animation */
-      .chart-container {
-        position: relative;
-        height: 300px;
-        border-left: 2px solid #94a3b8;
-        border-bottom: 2px solid #94a3b8;
-      }
-      .energy-level {
-        position: absolute;
-        width: 100px;
-        height: 4px;
-        transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-      .reactants {
-        left: 20px;
-        background-color: #3b82f6;
-      } /* Blue */
-      .products {
-        right: 20px;
-        background-color: #ef4444;
-      } /* Red */
-
-      .arrow-path {
-        position: absolute;
-        left: 70px; /* Center of reactants */
-        width: 0;
-        border-top: 2px dashed #cbd5e1;
-        transform-origin: left;
-        transition: all 1s ease;
-      }
-
-      /* Modal & UI */
       .glass-panel {
-        background: rgba(255, 255, 255, 0.95);
+        background: rgba(255, 255, 255, 0.9);
         backdrop-filter: blur(12px);
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.3);
       }
       .dark .glass-panel {
         background: rgba(15, 23, 42, 0.9);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.05);
       }
-
-      .quiz-option:hover {
-        transform: translateX(5px);
-      }
-      .tab-btn.active {
-        background-color: #f59e0b;
-        color: white;
-        border-color: #f59e0b;
-      }
-
-      /* Custom Scrollbar */
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-      ::-webkit-scrollbar-track {
+      input[type="range"] {
+        -webkit-appearance: none;
         background: transparent;
       }
-      ::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 4px;
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        background: #f59e0b;
+        margin-top: -6px;
+        cursor: pointer;
       }
-      .dark ::-webkit-scrollbar-thumb {
-        background: #475569;
+      input[type="range"]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+        background: #cbd5e1;
+        border-radius: 2px;
+      }
+
+      /* Bond Animation Classes */
+      .bond-stick {
+        transition: all 0.5s;
+        transform-origin: center;
+      }
+      .bond-broken {
+        opacity: 0;
+        transform: scale(0);
+      }
+      .atom {
+        transition: all 0.5s ease-out;
+      }
+      .atom-separated-left {
+        transform: translateX(-30px);
+      }
+      .atom-separated-right {
+        transform: translateX(30px);
       }
     </style>
   </head>
   <body
     class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300"
   >
-    <!-- Navigation -->
+    <!-- Navbar -->
     <nav
-      class="fixed top-0 w-full glass-panel z-50 transition-all duration-300"
+      class="fixed top-0 w-full z-50 glass-panel shadow-sm transition-all duration-300"
     >
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16 items-center">
-          <div class="flex items-center gap-3">
-            <div
-              class="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center text-white shadow-lg"
-            >
-              <i class="fas fa-fire-alt"></i>
-            </div>
-            <span class="font-bold text-xl tracking-tight hidden sm:block"
-              >Hóa Học 10 - Energy Master</span
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center gap-4">
+            <a
+              href="../chemstudyteen.html"
+              class="w-10 h-10 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 flex items-center justify-center transition"
+              ><i class="fas fa-arrow-left"></i
+            ></a>
+            <span
+              class="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-amber-500 to-red-600"
+              >ChemStudyTeen</span
             >
           </div>
           <div class="hidden md:flex space-x-6">
-            <button
-              onclick="scrollToSection('khai-niem')"
-              class="hover:text-amber-600 dark:hover:text-amber-400 font-medium transition py-2 border-b-2 border-transparent hover:border-amber-500"
+            <a href="#intro" class="hover:text-amber-500 font-medium"
+              >Khái Niệm</a
             >
-              Khái Niệm
-            </button>
-            <button
-              onclick="scrollToSection('bieu-do')"
-              class="hover:text-amber-600 dark:hover:text-amber-400 font-medium transition py-2 border-b-2 border-transparent hover:border-amber-500"
+            <a href="#diagram" class="hover:text-amber-500 font-medium"
+              >Biểu Đồ</a
             >
-              Biểu Đồ
-            </button>
-            <button
-              onclick="scrollToSection('tinh-toan')"
-              class="hover:text-amber-600 dark:hover:text-amber-400 font-medium transition py-2 border-b-2 border-transparent hover:border-amber-500"
+            <a href="#calc" class="hover:text-amber-500 font-medium"
+              >Tính Toán</a
             >
-              Tính Toán
-            </button>
-            <button
-              onclick="scrollToSection('thuc-tien')"
-              class="hover:text-amber-600 dark:hover:text-amber-400 font-medium transition py-2 border-b-2 border-transparent hover:border-amber-500"
+            <a href="#lab" class="hover:text-amber-500 font-medium"
+              >Nhiệt Lượng Kế</a
             >
-              Thực Tiễn
-            </button>
           </div>
-          <div class="flex items-center gap-3">
-            <button
-              onclick="openQuiz()"
-              class="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow hover:shadow-lg transition transform hover:-translate-y-0.5"
-            >
-              <i class="fas fa-gamepad mr-2"></i>Thi Thử
-            </button>
-            <button
-              onclick="toggleDarkMode()"
-              class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-300 dark:hover:bg-slate-700 transition"
-            >
-              <i class="fas fa-moon dark:text-yellow-400 text-slate-600"></i>
-            </button>
-          </div>
+          <button
+            id="theme-toggle"
+            class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700"
+          >
+            <i class="fas fa-adjust"></i>
+          </button>
         </div>
       </div>
     </nav>
 
-    <!-- Hero -->
+    <!-- Hero: Fire Particles -->
     <header
-      class="pt-32 pb-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-fixed bg-orange-50 dark:bg-slate-900"
+      class="relative pt-32 pb-20 overflow-hidden min-h-[500px] flex items-center bg-slate-50 dark:bg-slate-900"
     >
       <div
-        class="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center"
+        class="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center relative z-10"
       >
-        <div class="animate-fade-in-up">
-          <div
-            class="inline-block px-4 py-1.5 mb-6 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full text-sm font-bold tracking-wide uppercase border border-amber-200 dark:border-amber-800"
+        <div>
+          <span
+            class="py-1 px-3 rounded-full bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-300 text-sm font-bold border border-amber-200"
+            >Hóa Học 10 • Chương 5</span
           >
-            Chương 5 • Hóa Học Vô Cơ
-          </div>
-          <h1
-            class="text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-slate-900 dark:text-white"
-          >
-            Năng Lượng <br />
-            <span
+          <h1 class="text-5xl lg:text-7xl font-extrabold my-6 leading-tight">
+            Năng Lượng <br /><span
               class="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-red-600"
               >Hóa Học</span
             >
           </h1>
-          <p
-            class="text-xl text-slate-600 dark:text-slate-400 mb-8 leading-relaxed max-w-lg"
-          >
-            Tại sao đốt than lại nóng? Tại sao đá khô lại lạnh? Khám phá bí ẩn
-            của Enthalpy và sự chuyển hóa năng lượng trong phản ứng.
+          <p class="text-xl text-slate-600 dark:text-slate-300 mb-8">
+            Nghiên cứu về sự chuyển hóa năng lượng, nhiệt phản ứng và cách tính
+            toán Enthalpy.
           </p>
-          <div class="flex flex-wrap gap-4">
-            <button
-              onclick="scrollToSection('khai-niem')"
-              class="px-8 py-4 bg-amber-600 hover:bg-amber-700 text-white rounded-xl shadow-xl shadow-amber-500/20 transition transform hover:-translate-y-1 font-bold text-lg"
+          <div class="flex gap-4">
+            <a
+              href="#lab"
+              class="px-8 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-red-600 text-white font-bold shadow-lg shadow-amber-500/30 hover:-translate-y-1 transition"
+              >Vào Phòng Thí Nghiệm</a
             >
-              Bắt Đầu Học
-            </button>
-            <button
-              onclick="scrollToSection('tinh-toan')"
-              class="px-8 py-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-amber-500 rounded-xl shadow-md transition font-bold text-lg text-slate-700 dark:text-slate-200"
-            >
-              Công Thức
-            </button>
           </div>
         </div>
-        <div class="flex justify-center lg:justify-end relative">
+        <!-- Sim 1: Fire Particles -->
+        <div id="sim1-container" class="h-[400px] w-full relative">
           <div
-            class="absolute -inset-4 bg-gradient-to-r from-amber-500 to-red-500 opacity-20 blur-3xl rounded-full"
-          ></div>
-          <!-- Energy Animation -->
-          <div class="energy-container relative z-10">
-            <div class="core"></div>
-            <div class="particle-ring">
-              <div class="particle" style="top: 0; left: 50%"></div>
-              <div class="particle" style="top: 50%; left: 100%"></div>
-              <div class="particle" style="top: 100%; left: 50%"></div>
-              <div class="particle" style="top: 50%; left: 0%"></div>
-            </div>
+            class="absolute bottom-4 right-4 bg-white/10 backdrop-blur px-3 py-1 rounded text-xs text-slate-400"
+          >
+            Mô phỏng 1: Hạt năng lượng
           </div>
         </div>
       </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 py-16 space-y-32">
-      <!-- I. KHÁI NIỆM -->
-      <section id="khai-niem" class="scroll-mt-28">
-        <div class="text-center mb-12">
-          <h2 class="text-3xl font-bold mb-4">
-            I. Phản Ứng Tỏa Nhiệt & Thu Nhiệt
-          </h2>
-          <div class="w-20 h-1 bg-amber-500 mx-auto rounded"></div>
-        </div>
-
-        <div class="grid md:grid-cols-2 gap-8">
-          <!-- Tỏa nhiệt -->
-          <div
-            class="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg border-t-4 border-red-500 hover:shadow-xl transition relative overflow-hidden group"
-          >
-            <div
-              class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition"
-            >
-              <i class="fas fa-fire text-8xl text-red-500"></i>
-            </div>
-            <h3
-              class="text-2xl font-bold text-red-600 mb-4 flex items-center gap-2"
-            >
-              <i class="fas fa-arrow-down"></i> Tỏa Nhiệt (Exothermic)
-            </h3>
-            <div class="text-4xl font-bold text-slate-800 dark:text-white mb-4">
-              \(\Delta_r H < 0\)
-            </div>
-            <ul class="space-y-3 text-slate-600 dark:text-slate-300">
-              <li>
-                <i class="fas fa-check text-red-500 mr-2"></i>Giải phóng năng
-                lượng ra môi trường.
-              </li>
-              <li>
-                <i class="fas fa-check text-red-500 mr-2"></i>Làm môi trường
-                xung quanh nóng lên.
-              </li>
-              <li>
-                <i class="fas fa-check text-red-500 mr-2"></i>VD: Đốt cháy than,
-                trung hòa acid-base.
-              </li>
-            </ul>
-          </div>
-
-          <!-- Thu nhiệt -->
-          <div
-            class="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg border-t-4 border-blue-500 hover:shadow-xl transition relative overflow-hidden group"
-          >
-            <div
-              class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition"
-            >
-              <i class="fas fa-snowflake text-8xl text-blue-500"></i>
-            </div>
-            <h3
-              class="text-2xl font-bold text-blue-600 mb-4 flex items-center gap-2"
-            >
-              <i class="fas fa-arrow-up"></i> Thu Nhiệt (Endothermic)
-            </h3>
-            <div class="text-4xl font-bold text-slate-800 dark:text-white mb-4">
-              \(\Delta_r H > 0\)
-            </div>
-            <ul class="space-y-3 text-slate-600 dark:text-slate-300">
-              <li>
-                <i class="fas fa-check text-blue-500 mr-2"></i>Hấp thụ năng
-                lượng từ môi trường.
-              </li>
-              <li>
-                <i class="fas fa-check text-blue-500 mr-2"></i>Làm môi trường
-                xung quanh lạnh đi.
-              </li>
-              <li>
-                <i class="fas fa-check text-blue-500 mr-2"></i>VD: Nhiệt phân
-                \(CaCO_3\), hòa tan \(NH_4NO_3\).
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Definitions Card -->
-        <div
-          class="mt-8 bg-slate-100 dark:bg-slate-800/50 p-6 rounded-xl border border-slate-200 dark:border-slate-700"
+    <main class="max-w-7xl mx-auto px-4 py-8 space-y-24 pb-20">
+      <!-- I. Intro & Beaker Sim -->
+      <section id="intro" class="scroll-mt-24">
+        <h2
+          class="text-3xl font-bold mb-8 text-center flex items-center justify-center gap-3"
         >
-          <h4 class="font-bold text-lg mb-2 text-slate-800 dark:text-white">
-            <i class="fas fa-book-open mr-2 text-amber-500"></i>Khái Niệm Quan
-            Trọng
-          </h4>
-          <div class="grid md:grid-cols-2 gap-6">
-            <div>
-              <strong class="text-amber-600"
-                >Enthalpy tạo thành chuẩn (\(\Delta_f H^0_{298}\)):</strong
-              >
-              <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                Là lượng nhiệt kèm theo phản ứng tạo thành 1 mol chất từ các đơn
-                chất bền nhất ở điều kiện chuẩn (25°C, 1 bar).
+          <span
+            class="w-8 h-8 rounded bg-amber-500 text-white flex items-center justify-center text-lg"
+            >1</span
+          >
+          Phản Ứng Tỏa Nhiệt & Thu Nhiệt
+        </h2>
+
+        <div class="grid lg:grid-cols-2 gap-8">
+          <!-- Concept Cards -->
+          <div class="space-y-4">
+            <div
+              class="bg-white dark:bg-slate-800 p-6 rounded-xl border-l-4 border-red-500 shadow-sm"
+            >
+              <h3 class="text-xl font-bold text-red-500 flex justify-between">
+                Tỏa Nhiệt (Exothermic) <i class="fas fa-fire"></i>
+              </h3>
+              <p class="text-3xl font-mono font-bold my-2">
+                \(\Delta_r H < 0\)
               </p>
-              <p class="text-xs mt-1 text-slate-500">
-                Lưu ý: \(\Delta_f H^0_{298}\) của đơn chất bền (VD: \(O_2,
-                N_2\)) bằng 0.
+              <p class="text-sm text-slate-600 dark:text-slate-300">
+                Nhiệt truyền từ hệ ra môi trường. Nhiệt độ môi trường tăng.
+              </p>
+              <p class="text-xs mt-2 text-slate-500">
+                VD: Phản ứng cháy, trung hòa acid-base, vôi sống tôi nước.
               </p>
             </div>
-            <div>
-              <strong class="text-amber-600"
-                >Biến thiên Enthalpy phản ứng (\(\Delta_r H^0_{298}\)):</strong
-              >
-              <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                Là nhiệt lượng tỏa ra hay thu vào của phản ứng ở điều kiện
-                chuẩn.
+            <div
+              class="bg-white dark:bg-slate-800 p-6 rounded-xl border-l-4 border-blue-500 shadow-sm"
+            >
+              <h3 class="text-xl font-bold text-blue-500 flex justify-between">
+                Thu Nhiệt (Endothermic) <i class="fas fa-snowflake"></i>
+              </h3>
+              <p class="text-3xl font-mono font-bold my-2">
+                \(\Delta_r H > 0\)
               </p>
+              <p class="text-sm text-slate-600 dark:text-slate-300">
+                Hệ hấp thụ nhiệt từ môi trường. Nhiệt độ môi trường giảm.
+              </p>
+              <p class="text-xs mt-2 text-slate-500">
+                VD: Nhiệt phân CaCO3, hòa tan NH4NO3, quang hợp.
+              </p>
+            </div>
+          </div>
+
+          <!-- Sim 2: Beaker -->
+          <div
+            class="glass-panel p-6 rounded-2xl shadow-xl relative overflow-hidden"
+          >
+            <div
+              class="absolute top-0 right-0 p-2 bg-amber-100 dark:bg-amber-900 text-xs font-bold text-amber-600 rounded-bl-lg"
+            >
+              Mô phỏng 2
+            </div>
+            <h3 class="font-bold mb-4 text-center">Thí Nghiệm Hòa Tan</h3>
+
+            <div class="flex flex-col items-center">
+              <!-- Beaker Visual -->
+              <div class="relative w-40 h-48 mb-4">
+                <!-- Thermometer -->
+                <div
+                  class="absolute -right-4 top-0 w-2 h-60 bg-slate-200 rounded-full border border-slate-400 z-10"
+                >
+                  <div
+                    id="sim2-temp-bar"
+                    class="absolute bottom-0 w-full bg-red-500 rounded-full transition-all duration-1000"
+                    style="height: 40%"
+                  ></div>
+                </div>
+                <div
+                  id="sim2-temp-text"
+                  class="absolute -right-16 top-10 font-mono font-bold bg-white dark:bg-slate-800 px-2 rounded shadow"
+                >
+                  25°C
+                </div>
+
+                <!-- Beaker Glass -->
+                <div
+                  class="w-full h-full border-b-4 border-l-4 border-r-4 border-slate-300 rounded-b-xl relative overflow-hidden bg-white/10 backdrop-blur-sm"
+                >
+                  <!-- Liquid -->
+                  <div
+                    id="sim2-liquid"
+                    class="absolute bottom-0 w-full h-3/4 bg-blue-300/50 transition-colors duration-1000 flex items-center justify-center"
+                  >
+                    <!-- Effects -->
+                    <div
+                      id="sim2-steam"
+                      class="hidden absolute -top-10 w-full flex justify-center gap-2 opacity-0"
+                    >
+                      <i
+                        class="fas fa-cloud text-white/40 text-2xl animate-steam"
+                      ></i>
+                      <i
+                        class="fas fa-cloud text-white/40 text-xl animate-steam"
+                        style="animation-delay: 0.5s"
+                      ></i>
+                    </div>
+                    <div
+                      id="sim2-ice"
+                      class="hidden absolute w-full h-full bg-white/20 backdrop-blur-[2px]"
+                    ></div>
+                  </div>
+                  <div
+                    class="absolute bottom-2 w-full text-center text-xs font-bold opacity-50"
+                  >
+                    H2O
+                  </div>
+                </div>
+              </div>
+
+              <!-- Controls -->
+              <div class="grid grid-cols-2 gap-3 w-full">
+                <button
+                  onclick="runSim2('exo')"
+                  class="p-3 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg font-bold text-sm transition"
+                >
+                  <i class="fas fa-plus-circle mr-1"></i> CaO (Vôi sống)
+                  <div class="text-[10px] font-normal">Tỏa nhiệt mạnh</div>
+                </button>
+                <button
+                  onclick="runSim2('endo')"
+                  class="p-3 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg font-bold text-sm transition"
+                >
+                  <i class="fas fa-plus-circle mr-1"></i> NH4NO3
+                  <div class="text-[10px] font-normal">Thu nhiệt (Lạnh)</div>
+                </button>
+                <button
+                  onclick="runSim2('reset')"
+                  class="col-span-2 p-2 border border-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded text-sm"
+                >
+                  Làm lại
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- II. BIỂU ĐỒ NĂNG LƯỢNG -->
-      <section id="bieu-do" class="scroll-mt-28">
-        <h2 class="text-3xl font-bold mb-8 text-center">
-          II. Biến Thiên Năng Lượng
+      <!-- II. Energy Diagram -->
+      <section id="diagram" class="scroll-mt-24">
+        <h2
+          class="text-3xl font-bold mb-8 text-center flex items-center justify-center gap-3"
+        >
+          <span
+            class="w-8 h-8 rounded bg-amber-500 text-white flex items-center justify-center text-lg"
+            >2</span
+          >
+          Biến Thiên Enthalpy
         </h2>
 
-        <div
-          class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-2xl border border-slate-200 dark:border-slate-700"
-        >
-          <div class="flex justify-center gap-4 mb-8">
-            <button
-              onclick="setChart('exo')"
-              id="btn-exo"
-              class="px-6 py-2 rounded-full font-bold transition bg-red-100 text-red-600 border border-red-200"
+        <div class="glass-panel p-6 rounded-2xl shadow-xl">
+          <div
+            class="flex flex-col md:flex-row justify-between items-center mb-6"
+          >
+            <h3 class="text-xl font-bold">
+              <i class="fas fa-chart-area mr-2 text-purple-500"></i>Mô phỏng 3:
+              Giản đồ năng lượng
+            </h3>
+            <div
+              class="text-sm bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded mt-2 md:mt-0"
             >
-              Tỏa Nhiệt
-            </button>
-            <button
-              onclick="setChart('endo')"
-              id="btn-endo"
-              class="px-6 py-2 rounded-full font-bold transition bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200"
-            >
-              Thu Nhiệt
-            </button>
+              Kéo thanh trượt để thay đổi năng lượng sản phẩm
+            </div>
           </div>
 
           <div class="grid md:grid-cols-3 gap-8">
             <div
-              class="md:col-span-2 relative h-[350px] bg-slate-50 dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-700"
+              class="md:col-span-2 h-[350px] relative bg-slate-50 dark:bg-slate-900 rounded border border-slate-200 dark:border-slate-700"
             >
-              <!-- Y Axis Label -->
-              <div
-                class="absolute top-4 left-4 text-xs font-bold text-slate-400 rotate-0"
-              >
-                Năng Lượng (E)
-              </div>
-              <!-- X Axis Label -->
-              <div
-                class="absolute bottom-4 right-4 text-xs font-bold text-slate-400"
-              >
-                Tiến trình phản ứng
-              </div>
-
-              <!-- Chart Area -->
-              <div class="chart-container h-full w-full relative">
-                <div
-                  id="level-reactants"
-                  class="energy-level reactants top-[30%]"
-                >
-                  <span
-                    class="absolute -top-6 left-0 text-sm font-bold text-blue-600"
-                    >Chất đầu (CĐ)</span
-                  >
-                </div>
-                <div
-                  id="level-products"
-                  class="energy-level products top-[70%]"
-                >
-                  <span
-                    class="absolute -top-6 right-0 text-sm font-bold text-red-600"
-                    >Sản phẩm (SP)</span
-                  >
-                </div>
-                <!-- Arrow Delta H -->
-                <div
-                  id="arrow-delta"
-                  class="absolute left-[130px] w-2 bg-slate-300 transition-all duration-1000 flex items-center justify-center"
-                >
-                  <span
-                    id="label-delta"
-                    class="absolute left-4 whitespace-nowrap font-bold text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 px-2 rounded shadow border text-sm"
-                  >
-                    \(\Delta_r H < 0\)
-                  </span>
-                </div>
-              </div>
+              <canvas id="energyChart" class="w-full h-full"></canvas>
             </div>
 
-            <div class="flex flex-col justify-center">
-              <div id="desc-exo" class="transition-opacity duration-500">
-                <h4 class="text-xl font-bold text-red-500 mb-2">
-                  Phản ứng Tỏa Nhiệt
-                </h4>
-                <p class="text-slate-600 dark:text-slate-300 text-sm">
-                  Năng lượng chất đầu <strong>cao hơn</strong> năng lượng sản
-                  phẩm.
-                </p>
-                <p class="text-slate-600 dark:text-slate-300 text-sm mt-2">
-                  \(\sum E(\text{cđ}) > \sum E(\text{sp})\)
-                </p>
-                <div
-                  class="mt-4 p-3 bg-red-50 dark:bg-red-900/20 rounded border border-red-100 text-sm"
+            <div class="flex flex-col justify-center space-y-6">
+              <div>
+                <label class="block text-sm font-bold mb-2 text-blue-500"
+                  >Năng lượng Chất tham gia (Cố định)</label
                 >
-                  Phần năng lượng dư thừa được giải phóng dưới dạng nhiệt.
-                </div>
+                <input
+                  type="range"
+                  value="50"
+                  disabled
+                  class="w-full opacity-50 cursor-not-allowed"
+                />
               </div>
-              <div
-                id="desc-endo"
-                class="hidden transition-opacity duration-500"
-              >
-                <h4 class="text-xl font-bold text-blue-500 mb-2">
-                  Phản ứng Thu Nhiệt
-                </h4>
-                <p class="text-slate-600 dark:text-slate-300 text-sm">
-                  Năng lượng chất đầu <strong>thấp hơn</strong> năng lượng sản
-                  phẩm.
-                </p>
-                <p class="text-slate-600 dark:text-slate-300 text-sm mt-2">
-                  \(\sum E(\text{cđ}) < \sum E(\text{sp})\)
-                </p>
-                <div
-                  class="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-100 text-sm"
+              <div>
+                <label class="block text-sm font-bold mb-2 text-red-500"
+                  >Năng lượng Sản phẩm</label
                 >
-                  Cần cung cấp năng lượng để phản ứng xảy ra.
+                <input
+                  type="range"
+                  id="productSlider"
+                  min="10"
+                  max="90"
+                  value="30"
+                  class="w-full"
+                  oninput="drawChart()"
+                />
+              </div>
+
+              <div
+                id="chart-info"
+                class="p-4 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+              >
+                <div class="flex justify-between mb-2">
+                  <span>\(\Delta_r H\):</span>
+                  <span id="deltaH-val" class="font-bold text-red-500"
+                    >-20 kJ</span
+                  >
+                </div>
+                <div class="flex justify-between">
+                  <span>Kết luận:</span>
+                  <span id="reaction-type" class="font-bold text-red-500"
+                    >Tỏa nhiệt</span
+                  >
                 </div>
               </div>
             </div>
@@ -500,523 +430,781 @@
         </div>
       </section>
 
-      <!-- III. TÍNH TOÁN -->
-      <section id="tinh-toan" class="scroll-mt-28">
-        <h2 class="text-3xl font-bold mb-8 text-center">
-          III. Công Thức Tính \(\Delta_r H^0_{298}\)
+      <!-- III. Calculation (Sim 4) -->
+      <section id="calc" class="scroll-mt-24">
+        <h2
+          class="text-3xl font-bold mb-8 text-center flex items-center justify-center gap-3"
+        >
+          <span
+            class="w-8 h-8 rounded bg-amber-500 text-white flex items-center justify-center text-lg"
+            >3</span
+          >
+          Tính Toán Enthalpy
+        </h2>
+
+        <div class="grid md:grid-cols-2 gap-8">
+          <!-- Hess Law Theory -->
+          <div class="space-y-4">
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm">
+              <h4 class="font-bold text-amber-600 mb-2">
+                Cách 1: Theo nhiệt tạo thành (\(\Delta_f H^0\))
+              </h4>
+              <div
+                class="p-3 bg-slate-100 dark:bg-slate-700 rounded font-mono text-center text-lg mb-2"
+              >
+                \(\Delta_r H^0 = \sum \Delta_f H^0_{sp} - \sum \Delta_f
+                H^0_{cđ}\)
+              </div>
+              <p class="text-sm text-center italic">"Lấy Sau trừ Trước"</p>
+            </div>
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm">
+              <h4 class="font-bold text-emerald-600 mb-2">
+                Cách 2: Theo năng lượng liên kết (\(E_b\))
+              </h4>
+              <div
+                class="p-3 bg-slate-100 dark:bg-slate-700 rounded font-mono text-center text-lg mb-2"
+              >
+                \(\Delta_r H^0 = \sum E_b(cđ) - \sum E_b(sp)\)
+              </div>
+              <p class="text-sm text-center italic">
+                "Lấy Trước trừ Sau" (Phá vỡ - Hình thành)
+              </p>
+            </div>
+          </div>
+
+          <!-- Sim 4: Bond Breaking -->
+          <div
+            class="glass-panel p-6 rounded-2xl border border-emerald-500/30 relative"
+          >
+            <div
+              class="absolute top-0 right-0 p-2 bg-emerald-100 dark:bg-emerald-900 text-xs font-bold text-emerald-600 rounded-bl-lg"
+            >
+              Mô phỏng 4
+            </div>
+            <h3 class="font-bold mb-6 text-center">
+              Phản ứng: \(H_2 + Cl_2 \rightarrow 2HCl\)
+            </h3>
+
+            <div
+              class="flex justify-around items-center h-40 mb-4"
+              id="sim4-stage"
+            >
+              <!-- H2 Molecule -->
+              <div
+                class="molecule cursor-pointer group"
+                onclick="breakBond(this, 436, 'H2')"
+              >
+                <div class="text-xs text-center mb-1 font-bold text-slate-500">
+                  H-H (Click để bẻ)
+                </div>
+                <div
+                  class="flex items-center justify-center bg-slate-200 dark:bg-slate-700 p-2 rounded-full border border-slate-300 dark:border-slate-600 group-hover:bg-red-100 transition"
+                >
+                  <div
+                    class="w-6 h-6 rounded-full bg-white border-2 border-slate-400 atom"
+                  >
+                    H
+                  </div>
+                  <div class="w-8 h-1 bg-slate-400 bond-stick"></div>
+                  <div
+                    class="w-6 h-6 rounded-full bg-white border-2 border-slate-400 atom"
+                  >
+                    H
+                  </div>
+                </div>
+                <div
+                  class="text-center text-xs mt-1 text-red-500 opacity-0 transition energy-val"
+                >
+                  +436 kJ
+                </div>
+              </div>
+
+              <div class="text-2xl font-bold text-slate-300">+</div>
+
+              <!-- Cl2 Molecule -->
+              <div
+                class="molecule cursor-pointer group"
+                onclick="breakBond(this, 243, 'Cl2')"
+              >
+                <div class="text-xs text-center mb-1 font-bold text-slate-500">
+                  Cl-Cl (Click để bẻ)
+                </div>
+                <div
+                  class="flex items-center justify-center bg-slate-200 dark:bg-slate-700 p-2 rounded-full border border-slate-300 dark:border-slate-600 group-hover:bg-red-100 transition"
+                >
+                  <div
+                    class="w-8 h-8 rounded-full bg-green-200 border-2 border-green-500 flex items-center justify-center text-sm font-bold text-green-800 atom"
+                  >
+                    Cl
+                  </div>
+                  <div class="w-8 h-1 bg-slate-400 bond-stick"></div>
+                  <div
+                    class="w-8 h-8 rounded-full bg-green-200 border-2 border-green-500 flex items-center justify-center text-sm font-bold text-green-800 atom"
+                  >
+                    Cl
+                  </div>
+                </div>
+                <div
+                  class="text-center text-xs mt-1 text-red-500 opacity-0 transition energy-val"
+                >
+                  +243 kJ
+                </div>
+              </div>
+            </div>
+
+            <div class="text-center">
+              <button
+                id="btn-form-bond"
+                onclick="formBonds()"
+                disabled
+                class="px-6 py-2 bg-slate-300 text-slate-500 rounded-lg font-bold transition"
+              >
+                Tạo thành 2 HCl
+              </button>
+            </div>
+
+            <div
+              id="sim4-result"
+              class="mt-4 text-center hidden animate-fade-in"
+            >
+              <p class="text-sm">
+                Tổng năng lượng phá vỡ:
+                <span class="font-bold text-red-500">679 kJ</span>
+              </p>
+              <p class="text-sm">
+                Tổng năng lượng tỏa ra:
+                <span class="font-bold text-blue-500">-864 kJ</span>
+              </p>
+              <div
+                class="text-xl font-bold mt-2 border-t pt-2 inline-block border-slate-300"
+              >
+                \(\Delta_r H = -185 \text{ kJ}\) (Tỏa nhiệt)
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- IV. Lab (Sim 5 - NEW) -->
+      <section id="lab" class="scroll-mt-24">
+        <h2
+          class="text-3xl font-bold mb-8 text-center flex items-center justify-center gap-3"
+        >
+          <span
+            class="w-8 h-8 rounded bg-amber-500 text-white flex items-center justify-center text-lg"
+            >4</span
+          >
+          Phòng Thí Nghiệm Ảo
         </h2>
 
         <div
-          class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-700"
+          class="bg-slate-900 rounded-3xl p-8 shadow-2xl overflow-hidden relative border border-slate-700 text-white"
         >
-          <!-- Tab Headers -->
           <div
-            class="flex border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50"
+            class="absolute top-0 right-0 p-4 bg-purple-600 text-xs font-bold rounded-bl-xl z-20"
           >
-            <button
-              onclick="switchTab('method-1')"
-              id="tab-1"
-              class="tab-btn active flex-1 py-4 font-bold text-center transition border-b-4"
-            >
-              1. Dựa vào Nhiệt Tạo Thành (\(\Delta_f H^0\))
-            </button>
-            <button
-              onclick="switchTab('method-2')"
-              id="tab-2"
-              class="tab-btn flex-1 py-4 font-bold text-center transition border-b-4 border-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500"
-            >
-              2. Dựa vào Năng Lượng Liên Kết (\(E_b\))
-            </button>
+            Mô phỏng 5 (Mới)
           </div>
-
-          <!-- Method 1: Formation Enthalpy -->
-          <div id="method-1" class="tab-content p-6 md:p-10">
-            <div
-              class="bg-amber-50 dark:bg-amber-900/10 p-6 rounded-xl border border-amber-200 dark:border-amber-800 mb-8"
-            >
-              <h3
-                class="text-lg font-bold text-amber-800 dark:text-amber-400 mb-2"
-              >
-                Định luật Hess (Hệ quả)
+          <div class="grid lg:grid-cols-2 gap-12 relative z-10">
+            <div>
+              <h3 class="text-2xl font-bold mb-2 text-purple-400">
+                <i class="fas fa-flask mr-2"></i>Nhiệt Lượng Kế (Calorimeter)
               </h3>
-              <div
-                class="text-xl md:text-2xl text-center py-4 font-mono font-bold text-slate-800 dark:text-white"
-              >
-                $$ \Delta_r H^0_{298} = \sum \Delta_f H^0(\text{sp}) - \sum
-                \Delta_f H^0(\text{cđ}) $$
-              </div>
-              <p class="text-center text-sm text-slate-600 dark:text-slate-400">
-                Tổng nhiệt tạo thành SẢN PHẨM trừ Tổng nhiệt tạo thành CHẤT ĐẦU.
+              <p class="text-slate-400 text-sm mb-6">
+                Xác định nhiệt phản ứng trung hòa: \(HCl + NaOH \rightarrow NaCl
+                + H_2O\)
               </p>
-            </div>
 
-            <!-- Wizard Example -->
-            <div class="border-t pt-6 dark:border-slate-700">
-              <h4 class="font-bold mb-4">
-                Ví dụ: Đốt cháy Metan \(CH_4(g) + 2O_2(g) \rightarrow CO_2(g) +
-                2H_2O(l)\)
-              </h4>
-              <div class="grid md:grid-cols-2 gap-8">
-                <div>
-                  <p class="mb-2 text-sm text-slate-500">
-                    Cho biết \(\Delta_f H^0_{298}\) (kJ/mol):
-                  </p>
-                  <ul
-                    class="text-sm font-mono space-y-1 bg-slate-100 dark:bg-slate-900 p-3 rounded"
-                  >
-                    <li>\(CH_4(g): -74.8\)</li>
-                    <li>\(O_2(g): 0\) (Đơn chất bền)</li>
-                    <li>\(CO_2(g): -393.5\)</li>
-                    <li>\(H_2O(l): -285.8\)</li>
-                  </ul>
+              <!-- Lab Steps -->
+              <div class="space-y-4">
+                <div
+                  class="step p-3 rounded bg-slate-800 border border-slate-700 cursor-pointer hover:border-purple-500 transition"
+                  id="step1"
+                  onclick="labAction(1)"
+                >
+                  <div class="flex justify-between items-center">
+                    <span class="font-bold text-sm"
+                      >B1. Chuẩn bị dung dịch</span
+                    >
+                    <i
+                      class="fas fa-check-circle text-slate-600 status-icon"
+                    ></i>
+                  </div>
+                  <div class="text-xs text-slate-400 mt-1">
+                    Lấy 50ml HCl 1M và 50ml NaOH 1M. Đo nhiệt độ đầu t_1.
+                  </div>
                 </div>
-                <div class="flex flex-col justify-center">
+
+                <div
+                  class="step p-3 rounded bg-slate-800 border border-slate-700 cursor-pointer hover:border-purple-500 transition opacity-50"
+                  id="step2"
+                  onclick="labAction(2)"
+                >
+                  <div class="flex justify-between items-center">
+                    <span class="font-bold text-sm"
+                      >B2. Tiến hành phản ứng</span
+                    >
+                    <i class="fas fa-bolt text-slate-600 status-icon"></i>
+                  </div>
+                  <div class="text-xs text-slate-400 mt-1">
+                    Đổ nhanh NaOH vào HCl trong cốc xốp. Khuấy đều.
+                  </div>
+                </div>
+
+                <div
+                  class="step p-3 rounded bg-slate-800 border border-slate-700 opacity-50"
+                  id="step3"
+                >
+                  <div class="flex justify-between items-center">
+                    <span class="font-bold text-sm"
+                      >B3. Kết quả & Tính toán</span
+                    >
+                    <i class="fas fa-calculator text-slate-600 status-icon"></i>
+                  </div>
                   <div
-                    class="bg-white dark:bg-slate-700 p-4 rounded shadow border border-slate-200 dark:border-slate-600"
+                    id="lab-results"
+                    class="hidden mt-2 pt-2 border-t border-slate-600 text-sm"
                   >
-                    <p class="font-bold text-blue-600 mb-2">Lời giải:</p>
-                    <div class="text-sm space-y-2">
-                      <p>
-                        \(\Delta_r H^0 = [1 \times (-393.5) + 2 \times (-285.8)]
-                        - [1 \times (-74.8) + 2 \times 0]\)
-                      </p>
-                      <p>\(\Delta_r H^0 = [-393.5 - 571.6] - [-74.8]\)</p>
-                      <p class="font-bold text-red-500 text-lg">
-                        \(\Delta_r H^0 = -890.3 \text{ kJ}\)
-                      </p>
-                    </div>
-                    <p class="mt-2 text-xs text-slate-500 italic">
-                      Kết quả âm \(\rightarrow\) Phản ứng tỏa nhiệt mạnh.
+                    <p>
+                      Nhiệt độ đầu t_1:
+                      <span class="text-blue-400">25.0°C</span>
+                    </p>
+                    <p>
+                      Nhiệt độ cao nhất t_2:
+                      <span class="text-red-400">31.8°C</span>
+                    </p>
+                    <p
+                      class="mt-2 font-mono text-amber-400 bg-slate-900 p-2 rounded"
+                    >
+                      $$Q = (m_1+m_2).c.\Delta T$$ $$Q = 100 \times 4.18 \times
+                      (31.8 - 25.0) \approx 2842 \text{ J}$$
                     </p>
                   </div>
                 </div>
+
+                <button
+                  onclick="resetLab()"
+                  class="text-xs text-slate-500 hover:text-white underline mt-2"
+                >
+                  Làm lại thí nghiệm
+                </button>
               </div>
             </div>
-          </div>
 
-          <!-- Method 2: Bond Energy -->
-          <div id="method-2" class="tab-content hidden p-6 md:p-10">
+            <!-- Visual Lab Area -->
             <div
-              class="bg-blue-50 dark:bg-blue-900/10 p-6 rounded-xl border border-blue-200 dark:border-blue-800 mb-8"
+              class="relative h-[400px] bg-slate-800/50 rounded-xl border border-slate-700 flex items-end justify-center pb-8 overflow-hidden"
             >
-              <h3
-                class="text-lg font-bold text-blue-800 dark:text-blue-400 mb-2"
-              >
-                Dựa vào Năng lượng liên kết (Chỉ áp dụng cho phản ứng khí)
-              </h3>
-              <div
-                class="text-xl md:text-2xl text-center py-4 font-mono font-bold text-slate-800 dark:text-white"
-              >
-                $$ \Delta_r H^0_{298} = \sum E_b(\text{cđ}) - \sum
-                E_b(\text{sp}) $$
-              </div>
-              <p class="text-center text-sm text-slate-600 dark:text-slate-400">
-                Tổng năng lượng liên kết CHẤT ĐẦU (Phá vỡ) trừ Tổng năng lượng
-                liên kết SẢN PHẨM (Hình thành).
-              </p>
-            </div>
-
-            <!-- Wizard Example -->
-            <div class="border-t pt-6 dark:border-slate-700">
-              <h4 class="font-bold mb-4">
-                Ví dụ: \(H_2(g) + Cl_2(g) \rightarrow 2HCl(g)\)
-              </h4>
-              <div class="grid md:grid-cols-2 gap-8">
-                <div>
-                  <p class="mb-2 text-sm text-slate-500">
-                    Cho biết \(E_b\) (kJ/mol):
-                  </p>
-                  <ul
-                    class="text-sm font-mono space-y-1 bg-slate-100 dark:bg-slate-900 p-3 rounded"
-                  >
-                    <li>\(H-H: 436\)</li>
-                    <li>\(Cl-Cl: 243\)</li>
-                    <li>\(H-Cl: 432\)</li>
-                  </ul>
-                </div>
-                <div class="flex flex-col justify-center">
+              <!-- Coffee Cup -->
+              <div class="relative w-48 h-56 z-10">
+                <!-- Lid -->
+                <div
+                  class="absolute -top-4 w-52 -left-2 h-6 bg-slate-300 rounded-full shadow-lg z-20 flex justify-center items-center"
+                >
                   <div
-                    class="bg-white dark:bg-slate-700 p-4 rounded shadow border border-slate-200 dark:border-slate-600"
+                    class="w-2 h-40 bg-gray-400 absolute -top-20 right-16 rounded cursor-move"
+                    id="stir-rod"
+                  ></div>
+                  <!-- Stirrer -->
+                  <div
+                    class="w-2 h-48 bg-white border border-gray-400 absolute -top-20 left-16 rounded-full flex flex-col justify-end overflow-hidden"
                   >
-                    <p class="font-bold text-blue-600 mb-2">Lời giải:</p>
-                    <div class="text-sm space-y-2">
-                      <p>
-                        Tổng \(E_b(\text{cđ}) = 1 \times E_b(H-H) + 1 \times
-                        E_b(Cl-Cl) = 436 + 243 = 679\)
-                      </p>
-                      <p>
-                        Tổng \(E_b(\text{sp}) = 2 \times E_b(H-Cl) = 2 \times
-                        432 = 864\)
-                      </p>
-                      <p>\(\Delta_r H^0 = 679 - 864\)</p>
-                      <p class="font-bold text-red-500 text-lg">
-                        \(\Delta_r H^0 = -185 \text{ kJ}\)
-                      </p>
-                    </div>
+                    <div
+                      id="lab-thermometer"
+                      class="w-full bg-red-600 transition-all duration-1000"
+                      style="height: 30%"
+                    ></div>
+                  </div>
+                  <div
+                    class="absolute -top-24 left-20 bg-white text-slate-900 px-2 py-1 rounded text-xs font-bold font-mono"
+                    id="lab-temp-display"
+                  >
+                    25.0°C
+                  </div>
+                </div>
+                <!-- Cup Body -->
+                <div
+                  class="w-full h-full bg-white rounded-b-xl shadow-inner relative overflow-hidden border-2 border-slate-200"
+                >
+                  <div
+                    id="lab-liquid"
+                    class="absolute bottom-0 w-full h-0 bg-transparent transition-all duration-1000 flex items-center justify-center"
+                  >
+                    <span
+                      id="lab-reaction-glow"
+                      class="w-20 h-20 bg-red-500 rounded-full blur-xl opacity-0 transition duration-500"
+                    ></span>
+                  </div>
+                  <div
+                    class="absolute bottom-2 w-full text-center text-slate-400 text-xs font-bold"
+                  >
+                    Cốc Xốp Cách Nhiệt
                   </div>
                 </div>
               </div>
+
+              <!-- Pouring Beakers -->
+              <div
+                id="beaker-hcl"
+                class="absolute top-10 left-10 w-16 h-20 bg-transparent border-2 border-slate-400 rounded-b-lg flex justify-center transition-all duration-1000 opacity-100"
+              >
+                <div
+                  class="w-full h-3/4 bg-blue-400/30 absolute bottom-0 transition-all duration-1000"
+                  id="vol-hcl"
+                ></div>
+                <span class="absolute -bottom-6 text-xs text-slate-400"
+                  >HCl</span
+                >
+              </div>
+              <div
+                id="beaker-naoh"
+                class="absolute top-10 right-10 w-16 h-20 bg-transparent border-2 border-slate-400 rounded-b-lg flex justify-center transition-all duration-1000 opacity-100"
+              >
+                <div
+                  class="w-full h-3/4 bg-purple-400/30 absolute bottom-0 transition-all duration-1000"
+                  id="vol-naoh"
+                ></div>
+                <span class="absolute -bottom-6 text-xs text-slate-400"
+                  >NaOH</span
+                >
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Note Box -->
+        <!-- Extra info -->
         <div
-          class="mt-8 p-4 border-l-4 border-amber-500 bg-amber-50 dark:bg-amber-900/10 text-sm text-slate-700 dark:text-slate-300"
+          class="mt-8 bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-500 p-4 text-sm text-slate-700 dark:text-slate-300"
         >
-          <strong>Lưu ý:</strong> Công thức \(E_b\) là:
-          <strong>TRƯỚC - SAU</strong> (Phá vỡ tốn năng lượng - Hình thành tỏa
-          năng lượng).<br />
-          Công thức \(\Delta_f H\) là: <strong>SAU - TRƯỚC</strong>. <br />Đừng
-          nhầm lẫn 2 công thức này!
-        </div>
-      </section>
-
-      <!-- IV. ỨNG DỤNG -->
-      <section id="thuc-tien" class="scroll-mt-28">
-        <h2 class="text-3xl font-bold mb-8 text-center">
-          IV. Ý Nghĩa Thực Tiễn
-        </h2>
-        <div class="grid md:grid-cols-2 gap-6">
-          <!-- Card 1 -->
-          <div
-            class="bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl shadow-lg p-6 text-white transform hover:-translate-y-1 transition"
-          >
-            <div class="flex items-center gap-4 mb-4">
-              <div
-                class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-2xl"
-              >
-                <i class="fas fa-burn"></i>
-              </div>
-              <h3 class="text-xl font-bold">Nhiên Liệu & Sự Cháy</h3>
-            </div>
-            <p class="text-orange-100 text-sm leading-relaxed">
-              Phản ứng đốt cháy (xăng, gas, than) luôn có \(\Delta_r H < 0\) rất
-              lớn (tỏa nhiệt mạnh). Nhiệt lượng này dùng để chạy động cơ, nấu
-              ăn, sưởi ấm.
-            </p>
-            <div class="mt-4 bg-white/10 p-2 rounded text-xs font-mono">
-              \(C_3H_8 + 5O_2 \rightarrow 3CO_2 + 4H_2O\) (Gas)
-            </div>
-          </div>
-
-          <!-- Card 2 -->
-          <div
-            class="bg-gradient-to-br from-green-500 to-emerald-700 rounded-2xl shadow-lg p-6 text-white transform hover:-translate-y-1 transition"
-          >
-            <div class="flex items-center gap-4 mb-4">
-              <div
-                class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-2xl"
-              >
-                <i class="fas fa-leaf"></i>
-              </div>
-              <h3 class="text-xl font-bold">Quang Hợp</h3>
-            </div>
-            <p class="text-green-100 text-sm leading-relaxed">
-              Cây xanh hấp thụ năng lượng mặt trời để tổng hợp chất hữu cơ. Đây
-              là phản ứng thu nhiệt điển hình (\(\Delta_r H > 0\)).
-            </p>
-            <div class="mt-4 bg-white/10 p-2 rounded text-xs font-mono">
-              \(6CO_2 + 6H_2O \xrightarrow{h\nu} C_6H_{12}O_6 + 6O_2\)
-            </div>
-          </div>
+          <strong>Công thức cần nhớ:</strong> \(Q = m.c.\Delta T\) <br />
+          Trong đó: \(m\) là khối lượng dung dịch (g), \(c\) là nhiệt dung riêng
+          (thường lấy \(4.18 J/g.K\) với dung dịch loãng), \(\Delta T\) là độ
+          biến thiên nhiệt độ t_{sau} - t_{trước}.
         </div>
       </section>
     </main>
 
-    <!-- Quiz Modal -->
-    <div id="quiz-modal" class="fixed inset-0 z-[100] hidden">
-      <div
-        class="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        onclick="closeQuiz()"
-      ></div>
-      <div
-        class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-lg p-4"
-      >
-        <div
-          class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
-        >
-          <div
-            class="bg-gradient-to-r from-amber-500 to-orange-600 p-6 text-white flex justify-between items-center"
-          >
-            <h3 class="text-xl font-bold">
-              <i class="fas fa-clipboard-check mr-2"></i> Trắc Nghiệm Chương 5
-            </h3>
-            <button
-              onclick="closeQuiz()"
-              class="hover:bg-white/20 p-2 rounded-full transition"
-            >
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-
-          <div class="p-6 overflow-y-auto" id="quiz-content">
-            <div id="quiz-question-container">
-              <div
-                class="mb-4 flex justify-between text-sm font-bold text-slate-500"
-              >
-                <span id="quiz-progress">Câu 1/5</span>
-                <span id="quiz-score">Điểm: 0</span>
-              </div>
-              <h4
-                id="question-text"
-                class="text-lg font-bold mb-6 text-slate-800 dark:text-white leading-relaxed"
-              >
-                ...
-              </h4>
-              <div class="space-y-3" id="options-container">
-                <!-- Options -->
-              </div>
-            </div>
-
-            <div id="quiz-result" class="hidden text-center py-8">
-              <div class="text-6xl mb-4">🔥</div>
-              <h3 class="text-2xl font-bold mb-2">Hoàn Thành!</h3>
-              <p class="text-slate-600 dark:text-slate-400 mb-6">
-                Bạn đã trả lời đúng
-                <span id="final-score" class="font-bold text-amber-600 text-xl"
-                  >0</span
-                >
-                câu.
-              </p>
-              <button
-                onclick="restartQuiz()"
-                class="bg-amber-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-amber-700 transition"
-              >
-                Làm lại
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <footer
-      class="bg-slate-900 text-slate-400 py-12 mt-20 border-t border-slate-800"
-    >
-      <div class="max-w-7xl mx-auto px-4 text-center">
-        <p class="mb-4 text-slate-500">
-          Nội dung được tổng hợp theo chuẩn kiến thức Hóa Học 10 - Chương trình
-          mới.
-        </p>
-        <p>&copy; 2025 AI Education. Energy Chapter.</p>
-      </div>
-    </footer>
-
     <!-- Scripts -->
     <script>
       // --- Dark Mode ---
-      function toggleDarkMode() {
-        document.documentElement.classList.toggle("dark");
-      }
-      if (
-        window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-      ) {
-        document.documentElement.classList.add("dark");
+      const themeToggle = document.getElementById("theme-toggle");
+      const html = document.documentElement;
+      themeToggle.addEventListener("click", () => {
+        html.classList.toggle("dark");
+        drawChart(); // Redraw canvas on theme switch
+      });
+
+      // --- Sim 1: Fire Particles (Three.js) ---
+      function initSim1() {
+        const container = document.getElementById("sim1-container");
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(
+          75,
+          container.clientWidth / container.clientHeight,
+          0.1,
+          1000
+        );
+        const renderer = new THREE.WebGLRenderer({
+          alpha: true,
+          antialias: true,
+        });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+        camera.position.z = 5;
+
+        // Particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const count = 1500;
+        const positions = new Float32Array(count * 3);
+        const colors = new Float32Array(count * 3);
+
+        for (let i = 0; i < count * 3; i++) {
+          positions[i] = (Math.random() - 0.5) * 5;
+          colors[i] = Math.random();
+        }
+        particlesGeometry.setAttribute(
+          "position",
+          new THREE.BufferAttribute(positions, 3)
+        );
+        particlesGeometry.setAttribute(
+          "color",
+          new THREE.BufferAttribute(colors, 3)
+        );
+
+        // Shader Material for Fire effect (Simple Points)
+        const particlesMaterial = new THREE.PointsMaterial({
+          size: 0.1,
+          vertexColors: true,
+          transparent: true,
+          opacity: 0.8,
+          blending: THREE.AdditiveBlending,
+        });
+
+        const particles = new THREE.Points(
+          particlesGeometry,
+          particlesMaterial
+        );
+        scene.add(particles);
+
+        function animate() {
+          requestAnimationFrame(animate);
+          const positions = particles.geometry.attributes.position.array;
+          const cols = particles.geometry.attributes.color.array;
+
+          for (let i = 0; i < count; i++) {
+            // Move up
+            positions[i * 3 + 1] += 0.02 + Math.random() * 0.02;
+            // Reset if too high
+            if (positions[i * 3 + 1] > 3) {
+              positions[i * 3 + 1] = -2;
+              positions[i * 3] = (Math.random() - 0.5) * 3; // Center X
+              positions[i * 3 + 2] = (Math.random() - 0.5) * 3; // Center Z
+            }
+
+            // Color gradient based on height (Yellow -> Red -> Smoke)
+            const h = positions[i * 3 + 1];
+            if (h < -1) {
+              cols[i * 3] = 1;
+              cols[i * 3 + 1] = 0.8;
+              cols[i * 3 + 2] = 0.2;
+            } // Yellow
+            else if (h < 1) {
+              cols[i * 3] = 1;
+              cols[i * 3 + 1] = 0.2;
+              cols[i * 3 + 2] = 0.0;
+            } // Red
+            else {
+              cols[i * 3] = 0.5;
+              cols[i * 3 + 1] = 0.5;
+              cols[i * 3 + 2] = 0.5;
+            } // Smoke
+          }
+          particles.geometry.attributes.position.needsUpdate = true;
+          particles.geometry.attributes.color.needsUpdate = true;
+          particles.rotation.y += 0.002;
+          renderer.render(scene, camera);
+        }
+        animate();
+        window.addEventListener("resize", () => {
+          camera.aspect = container.clientWidth / container.clientHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(container.clientWidth, container.clientHeight);
+        });
       }
 
-      function scrollToSection(id) {
-        document
-          .getElementById(id)
-          .scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+      // --- Sim 2: Beaker ---
+      function runSim2(type) {
+        const liquid = document.getElementById("sim2-liquid");
+        const tempBar = document.getElementById("sim2-temp-bar");
+        const tempText = document.getElementById("sim2-temp-text");
+        const steam = document.getElementById("sim2-steam");
+        const ice = document.getElementById("sim2-ice");
 
-      // --- Chart Logic ---
-      function setChart(type) {
-        const levelR = document.getElementById("level-reactants");
-        const levelP = document.getElementById("level-products");
-        const arrow = document.getElementById("arrow-delta");
-        const label = document.getElementById("label-delta");
-        const descExo = document.getElementById("desc-exo");
-        const descEndo = document.getElementById("desc-endo");
-        const btnExo = document.getElementById("btn-exo");
-        const btnEndo = document.getElementById("btn-endo");
+        // Reset effects
+        steam.classList.add("hidden");
+        ice.classList.add("hidden");
 
         if (type === "exo") {
-          // UI
-          btnExo.classList.add("bg-red-100", "text-red-600", "border-red-200");
-          btnExo.classList.remove(
-            "bg-slate-100",
-            "text-slate-600",
-            "border-slate-200"
-          );
-          btnEndo.classList.remove(
-            "bg-blue-100",
-            "text-blue-600",
-            "border-blue-200"
-          );
-          btnEndo.classList.add(
-            "bg-slate-100",
-            "text-slate-600",
-            "border-slate-200"
-          );
-
-          // Chart Position
-          levelR.style.top = "30%";
-          levelP.style.top = "70%";
-
-          // Arrow
-          arrow.style.top = "30%";
-          arrow.style.height = "40%";
-          label.innerHTML = "\\(\\Delta_r H < 0\\)";
-
-          // Desc
-          descExo.classList.remove("hidden");
-          descEndo.classList.add("hidden");
+          liquid.className =
+            "absolute bottom-0 w-full h-3/4 transition-colors duration-1000 flex items-center justify-center bg-red-400/60";
+          tempBar.style.height = "80%";
+          tempText.innerText = "80°C";
+          tempText.className =
+            "absolute -right-16 top-10 font-mono font-bold bg-white dark:bg-slate-800 px-2 rounded shadow text-red-600";
+          setTimeout(() => steam.classList.remove("hidden"), 500);
+        } else if (type === "endo") {
+          liquid.className =
+            "absolute bottom-0 w-full h-3/4 transition-colors duration-1000 flex items-center justify-center bg-cyan-200/60";
+          tempBar.style.height = "10%";
+          tempText.innerText = "5°C";
+          tempText.className =
+            "absolute -right-16 top-10 font-mono font-bold bg-white dark:bg-slate-800 px-2 rounded shadow text-blue-600";
+          setTimeout(() => ice.classList.remove("hidden"), 500);
         } else {
-          // UI
-          btnEndo.classList.add(
-            "bg-blue-100",
-            "text-blue-600",
-            "border-blue-200"
-          );
-          btnEndo.classList.remove(
-            "bg-slate-100",
-            "text-slate-600",
-            "border-slate-200"
-          );
-          btnExo.classList.remove(
-            "bg-red-100",
-            "text-red-600",
-            "border-red-200"
-          );
-          btnExo.classList.add(
-            "bg-slate-100",
-            "text-slate-600",
-            "border-slate-200"
-          );
-
-          // Chart Position
-          levelR.style.top = "70%";
-          levelP.style.top = "30%";
-
-          // Arrow
-          arrow.style.top = "30%";
-          arrow.style.height = "40%"; // Actually arrow points up, but simple representation
-          label.innerHTML = "\\(\\Delta_r H > 0\\)";
-
-          // Desc
-          descEndo.classList.remove("hidden");
-          descExo.classList.add("hidden");
-        }
-        if (window.MathJax) MathJax.typesetPromise();
-      }
-
-      // --- Tab Logic ---
-      function switchTab(tabId) {
-        document
-          .querySelectorAll(".tab-content")
-          .forEach((el) => el.classList.add("hidden"));
-        document.getElementById(tabId).classList.remove("hidden");
-
-        document.querySelectorAll(".tab-btn").forEach((el) => {
-          el.classList.remove("active", "border-amber-500");
-          el.classList.add("border-transparent", "text-slate-500");
-        });
-
-        const activeBtn = document.getElementById(
-          tabId === "method-1" ? "tab-1" : "tab-2"
-        );
-        activeBtn.classList.add("active");
-        activeBtn.classList.remove("text-slate-500", "border-transparent");
-      }
-
-      // --- Quiz System (Updated for Energy) ---
-      const quizQuestions = [
-        {
-          q: "Phản ứng nào sau đây là phản ứng thu nhiệt?",
-          o: [
-            "Đốt cháy cồn",
-            "Nhiệt phân CaCO₃",
-            "Trung hòa Acid-Base",
-            "Hô hấp tế bào",
-          ],
-          a: 1,
-        },
-        {
-          q: "Biến thiên Enthalpy tạo thành chuẩn của đơn chất bền (VD: O₂) bằng bao nhiêu?",
-          o: ["0 kJ/mol", "100 kJ/mol", "-100 kJ/mol", "Không xác định"],
-          a: 0,
-        },
-        {
-          q: "Nếu ΔH < 0, phản ứng này là?",
-          o: ["Thu nhiệt", "Tỏa nhiệt", "Không thay đổi nhiệt", "Cân bằng"],
-          a: 1,
-        },
-        {
-          q: "Công thức tính ΔH dựa vào nhiệt tạo thành (ΔfH) là:",
-          o: [
-            "Tổng CĐ - Tổng SP",
-            "Tổng SP - Tổng CĐ",
-            "Tổng SP + Tổng CĐ",
-            "Tổng CĐ / Tổng SP",
-          ],
-          a: 1,
-        },
-        {
-          q: "Quá trình nước đóng băng (lỏng -> rắn) là quá trình:",
-          o: [
-            "Thu nhiệt (làm lạnh)",
-            "Tỏa nhiệt (giải phóng nhiệt)",
-            "Không đổi",
-            "Hấp thụ nhiệt",
-          ],
-          a: 1,
-        },
-      ];
-      let quizIndex = 0;
-      let score = 0;
-
-      function openQuiz() {
-        document.getElementById("quiz-modal").classList.remove("hidden");
-        restartQuiz();
-      }
-      function closeQuiz() {
-        document.getElementById("quiz-modal").classList.add("hidden");
-      }
-
-      function restartQuiz() {
-        quizIndex = 0;
-        score = 0;
-        document.getElementById("quiz-result").classList.add("hidden");
-        document
-          .getElementById("quiz-question-container")
-          .classList.remove("hidden");
-        showQuestion();
-      }
-
-      function showQuestion() {
-        const q = quizQuestions[quizIndex];
-        document.getElementById("quiz-progress").innerText = `Câu ${
-          quizIndex + 1
-        }/${quizQuestions.length}`;
-        document.getElementById("quiz-score").innerText = `Điểm: ${score}`;
-        document.getElementById("question-text").innerText = q.q;
-
-        const opts = document.getElementById("options-container");
-        opts.innerHTML = "";
-        q.o.forEach((opt, idx) => {
-          const btn = document.createElement("button");
-          btn.className =
-            "quiz-option w-full text-left p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-amber-50 dark:hover:bg-slate-700 hover:border-amber-500 transition flex items-center group";
-          btn.innerHTML = `<span class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-600 text-slate-500 dark:text-slate-300 flex items-center justify-center mr-3 font-bold group-hover:bg-amber-500 group-hover:text-white transition">${String.fromCharCode(
-            65 + idx
-          )}</span> ${opt}`;
-          btn.onclick = () => handleAnswer(idx);
-          opts.appendChild(btn);
-        });
-      }
-
-      function handleAnswer(idx) {
-        if (idx === quizQuestions[quizIndex].a) score++;
-        quizIndex++;
-        if (quizIndex < quizQuestions.length) {
-          showQuestion();
-        } else {
-          showResult();
+          liquid.className =
+            "absolute bottom-0 w-full h-3/4 transition-colors duration-1000 flex items-center justify-center bg-blue-300/50";
+          tempBar.style.height = "30%";
+          tempText.innerText = "25°C";
+          tempText.className =
+            "absolute -right-16 top-10 font-mono font-bold bg-white dark:bg-slate-800 px-2 rounded shadow text-slate-800 dark:text-white";
         }
       }
+
+      // --- Sim 3: Canvas Chart ---
+      function drawChart() {
+        const canvas = document.getElementById("energyChart");
+        const ctx = canvas.getContext("2d");
+        const prodE = document.getElementById("productSlider").value;
+        const reactE = 50; // Fixed
+
+        // Fix canvas resolution
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+
+        const w = rect.width;
+        const h = rect.height;
+        const isDark = html.classList.contains("dark");
+
+        // Clear
+        ctx.clearRect(0, 0, w, h);
+
+        // Axes
+        ctx.beginPath();
+        ctx.strokeStyle = isDark ? "#64748b" : "#94a3b8";
+        ctx.lineWidth = 2;
+        ctx.moveTo(40, h - 20);
+        ctx.lineTo(40, 20); // Y
+        ctx.moveTo(40, h - 20);
+        ctx.lineTo(w - 20, h - 20); // X
+        ctx.stroke();
+
+        // Convert percent to Y coords (flip Y)
+        const yR = h - 20 - (reactE / 100) * (h - 40);
+        const yP = h - 20 - (prodE / 100) * (h - 40);
+
+        // Draw Reactant Line
+        ctx.beginPath();
+        ctx.strokeStyle = "#3b82f6";
+        ctx.lineWidth = 4;
+        ctx.moveTo(50, yR);
+        ctx.lineTo(120, yR);
+        ctx.stroke();
+        ctx.fillStyle = "#3b82f6";
+        ctx.font = "bold 14px Arial";
+        ctx.fillText("Chất đầu", 50, yR - 10);
+
+        // Draw Product Line
+        ctx.beginPath();
+        ctx.strokeStyle = "#ef4444";
+        ctx.lineWidth = 4;
+        ctx.moveTo(w - 120, yP);
+        ctx.lineTo(w - 50, yP);
+        ctx.stroke();
+        ctx.fillStyle = "#ef4444";
+        ctx.fillText("Sản phẩm", w - 110, yP - 10);
+
+        // Activation Curve
+        const activationH = Math.min(yR, yP) - 60; // Peak
+        ctx.beginPath();
+        ctx.strokeStyle = isDark ? "#cbd5e1" : "#475569";
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 5]);
+        ctx.moveTo(120, yR);
+        ctx.bezierCurveTo(w / 2 - 20, yR, w / 2, activationH, w - 120, yP); // Simple curve approximation
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Ea Label
+        ctx.fillStyle = isDark ? "#aaa" : "#555";
+        ctx.font = "12px Arial";
+        ctx.fillText("Ea", w / 2 - 10, activationH - 10);
+
+        // Update DOM Info
+        const delta = prodE - reactE;
+        const deltaText = document.getElementById("deltaH-val");
+        const typeText = document.getElementById("reaction-type");
+
+        deltaText.innerText = (delta > 0 ? "+" : "") + delta + " kJ";
+        if (delta < 0) {
+          deltaText.className = "font-bold text-red-500";
+          typeText.innerText = "Tỏa nhiệt (Bền vững)";
+          typeText.className = "font-bold text-red-500";
+        } else {
+          deltaText.className = "font-bold text-blue-500";
+          typeText.innerText = "Thu nhiệt (Kém bền)";
+          typeText.className = "font-bold text-blue-500";
+        }
+      }
+
+      // --- Sim 4: Bond Breaking ---
+      let broken = { H2: false, Cl2: false };
+
+      function breakBond(el, energy, type) {
+        if (broken[type]) return;
+
+        // Animation: Shake then separate
+        const atoms = el.querySelectorAll(".atom");
+        const stick = el.querySelector(".bond-stick");
+        const energyTxt = el.querySelector(".energy-val");
+
+        // Shake
+        el.classList.add("animate-shake");
+
+        setTimeout(() => {
+          el.classList.remove("animate-shake");
+          stick.classList.add("bond-broken");
+          atoms[0].classList.add("atom-separated-left");
+          atoms[1].classList.add("atom-separated-right");
+          energyTxt.style.opacity = "1";
+          broken[type] = true;
+
+          if (broken.H2 && broken.Cl2) {
+            document.getElementById("btn-form-bond").disabled = false;
+            document
+              .getElementById("btn-form-bond")
+              .classList.replace("bg-slate-300", "bg-blue-600");
+            document
+              .getElementById("btn-form-bond")
+              .classList.replace("text-slate-500", "text-white");
+            document
+              .getElementById("btn-form-bond")
+              .classList.add("hover:bg-blue-700");
+          }
+        }, 500);
+      }
+
+      function formBonds() {
+        const stage = document.getElementById("sim4-stage");
+        // Replace visual with result molecules
+        stage.innerHTML = `
+                <div class="flex gap-8 animate-fade-in">
+                    <div class="flex items-center justify-center p-2 rounded-full border border-purple-500 bg-purple-100 dark:bg-slate-800">
+                        <div class="w-6 h-6 rounded-full bg-white border border-slate-400 flex items-center justify-center text-[10px]">H</div>
+                        <div class="w-6 h-1 bg-purple-500"></div>
+                        <div class="w-8 h-8 rounded-full bg-green-200 border border-green-500 flex items-center justify-center text-xs">Cl</div>
+                    </div>
+                    <div class="flex items-center justify-center p-2 rounded-full border border-purple-500 bg-purple-100 dark:bg-slate-800">
+                        <div class="w-6 h-6 rounded-full bg-white border border-slate-400 flex items-center justify-center text-[10px]">H</div>
+                        <div class="w-6 h-1 bg-purple-500"></div>
+                        <div class="w-8 h-8 rounded-full bg-green-200 border border-green-500 flex items-center justify-center text-xs">Cl</div>
+                    </div>
+                </div>
+            `;
+        document.getElementById("sim4-result").classList.remove("hidden");
+        document.getElementById("btn-form-bond").style.display = "none";
+      }
+
+      // --- Sim 5: Calorimetry Lab ---
+      let labState = 0;
+
+      function labAction(step) {
+        if (step === 1 && labState === 0) {
+          // Pouring HCL and NaOH into separate beakers is implied pre-lab, show checked
+          document
+            .getElementById("step1")
+            .querySelector(".status-icon").className =
+            "fas fa-check-circle text-green-500 status-icon";
+          document.getElementById("step1").style.borderColor = "#10B981";
+          document.getElementById("step2").classList.remove("opacity-50");
+          labState = 1;
+
+          // Fill HCL beaker in visual
+          document.getElementById("beaker-hcl").style.top = "150px"; // Move down conceptually or just show level
+        } else if (step === 2 && labState === 1) {
+          // Animation: Pour
+          const bHcl = document.getElementById("beaker-hcl");
+          const bNaoh = document.getElementById("beaker-naoh");
+          const cupLiquid = document.getElementById("lab-liquid");
+          const glow = document.getElementById("lab-reaction-glow");
+          const thermo = document.getElementById("lab-thermometer");
+          const tempDisplay = document.getElementById("lab-temp-display");
+
+          // Move beakers to cup
+          bHcl.style.top = "10px";
+          bHcl.style.left = "80px";
+          bHcl.style.transform = "rotate(45deg)";
+          bNaoh.style.top = "10px";
+          bNaoh.style.right = "80px";
+          bNaoh.style.transform = "rotate(-45deg)";
+
+          setTimeout(() => {
+            // Empty beakers
+            document.getElementById("vol-hcl").style.height = "0";
+            document.getElementById("vol-naoh").style.height = "0";
+
+            // Fill cup
+            cupLiquid.style.height = "50%";
+            cupLiquid.style.backgroundColor = "rgba(200, 200, 255, 0.5)"; // Mixed color
+
+            setTimeout(() => {
+              // Reaction!
+              glow.style.opacity = "0.8";
+
+              // Temp Rise
+              let temp = 25.0;
+              const interval = setInterval(() => {
+                temp += 0.2;
+                tempDisplay.innerText = temp.toFixed(1) + "°C";
+                thermo.style.height = (temp / 50) * 100 + "%"; // Scale
+                if (temp >= 31.8) {
+                  clearInterval(interval);
+                  labFinish();
+                }
+              }, 50);
+            }, 1000);
+          }, 500);
+
+          document
+            .getElementById("step2")
+            .querySelector(".status-icon").className =
+            "fas fa-check-circle text-green-500 status-icon";
+          document.getElementById("step2").style.borderColor = "#10B981";
+          labState = 2;
+        }
+      }
+
+      function labFinish() {
+        document.getElementById("step3").classList.remove("opacity-50");
+        document.getElementById("lab-results").classList.remove("hidden");
+        document
+          .getElementById("step3")
+          .querySelector(".status-icon").className =
+          "fas fa-check-circle text-green-500 status-icon";
+        document.getElementById("step3").style.borderColor = "#10B981";
+
+        // Fade out beakers
+        document.getElementById("beaker-hcl").style.opacity = "0";
+        document.getElementById("beaker-naoh").style.opacity = "0";
+      }
+
+      function resetLab() {
+        labState = 0;
+        // UI Reset
+        document
+          .getElementById("step1")
+          .querySelector(".status-icon").className =
+          "fas fa-check-circle text-slate-600 status-icon";
+        document.getElementById("step1").style.borderColor = "";
+        document.getElementById("step2").classList.add("opacity-50");
+        document
+          .getElementById("step2")
+          .querySelector(".status-icon").className =
+          "fas fa-bolt text-slate-600 status-icon";
+        document.getElementById("step2").style.borderColor = "";
+        document.getElementById("step3").classList.add("opacity-50");
+        document.getElementById("lab-results").classList.add("hidden");
+
+        // Visual Reset
+        document.getElementById("lab-liquid").style.height = "0";
+        document.getElementById("lab-reaction-glow").style.opacity = "0";
+        document.getElementById("lab-thermometer").style.height = "30%";
+        document.getElementById("lab-temp-display").innerText = "25.0°C";
+
+        const bHcl = document.getElementById("beaker-hcl");
+        const bNaoh = document.getElementById("beaker-naoh");
+
+        bHcl.style.opacity = "1";
+        bHcl.style.top = "40px";
+        bHcl.style.left = "40px";
+        bHcl.style.transform = "rotate(0deg)";
+        bNaoh.style.opacity = "1";
+        bNaoh.style.top = "40px";
+        bNaoh.style.right = "40px";
+        bNaoh.style.transform = "rotate(0deg)";
+
+        document.getElementById("vol-hcl").style.height = "75%";
+        document.getElementById("vol-naoh").style.height = "75%";
+      }
+
+      // Init
+      window.onload = function () {
+        initSim1();
+        drawChart();
+        window.addEventListener("resize", drawChart);
+      };
     </script>
   </body>
 </html>

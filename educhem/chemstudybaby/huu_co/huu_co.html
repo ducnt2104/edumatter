@@ -1,360 +1,386 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" class="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hóa 9 - Hợp Chất Sự Sống</title>
+    <title>Chuyên Đề 4: Hợp Chất Sự Sống - Hóa Học 9</title>
+    <link rel="icon" href="../../../favicon/educhem.svg" type="image/svg+xml" />
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              bioLipid: "#eab308", // Yellow
+              bioCarb: "#22c55e", // Green
+              bioProt: "#ef4444", // Red
+              bioPoly: "#3b82f6", // Blue
+              darkBg: "#0f172a",
+              lightBg: "#f0f9ff",
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+    <!-- Fonts -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Work+Sans:wght@400;600;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;900&display=swap"
       rel="stylesheet"
     />
+
     <style>
       body {
-        font-family: "Work Sans", sans-serif;
-        background-color: #0f172a; /* Slate 900 */
-        color: #e2e8f0;
+        font-family: "Be Vietnam Pro", sans-serif;
+        transition: background-color 0.3s, color 0.3s;
       }
 
-      /* Glassmorphism Cards */
+      /* Glassmorphism */
       .glass-panel {
-        background: rgba(30, 41, 59, 0.7);
+        background: rgba(255, 255, 255, 0.85);
         backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
       }
-      .glass-panel:hover {
-        border-color: rgba(255, 255, 255, 0.3);
-        transform: translateY(-2px);
-      }
-
-      /* DNA Helix Animation for Intro */
-      .dna-container {
-        position: relative;
-        width: 100px;
-        height: 200px;
-        margin: 0 auto;
-        perspective: 1000px;
-      }
-      .dna-strand {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        transform-style: preserve-3d;
-        animation: rotateDNA 10s linear infinite;
-      }
-      .base-pair {
-        position: absolute;
-        width: 60px;
-        height: 2px;
-        background: linear-gradient(90deg, #ef4444, #3b82f6);
-        left: 20px;
-        transform-origin: center;
-      }
-      .base-pair::before,
-      .base-pair::after {
-        content: "";
-        position: absolute;
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        top: -4px;
-      }
-      .base-pair::before {
-        left: -5px;
-        background: #ef4444;
-        box-shadow: 0 0 10px #ef4444;
-      }
-      .base-pair::after {
-        right: -5px;
-        background: #3b82f6;
-        box-shadow: 0 0 10px #3b82f6;
+      .dark .glass-panel {
+        background: rgba(30, 41, 59, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
       }
 
-      @keyframes rotateDNA {
-        0% {
-          transform: rotateY(0deg);
-        }
+      /* Nav Sticky */
+      .nav-sticky {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      }
+      .dark .nav-sticky {
+        background: rgba(15, 23, 42, 0.95);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      /* Animations */
+      @keyframes float {
+        0%,
         100% {
-          transform: rotateY(360deg);
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+      .animate-float {
+        animation: float 3s ease-in-out infinite;
+      }
+
+      .tab-content {
+        display: none;
+        animation: fadeIn 0.5s;
+      }
+      .tab-content.active {
+        display: block;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
       }
 
-      /* Polymer Chain Animation */
-      @keyframes chain-move {
-        0% {
-          background-position: 0 0;
-        }
-        100% {
-          background-position: 50px 0;
-        }
+      /* Scrollbar */
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
       }
-      .polymer-bg {
-        background-image: radial-gradient(circle, #3b82f6 20%, transparent 20%),
-          radial-gradient(circle, #3b82f6 20%, transparent 20%);
-        background-position: 0 0, 25px 25px;
-        background-size: 50px 50px;
-        animation: chain-move 2s linear infinite;
-        opacity: 0.1;
-      }
-
-      /* Custom Scrollbar */
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #0f172a;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #334155;
-        border-radius: 4px;
+      .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
       }
     </style>
-    <link rel="stylesheet" href="../../component/component.css" />
-    <script src="../../component/component.js"></script>
   </head>
-  <body class="flex flex-col md:flex-row h-screen overflow-hidden">
-    <nav
-      class="w-full md:w-64 bg-[#111827] border-r border-gray-800 flex-shrink-0 flex flex-col z-50"
-    >
-      <div class="p-6 border-b border-gray-800">
-        <h1 class="text-xl font-bold text-white mb-1">
-          <i class="fas fa-dna mr-2 text-green-400"></i>Hóa Học 9
-        </h1>
-        <p class="text-xs text-gray-400">Chương 4: Hợp chất sự sống</p>
-      </div>
-      <a href="../chemstudybaby.html">quay về trang chủ</a>
-      <div class="flex-1 overflow-y-auto p-4 space-y-2">
-        <button
-          onclick="switchTab('intro')"
-          class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-white/10 text-gray-300 transition flex items-center gap-3 bg-white/10 border border-white/5"
-        >
-          <i class="fas fa-home"></i> Tổng quan
-        </button>
-        <button
-          onclick="switchTab('lipid')"
-          class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-white/10 text-yellow-400 transition flex items-center gap-3"
-        >
-          <i class="fas fa-oil-can"></i> Lipid (Chất béo)
-        </button>
-        <button
-          onclick="switchTab('carb')"
-          class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-white/10 text-green-400 transition flex items-center gap-3"
-        >
-          <i class="fas fa-bread-slice"></i> Carbohydrate
-        </button>
-        <button
-          onclick="switchTab('protein')"
-          class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-white/10 text-red-400 transition flex items-center gap-3"
-        >
-          <i class="fas fa-drumstick-bite"></i> Protein
-        </button>
-        <button
-          onclick="switchTab('polymer')"
-          class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-white/10 text-blue-400 transition flex items-center gap-3"
-        >
-          <i class="fas fa-box"></i> Polymer & Nhựa
-        </button>
-        <div class="h-px bg-gray-700 my-2"></div>
-        <button
-          onclick="switchTab('game')"
-          class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-white/10 text-purple-400 transition flex items-center gap-3 font-bold"
-        >
-          <i class="fas fa-gamepad"></i> Game Phân Loại
-        </button>
+  <body
+    class="bg-lightBg text-slate-800 dark:bg-darkBg dark:text-slate-100 min-h-screen flex flex-col"
+  >
+    <!-- TOP NAVIGATION (STICKY) -->
+    <nav class="nav-sticky w-full shadow-lg">
+      <div class="max-w-7xl mx-auto px-2 md:px-4">
+        <div class="flex items-center justify-between h-16">
+          <!-- Left: Logo & Back -->
+          <div class="flex items-center gap-3 flex-shrink-0">
+            <a
+              href="../chemstudybaby.html"
+              class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+              title="Quay lại"
+            >
+              <i
+                class="fas fa-arrow-left text-slate-600 dark:text-slate-300"
+              ></i>
+            </a>
+            <h1
+              class="hidden md:block text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-blue-500"
+            >
+              Chemstudy baby - Hóa học 9: Hợp chất sự sống
+            </h1>
+          </div>
+
+          <!-- Center: Horizontal Scroll Menu -->
+          <div
+            class="flex-1 overflow-x-auto hide-scrollbar flex items-center justify-start md:justify-center gap-2 px-4"
+          >
+            <button
+              onclick="switchTab('lipid')"
+              class="nav-btn whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold transition flex items-center gap-2 text-yellow-600 dark:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-900/30"
+              data-target="lipid"
+            >
+              <i class="fas fa-oil-can"></i> Lipid
+            </button>
+            <button
+              onclick="switchTab('carb')"
+              class="nav-btn whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold transition flex items-center gap-2 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/30"
+              data-target="carb"
+            >
+              <i class="fas fa-seedling"></i> Carb
+            </button>
+            <button
+              onclick="switchTab('protein')"
+              class="nav-btn whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold transition flex items-center gap-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30"
+              data-target="protein"
+            >
+              <i class="fas fa-drumstick-bite"></i> Protein
+            </button>
+            <button
+              onclick="switchTab('polymer')"
+              class="nav-btn whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold transition flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30"
+              data-target="polymer"
+            >
+              <i class="fas fa-box"></i> Polymer
+            </button>
+            <button
+              onclick="switchTab('lab')"
+              class="nav-btn whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold transition flex items-center gap-2 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-800"
+              data-target="lab"
+            >
+              <i class="fas fa-flask"></i> 6 Thí Nghiệm
+            </button>
+          </div>
+
+          <!-- Right: Theme Toggle -->
+          <div class="flex-shrink-0">
+            <button
+              id="themeToggle"
+              class="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:scale-110 transition shadow-sm"
+            >
+              <i class="fas fa-moon dark:text-yellow-400 text-slate-500"></i>
+            </button>
+          </div>
+        </div>
       </div>
     </nav>
 
-    <main
-      class="flex-1 overflow-y-auto relative scroll-smooth bg-gradient-to-br from-[#0f172a] to-[#1e293b]"
-    >
-      <section
-        id="intro"
-        class="tab-content p-8 max-w-5xl mx-auto block animate-fade"
-      >
-        <header class="mb-10 text-center relative">
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 w-full max-w-6xl mx-auto p-4 md:p-6 pb-24">
+      <!-- === TAB 1: LIPID === -->
+      <div id="lipid" class="tab-content active space-y-6">
+        <header
+          class="flex items-center gap-4 border-b border-yellow-200 dark:border-yellow-900/50 pb-4"
+        >
           <div
-            class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-blue-500/10 blur-[100px] -z-10 rounded-full"
-          ></div>
-          <h2
-            class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 mb-4"
+            class="w-16 h-16 rounded-2xl bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center text-3xl"
           >
-            Hóa Học Hữu Cơ & Sự Sống
-          </h2>
-          <p class="text-gray-400 max-w-2xl mx-auto">
-            Khám phá cấu trúc của những hợp chất tạo nên cơ thể bạn và thế giới
-            vật liệu xung quanh.
-          </p>
+            🌻
+          </div>
+          <div>
+            <h2
+              class="text-3xl font-black text-yellow-600 dark:text-yellow-400"
+            >
+              I. LIPID (CHẤT BÉO)
+            </h2>
+            <p class="text-slate-500 dark:text-slate-400">
+              Nguồn năng lượng dự trữ & Bảo vệ cơ thể
+            </p>
+          </div>
         </header>
 
-        <div class="grid md:grid-cols-2 gap-8 items-center">
-          <div class="flex justify-center">
-            <div class="dna-container" id="dna-anim"></div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div
-              onclick="switchTab('lipid')"
-              class="glass-panel p-6 rounded-2xl cursor-pointer hover:bg-yellow-900/20 group"
-            >
-              <i
-                class="fas fa-oil-can text-3xl text-yellow-500 mb-2 group-hover:scale-110 transition"
-              ></i>
-              <h3 class="font-bold text-yellow-100">Chất béo</h3>
-              <p class="text-xs text-gray-400">Năng lượng dự trữ</p>
-            </div>
-            <div
-              onclick="switchTab('carb')"
-              class="glass-panel p-6 rounded-2xl cursor-pointer hover:bg-green-900/20 group"
-            >
-              <i
-                class="fas fa-seedling text-3xl text-green-500 mb-2 group-hover:scale-110 transition"
-              ></i>
-              <h3 class="font-bold text-green-100">Carbohydrate</h3>
-              <p class="text-xs text-gray-400">Nguồn năng lượng chính</p>
-            </div>
-            <div
-              onclick="switchTab('protein')"
-              class="glass-panel p-6 rounded-2xl cursor-pointer hover:bg-red-900/20 group"
-            >
-              <i
-                class="fas fa-dumbbell text-3xl text-red-500 mb-2 group-hover:scale-110 transition"
-              ></i>
-              <h3 class="font-bold text-red-100">Protein</h3>
-              <p class="text-xs text-gray-400">Xây dựng tế bào</p>
-            </div>
-            <div
-              onclick="switchTab('polymer')"
-              class="glass-panel p-6 rounded-2xl cursor-pointer hover:bg-blue-900/20 group"
-            >
-              <i
-                class="fas fa-cubes text-3xl text-blue-500 mb-2 group-hover:scale-110 transition"
-              ></i>
-              <h3 class="font-bold text-blue-100">Polymer</h3>
-              <p class="text-xs text-gray-400">Vật liệu hiện đại</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="lipid" class="tab-content hidden p-8 max-w-5xl mx-auto">
-        <h2
-          class="text-3xl font-bold text-yellow-400 mb-6 flex items-center gap-3"
-        >
-          <i class="fas fa-oil-can"></i> Lipid (Chất béo)
-        </h2>
         <div class="grid md:grid-cols-2 gap-6">
-          <div class="glass-panel p-6 rounded-2xl border-l-4 border-yellow-500">
-            <h3 class="text-xl font-bold text-white mb-2">Cấu tạo phân tử</h3>
-            <p class="text-gray-300 mb-4">
-              Là hỗn hợp nhiều este của
-              <strong class="text-yellow-400">Glixerol</strong> và các
-              <strong class="text-yellow-400">Axit béo</strong>.
-            </p>
+          <!-- Theory -->
+          <div class="space-y-4">
             <div
-              class="bg-black/30 p-4 rounded-xl font-mono text-center text-yellow-200"
+              class="glass-panel p-5 rounded-xl border-l-4 border-yellow-500"
             >
-              (R-COO)₃C₃H₅
-            </div>
-            <ul class="mt-4 text-sm text-gray-400 space-y-2">
-              <li>
-                <i class="fas fa-check text-green-500 mr-2"></i>Nhẹ hơn nước,
-                không tan trong nước.
-              </li>
-              <li>
-                <i class="fas fa-check text-green-500 mr-2"></i>Tan được trong
-                benzen, xăng, dầu hỏa.
-              </li>
-            </ul>
-          </div>
-          <div class="glass-panel p-6 rounded-2xl">
-            <h3 class="text-xl font-bold text-white mb-2">Tính chất hóa học</h3>
-            <div class="mb-4">
-              <h4 class="font-bold text-yellow-500 text-sm uppercase mb-1">
-                1. Phản ứng thủy phân (Axit)
-              </h4>
-              <p class="text-xs text-gray-400 font-mono">
-                Chất béo + Nước -> Glixerol + Axit béo
+              <h3 class="font-bold text-lg mb-2">1. Khái niệm & Cấu tạo</h3>
+              <p class="text-sm mb-2">
+                Là hỗn hợp các este của <strong>Glixerol</strong> và
+                <strong>Axit béo</strong>.
               </p>
-            </div>
-            <div>
-              <h4 class="font-bold text-yellow-500 text-sm uppercase mb-1">
-                2. Phản ứng xà phòng hóa (Kiềm)
-              </h4>
-              <p
-                class="text-xs text-gray-400 font-mono bg-blue-900/20 p-2 rounded"
+              <div
+                class="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded text-center font-mono font-bold text-yellow-700 dark:text-yellow-300"
               >
-                (RCOO)₃C₃H₅ + 3NaOH -> 3RCOONa + C₃H₅(OH)₃
-              </p>
-              <p class="text-xs text-gray-500 mt-1 italic">
-                Ứng dụng: Sản xuất xà phòng và Glixerol.
-              </p>
+                (R-COO)₃C₃H₅
+              </div>
             </div>
+
+            <div class="glass-panel p-5 rounded-xl">
+              <h3 class="font-bold text-lg mb-2">2. Tính chất</h3>
+              <ul class="text-sm space-y-2 list-disc list-inside">
+                <li>
+                  <strong>Vật lý:</strong> Nhẹ hơn nước, không tan trong nước,
+                  tan trong benzen/xăng.
+                </li>
+                <li>
+                  <strong>Hóa học:</strong>
+                  <ul class="pl-4 mt-1 space-y-1 list-circle text-xs">
+                    <li>Thủy phân (trong axit) -> Axit béo + Glixerol.</li>
+                    <li>
+                      <strong>Xà phòng hóa:</strong> Đun với kiềm (NaOH) -> Muối
+                      (Xà phòng) + Glixerol.
+                    </li>
+                    <li>
+                      Hydro hóa: Chất béo lỏng -> Chất béo rắn (Bơ thực vật).
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Simulation/Visual -->
+          <div
+            class="glass-panel p-1 rounded-xl relative overflow-hidden h-80 flex flex-col"
+          >
+            <div
+              class="absolute top-2 left-2 z-10 bg-yellow-100 dark:bg-yellow-900 px-2 py-1 rounded text-xs font-bold text-yellow-700 dark:text-yellow-300"
+            >
+              Mô hình phân tử Triglyceride
+            </div>
+            <div
+              id="canvas-lipid"
+              class="w-full flex-1 bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-slate-800 dark:to-slate-900"
+            ></div>
           </div>
         </div>
-      </section>
 
-      <section id="carb" class="tab-content hidden p-8 max-w-5xl mx-auto">
-        <h2
-          class="text-3xl font-bold text-green-400 mb-6 flex items-center gap-3"
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div
+            class="p-4 bg-white dark:bg-slate-800 rounded-xl shadow text-center"
+          >
+            <i class="fas fa-soap text-3xl text-yellow-500 mb-2"></i>
+            <h4 class="font-bold text-sm">Xà phòng</h4>
+          </div>
+          <div
+            class="p-4 bg-white dark:bg-slate-800 rounded-xl shadow text-center"
+          >
+            <i class="fas fa-hamburger text-3xl text-orange-500 mb-2"></i>
+            <h4 class="font-bold text-sm">Thực phẩm</h4>
+          </div>
+          <div
+            class="p-4 bg-white dark:bg-slate-800 rounded-xl shadow text-center"
+          >
+            <i class="fas fa-gas-pump text-3xl text-green-500 mb-2"></i>
+            <h4 class="font-bold text-sm">Nhiên liệu</h4>
+          </div>
+          <div
+            class="p-4 bg-white dark:bg-slate-800 rounded-xl shadow text-center"
+          >
+            <i class="fas fa-pills text-3xl text-blue-500 mb-2"></i>
+            <h4 class="font-bold text-sm">Dược phẩm</h4>
+          </div>
+        </div>
+      </div>
+
+      <!-- === TAB 2: CARBOHYDRATE === -->
+      <div id="carb" class="tab-content space-y-6">
+        <header
+          class="flex items-center gap-4 border-b border-green-200 dark:border-green-900/50 pb-4"
         >
-          <i class="fas fa-seedling"></i> Carbohydrate (Gluxit)
-        </h2>
+          <div
+            class="w-16 h-16 rounded-2xl bg-green-100 dark:bg-green-900 flex items-center justify-center text-3xl"
+          >
+            🍚
+          </div>
+          <div>
+            <h2 class="text-3xl font-black text-green-600 dark:text-green-400">
+              II. CARBOHYDRATE
+            </h2>
+            <p class="text-slate-500 dark:text-slate-400">
+              Glucose, Saccarozơ, Tinh bột & Cellulose
+            </p>
+          </div>
+        </header>
 
-        <div class="glass-panel overflow-hidden rounded-2xl mb-8">
-          <table class="w-full text-left text-sm">
-            <thead class="bg-green-900/40 text-green-200">
+        <!-- Table Comparison -->
+        <div
+          class="overflow-x-auto rounded-xl shadow border border-slate-200 dark:border-slate-700"
+        >
+          <table class="w-full text-sm text-left">
+            <thead
+              class="bg-green-50 dark:bg-green-900/30 text-green-800 dark:text-green-200"
+            >
               <tr>
-                <th class="p-4">Chất</th>
-                <th class="p-4">Công thức</th>
-                <th class="p-4">Đặc điểm</th>
-                <th class="p-4">Pư Đặc trưng</th>
+                <th class="p-3">Chất</th>
+                <th class="p-3">Công thức</th>
+                <th class="p-3">Đặc điểm</th>
+                <th class="p-3">Phản ứng đặc trưng</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-gray-700 text-gray-300">
-              <tr class="hover:bg-white/5">
-                <td class="p-4 font-bold text-white">Glucozơ</td>
-                <td class="p-4 font-mono text-green-400">C₆H₁₂O₆</td>
-                <td class="p-4">Đường đơn, có trong máu, quả chín.</td>
-                <td class="p-4">
-                  <span class="bg-gray-700 px-2 py-1 rounded text-xs"
+            <tbody
+              class="divide-y divide-slate-100 dark:divide-slate-700 bg-white dark:bg-slate-800"
+            >
+              <tr>
+                <td class="p-3 font-bold">Glucozơ</td>
+                <td class="p-3 font-mono">C₆H₁₂O₆</td>
+                <td class="p-3">Đường đơn, quả chín.</td>
+                <td class="p-3">
+                  <span
+                    class="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-xs"
                     >Tráng bạc</span
                   >
                 </td>
               </tr>
-              <tr class="hover:bg-white/5">
-                <td class="p-4 font-bold text-white">Saccarozơ</td>
-                <td class="p-4 font-mono text-green-400">C₁₂H₂₂O₁₁</td>
-                <td class="p-4">Đường mía, đường đôi.</td>
-                <td class="p-4">
-                  <span class="bg-gray-700 px-2 py-1 rounded text-xs"
-                    >Thủy phân</span
-                  >
-                </td>
-              </tr>
-              <tr class="hover:bg-white/5">
-                <td class="p-4 font-bold text-white">Tinh bột</td>
-                <td class="p-4 font-mono text-green-400">(-C₆H₁₀O₅-)n</td>
-                <td class="p-4">Gạo, ngô, khoai.</td>
-                <td class="p-4">
+              <tr>
+                <td class="p-3 font-bold">Saccarozơ</td>
+                <td class="p-3 font-mono">C₁₂H₂₂O₁₁</td>
+                <td class="p-3">Đường đôi, mía.</td>
+                <td class="p-3">
                   <span
-                    class="bg-blue-900 text-blue-200 px-2 py-1 rounded text-xs"
-                    >Hồ tinh bột + Iot</span
+                    class="px-2 py-1 bg-green-100 dark:bg-green-900 rounded text-xs"
+                    >Thủy phân</span
                   >
                 </td>
               </tr>
-              <tr class="hover:bg-white/5">
-                <td class="p-4 font-bold text-white">Cellulose</td>
-                <td class="p-4 font-mono text-green-400">(-C₆H₁₀O₅-)n</td>
-                <td class="p-4">Gỗ, tre, bông.</td>
-                <td class="p-4">
-                  <span class="bg-gray-700 px-2 py-1 rounded text-xs"
-                    >Thủy phân</span
+              <tr>
+                <td class="p-3 font-bold">Tinh bột</td>
+                <td class="p-3 font-mono">(-C₆H₁₀O₅-)n</td>
+                <td class="p-3">Gạo, ngô (Chuỗi xoắn).</td>
+                <td class="p-3">
+                  <span
+                    class="px-2 py-1 bg-blue-100 dark:bg-blue-900 rounded text-xs text-blue-700 dark:text-blue-200"
+                    >Hồ tinh bột + Iot (Xanh)</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold">Cellulose</td>
+                <td class="p-3 font-mono">(-C₆H₁₀O₅-)n</td>
+                <td class="p-3">Gỗ, bông (Chuỗi thẳng).</td>
+                <td class="p-3">
+                  <span
+                    class="px-2 py-1 bg-yellow-100 dark:bg-yellow-900 rounded text-xs"
+                    >Thủy phân / +HNO3</span
                   >
                 </td>
               </tr>
@@ -362,398 +388,707 @@
           </table>
         </div>
 
+        <!-- Detailed Cards -->
         <div class="grid md:grid-cols-2 gap-6">
-          <div class="glass-panel p-6 rounded-2xl border-t-4 border-blue-500">
-            <h3 class="font-bold text-lg mb-4 text-blue-300">
-              Thí nghiệm: Iot + Hồ tinh bột
+          <div class="glass-panel p-5 rounded-xl border-t-4 border-green-500">
+            <h3
+              class="font-bold text-lg mb-2 text-green-600 dark:text-green-400"
+            >
+              1. Glucozơ & Saccarozơ
             </h3>
-            <div class="flex items-center gap-4">
-              <div
-                id="starch-tube"
-                class="w-12 h-32 border-2 border-gray-500 border-t-0 rounded-b-xl bg-white/20 relative flex items-end justify-center overflow-hidden transition-all duration-1000"
-              >
-                <div
-                  class="absolute bottom-0 w-full h-20 bg-white/80 transition-colors duration-1000"
-                  id="starch-liquid"
-                ></div>
+            <ul class="text-sm space-y-2">
+              <li>
+                <strong>Glucozơ:</strong> Có nhóm -CHO (Andehit) -> Phản ứng
+                tráng gương. Lên men tạo rượu.
+              </li>
+              <li>
+                <strong>Saccarozơ:</strong> Không có nhóm -CHO -> Không tráng
+                gương. Thủy phân tạo Glucozơ + Fructozơ.
+              </li>
+            </ul>
+          </div>
+          <div class="glass-panel p-5 rounded-xl border-t-4 border-blue-500">
+            <h3 class="font-bold text-lg mb-2 text-blue-600 dark:text-blue-400">
+              2. Tinh bột & Cellulose
+            </h3>
+            <ul class="text-sm space-y-2">
+              <li>
+                <strong>Tinh bột:</strong> Tan trong nước nóng tạo hồ dán. Gặp
+                Iot hóa xanh tím. Nguồn năng lượng chính.
+              </li>
+              <li>
+                <strong>Cellulose:</strong> Bền, không tan. Tạo tơ nhân tạo,
+                giấy, thuốc súng không khói.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- === TAB 3: PROTEIN === -->
+      <div id="protein" class="tab-content space-y-6">
+        <header
+          class="flex items-center gap-4 border-b border-red-200 dark:border-red-900/50 pb-4"
+        >
+          <div
+            class="w-16 h-16 rounded-2xl bg-red-100 dark:bg-red-900 flex items-center justify-center text-3xl"
+          >
+            🥩
+          </div>
+          <div>
+            <h2 class="text-3xl font-black text-red-600 dark:text-red-400">
+              III. PROTEIN (ĐẠM)
+            </h2>
+            <p class="text-slate-500 dark:text-slate-400">Cơ sở của sự sống</p>
+          </div>
+        </header>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <!-- Concept -->
+          <div class="glass-panel p-5 rounded-xl md:col-span-2">
+            <h3 class="font-bold text-lg mb-3 text-red-600 dark:text-red-400">
+              Đặc điểm & Vai trò
+            </h3>
+            <p class="text-sm mb-3">
+              Là hợp chất cao phân tử được tạo từ các
+              <strong>Axit Amin</strong>. Chứa C, H, O, N (S, P...).
+            </p>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                <h4 class="font-bold text-xs uppercase mb-1">Cấu tạo</h4>
+                <p class="text-xs">Chuỗi Polypeptit cuộn lại.</p>
               </div>
-              <div>
-                <button
-                  onclick="runStarchTest()"
-                  class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-bold shadow-lg transition"
-                >
-                  Nhỏ dd Iot
-                </button>
-                <p
-                  id="starch-result"
-                  class="text-xs mt-2 text-blue-400 font-bold hidden"
-                >
-                  -> Hóa Xanh tím!
-                </p>
+              <div class="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                <h4 class="font-bold text-xs uppercase mb-1">Vai trò</h4>
+                <p class="text-xs">Xây dựng tế bào, Enzyme, Hormone.</p>
               </div>
             </div>
           </div>
 
-          <div class="glass-panel p-6 rounded-2xl border-t-4 border-gray-300">
-            <h3 class="font-bold text-lg mb-4 text-gray-300">
-              Thí nghiệm: Tráng gương (Glucose)
-            </h3>
-            <div class="flex items-center gap-4">
-              <div
-                id="ag-tube"
-                class="w-12 h-32 border-2 border-gray-500 border-t-0 rounded-b-xl bg-white/5 relative flex items-end justify-center overflow-hidden"
-              >
-                <div
-                  class="absolute bottom-0 w-full h-20 bg-transparent transition-all duration-1000"
-                  id="ag-liquid"
-                ></div>
-              </div>
+          <!-- Properties List -->
+          <div class="glass-panel p-5 rounded-xl">
+            <h3 class="font-bold text-lg mb-3">Tính chất hóa học</h3>
+            <ul class="text-sm space-y-3">
+              <li class="flex items-start gap-2">
+                <span
+                  class="bg-red-200 dark:bg-red-800 text-xs px-2 rounded font-bold mt-0.5"
+                  >1</span
+                >
+                <span><strong>Thủy phân:</strong> Tạo ra các Axit Amin.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span
+                  class="bg-red-200 dark:bg-red-800 text-xs px-2 rounded font-bold mt-0.5"
+                  >2</span
+                >
+                <span
+                  ><strong>Đông tụ:</strong> Khi đun nóng hoặc gặp axit/rượu
+                  (VD: Luộc trứng).</span
+                >
+              </li>
+              <li class="flex items-start gap-2">
+                <span
+                  class="bg-purple-200 dark:bg-purple-800 text-xs px-2 rounded font-bold mt-0.5"
+                  >3</span
+                >
+                <span
+                  ><strong>Màu Biure:</strong> Tác dụng Cu(OH)₂ -> Màu tím đặc
+                  trưng.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- === TAB 4: POLYMER === -->
+      <div id="polymer" class="tab-content space-y-6">
+        <header
+          class="flex items-center gap-4 border-b border-blue-200 dark:border-blue-900/50 pb-4"
+        >
+          <div
+            class="w-16 h-16 rounded-2xl bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-3xl"
+          >
+            🧩
+          </div>
+          <div>
+            <h2 class="text-3xl font-black text-blue-600 dark:text-blue-400">
+              IV. POLYMER & VẬT LIỆU
+            </h2>
+            <p class="text-slate-500 dark:text-slate-400">
+              Chất dẻo, Tơ, Cao su, Composite
+            </p>
+          </div>
+        </header>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <!-- 3D Chain Animation -->
+          <div class="glass-panel p-1 rounded-xl relative h-64 overflow-hidden">
+            <div
+              class="absolute top-2 left-2 z-10 bg-blue-100 dark:bg-blue-900 px-2 py-1 rounded text-xs font-bold text-blue-700 dark:text-blue-300"
+            >
+              Mô phỏng mạch Polymer
+            </div>
+            <div
+              id="canvas-poly"
+              class="w-full h-full bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-900"
+            ></div>
+          </div>
+
+          <!-- Classification -->
+          <div class="space-y-4">
+            <div
+              class="glass-panel p-4 rounded-xl flex items-center gap-4 hover:bg-blue-50 dark:hover:bg-blue-900/10 transition"
+            >
+              <i class="fas fa-shopping-bag text-3xl text-blue-500"></i>
               <div>
-                <button
-                  onclick="runAgTest()"
-                  class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg text-sm font-bold shadow-lg transition"
-                >
-                  Thêm AgNO3/NH3
-                </button>
-                <p
-                  id="ag-result"
-                  class="text-xs mt-2 text-gray-200 font-bold hidden"
-                >
-                  -> Bạc kết tủa sáng bóng!
+                <h4 class="font-bold">Chất dẻo (Nhựa)</h4>
+                <p class="text-xs text-slate-500">
+                  PE, PVC, PP. Tính dẻo, nhẹ, bền.
+                </p>
+                <p class="text-xs font-mono mt-1 text-blue-600">(-CH₂-CH₂-)n</p>
+              </div>
+            </div>
+            <div
+              class="glass-panel p-4 rounded-xl flex items-center gap-4 hover:bg-pink-50 dark:hover:bg-pink-900/10 transition"
+            >
+              <i class="fas fa-tshirt text-3xl text-pink-500"></i>
+              <div>
+                <h4 class="font-bold">Tơ (Sợi)</h4>
+                <p class="text-xs text-slate-500">
+                  Tự nhiên (Tằm, Bông), Hóa học (Nilon-6,6, Visco).
+                </p>
+              </div>
+            </div>
+            <div
+              class="glass-panel p-4 rounded-xl flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
+            >
+              <i class="fas fa-car-side text-3xl text-slate-500"></i>
+              <div>
+                <h4 class="font-bold">Cao su & Composite</h4>
+                <p class="text-xs text-slate-500">
+                  Đàn hồi (Lốp xe). Composite: Bền, nhẹ (Vỏ tàu).
                 </p>
               </div>
             </div>
           </div>
         </div>
-      </section>
-
-      <section id="protein" class="tab-content hidden p-8 max-w-5xl mx-auto">
-        <h2
-          class="text-3xl font-bold text-red-400 mb-6 flex items-center gap-3"
-        >
-          <i class="fas fa-drumstick-bite"></i> Protein (Đạm)
-        </h2>
-
-        <div class="glass-panel p-8 rounded-2xl relative overflow-hidden">
-          <div class="absolute top-0 right-0 p-10 opacity-10">
-            <i class="fas fa-dna text-9xl text-red-500"></i>
-          </div>
-
-          <div class="space-y-6 relative z-10">
-            <div class="flex gap-4 items-start">
-              <div
-                class="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center font-bold flex-shrink-0"
-              >
-                1
-              </div>
-              <div>
-                <h3 class="text-xl font-bold text-white">Cấu tạo</h3>
-
-                [Image of amino acid structure]
-
-                <p class="text-gray-400 text-sm mt-1">
-                  Là hợp chất cao phân tử, gồm nhiều đơn vị
-                  <strong>Axit Amin</strong> liên kết với nhau.
-                </p>
-                <p class="text-xs text-red-300 mt-1">
-                  Nguyên tố: C, H, O, N (và S, P...)
-                </p>
-              </div>
-            </div>
-
-            <div class="flex gap-4 items-start">
-              <div
-                class="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center font-bold flex-shrink-0"
-              >
-                2
-              </div>
-              <div>
-                <h3 class="text-xl font-bold text-white">Phản ứng thủy phân</h3>
-                <p class="text-gray-400 text-sm mt-1">
-                  Khi đun nóng với axit/bazơ hoặc nhờ men, Protein bị thủy phân
-                  tạo thành các Axit Amin.
-                </p>
-              </div>
-            </div>
-
-            <div class="flex gap-4 items-start">
-              <div
-                class="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center font-bold flex-shrink-0"
-              >
-                3
-              </div>
-              <div>
-                <h3 class="text-xl font-bold text-white">Sự đông tụ</h3>
-                <p class="text-gray-400 text-sm mt-1">
-                  Protein bị đông tụ khi đun nóng hoặc gặp axit/bazơ (VD: Rán
-                  trứng, làm riêu cua).
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="polymer" class="tab-content hidden p-8 max-w-5xl mx-auto">
-        <h2
-          class="text-3xl font-bold text-blue-400 mb-6 flex items-center gap-3"
-        >
-          <i class="fas fa-box"></i> Polymer & Vật liệu
-        </h2>
 
         <div
-          class="w-full h-32 glass-panel rounded-xl mb-8 relative overflow-hidden flex items-center justify-center border border-blue-500/30"
+          class="bg-red-50 dark:bg-red-900/20 p-4 rounded-xl border border-red-200 dark:border-red-800 flex items-start gap-3"
         >
-          <div class="absolute inset-0 polymer-bg"></div>
-          <div class="text-center z-10">
-            <h3 class="text-2xl font-bold text-white">Mạch Polymer</h3>
-            <p class="text-sm text-blue-200">... - A - A - A - A - A - ...</p>
-            <p class="text-xs text-gray-400 mt-1">
-              (Gồm nhiều mắt xích Monomer liên kết lại)
+          <i class="fas fa-exclamation-triangle text-red-500 mt-1"></i>
+          <div>
+            <h4 class="font-bold text-red-600 dark:text-red-400 text-sm">
+              Vấn đề môi trường: Rác thải nhựa
+            </h4>
+            <p class="text-xs mt-1">
+              Nhựa khó phân hủy. Giải pháp: Sử dụng nhựa sinh học, tái chế và
+              hạn chế đồ nhựa dùng một lần.
             </p>
           </div>
         </div>
+      </div>
 
-        <div class="grid md:grid-cols-3 gap-6 text-center">
-          <div
-            class="glass-panel p-6 rounded-2xl hover:bg-blue-900/20 transition"
-          >
-            <i class="fas fa-shopping-bag text-4xl text-blue-500 mb-4"></i>
-            <h4 class="font-bold text-lg text-white">Chất dẻo</h4>
-            <p class="text-xs text-gray-400 mt-2">PE, PVC, Nhựa tái chế</p>
-          </div>
-          <div
-            class="glass-panel p-6 rounded-2xl hover:bg-pink-900/20 transition"
-          >
-            <i class="fas fa-tshirt text-4xl text-pink-500 mb-4"></i>
-            <h4 class="font-bold text-lg text-white">Tơ</h4>
-            <p class="text-xs text-gray-400 mt-2">Tơ tằm, Nilon-6,6</p>
-          </div>
-          <div
-            class="glass-panel p-6 rounded-2xl hover:bg-gray-700/50 transition"
-          >
-            <i class="fas fa-car-side text-4xl text-gray-400 mb-4"></i>
-            <h4 class="font-bold text-lg text-white">Cao su</h4>
-            <p class="text-xs text-gray-400 mt-2">Đàn hồi tốt, làm lốp xe</p>
-          </div>
-        </div>
-      </section>
-
-      <section
-        id="game"
-        class="tab-content hidden p-8 flex flex-col items-center justify-center h-full"
-      >
-        <div
-          class="glass-panel p-8 rounded-3xl max-w-4xl w-full text-center relative overflow-hidden"
+      <!-- === TAB 5: LAB (6 EXPERIMENTS) === -->
+      <div id="lab" class="tab-content space-y-6">
+        <h2
+          class="text-3xl font-black text-purple-600 dark:text-purple-400 mb-6"
         >
-          <h3 class="text-3xl font-bold mb-2 text-purple-400">
-            Phân Loại Hợp Chất
-          </h3>
-          <p class="text-gray-400 mb-6">Kéo các thẻ bên dưới vào đúng nhóm!</p>
+          PHÒNG THÍ NGHIỆM ẢO
+        </h2>
 
-          <div class="grid grid-cols-4 gap-4 mb-8 min-h-[150px]">
-            <div
-              id="bin-lipid"
-              class="bg-yellow-900/20 border-2 border-dashed border-yellow-600 rounded-xl p-4 flex flex-col items-center justify-center transition"
-              ondrop="drop(event, 'lipid')"
-              ondragover="allowDrop(event)"
-            >
-              <i class="fas fa-oil-can text-2xl text-yellow-500 mb-2"></i>
-              <span class="text-xs font-bold text-yellow-200">Lipid</span>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+          <button
+            onclick="runExp(1)"
+            class="lab-btn p-4 bg-white dark:bg-slate-800 rounded-xl shadow border hover:border-yellow-500 transition group flex flex-col items-center gap-2"
+          >
+            <i
+              class="fas fa-soap text-3xl text-yellow-500 group-hover:scale-110 transition"
+            ></i>
+            <span class="font-bold text-sm">1. Xà phòng hóa</span>
+          </button>
+          <button
+            onclick="runExp(2)"
+            class="lab-btn p-4 bg-white dark:bg-slate-800 rounded-xl shadow border hover:border-gray-400 transition group flex flex-col items-center gap-2"
+          >
+            <i
+              class="fas fa-magic text-3xl text-gray-400 group-hover:scale-110 transition"
+            ></i>
+            <span class="font-bold text-sm">2. Tráng gương (Glucose)</span>
+          </button>
+          <button
+            onclick="runExp(3)"
+            class="lab-btn p-4 bg-white dark:bg-slate-800 rounded-xl shadow border hover:border-blue-700 transition group flex flex-col items-center gap-2"
+          >
+            <i
+              class="fas fa-vial text-3xl text-blue-700 group-hover:scale-110 transition"
+            ></i>
+            <span class="font-bold text-sm">3. Iot + Hồ tinh bột</span>
+          </button>
+          <button
+            onclick="runExp(4)"
+            class="lab-btn p-4 bg-white dark:bg-slate-800 rounded-xl shadow border hover:border-red-500 transition group flex flex-col items-center gap-2"
+          >
+            <i
+              class="fas fa-egg text-3xl text-red-500 group-hover:scale-110 transition"
+            ></i>
+            <span class="font-bold text-sm">4. Đông tụ Protein</span>
+          </button>
+          <button
+            onclick="runExp(5)"
+            class="lab-btn p-4 bg-white dark:bg-slate-800 rounded-xl shadow border hover:border-purple-500 transition group flex flex-col items-center gap-2"
+          >
+            <i
+              class="fas fa-tint text-3xl text-purple-500 group-hover:scale-110 transition"
+            ></i>
+            <span class="font-bold text-sm">5. Phản ứng Biure</span>
+          </button>
+          <button
+            onclick="runExp(6)"
+            class="lab-btn p-4 bg-white dark:bg-slate-800 rounded-xl shadow border hover:border-green-500 transition group flex flex-col items-center gap-2"
+          >
+            <i
+              class="fas fa-link text-3xl text-green-500 group-hover:scale-110 transition"
+            ></i>
+            <span class="font-bold text-sm">6. Trùng hợp PE</span>
+          </button>
+        </div>
+
+        <!-- Simulation Display -->
+        <div
+          class="relative w-full h-80 bg-slate-900 rounded-2xl shadow-inner border-4 border-slate-300 dark:border-slate-700 overflow-hidden flex flex-col items-center justify-center"
+        >
+          <div id="lab-instruction" class="text-white text-center z-20">
+            <h3 class="text-xl font-bold mb-2">Chọn thí nghiệm phía trên</h3>
+            <p class="text-sm opacity-70">
+              Quan sát hiện tượng hóa học đặc trưng
+            </p>
+          </div>
+
+          <!-- Exp 1: Saponification -->
+          <div
+            id="scene-soap"
+            class="scene hidden w-full h-full flex items-end justify-center pb-8 relative"
+          >
+            <div class="absolute top-4 left-4 text-white text-sm">
+              Đun chất béo với NaOH
             </div>
             <div
-              id="bin-carb"
-              class="bg-green-900/20 border-2 border-dashed border-green-600 rounded-xl p-4 flex flex-col items-center justify-center transition"
-              ondrop="drop(event, 'carb')"
-              ondragover="allowDrop(event)"
+              class="w-32 h-40 bg-white/10 border-2 border-white/30 backdrop-blur rounded-b-xl relative overflow-hidden flex flex-col justify-end"
             >
-              <i class="fas fa-seedling text-2xl text-green-500 mb-2"></i>
-              <span class="text-xs font-bold text-green-200">Carbohydrate</span>
+              <div
+                id="oil-layer"
+                class="w-full h-1/2 bg-yellow-500/80 transition-all duration-2000"
+              ></div>
+              <!-- Dầu -->
+              <div id="water-layer" class="w-full h-1/2 bg-blue-300/30"></div>
             </div>
-            <div
-              id="bin-prot"
-              class="bg-red-900/20 border-2 border-dashed border-red-600 rounded-xl p-4 flex flex-col items-center justify-center transition"
-              ondrop="drop(event, 'prot')"
-              ondragover="allowDrop(event)"
+            <button
+              onclick="makeSoap()"
+              class="absolute bottom-4 px-4 py-2 bg-yellow-600 text-white rounded font-bold hover:bg-yellow-500"
             >
-              <i class="fas fa-drumstick-bite text-2xl text-red-500 mb-2"></i>
-              <span class="text-xs font-bold text-red-200">Protein</span>
-            </div>
+              Đun nóng & Khuấy
+            </button>
             <div
-              id="bin-poly"
-              class="bg-blue-900/20 border-2 border-dashed border-blue-600 rounded-xl p-4 flex flex-col items-center justify-center transition"
-              ondrop="drop(event, 'poly')"
-              ondragover="allowDrop(event)"
+              id="soap-froth"
+              class="absolute top-1/2 opacity-0 transition-opacity duration-2000 text-white font-bold text-sm bg-white/20 p-2 rounded"
             >
-              <i class="fas fa-box text-2xl text-blue-500 mb-2"></i>
-              <span class="text-xs font-bold text-blue-200">Polymer</span>
+              Hỗn hợp đồng nhất (Xà phòng)
             </div>
           </div>
 
+          <!-- Exp 2: Mirror -->
           <div
-            id="draggables"
-            class="flex flex-wrap justify-center gap-3 min-h-[60px]"
-          ></div>
-
-          <div id="game-feedback" class="mt-6 font-bold h-6 text-xl"></div>
-
-          <div class="mt-6 text-center">
-            <button
-              onclick="initGame()"
-              class="px-6 py-2 bg-purple-600 hover:bg-purple-500 rounded-full font-bold shadow-lg transition"
+            id="scene-mirror"
+            class="scene hidden w-full h-full flex items-center justify-center relative"
+          >
+            <div class="absolute top-4 left-4 text-white text-sm">
+              Glucose + AgNO₃/NH₃ (t°)
+            </div>
+            <div
+              id="test-tube-mirror"
+              class="w-16 h-48 border-2 border-gray-400 rounded-b-3xl bg-white/5 relative overflow-hidden transition-all duration-2000"
             >
-              Chơi Lại
+              <div
+                class="absolute bottom-0 w-full h-1/3 bg-transparent"
+                id="mirror-liquid"
+              ></div>
+            </div>
+            <button
+              onclick="mirrorReaction()"
+              class="absolute bottom-4 px-4 py-2 bg-gray-600 text-white rounded font-bold hover:bg-gray-500"
+            >
+              Thêm dung dịch & Đun
             </button>
           </div>
+
+          <!-- Exp 3: Starch Iodine -->
+          <div
+            id="scene-starch"
+            class="scene hidden w-full h-full flex items-center justify-center relative"
+          >
+            <div
+              class="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-lg relative overflow-hidden transition-colors duration-1000"
+              id="potato-slice"
+            >
+              <span class="text-xs text-slate-400">Khoai tây</span>
+            </div>
+            <div
+              id="drop-iodine"
+              class="absolute top-10 w-4 h-6 bg-yellow-700 rounded-full opacity-0 transition-all duration-500"
+            ></div>
+            <button
+              onclick="dropIodine()"
+              class="absolute bottom-4 px-4 py-2 bg-blue-800 text-white rounded font-bold hover:bg-blue-700"
+            >
+              Nhỏ Iot
+            </button>
+          </div>
+
+          <!-- Exp 4: Protein Coagulation -->
+          <div
+            id="scene-coag"
+            class="scene hidden w-full h-full flex flex-col items-center justify-center relative"
+          >
+            <div
+              class="w-32 h-32 rounded-full border-4 border-white bg-slate-800 relative overflow-hidden flex items-center justify-center"
+            >
+              <!-- Egg White -->
+              <div
+                id="egg-white"
+                class="w-full h-full bg-transparent opacity-80 transition-all duration-2000"
+              ></div>
+              <!-- Yolk -->
+              <div
+                class="absolute w-12 h-12 bg-yellow-500 rounded-full z-10"
+              ></div>
+            </div>
+            <div
+              id="steam"
+              class="hidden absolute top-10 text-white text-2xl animate-pulse"
+            >
+              <i class="fas fa-wind"></i>
+            </div>
+            <button
+              onclick="cookEgg()"
+              class="absolute bottom-4 px-4 py-2 bg-red-600 text-white rounded font-bold hover:bg-red-500"
+            >
+              <i class="fas fa-fire"></i> Đun nóng
+            </button>
+          </div>
+
+          <!-- Exp 5: Biuret -->
+          <div
+            id="scene-biuret"
+            class="scene hidden w-full h-full flex items-end justify-center pb-10 relative"
+          >
+            <div
+              class="w-16 h-48 border-2 border-white/30 rounded-b-2xl bg-white/5 relative overflow-hidden flex items-end"
+            >
+              <div
+                id="biuret-liquid"
+                class="w-full h-24 bg-transparent transition-colors duration-1000"
+              ></div>
+            </div>
+            <div class="absolute top-10 right-1/3 text-xs text-white">
+              Lòng trắng trứng + NaOH + CuSO₄
+            </div>
+            <button
+              onclick="biuretTest()"
+              class="absolute bottom-4 px-4 py-2 bg-purple-600 text-white rounded font-bold hover:bg-purple-500"
+            >
+              Thêm thuốc thử
+            </button>
+          </div>
+
+          <!-- Exp 6: Polymerization -->
+          <div
+            id="scene-poly"
+            class="scene hidden w-full h-full flex items-center justify-center relative overflow-hidden"
+          >
+            <div
+              id="monomers"
+              class="flex gap-4 transition-all duration-2000 absolute"
+            >
+              <!-- JS generated -->
+            </div>
+            <button
+              onclick="startPoly()"
+              class="absolute bottom-4 px-4 py-2 bg-green-600 text-white rounded font-bold hover:bg-green-500"
+            >
+              Trùng hợp (t°, p, xt)
+            </button>
+            <div
+              id="poly-result"
+              class="hidden text-white font-mono text-lg font-bold bg-blue-600/50 p-2 rounded z-10"
+            >
+              (-CH₂-CH₂-)n
+            </div>
+          </div>
         </div>
-      </section>
+      </div>
     </main>
 
     <script>
-      /* --- NAVIGATION --- */
-      function switchTab(id) {
-        document
-          .querySelectorAll(".tab-content")
-          .forEach((el) => el.classList.add("hidden"));
-        document.getElementById(id).classList.remove("hidden");
-        document
-          .querySelectorAll(".nav-btn")
-          .forEach((btn) =>
-            btn.classList.remove(
-              "bg-white/10",
-              "text-white",
-              "border",
-              "border-white/5"
-            )
-          );
+      // --- 1. NAVIGATION & THEME ---
+      const themeToggle = document.getElementById("themeToggle");
+      const html = document.documentElement;
 
-        // Add active style
-        const activeBtn =
-          event.currentTarget ||
-          document.querySelector(`button[onclick="switchTab('${id}')"]`);
-        if (activeBtn)
-          activeBtn.classList.add(
-            "bg-white/10",
-            "text-white",
-            "border",
-            "border-white/5"
-          );
-
-        if (id === "intro") renderDNA();
-        if (id === "game") initGame();
-      }
-
-      /* --- DNA ANIMATION RENDER --- */
-      function renderDNA() {
-        const container = document.getElementById("dna-anim");
-        if (container.children.length > 0) return;
-
-        for (let i = 0; i < 20; i++) {
-          const pair = document.createElement("div");
-          pair.className = "base-pair";
-          pair.style.top = i * 10 + "px";
-          pair.style.transform = `rotateY(${i * 20}deg)`;
-          container.appendChild(pair);
+      themeToggle.addEventListener("click", () => {
+        html.classList.toggle("dark");
+        const icon = themeToggle.querySelector("i");
+        if (html.classList.contains("dark")) {
+          icon.classList.remove("fa-moon", "text-slate-500");
+          icon.classList.add("fa-sun", "text-yellow-400");
+        } else {
+          icon.classList.remove("fa-sun", "text-yellow-400");
+          icon.classList.add("fa-moon", "text-slate-500");
         }
-      }
-
-      /* --- LAB SIMULATIONS --- */
-      function runStarchTest() {
-        const liquid = document.getElementById("starch-liquid");
-        liquid.style.backgroundColor = "#312e81"; // Indigo 900 (Blue-Purple)
-        liquid.style.opacity = "0.9";
-        document.getElementById("starch-result").classList.remove("hidden");
-      }
-
-      function runAgTest() {
-        const liquid = document.getElementById("ag-liquid");
-        liquid.style.backgroundColor = "#e2e8f0"; // Silver/Slate 200
-        liquid.style.boxShadow = "inset 0 0 10px white";
-        liquid.style.opacity = "1";
-        document.getElementById("ag-result").classList.remove("hidden");
-      }
-
-      /* --- GAME LOGIC --- */
-      const gameItems = [
-        { name: "Dầu ăn", type: "lipid", color: "bg-yellow-500" },
-        { name: "Gạo (Tinh bột)", type: "carb", color: "bg-green-500" },
-        { name: "Thịt bò", type: "prot", color: "bg-red-500" },
-        { name: "Túi Nilon (PE)", type: "poly", color: "bg-blue-500" },
-        { name: "Đường kính", type: "carb", color: "bg-green-500" },
-        { name: "Lòng trắng trứng", type: "prot", color: "bg-red-500" },
-        { name: "Mỡ lợn", type: "lipid", color: "bg-yellow-500" },
-        { name: "Vỏ chai nhựa", type: "poly", color: "bg-blue-500" },
-      ];
-
-      function initGame() {
-        const container = document.getElementById("draggables");
-        container.innerHTML = "";
-        document.getElementById("game-feedback").innerText = "";
-
-        // Reset bins visually if needed (not strictly required with this logic)
-
-        // Shuffle
-        const shuffled = [...gameItems].sort(() => Math.random() - 0.5);
-
-        shuffled.forEach((item) => {
-          const el = document.createElement("div");
-          el.className = `px-4 py-2 ${item.color} text-white rounded-lg font-bold cursor-grab shadow-lg hover:scale-105 transition`;
-          el.draggable = true;
-          el.innerText = item.name;
-          el.dataset.type = item.type;
-          el.id = "drag-" + Math.random().toString(36).substr(2, 9);
-
-          el.ondragstart = (ev) => {
-            ev.dataTransfer.setData("id", ev.target.id);
-            ev.dataTransfer.setData("type", ev.target.dataset.type);
-          };
-          container.appendChild(el);
-        });
-      }
-
-      function allowDrop(ev) {
-        ev.preventDefault();
-        ev.currentTarget.classList.add("bg-white/10");
-      }
-
-      // Fix dragleave flickering
-      document.querySelectorAll('[id^="bin-"]').forEach((bin) => {
-        bin.addEventListener("dragleave", (e) => {
-          e.currentTarget.classList.remove("bg-white/10");
-        });
+        // Re-render canvases if needed for theme colors
+        initMolecules();
       });
 
-      function drop(ev, binType) {
-        ev.preventDefault();
-        ev.currentTarget.classList.remove("bg-white/10");
+      function switchTab(tabId) {
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((el) => el.classList.remove("active"));
+        document.getElementById(tabId).classList.add("active");
 
-        const id = ev.dataTransfer.getData("id");
-        const type = ev.dataTransfer.getData("type");
-        const element = document.getElementById(id);
-        const feedback = document.getElementById("game-feedback");
+        // Highlight Menu
+        document.querySelectorAll(".nav-btn").forEach((btn) => {
+          btn.classList.remove(
+            "bg-slate-200",
+            "dark:bg-slate-700",
+            "shadow-inner"
+          );
+        });
+        const activeBtn = document.querySelector(
+          `button[data-target="${tabId}"]`
+        );
+        if (activeBtn)
+          activeBtn.classList.add(
+            "bg-slate-200",
+            "dark:bg-slate-700",
+            "shadow-inner"
+          );
 
-        if (type === binType) {
-          ev.currentTarget.appendChild(element);
-          element.draggable = false;
-          element.classList.remove("cursor-grab");
-          element.classList.add("cursor-default", "opacity-80", "scale-90");
-
-          feedback.innerHTML = '<span class="text-green-400">Chính xác!</span>';
-          setTimeout(() => (feedback.innerText = ""), 1000);
-
-          // Check win
-          if (document.getElementById("draggables").children.length === 0) {
-            feedback.innerHTML =
-              '<span class="text-green-400 text-2xl">Hoàn thành xuất sắc! 🎉</span>';
-          }
-        } else {
-          feedback.innerHTML =
-            '<span class="text-red-400">Sai rồi! Thử lại xem.</span>';
+        if (tabId === "lipid" || tabId === "polymer") {
+          setTimeout(initMolecules, 100);
         }
       }
 
-      // Init Intro
-      switchTab("intro");
+      // --- 2. THREE.JS MOLECULES ---
+      function initThree(containerId, type) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = "";
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(
+          50,
+          container.clientWidth / container.clientHeight,
+          0.1,
+          1000
+        );
+        const renderer = new THREE.WebGLRenderer({
+          alpha: true,
+          antialias: true,
+        });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(2, 2, 5);
+        scene.add(light);
+        scene.add(new THREE.AmbientLight(0x606060));
+
+        const group = new THREE.Group();
+
+        if (type === "lipid") {
+          // Simplified Triglyceride: Glycerol backbone + 3 tails
+          const bbColor = 0xeab308;
+          const tailColor = 0x9ca3af;
+          // Backbone
+          for (let i = 0; i < 3; i++) {
+            const sphere = new THREE.Mesh(
+              new THREE.SphereGeometry(0.3, 16, 16),
+              new THREE.MeshLambertMaterial({ color: bbColor })
+            );
+            sphere.position.set(-2, i * 0.8 - 0.8, 0);
+            group.add(sphere);
+            // Tails
+            for (let j = 0; j < 8; j++) {
+              const tail = new THREE.Mesh(
+                new THREE.SphereGeometry(0.2, 16, 16),
+                new THREE.MeshLambertMaterial({ color: tailColor })
+              );
+              tail.position.set(
+                -2 + (j + 1) * 0.6,
+                i * 0.8 - 0.8 + Math.sin(j) * 0.2,
+                0
+              );
+              group.add(tail);
+            }
+          }
+        } else if (type === "poly") {
+          // Polymer Chain
+          const color = 0x3b82f6;
+          for (let i = 0; i < 20; i++) {
+            const sphere = new THREE.Mesh(
+              new THREE.SphereGeometry(0.25, 16, 16),
+              new THREE.MeshLambertMaterial({ color: color })
+            );
+            sphere.position.set(
+              i * 0.4 - 4,
+              Math.sin(i * 0.5) * 0.5,
+              Math.cos(i * 0.5) * 0.5
+            );
+            group.add(sphere);
+            if (i > 0) {
+              // bond logic simplified
+            }
+          }
+        }
+
+        scene.add(group);
+        camera.position.z = 5;
+
+        const animate = () => {
+          requestAnimationFrame(animate);
+          group.rotation.y += 0.005;
+          if (type === "poly") group.rotation.x += 0.01;
+          renderer.render(scene, camera);
+        };
+        animate();
+      }
+
+      function initMolecules() {
+        if (document.getElementById("lipid").classList.contains("active"))
+          initThree("canvas-lipid", "lipid");
+        if (document.getElementById("polymer").classList.contains("active"))
+          initThree("canvas-poly", "poly");
+      }
+
+      // --- 3. EXPERIMENTS LOGIC ---
+      function runExp(id) {
+        document
+          .querySelectorAll(".scene")
+          .forEach((el) => el.classList.add("hidden"));
+        document.getElementById("lab-instruction").classList.add("hidden");
+
+        if (id === 1) {
+          // Soap
+          document.getElementById("scene-soap").classList.remove("hidden");
+          // Reset
+          document.getElementById("oil-layer").style.height = "50%";
+          document.getElementById("oil-layer").classList.remove("bg-white/90");
+          document.getElementById("soap-froth").style.opacity = "0";
+        } else if (id === 2) {
+          // Mirror
+          document.getElementById("scene-mirror").classList.remove("hidden");
+          document.getElementById("test-tube-mirror").style.background =
+            "rgba(255,255,255,0.05)";
+          document.getElementById("mirror-liquid").style.backgroundColor =
+            "transparent";
+        } else if (id === 3) {
+          // Iodine
+          document.getElementById("scene-starch").classList.remove("hidden");
+          document.getElementById("potato-slice").style.backgroundColor =
+            "white";
+          document.getElementById("drop-iodine").style.opacity = "0";
+          document.getElementById("drop-iodine").style.top = "10px";
+        } else if (id === 4) {
+          // Coagulation
+          document.getElementById("scene-coag").classList.remove("hidden");
+          document.getElementById("egg-white").style.backgroundColor =
+            "transparent";
+          document.getElementById("steam").classList.add("hidden");
+        } else if (id === 5) {
+          // Biuret
+          document.getElementById("scene-biuret").classList.remove("hidden");
+          document.getElementById("biuret-liquid").className =
+            "w-full h-24 bg-yellow-100/20 transition-colors duration-1000"; // Egg white initial
+        } else if (id === 6) {
+          // Poly
+          document.getElementById("scene-poly").classList.remove("hidden");
+          document.getElementById("poly-result").classList.add("hidden");
+          const m = document.getElementById("monomers");
+          m.innerHTML = "";
+          m.className = "flex gap-4 transition-all duration-2000 absolute";
+          for (let i = 0; i < 6; i++) {
+            m.innerHTML += `<div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-[8px] text-white border border-white">C₂H₄</div>`;
+          }
+        }
+      }
+
+      // Exp 1: Soap
+      function makeSoap() {
+        const oil = document.getElementById("oil-layer");
+        const froth = document.getElementById("soap-froth");
+        // Mixing animation
+        oil.style.height = "100%"; // Mix
+        oil.style.backgroundColor = "rgba(255,255,255,0.9)"; // White soap
+        froth.style.opacity = "1";
+      }
+
+      // Exp 2: Mirror
+      function mirrorReaction() {
+        const liquid = document.getElementById("mirror-liquid");
+        const tube = document.getElementById("test-tube-mirror");
+        liquid.style.backgroundColor = "#e2e8f0"; // Silver liquid
+        setTimeout(() => {
+          tube.style.background =
+            "linear-gradient(45deg, #cbd5e1, #f1f5f9, #94a3b8)"; // Silver coating
+          tube.style.boxShadow = "0 0 15px rgba(255,255,255,0.8)";
+        }, 1000);
+      }
+
+      // Exp 3: Iodine
+      function dropIodine() {
+        const drop = document.getElementById("drop-iodine");
+        const potato = document.getElementById("potato-slice");
+
+        drop.style.opacity = "1";
+        drop.style.top = "40px"; // Drop down
+
+        setTimeout(() => {
+          drop.style.opacity = "0";
+          potato.style.backgroundColor = "#312e81"; // Blue-violet (Indigo 900)
+        }, 600);
+      }
+
+      // Exp 4: Coagulation
+      function cookEgg() {
+        const egg = document.getElementById("egg-white");
+        const steam = document.getElementById("steam");
+        steam.classList.remove("hidden");
+        setTimeout(() => {
+          egg.style.backgroundColor = "white"; // Solid white
+        }, 1000);
+      }
+
+      // Exp 5: Biuret
+      function biuretTest() {
+        const liq = document.getElementById("biuret-liquid");
+        liq.classList.add("bg-purple-600/80"); // Violet
+        liq.classList.remove("bg-yellow-100/20");
+      }
+
+      // Exp 6: Poly
+      function startPoly() {
+        const m = document.getElementById("monomers");
+        m.classList.remove("gap-4");
+        m.classList.add("gap-0"); // Join together
+        setTimeout(() => {
+          document.getElementById("poly-result").classList.remove("hidden");
+        }, 2000);
+      }
+
+      // Init
+      window.onload = () => {
+        switchTab("lipid");
+      };
     </script>
   </body>
 </html>

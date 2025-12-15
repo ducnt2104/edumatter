@@ -1,20 +1,35 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ChemVerse - Vũ trụ Hóa học</title>
+    <link rel="icon" href="../../favicon/educhem.svg" type="image/svg+xml" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
     <style>
       :root {
+        /* Dark Theme (Mặc định) */
         --primary-color: #00d2ff;
         --secondary-color: #3a7bd5;
         --bg-gradient: linear-gradient(to right, #0f2027, #203a43, #2c5364);
         --card-bg: rgba(255, 255, 255, 0.1);
         --text-color: #ffffff;
+        --icon-bg: rgba(0, 0, 0, 0.3);
+        --card-border: rgba(255, 255, 255, 0.2);
+      }
+
+      [data-theme="light"] {
+        /* Light Theme */
+        --primary-color: #0072ff;
+        --secondary-color: #00c6ff;
+        --bg-gradient: linear-gradient(to right, #e0eafc, #cfdef3);
+        --card-bg: rgba(255, 255, 255, 0.7);
+        --text-color: #2c3e50;
+        --icon-bg: rgba(255, 255, 255, 0.9);
+        --card-border: rgba(0, 0, 0, 0.1);
       }
 
       * {
@@ -22,6 +37,7 @@
         margin: 0;
         padding: 0;
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        transition: background 0.3s ease, color 0.3s ease;
       }
 
       body {
@@ -32,7 +48,6 @@
         position: relative;
       }
 
-      /* Canvas cho hiệu ứng hạt nguyên tử */
       #chem-canvas {
         position: fixed;
         top: 0;
@@ -40,13 +55,46 @@
         width: 100%;
         height: 100%;
         z-index: 0;
-        pointer-events: none; /* Để không chặn click chuột */
+        pointer-events: none;
+      }
+
+      /* Navigation Controls */
+      .nav-controls {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        right: 20px;
+        display: flex;
+        justify-content: space-between;
+        z-index: 100;
+      }
+
+      .nav-btn {
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--card-border);
+        color: var(--text-color);
+        padding: 10px 20px;
+        border-radius: 50px;
+        cursor: pointer;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 500;
+        transition: 0.3s;
+      }
+
+      .nav-btn:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: scale(1.05);
       }
 
       /* Header */
       header {
         text-align: center;
-        padding: 40px 20px;
+        padding: 80px 20px 40px;
         position: relative;
         z-index: 2;
         animation: fadeInDown 1s ease-out;
@@ -63,7 +111,6 @@
       header p {
         font-size: 1.2rem;
         opacity: 0.8;
-        font-weight: 300;
       }
 
       /* Container chính */
@@ -79,12 +126,12 @@
         padding-bottom: 60px;
       }
 
-      /* Card theo phong cách Glassmorphism */
+      /* Card Style */
       .chem-card {
         background: var(--card-bg);
-        backdrop-filter: blur(10px); /* Hiệu ứng kính mờ */
+        backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        border: 1px solid var(--card-border);
         padding: 30px;
         border-radius: 20px;
         text-align: center;
@@ -94,38 +141,16 @@
         overflow: hidden;
       }
 
-      /* Hiệu ứng Hover xịn xò */
       .chem-card:hover {
-        transform: translateY(-10px) scale(1.02);
-        background: rgba(255, 255, 255, 0.2);
-        box-shadow: 0 15px 30px rgba(0, 210, 255, 0.3);
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 210, 255, 0.2);
         border-color: var(--primary-color);
-      }
-
-      .chem-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          rgba(255, 255, 255, 0.2),
-          transparent
-        );
-        transition: 0.5s;
-      }
-
-      .chem-card:hover::before {
-        left: 100%;
       }
 
       .icon-wrapper {
         width: 80px;
         height: 80px;
-        background: rgba(0, 0, 0, 0.3);
+        background: var(--icon-bg);
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -134,15 +159,13 @@
         transition: 0.3s;
       }
 
-      .chem-card:hover .icon-wrapper {
-        background: var(--primary-color);
-        color: #000;
-      }
-
       .chem-card i {
         font-size: 35px;
         color: var(--primary-color);
-        transition: 0.3s;
+      }
+
+      .chem-card:hover .icon-wrapper {
+        background: var(--primary-color);
       }
 
       .chem-card:hover i {
@@ -152,15 +175,12 @@
       .chem-card h3 {
         font-size: 1.5rem;
         margin-bottom: 10px;
-        font-weight: 600;
       }
-
       .chem-card p {
         font-size: 0.9rem;
-        color: rgba(255, 255, 255, 0.7);
+        opacity: 0.8;
       }
 
-      /* Animation */
       @keyframes fadeInDown {
         from {
           opacity: 0;
@@ -172,18 +192,28 @@
         }
       }
 
-      /* Responsive */
       @media (max-width: 768px) {
         header h1 {
           font-size: 2.5rem;
         }
-        .chemverse-container {
-          grid-template-columns: 1fr;
-        }
+        .nav-btn span {
+          display: none;
+        } /* Ẩn chữ trên mobile để gọn */
       }
     </style>
   </head>
   <body>
+    <nav class="nav-controls">
+      <a href="../educhem.html" class="nav-btn">
+        <i class="fas fa-arrow-left"></i>
+        <span>Quay về</span>
+      </a>
+      <button class="nav-btn" id="theme-toggle">
+        <i class="fas fa-moon"></i>
+        <span>Chế độ</span>
+      </button>
+    </nav>
+
     <canvas id="chem-canvas"></canvas>
 
     <header>
@@ -214,41 +244,60 @@
 
       <div class="chem-card" onclick="location.href='pomodoro.html'">
         <div class="icon-wrapper"><i class="fas fa-brain"></i></div>
-        <h3>pomodoro-kios</h3>
+        <h3>Pomodoro Kios</h3>
         <p>Bí quyết ghi nhớ và tư duy hóa học hiệu quả.</p>
       </div>
-      <div class="chem-card" onclick="location.href='buildcraft.html'">
-        <div class="icon-wrapper">
-          <i class="fas fa-gamepad"></i>
-        </div>
 
+      <div class="chem-card" onclick="location.href='buildcraft.html'">
+        <div class="icon-wrapper"><i class="fas fa-hammer"></i></div>
         <h3>Chế Tạo Chất</h3>
-        <p>
-          bạn đến xưởng chế tạo chất <br />
-          chế tạo chất dựa theo công thức hóa học cho trước
-        </p>
+        <p>Xưởng chế tạo dựa theo công thức hóa học cho trước.</p>
       </div>
+
       <div
         class="chem-card"
         onclick="location.href='/chemguardian/chemguardian.html'"
       >
-        <div class="icon-wrapper"><i class="fas fa-gamepad"></i></div>
+        <div class="icon-wrapper"><i class="fas fa-shield-halved"></i></div>
         <h3>ChemGuardian</h3>
-        <p>
-          Vừa học vừa chơi với các thử thách thú vị. <br />
-          về thế giới không hóa học !!!
-        </p>
+        <p>Vừa học vừa chơi với thế giới không hóa học.</p>
       </div>
-
-      <div class="chem-card" onclick="location.href='../suco.html'">
-        <div class="icon-wrapper"><i class="fas fa-users"></i></div>
-        <h3>Cộng Đồng</h3>
-        <p>Chia sẻ kiến thức và tài liệu từ người dùng khắp nơi.</p>
-      </div>
+      <div class="chem-card" onclick="location.href='chems1.html'">
+        <div class="icon-wrapper"><i class="fas fa-brain"></i></div>
+        <h3>ChemS1</h3>
+        <p>công cụ hỗ trợ tính toán cơ bản</p>
+      </i></div>
     </main>
 
     <script>
-      // HIỆU ỨNG CANVAS: MẠNG LƯỚI NGUYÊN TỬ (ATOM NETWORK)
+      // --- LOGIC LIGHT/DARK MODE ---
+      const themeToggle = document.getElementById("theme-toggle");
+      const html = document.documentElement;
+      const themeIcon = themeToggle.querySelector("i");
+
+      // Kiểm tra bộ nhớ trình duyệt
+      const currentTheme = localStorage.getItem("theme") || "dark";
+      html.setAttribute("data-theme", currentTheme);
+      updateThemeUI(currentTheme);
+
+      themeToggle.addEventListener("click", () => {
+        let theme = html.getAttribute("data-theme");
+        let newTheme = theme === "dark" ? "light" : "dark";
+
+        html.setAttribute("data-theme", newTheme);
+        localStorage.setItem("theme", newTheme);
+        updateThemeUI(newTheme);
+      });
+
+      function updateThemeUI(theme) {
+        if (theme === "light") {
+          themeIcon.className = "fas fa-sun";
+        } else {
+          themeIcon.className = "fas fa-moon";
+        }
+      }
+
+      // --- HIỆU ỨNG CANVAS ---
       const canvas = document.getElementById("chem-canvas");
       const ctx = canvas.getContext("2d");
       canvas.width = window.innerWidth;
@@ -256,76 +305,68 @@
 
       let particlesArray;
 
-      // Xử lý khi thay đổi kích thước màn hình
       window.addEventListener("resize", () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         init();
       });
 
-      // Tạo hạt (Particle Class)
       class Particle {
-        constructor(x, y, directionX, directionY, size, color) {
+        constructor(x, y, directionX, directionY, size) {
           this.x = x;
           this.y = y;
           this.directionX = directionX;
           this.directionY = directionY;
           this.size = size;
-          this.color = color;
         }
-        // Vẽ hạt
         draw() {
+          // Lấy màu primary từ CSS variable để đổi màu hạt theo theme
+          const color = getComputedStyle(document.documentElement)
+            .getPropertyValue("--primary-color")
+            .trim();
           ctx.beginPath();
           ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-          ctx.fillStyle = "#00d2ff"; // Màu hạt (Neon Cyan)
+          ctx.fillStyle = color;
           ctx.fill();
         }
-        // Cập nhật vị trí
         update() {
-          if (this.x > canvas.width || this.x < 0) {
+          if (this.x > canvas.width || this.x < 0)
             this.directionX = -this.directionX;
-          }
-          if (this.y > canvas.height || this.y < 0) {
+          if (this.y > canvas.height || this.y < 0)
             this.directionY = -this.directionY;
-          }
           this.x += this.directionX;
           this.y += this.directionY;
           this.draw();
         }
       }
 
-      // Khởi tạo mảng hạt
       function init() {
         particlesArray = [];
-        let numberOfParticles = (canvas.height * canvas.width) / 9000; // Mật độ hạt
+        let numberOfParticles = (canvas.height * canvas.width) / 9000;
         for (let i = 0; i < numberOfParticles; i++) {
-          let size = Math.random() * 3 + 1;
-          let x = Math.random() * (innerWidth - size * 2 - size * 2) + size * 2;
-          let y =
-            Math.random() * (innerHeight - size * 2 - size * 2) + size * 2;
-          let directionX = Math.random() * 2 - 1; // Tốc độ di chuyển
-          let directionY = Math.random() * 2 - 1;
-          let color = "#ffffff";
-
-          particlesArray.push(
-            new Particle(x, y, directionX, directionY, size, color)
-          );
+          let size = Math.random() * 2 + 1;
+          let x = Math.random() * (innerWidth - size * 2) + size;
+          let y = Math.random() * (innerHeight - size * 2) + size;
+          let directionX = Math.random() * 1 - 0.5;
+          let directionY = Math.random() * 1 - 0.5;
+          particlesArray.push(new Particle(x, y, directionX, directionY, size));
         }
       }
 
-      // Tạo các liên kết (Chemical Bonds) giữa các hạt gần nhau
       function connect() {
         let opacityValue = 1;
+        const colorBase =
+          html.getAttribute("data-theme") === "dark"
+            ? "0, 210, 255"
+            : "0, 114, 255";
         for (let a = 0; a < particlesArray.length; a++) {
           for (let b = a; b < particlesArray.length; b++) {
             let distance =
-              (particlesArray[a].x - particlesArray[b].x) *
-                (particlesArray[a].x - particlesArray[b].x) +
-              (particlesArray[a].y - particlesArray[b].y) *
-                (particlesArray[a].y - particlesArray[b].y);
+              (particlesArray[a].x - particlesArray[b].x) ** 2 +
+              (particlesArray[a].y - particlesArray[b].y) ** 2;
             if (distance < (canvas.width / 7) * (canvas.height / 7)) {
               opacityValue = 1 - distance / 20000;
-              ctx.strokeStyle = "rgba(0, 210, 255," + opacityValue + ")"; // Màu dây liên kết
+              ctx.strokeStyle = `rgba(${colorBase}, ${opacityValue})`;
               ctx.lineWidth = 1;
               ctx.beginPath();
               ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
@@ -336,7 +377,6 @@
         }
       }
 
-      // Vòng lặp Animation
       function animate() {
         requestAnimationFrame(animate);
         ctx.clearRect(0, 0, innerWidth, innerHeight);

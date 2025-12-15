@@ -6,8 +6,9 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-    <title>Hóa Học 8 - Interactive Lab Pro</title>
-
+    <title>Hóa Học 8 | Phản Ứng Hóa Học (Full)</title>
+    <link rel="icon" href="../../../favicon/educhem.svg" type="image/svg+xml" />
+    <!-- React & Libraries -->
     <script
       crossorigin
       src="https://unpkg.com/react@18/umd/react.development.js"
@@ -21,38 +22,29 @@
     <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Fonts -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;700&display=swap"
       rel="stylesheet"
     />
 
     <script>
       tailwind.config = {
+        darkMode: "class",
         theme: {
           extend: {
             fontFamily: {
               sans: ["Nunito", "sans-serif"],
-              display: ["Fredoka", "sans-serif"],
+              display: ["Quicksand", "sans-serif"],
             },
             colors: {
-              brand: {
-                bg: "#0f172a",
-                card: "#1e293b",
-                accent: "#38bdf8", // Sky blue
-                primary: "#6366f1", // Indigo
-                success: "#22c55e",
-                warning: "#eab308",
-                danger: "#ef4444",
-              },
-            },
-            animation: {
-              float: "float 6s ease-in-out infinite",
-            },
-            keyframes: {
-              float: {
-                "0%, 100%": { transform: "translateY(0)" },
-                "50%": { transform: "translateY(-10px)" },
-              },
+              primary: { DEFAULT: "#3b82f6", dark: "#2563eb" },
+              secondary: { DEFAULT: "#8b5cf6", dark: "#7c3aed" },
+              accent: { DEFAULT: "#f59e0b", dark: "#d97706" },
+              success: { DEFAULT: "#10b981", dark: "#059669" },
+              danger: { DEFAULT: "#ef4444", dark: "#dc2626" },
+              bg: { light: "#f8fafc", dark: "#0f172a" },
             },
           },
         },
@@ -61,132 +53,218 @@
 
     <style>
       body {
-        background-color: #0f172a;
-        color: #f8fafc;
-        overflow: hidden; /* App app-like feel */
-        height: 100vh;
-        width: 100vw;
+        transition: background-color 0.3s ease, color 0.3s ease;
       }
-      .glass {
-        background: rgba(30, 41, 59, 0.6);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-      }
-      .glass-active {
-        background: rgba(56, 189, 248, 0.15);
-        border: 1px solid rgba(56, 189, 248, 0.4);
-      }
-      /* Custom Scrollbar */
       ::-webkit-scrollbar {
         width: 6px;
+        height: 6px;
       }
       ::-webkit-scrollbar-thumb {
-        background: #475569;
+        background: #cbd5e1;
         border-radius: 4px;
       }
-
-      .neon-text {
-        text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+      .dark ::-webkit-scrollbar-thumb {
+        background: #475569;
+      }
+      .glass {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+      }
+      .dark .glass {
+        background: rgba(15, 23, 42, 0.7);
+      }
+      .modal-scroll::-webkit-scrollbar {
+        width: 4px;
+      }
+      .modal-scroll::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .modal-scroll::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
       }
     </style>
   </head>
-  <body>
-    <div id="root"></div>
+  <body
+    class="bg-bg-light text-slate-800 dark:bg-bg-dark dark:text-slate-100 font-sans h-screen flex flex-col overflow-hidden selection:bg-blue-200 dark:selection:bg-blue-900"
+  >
+    <div id="root" class="h-full flex flex-col"></div>
 
     <script type="text/babel">
       const { useState, useEffect, useRef, useMemo } = React;
       const { motion, AnimatePresence } = window.Motion;
       const { createIcons } = window.lucide;
 
-      // --- DATA: THEORY SLIDES ---
-      const THEORY_DATA = [
+      // --- DATA: THEORY (Based strictly on provided text) ---
+      const LESSONS = [
         {
           id: 1,
-          title: "I. Biến đổi Vật lí & Hóa học",
+          title: "I. Biến đổi chất",
           icon: "refresh-cw",
+          color: "blue",
           content: (
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-blue-900/30 p-4 rounded-xl border border-blue-500/30 text-center">
-                  <h3 className="font-bold text-blue-400 mb-2 text-lg">
-                    Biến đổi Vật lí
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+                  <h3 className="font-bold text-blue-600 dark:text-blue-400 mb-2 flex items-center gap-2">
+                    <i data-lucide="snowflake" className="w-4 h-4"></i> Biến đổi
+                    Vật lí
                   </h3>
-                  <p className="text-sm text-slate-300">
-                    Chỉ thay đổi trạng thái, hình dạng. <b>KHÔNG</b> tạo chất
-                    mới.
+                  <p className="text-sm mb-2 text-slate-600 dark:text-slate-300">
+                    Chỉ thay đổi trạng thái, hình dạng, kích thước.{" "}
+                    <strong>Không tạo chất mới.</strong>
                   </p>
-                  <div className="mt-3 text-2xl">🧊 ➝ 💧</div>
-                  <div className="text-xs mt-1 opacity-70">Nước đá tan</div>
+                  <ul className="text-xs list-disc ml-4 space-y-1 text-slate-500 dark:text-slate-400">
+                    <li>Nước đóng băng ↔ Băng tan</li>
+                    <li>Xé giấy, kim loại dát mỏng</li>
+                  </ul>
                 </div>
-                <div className="bg-purple-900/30 p-4 rounded-xl border border-purple-500/30 text-center">
-                  <h3 className="font-bold text-purple-400 mb-2 text-lg">
-                    Biến đổi Hóa học
+                <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl border border-purple-200 dark:border-purple-800">
+                  <h3 className="font-bold text-purple-600 dark:text-purple-400 mb-2 flex items-center gap-2">
+                    <i data-lucide="flame" className="w-4 h-4"></i> Biến đổi Hóa
+                    học
                   </h3>
-                  <p className="text-sm text-slate-300">
-                    Chất biến đổi tạo ra <b>CHẤT MỚI</b>.
+                  <p className="text-sm mb-2 text-slate-600 dark:text-slate-300">
+                    Chất biến đổi tạo ra <strong>chất mới</strong> với tính chất
+                    khác.
                   </p>
-                  <div className="mt-3 text-2xl">🪵🔥 ➝ ⚫💨</div>
-                  <div className="text-xs mt-1 opacity-70">Đốt cháy gỗ</div>
+                  <ul className="text-xs list-disc ml-4 space-y-1 text-slate-500 dark:text-slate-400">
+                    <li>Fe + O₂ → Fe₂O₃ (Gỉ sắt)</li>
+                    <li>H₂ + Cl₂ → 2HCl</li>
+                  </ul>
                 </div>
               </div>
-              <div className="bg-slate-800 p-3 rounded-lg text-sm border-l-4 border-brand-warning">
-                💡 <b>Dấu hiệu nhận biết PƯHH:</b> Thay đổi màu sắc, tỏa nhiệt,
-                sủi bọt khí, tạo kết tủa.
+              <div className="overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700">
+                <table className="w-full text-sm text-left">
+                  <thead className="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200">
+                    <tr>
+                      <th className="p-2">Tiêu chí</th>
+                      <th className="p-2">Vật lí</th>
+                      <th className="p-2">Hóa học</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-700 bg-white dark:bg-slate-800">
+                    <tr>
+                      <td className="p-2 font-bold">Tính chất</td>
+                      <td className="p-2 text-slate-500">Giữ nguyên</td>
+                      <td className="p-2 text-primary font-bold">Thay đổi</td>
+                    </tr>
+                    <tr>
+                      <td className="p-2 font-bold">Chất mới</td>
+                      <td className="p-2 text-slate-500">Không</td>
+                      <td className="p-2 text-primary font-bold">Có</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg text-sm border-l-4 border-yellow-500 text-slate-700 dark:text-slate-300">
+                <strong>Em có biết?</strong> Dù là biến đổi nào, số lượng nguyên
+                tử không đổi → Khối lượng được bảo toàn.
               </div>
             </div>
           ),
         },
         {
           id: 2,
-          title: "II. Định luật Bảo toàn Khối lượng",
-          icon: "scale",
+          title: "II. Phản ứng Hóa học",
+          icon: "flask-conical",
+          color: "purple",
           content: (
-            <div className="text-center space-y-6">
-              <p className="italic text-slate-300">
-                "Trong một phản ứng hóa học, tổng khối lượng của các chất sản
-                phẩm bằng tổng khối lượng của các chất tham gia phản ứng."
-              </p>
-              <div className="bg-slate-900 p-6 rounded-2xl border border-slate-700 font-mono text-xl">
-                <span className="text-brand-accent">m</span>
-                <sub>tham gia</sub> ={" "}
-                <span className="text-brand-success">m</span>
-                <sub>sản phẩm</sub>
+            <div className="space-y-4">
+              <div className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700">
+                <h3 className="font-bold mb-2 text-primary">
+                  Khái niệm & Diễn biến
+                </h3>
+                <p className="text-sm text-slate-600 dark:text-slate-300 mb-2">
+                  Quá trình chất này biến thành chất khác. Liên kết giữa các
+                  nguyên tử thay đổi, nhưng số lượng nguyên tử giữ nguyên.
+                </p>
+                <div className="font-mono text-center bg-slate-100 dark:bg-slate-900 p-2 rounded text-sm text-slate-800 dark:text-green-400">
+                  Zn + 2HCl → ZnCl₂ + H₂
+                </div>
               </div>
-              <div className="text-sm text-slate-400">
-                Ví dụ: A + B ➝ C + D <br />
-                mA + mB = mC + mD
+
+              <div className="space-y-2">
+                <h4 className="font-bold text-sm uppercase text-slate-500">
+                  Dấu hiệu nhận biết
+                </h4>
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div className="p-2 bg-slate-50 dark:bg-slate-700/50 rounded flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-red-500"></span>{" "}
+                    Đổi màu sắc
+                  </div>
+                  <div className="p-2 bg-slate-50 dark:bg-slate-700/50 rounded flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-yellow-500"></span>{" "}
+                    Tạo kết tủa
+                  </div>
+                  <div className="p-2 bg-slate-50 dark:bg-slate-700/50 rounded flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-blue-500"></span>{" "}
+                    Sủi bọt khí
+                  </div>
+                  <div className="p-2 bg-slate-50 dark:bg-slate-700/50 rounded flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-orange-500"></span>{" "}
+                    Tỏa/Thu nhiệt
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-100 dark:border-red-800">
+                  <div className="font-bold text-red-500 text-sm mb-1">
+                    🔥 Tỏa nhiệt
+                  </div>
+                  <div className="text-xs text-slate-600 dark:text-slate-300">
+                    Nóng lên (VD: Đốt than, gas)
+                  </div>
+                </div>
+                <div className="p-3 bg-cyan-50 dark:bg-cyan-900/20 rounded-xl border border-cyan-100 dark:border-cyan-800">
+                  <div className="font-bold text-cyan-500 text-sm mb-1">
+                    ❄️ Thu nhiệt
+                  </div>
+                  <div className="text-xs text-slate-600 dark:text-slate-300">
+                    Lạnh đi / Cần nhiệt (VD: Nung đá vôi)
+                  </div>
+                </div>
               </div>
             </div>
           ),
         },
         {
           id: 3,
-          title: "III. Mol & Tỉ khối",
-          icon: "box",
+          title: "III. ĐL Bảo toàn KL",
+          icon: "scale",
+          color: "green",
           content: (
-            <div className="space-y-4">
-              <div className="flex items-center gap-4 bg-slate-800 p-4 rounded-xl">
-                <div className="text-3xl">📦</div>
-                <div>
-                  <h4 className="font-bold text-brand-accent">Mol là gì?</h4>
-                  <p className="text-sm">
-                    Là lượng chất chứa <b>6.022 × 10²³</b> hạt vi mô (N).
-                  </p>
+            <div className="flex flex-col items-center text-center space-y-6">
+              <motion.div
+                animate={{ rotate: [0, 5, -5, 0] }}
+                transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                className="p-6 bg-green-50 dark:bg-green-900/20 rounded-full border-4 border-green-200 dark:border-green-800"
+              >
+                <i data-lucide="scale" className="w-12 h-12 text-green-600"></i>
+              </motion.div>
+              <div>
+                <div className="text-2xl font-display font-bold text-green-600 mb-2">
+                  ∑m<sub>trước</sub> = ∑m<sub>sau</sub>
                 </div>
+                <p className="text-sm text-slate-600 dark:text-slate-300 max-w-md mx-auto">
+                  "Trong phản ứng hóa học, tổng khối lượng các chất tham gia
+                  bằng tổng khối lượng các chất sản phẩm."
+                </p>
               </div>
-              <div className="grid grid-cols-2 gap-2 text-center text-sm">
-                <div className="bg-slate-700 p-2 rounded">
-                  <div className="font-bold text-brand-primary">n = m / M</div>
-                  <div className="text-xs opacity-70">Tính theo khối lượng</div>
-                </div>
-                <div className="bg-slate-700 p-2 rounded">
-                  <div className="font-bold text-brand-primary">
-                    n = V / 24.79
-                  </div>
-                  <div className="text-xs opacity-70">
-                    Tính theo thể tích khí (đkc)
-                  </div>
+              <div className="w-full bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm text-left border border-slate-100 dark:border-slate-700">
+                <h4 className="font-bold text-sm mb-2 text-primary">
+                  Phương trình Hóa học (PTHH)
+                </h4>
+                <p className="text-xs mb-3 text-slate-500">
+                  Biểu diễn bằng công thức và hệ số cân bằng.
+                </p>
+                <div className="flex justify-center items-center gap-2 font-mono font-bold text-lg">
+                  <span className="text-blue-500">2H₂</span>
+                  <span className="text-slate-400">+</span>
+                  <span className="text-red-500">O₂</span>
+                  <span className="text-slate-400">→</span>
+                  <span className="text-purple-500">2H₂O</span>
                 </div>
               </div>
             </div>
@@ -194,389 +272,549 @@
         },
         {
           id: 4,
-          title: "IV. Phản ứng Hóa học & Năng lượng",
-          icon: "zap",
+          title: "IV. Mol & Tỉ khối",
+          icon: "box",
+          color: "orange",
           content: (
             <div className="space-y-4">
-              <h3 className="font-bold text-lg text-brand-primary">
-                Phản ứng tỏa nhiệt và thu nhiệt
-              </h3>
-              <div className="grid grid-cols-2 gap-4 text-center">
-                <div className="bg-orange-900/30 p-4 rounded-xl border border-orange-500/30">
-                  <h4 className="font-bold text-orange-400 mb-2">
-                    Tỏa Nhiệt 🔥
-                  </h4>
-                  <p className="text-sm text-slate-300">
-                    Phản ứng giải phóng **năng lượng (nhiệt)** ra môi trường.
-                  </p>
-                  <div className="mt-3 text-2xl">
-                    <span className="text-sm italic mr-1">Ví dụ:</span> C + O₂ →
-                    CO₂ + Nhiệt
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-orange-50 dark:bg-orange-900/20 p-3 rounded-xl border border-orange-200 dark:border-orange-800">
+                  <div className="text-xs uppercase text-slate-500 mb-1">
+                    Số Avogadro (N)
+                  </div>
+                  <div className="font-bold text-orange-600 text-lg">
+                    6,022 × 10²³
+                  </div>
+                  <div className="text-xs text-slate-600 dark:text-slate-400">
+                    hạt/mol
                   </div>
                 </div>
-                <div className="bg-cyan-900/30 p-4 rounded-xl border border-cyan-500/30">
-                  <h4 className="font-bold text-cyan-400 mb-2">Thu Nhiệt ❄️</h4>
-                  <p className="text-sm text-slate-300">
-                    Phản ứng **hấp thụ năng lượng (nhiệt)** từ môi trường.
-                  </p>
-                  <div className="mt-3 text-2xl">
-                    <span className="text-sm italic mr-1">Ví dụ:</span> N₂ + O₂
-                    + Nhiệt → 2NO
+                <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-xl border border-blue-200 dark:border-blue-800">
+                  <div className="text-xs uppercase text-slate-500 mb-1">
+                    Thể tích khí (đkc)
+                  </div>
+                  <div className="font-bold text-blue-600 text-lg">24,79</div>
+                  <div className="text-xs text-slate-600 dark:text-slate-400">
+                    Lít (25°C, 1 bar)
                   </div>
                 </div>
               </div>
-              <div className="bg-slate-800 p-3 rounded-lg text-sm border-l-4 border-brand-accent">
-                💡 **Diễn biến:** Các **nguyên tử** được tái sắp xếp để tạo
-                thành phân tử mới.
+
+              <div className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm space-y-3 border border-slate-100 dark:border-slate-700">
+                <h4 className="font-bold text-sm text-slate-500 uppercase">
+                  Công thức cần nhớ
+                </h4>
+
+                <div className="flex justify-between items-center p-2 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                  <span className="text-sm">Từ Khối lượng (m)</span>
+                  <code className="font-mono font-bold text-primary">
+                    n = m / M
+                  </code>
+                </div>
+
+                <div className="flex justify-between items-center p-2 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                  <span className="text-sm">Từ Thể tích khí (V)</span>
+                  <code className="font-mono font-bold text-secondary">
+                    n = V / 24,79
+                  </code>
+                </div>
+
+                <div className="flex justify-between items-center p-2 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                  <span className="text-sm">Tỉ khối hơi (d)</span>
+                  <code className="font-mono font-bold text-accent">
+                    d<sub>A/B</sub> = M<sub>A</sub> / M<sub>B</sub>
+                  </code>
+                </div>
+              </div>
+              <div className="text-xs text-center italic text-slate-400">
+                (M: Khối lượng mol, đơn vị g/mol)
               </div>
             </div>
           ),
         },
         {
           id: 5,
-          title: "V. Phương trình Hóa học (PTHH)",
-          icon: "book-open",
+          title: "V. Tính theo PTHH",
+          icon: "calculator",
+          color: "pink",
           content: (
             <div className="space-y-4">
-              <h3 className="font-bold text-lg text-brand-primary">
-                Khái niệm
-              </h3>
-              <p className="text-sm text-slate-300 italic">
-                Là cách biểu diễn tóm tắt **phản ứng hóa học** bằng công thức
-                hóa học và tỉ lệ số mol các chất.
-              </p>
-              <div className="bg-slate-900 p-6 rounded-2xl border border-slate-700 font-mono text-center">
-                <div className="text-xl text-brand-success">
-                  2H₂ + O₂ → 2H₂O
+              <div className="text-center">
+                <h3 className="font-bold text-lg text-primary">
+                  Quy trình 3 bước
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Để giải bài toán hóa học cơ bản
+                </p>
+              </div>
+
+              <div className="space-y-2 relative">
+                {/* Connecting Line */}
+                <div className="absolute left-[19px] top-4 bottom-4 w-0.5 bg-slate-200 dark:bg-slate-700"></div>
+
+                <div className="relative flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 z-10">
+                  <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold shrink-0 shadow-lg shadow-blue-500/30">
+                    1
+                  </div>
+                  <div className="text-sm">
+                    <strong>Viết PTHH:</strong> Viết và cân bằng phương trình.
+                  </div>
                 </div>
-                <div className="text-sm text-slate-400 mt-2">
-                  (Tỉ lệ mol: 2 : 1 : 2)
+
+                <div className="relative flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 z-10">
+                  <div className="w-8 h-8 rounded-full bg-purple-500 text-white flex items-center justify-center font-bold shrink-0 shadow-lg shadow-purple-500/30">
+                    2
+                  </div>
+                  <div className="text-sm">
+                    <strong>Tính số Mol:</strong> Đổi dữ kiện (m, V) ra số mol
+                    (n).
+                  </div>
+                </div>
+
+                <div className="relative flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 z-10">
+                  <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold shrink-0 shadow-lg shadow-green-500/30">
+                    3
+                  </div>
+                  <div className="text-sm">
+                    <strong>Tính toán:</strong> Dùng tỉ lệ PTHH suy ra mol chất
+                    cần tìm → Đổi ra m hoặc V.
+                  </div>
                 </div>
               </div>
-              <div className="text-sm text-slate-400">
-                **Mục đích:** Dùng để tính toán lượng chất tham gia và sản phẩm.
+
+              <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl border border-yellow-200 dark:border-yellow-800 text-center">
+                <div className="font-bold text-yellow-700 dark:text-yellow-500 text-sm mb-1 uppercase tracking-wider">
+                  Hiệu suất (H%)
+                </div>
+                <div className="font-mono text-lg font-bold text-slate-800 dark:text-white">
+                  H% = (m<sub>tt</sub> / m<sub>lt</sub>) × 100%
+                </div>
+                <div className="text-[10px] text-slate-500 mt-1">
+                  tt: thực tế thu được | lt: lý thuyết tính toán
+                </div>
               </div>
             </div>
           ),
         },
         {
           id: 6,
-          title: "VI. Tính theo PTHH & Hiệu suất",
-          icon: "calculator",
+          title: "VI. Nồng độ DD",
+          icon: "droplet",
+          color: "teal",
           content: (
             <div className="space-y-4">
-              <h3 className="font-bold text-lg text-brand-primary">
-                Tính theo Phương trình Hóa học
-              </h3>
-              <div className="text-sm space-y-2">
-                <p>
-                  <span className="font-bold text-brand-success">B1:</span> Viết
-                  và{" "}
-                  <span className="font-bold text-brand-accent">cân bằng</span>{" "}
-                  PTHH.
-                </p>
-                <p>
-                  <span className="font-bold text-brand-success">B2:</span> Tính{" "}
-                  <span className="font-bold">số mol (n)</span> của chất đã
-                  biết.
-                </p>
-                <p>
-                  <span className="font-bold text-brand-success">B3:</span> Dùng{" "}
-                  <span className="font-bold">tỉ lệ mol</span> để tính n của
-                  chất cần tìm.
+              <div className="bg-teal-50 dark:bg-teal-900/20 p-4 rounded-xl border border-teal-200 dark:border-teal-800">
+                <h3 className="font-bold text-teal-700 dark:text-teal-400 mb-2 flex items-center gap-2">
+                  <i data-lucide="maximize" className="w-4 h-4"></i> Độ tan (S)
+                </h3>
+                <p className="text-sm text-slate-700 dark:text-slate-300">
+                  Số gam chất tan tối đa trong <strong>100g nước</strong> để tạo
+                  dung dịch bão hòa ở nhiệt độ xác định.
                 </p>
               </div>
-              <hr className="border-slate-700" />
-              <h3 className="font-bold text-lg text-brand-primary">
-                Hiệu suất Phản ứng
-              </h3>
-              <div className="bg-slate-900 p-4 rounded-xl border border-slate-700 text-center font-mono text-lg">
-                <span className="text-brand-accent">H (%)</span> ={" "}
-                <span className="text-brand-success">m</span>
-                <sub>thực tế</sub> /{" "}
-                <span className="text-brand-warning">m</span>
-                <sub>lý thuyết</sub>{" "}
-                <span className="text-brand-primary">× 100</span>
+
+              <div className="grid grid-cols-1 gap-3">
+                <div className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border-l-4 border-blue-500">
+                  <h3 className="font-bold text-blue-600 mb-1">
+                    Nồng độ Mol (C<sub>M</sub>)
+                  </h3>
+                  <div className="flex items-center justify-between">
+                    <div className="font-mono text-2xl font-bold">
+                      C<sub>M</sub> = n / V
+                    </div>
+                    <div className="text-right text-xs text-slate-500">
+                      n: số mol (mol)
+                      <br />
+                      V: thể tích dd (lít)
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border-l-4 border-pink-500">
+                  <h3 className="font-bold text-pink-600 mb-1">
+                    Nồng độ % (C%)
+                  </h3>
+                  <div className="flex items-center justify-between">
+                    <div className="font-mono text-xl font-bold flex items-center gap-2">
+                      C% ={" "}
+                      <div className="flex flex-col text-center text-sm leading-none">
+                        <span>
+                          m<sub>ct</sub>
+                        </span>
+                        <span className="border-t border-slate-400 w-full block pt-0.5">
+                          m<sub>dd</sub>
+                        </span>
+                      </div>{" "}
+                      × 100
+                    </div>
+                    <div className="text-right text-xs text-slate-500">
+                      m<sub>dd</sub> = m<sub>ct</sub> + m<sub>dm</sub>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           ),
         },
         {
           id: 7,
-          title: "VII. Nồng độ Dung dịch & Độ tan",
-          icon: "droplet",
+          title: "VII. Tốc độ PƯ",
+          icon: "zap",
+          color: "red",
           content: (
             <div className="space-y-4">
-              <h3 className="font-bold text-lg text-brand-primary">
-                Nồng độ Mol (C<span className="text-xs">M</span>)
-              </h3>
-              <div className="bg-slate-900 p-3 rounded-xl border border-slate-700 text-center font-mono text-lg">
-                C<span className="text-xs">M</span> ={" "}
-                <span className="text-brand-success">n</span> /{" "}
-                <span className="text-brand-accent">V</span> (mol/L)
-              </div>
-              <h3 className="font-bold text-lg text-brand-primary mt-4">
-                Nồng độ Phần trăm (C%)
-              </h3>
-              <div className="bg-slate-900 p-3 rounded-xl border border-slate-700 text-center font-mono text-lg">
-                C% = (<span className="text-brand-success">m</span>
-                <sub>chất tan</sub> /{" "}
-                <span className="text-brand-accent">m</span>
-                <sub>dd</sub>) × 100%
-              </div>
-              <div className="text-sm text-slate-400 mt-2">
-                **Độ tan:** Lượng tối đa chất tan trong **100g nước** ở điều
-                kiện nhất định.
-              </div>
-            </div>
-          ),
-        },
-        {
-          id: 8,
-          title: "VIII. Tốc độ Phản ứng & Xúc tác",
-          icon: "activity",
-          content: (
-            <div className="space-y-4">
-              <h3 className="font-bold text-lg text-brand-primary">
-                Tốc độ Phản ứng
-              </h3>
-              <p className="text-sm text-slate-300">
-                Được đo bằng sự thay đổi **nồng độ** chất phản ứng hoặc sản phẩm
-                theo **thời gian**.
+              <p className="text-sm italic text-center text-slate-500">
+                "Tốc độ phản ứng là độ biến thiên nồng độ chất trong một đơn vị
+                thời gian."
               </p>
-              <h4 className="font-bold text-brand-accent">Yếu tố ảnh hưởng:</h4>
-              <ul className="list-disc list-inside space-y-1 text-sm text-slate-300 ml-4">
-                <li>
-                  <span className="font-bold">Nhiệt độ:</span> Tăng $\uparrow$
-                  Tốc độ $\uparrow$
-                </li>
-                <li>
-                  <span className="font-bold">Nồng độ:</span> Tăng $\uparrow$
-                  Tốc độ $\uparrow$
-                </li>
-                <li>
-                  <span className="font-bold">Diện tích bề mặt:</span> Tăng
-                  $\uparrow$ Tốc độ $\uparrow$ (Chất rắn)
-                </li>
-                <li>
-                  <span className="font-bold text-brand-success">
-                    Chất xúc tác:
-                  </span>{" "}
-                  Giúp tăng tốc độ mà **không** bị tiêu hao.
-                </li>
-              </ul>
+
+              <div className="space-y-2">
+                <h4 className="font-bold text-xs uppercase text-slate-400 mb-2">
+                  Các yếu tố làm tăng tốc độ
+                </h4>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl text-center border border-red-100 dark:border-red-800 card-hover transition-all">
+                    <i
+                      data-lucide="thermometer"
+                      className="w-6 h-6 mx-auto mb-2 text-red-500"
+                    ></i>
+                    <span className="block font-bold text-sm text-slate-700 dark:text-slate-200">
+                      Nhiệt độ ↑
+                    </span>
+                  </div>
+                  <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl text-center border border-blue-100 dark:border-blue-800 card-hover transition-all">
+                    <i
+                      data-lucide="beaker"
+                      className="w-6 h-6 mx-auto mb-2 text-blue-500"
+                    ></i>
+                    <span className="block font-bold text-sm text-slate-700 dark:text-slate-200">
+                      Nồng độ ↑
+                    </span>
+                  </div>
+                  <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-xl text-center border border-green-100 dark:border-green-800 card-hover transition-all">
+                    <i
+                      data-lucide="expand"
+                      className="w-6 h-6 mx-auto mb-2 text-green-500"
+                    ></i>
+                    <span className="block font-bold text-sm text-slate-700 dark:text-slate-200">
+                      Diện tích bề mặt ↑
+                    </span>
+                  </div>
+                  <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-xl text-center border border-purple-100 dark:border-purple-800 card-hover transition-all">
+                    <i
+                      data-lucide="wand-2"
+                      className="w-6 h-6 mx-auto mb-2 text-purple-500"
+                    ></i>
+                    <span className="block font-bold text-sm text-slate-700 dark:text-slate-200">
+                      Chất xúc tác
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="text-xs text-slate-500 bg-slate-100 dark:bg-slate-800 p-2 rounded">
+                * Chất xúc tác làm tăng tốc độ phản ứng nhưng không bị tiêu hao
+                sau phản ứng.
+              </div>
             </div>
           ),
         },
       ];
 
-      // --- DATA: GAME QUESTIONS ---
-      const SORT_GAME_DATA = [
-        {
-          id: 1,
-          text: "Nước đóng băng",
-          type: "phys",
-          explain: "Chỉ đổi trạng thái Lỏng -> Rắn",
-        },
-        {
-          id: 2,
-          text: "Đinh sắt bị gỉ",
-          type: "chem",
-          explain: "Tạo thành oxit sắt màu nâu đỏ",
-        },
-        {
-          id: 3,
-          text: "Hòa tan muối vào nước",
-          type: "phys",
-          explain: "Muối vẫn là muối, chỉ bị phân tán",
-        },
-        {
-          id: 4,
-          text: "Đốt cháy tờ giấy",
-          type: "chem",
-          explain: "Tạo tro và khói (chất mới)",
-        },
-        {
-          id: 5,
-          text: "Cồn bay hơi",
-          type: "phys",
-          explain: "Chuyển từ Lỏng -> Hơi",
-        },
-        {
-          id: 6,
-          text: "Luộc chín trứng",
-          type: "chem",
-          explain: "Protein bị biến tính bởi nhiệt",
-        },
-      ];
+      // --- LAB COMPONENTS ---
 
-      // ==================================================================================
-      // 1. COMPONENTS SIMULATION
-      // ==================================================================================
-
-      // --- SIM 1: CARD SORTING GAME (Biến đổi chất) ---
-      const SortingGame = () => {
-        const [cards, setCards] = useState(SORT_GAME_DATA);
-        const [current, setCurrent] = useState(0);
+      // 1. Classification Game
+      const LabClassification = () => {
+        const [items, setItems] = useState([
+          { id: 1, text: "Nước đóng băng ❄️", type: "vl" },
+          { id: 2, text: "Fe + O₂ (Gỉ sắt) 🔩", type: "hh" },
+          { id: 3, text: "Xé giấy vụn 📄", type: "vl" },
+          { id: 4, text: "Đốt cháy than 🔥", type: "hh" },
+          { id: 5, text: "Dát mỏng nhôm 🔨", type: "vl" },
+          { id: 6, text: "Nung đá vôi (CaCO₃) ⛰️", type: "hh" },
+        ]);
         const [score, setScore] = useState(0);
-        const [feedback, setFeedback] = useState(null); // 'correct' | 'wrong'
-        const [finished, setFinished] = useState(false);
 
-        const handleChoice = (choice) => {
-          const card = cards[current];
-          const isCorrect = card.type === choice;
-
-          setFeedback(isCorrect ? "correct" : "wrong");
-
-          if (isCorrect) {
+        const handleClassify = (item, choice) => {
+          if (item.type === choice) {
             setScore((s) => s + 1);
-            if (window.confetti)
-              confetti({ particleCount: 30, spread: 50, origin: { y: 0.7 } });
+            confetti({
+              particleCount: 30,
+              spread: 50,
+              origin: { y: 0.7 },
+              colors: choice === "vl" ? ["#3b82f6"] : ["#8b5cf6"],
+            });
           }
-
-          setTimeout(() => {
-            setFeedback(null);
-            if (current < cards.length - 1) {
-              setCurrent((c) => c + 1);
-            } else {
-              setFinished(true);
-              if (score >= 4 && window.confetti)
-                confetti({ particleCount: 150, spread: 70 });
-            }
-          }, 800);
+          setItems((prev) => prev.filter((i) => i.id !== item.id));
         };
 
-        const reset = () => {
-          setCurrent(0);
-          setScore(0);
-          setFinished(false);
-          setCards([...SORT_GAME_DATA].sort(() => Math.random() - 0.5));
-        };
-
-        if (finished)
-          return (
-            <div className="text-center p-8">
-              <div className="text-6xl mb-4">🏆</div>
-              <h2 className="text-2xl font-bold mb-2">Hoàn thành!</h2>
-              <p className="text-slate-400 mb-6">
-                Bạn đạt {score}/{cards.length} điểm
-              </p>
-              <button
-                onClick={reset}
-                className="bg-brand-primary px-6 py-2 rounded-lg font-bold"
-              >
-                Chơi lại
-              </button>
-            </div>
-          );
+        const currentItem = items[0];
 
         return (
-          <div className="flex flex-col items-center h-full justify-center p-4">
-            <div className="mb-6 flex justify-between w-full max-w-sm text-sm font-bold text-slate-400">
-              <span>
-                Câu {current + 1}/{cards.length}
-              </span>
-              <span>Điểm: {score}</span>
+          <div className="flex flex-col items-center justify-center h-full p-4 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+            <h3 className="font-bold text-lg mb-1 text-primary flex items-center gap-2">
+              <i data-lucide="gamepad-2" className="w-5 h-5"></i> Phân loại Biến
+              đổi
+            </h3>
+            <div className="text-xs text-slate-400 mb-4">
+              Chọn Vật lí hoặc Hóa học
             </div>
 
-            <div className="relative w-full max-w-sm h-64 perspective-1000">
-              <motion.div
-                key={cards[current].id}
-                initial={{ scale: 0.8, opacity: 0, y: 50 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                className={`w-full h-full glass rounded-3xl flex flex-col items-center justify-center p-6 border-2 transition-colors duration-300
-                        ${
-                          feedback === "correct"
-                            ? "border-green-500 bg-green-500/10"
-                            : ""
-                        }
-                        ${
-                          feedback === "wrong"
-                            ? "border-red-500 bg-red-500/10"
-                            : "border-slate-600"
-                        }
-                    `}
-              >
-                <div className="text-3xl font-bold text-center mb-2 text-white">
-                  {cards[current].text}
-                </div>
-                {feedback && (
+            <div className="mb-4 font-bold text-2xl text-accent">{score}/6</div>
+
+            <div className="w-full max-w-sm h-48 flex flex-col justify-center relative">
+              <AnimatePresence mode="wait">
+                {currentItem ? (
+                  <motion.div
+                    key={currentItem.id}
+                    initial={{ scale: 0.8, opacity: 0, y: 20 }}
+                    animate={{ scale: 1, opacity: 1, y: 0 }}
+                    exit={{ scale: 0.8, opacity: 0, y: -20 }}
+                    className="absolute inset-0 m-auto h-32 w-full bg-slate-100 dark:bg-slate-700 rounded-2xl shadow-inner flex items-center justify-center p-4 text-center"
+                  >
+                    <span className="text-xl font-bold text-slate-700 dark:text-white">
+                      {currentItem.text}
+                    </span>
+                  </motion.div>
+                ) : (
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="text-sm mt-2 font-bold text-slate-300 text-center"
+                    className="text-center w-full"
                   >
-                    {feedback === "correct" ? "✅ Chính xác!" : "❌ Sai rồi!"}{" "}
-                    <br />
-                    <span className="font-normal opacity-80">
-                      {cards[current].explain}
-                    </span>
+                    <div className="text-5xl mb-2">🎉</div>
+                    <p className="font-bold">Hoàn thành!</p>
+                    <button
+                      onClick={() => window.location.reload()}
+                      className="mt-4 px-4 py-2 bg-slate-200 dark:bg-slate-600 rounded-lg text-sm font-bold hover:bg-slate-300 transition"
+                    >
+                      Chơi lại
+                    </button>
                   </motion.div>
                 )}
-              </motion.div>
+              </AnimatePresence>
             </div>
 
-            <div className="flex gap-4 mt-8 w-full max-w-sm">
-              <button
-                disabled={feedback !== null}
-                onClick={() => handleChoice("phys")}
-                className="flex-1 py-4 rounded-xl bg-blue-600/80 hover:bg-blue-500 text-white font-bold transition disabled:opacity-50"
+            {currentItem && (
+              <div className="grid grid-cols-2 gap-4 w-full max-w-sm mt-4">
+                <button
+                  onClick={() => handleClassify(currentItem, "vl")}
+                  className="p-4 bg-blue-500 text-white rounded-xl font-bold hover:bg-blue-600 shadow-lg active:scale-95 transition flex flex-col items-center"
+                >
+                  <span className="text-xs opacity-70 mb-1">TRẠNG THÁI</span>
+                  VẬT LÍ
+                </button>
+                <button
+                  onClick={() => handleClassify(currentItem, "hh")}
+                  className="p-4 bg-purple-500 text-white rounded-xl font-bold hover:bg-purple-600 shadow-lg active:scale-95 transition flex flex-col items-center"
+                >
+                  <span className="text-xs opacity-70 mb-1">CHẤT MỚI</span>
+                  HÓA HỌC
+                </button>
+              </div>
+            )}
+          </div>
+        );
+      };
+
+      // 2. Gas Volume Lab
+      const LabGas = () => {
+        const [mol, setMol] = useState(1);
+        return (
+          <div className="flex flex-col items-center h-full p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+            <h3 className="font-bold text-lg mb-2 text-blue-500 flex items-center gap-2">
+              <i data-lucide="wind" className="w-5 h-5"></i> Thể tích Khí (đkc)
+            </h3>
+            <div className="text-xs text-slate-400 mb-6 text-center">
+              Ở điều kiện chuẩn (25°C, 1 bar), 1 mol khí bất kỳ chiếm 24,79 Lít
+            </div>
+
+            <div className="flex-1 flex items-end justify-center relative w-full mb-8">
+              {/* Balloon */}
+              <motion.div
+                className="bg-gradient-to-tr from-blue-400 to-blue-300 opacity-90 border-2 border-blue-500 rounded-[50%_50%_50%_50%_/_40%_40%_60%_60%] flex items-center justify-center text-white font-bold text-sm shadow-[0_10px_30px_rgba(59,130,246,0.4)] relative z-10"
+                animate={{
+                  width: Math.max(60, Math.sqrt(mol) * 120),
+                  height: Math.max(70, Math.sqrt(mol) * 130),
+                  y: [0, -10, 0],
+                }}
+                transition={{
+                  y: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+                }}
               >
-                Vật Lí 🧊
-              </button>
-              <button
-                disabled={feedback !== null}
-                onClick={() => handleChoice("chem")}
-                className="flex-1 py-4 rounded-xl bg-purple-600/80 hover:bg-purple-500 text-white font-bold transition disabled:opacity-50"
-              >
-                Hóa Học 🔥
-              </button>
+                <span className="drop-shadow-md">
+                  {(mol * 24.79).toFixed(1)} L
+                </span>
+              </motion.div>
+              {/* String */}
+              <div className="absolute bottom-[-20px] w-0.5 h-20 bg-slate-400 z-0"></div>
+            </div>
+
+            <div className="w-full max-w-md bg-slate-50 dark:bg-slate-900 p-5 rounded-xl border border-slate-100 dark:border-slate-800">
+              <div className="flex justify-between mb-4 text-sm">
+                <span className="font-bold text-slate-700 dark:text-slate-200">
+                  Số mol (n) = {mol}
+                </span>
+                <span className="font-mono text-blue-500 font-bold">
+                  V = n × 24,79
+                </span>
+              </div>
+              <input
+                type="range"
+                min="0.1"
+                max="5"
+                step="0.1"
+                value={mol}
+                onChange={(e) => setMol(parseFloat(e.target.value))}
+                className="w-full accent-blue-500 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer"
+              />
+              <div className="flex justify-between text-xs text-slate-400 mt-2">
+                <span>0.1 mol</span>
+                <span>5 mol</span>
+              </div>
             </div>
           </div>
         );
       };
 
-      // --- SIM 2: REACTION RATE (Canvas) ---
-      const ReactionRateSim = () => {
+      // 3. Concentration Lab
+      const LabConcentration = () => {
+        const [solute, setSolute] = useState(10);
+        const [solvent, setSolvent] = useState(100);
+
+        const cPercent = (solute / (solute + solvent)) * 100;
+        // Visual opacity logic
+        const opacity = Math.min(Math.max(cPercent / 40, 0.05), 1);
+
+        return (
+          <div className="flex flex-col items-center h-full p-4 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+            <h3 className="font-bold text-lg mb-2 text-teal-600 flex items-center gap-2">
+              <i data-lucide="flask-round" className="w-5 h-5"></i> Pha chế (C%)
+            </h3>
+
+            <div className="relative w-40 h-52 border-4 border-t-0 border-slate-300 dark:border-slate-600 rounded-b-3xl mb-6 bg-slate-50 dark:bg-slate-900 overflow-hidden shadow-inner">
+              {/* Water Level */}
+              <motion.div
+                className="absolute bottom-0 left-0 right-0 bg-blue-100/50 dark:bg-blue-900/30 transition-all duration-500 border-t border-blue-200/50"
+                style={{ height: `${(solvent / 300) * 100}%` }}
+              />
+              {/* Solution Color Overlay */}
+              <motion.div
+                className="absolute bottom-0 left-0 right-0 bg-teal-500 mix-blend-multiply transition-all duration-500"
+                style={{
+                  height: `${((solvent + solute) / 300) * 100}%`,
+                  opacity: opacity,
+                }}
+              />
+              {/* Labels */}
+              <div className="absolute top-1/2 left-0 right-0 text-center pointer-events-none">
+                <span className="bg-white/80 dark:bg-black/60 px-2 py-1 rounded text-xs font-bold backdrop-blur-sm">
+                  {cPercent.toFixed(1)}%
+                </span>
+              </div>
+
+              {/* Bubbles animation */}
+              <div className="absolute bottom-0 w-full h-full overflow-hidden pointer-events-none">
+                {Array.from({ length: Math.floor(solute / 5) }).map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute bg-white/40 rounded-full w-1 h-1"
+                    initial={{
+                      bottom: 0,
+                      left: `${Math.random() * 100}%`,
+                      opacity: 0,
+                    }}
+                    animate={{
+                      bottom: `${Math.random() * 100}%`,
+                      opacity: [0, 1, 0],
+                    }}
+                    transition={{
+                      duration: 2 + Math.random() * 2,
+                      repeat: Infinity,
+                      delay: Math.random() * 2,
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 w-full">
+              <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
+                <div className="text-[10px] uppercase text-slate-500 font-bold mb-2">
+                  Chất tan (Muối)
+                </div>
+                <div className="text-xl font-bold mb-2 text-teal-600">
+                  {solute} g
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="5"
+                  value={solute}
+                  onChange={(e) => setSolute(Number(e.target.value))}
+                  className="w-full accent-teal-500 h-1.5 bg-slate-200 rounded cursor-pointer"
+                />
+              </div>
+              <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
+                <div className="text-[10px] uppercase text-slate-500 font-bold mb-2">
+                  Dung môi (Nước)
+                </div>
+                <div className="text-xl font-bold mb-2 text-blue-500">
+                  {solvent} g
+                </div>
+                <input
+                  type="range"
+                  min="50"
+                  max="200"
+                  step="10"
+                  value={solvent}
+                  onChange={(e) => setSolvent(Number(e.target.value))}
+                  className="w-full accent-blue-500 h-1.5 bg-slate-200 rounded cursor-pointer"
+                />
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      // 4. Speed Lab (Particles)
+      const LabSpeed = () => {
         const canvasRef = useRef(null);
-        const [temp, setTemp] = useState(1); // 1-5
-        const [conc, setConc] = useState(20); // 10-100 particles
+        const [temp, setTemp] = useState(25); // Celsius
+        const [conc, setConc] = useState(30); // Number of particles
 
         useEffect(() => {
-          const cvs = canvasRef.current;
-          const ctx = cvs.getContext("2d");
-          let particles = [];
-          let animationFrameId;
+          const canvas = canvasRef.current;
+          const ctx = canvas.getContext("2d");
+          let animationId;
 
-          const initParticles = () => {
-            particles = [];
-            for (let i = 0; i < conc; i++) {
-              particles.push({
-                x: Math.random() * cvs.width,
-                y: Math.random() * cvs.height,
-                vx: (Math.random() - 0.5) * temp * 2,
-                vy: (Math.random() - 0.5) * temp * 2,
-                r: 4,
-                color: Math.random() > 0.5 ? "#38bdf8" : "#ef4444", // Blue or Red
-              });
-            }
-          };
-          initParticles();
+          // Initialize particles
+          let particles = Array.from({ length: conc }, () => ({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: Math.random() - 0.5,
+            vy: Math.random() - 0.5,
+            r: 2 + Math.random() * 2,
+            color: Math.random() > 0.5 ? "#ef4444" : "#3b82f6", // Reactants A and B
+          }));
 
-          const render = () => {
-            ctx.clearRect(0, 0, cvs.width, cvs.height);
-
-            // Draw Background
-            ctx.fillStyle = "#0f172a";
-            ctx.fillRect(0, 0, cvs.width, cvs.height);
+          const animate = () => {
+            // Clear with trail effect
+            ctx.fillStyle = document.documentElement.classList.contains("dark")
+              ? "rgba(15, 23, 42, 0.3)"
+              : "rgba(248, 250, 252, 0.3)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             particles.forEach((p) => {
-              p.x += p.vx;
-              p.y += p.vy;
+              // Speed depends on temperature
+              const speedMultiplier = (temp + 20) / 30;
 
-              // Bounce walls
-              if (p.x < 0 || p.x > cvs.width) p.vx *= -1;
-              if (p.y < 0 || p.y > cvs.height) p.vy *= -1;
+              p.x += p.vx * speedMultiplier;
+              p.y += p.vy * speedMultiplier;
+
+              // Bounce
+              if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+              if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
 
               ctx.beginPath();
               ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
@@ -584,353 +822,478 @@
               ctx.fill();
             });
 
-            // Collision Effect (Simple Visual)
-            if (temp > 3) {
-              ctx.font = "20px Arial";
-              ctx.fillStyle = "rgba(255,255,255,0.2)";
-              ctx.fillText("TỐC ĐỘ CAO 🔥", 10, 30);
-            }
-
-            animationFrameId = requestAnimationFrame(render);
+            animationId = requestAnimationFrame(animate);
           };
-          render();
 
-          return () => cancelAnimationFrame(animationFrameId);
+          animate();
+          return () => cancelAnimationFrame(animationId);
         }, [temp, conc]);
 
         return (
-          <div className="flex flex-col h-full gap-4">
-            <div className="bg-brand-card p-4 rounded-xl flex flex-col gap-4">
-              <div className="flex items-center gap-4">
-                <i data-lucide="thermometer" className="text-red-400"></i>
-                <div className="flex-1">
-                  <label className="text-xs text-slate-400">
-                    Nhiệt độ (Tốc độ hạt)
-                  </label>
-                  <input
-                    type="range"
-                    min="1"
-                    max="8"
-                    value={temp}
-                    onChange={(e) => setTemp(parseInt(e.target.value))}
-                    className="w-full accent-red-500"
-                  />
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <i data-lucide="users" className="text-blue-400"></i>
-                <div className="flex-1">
-                  <label className="text-xs text-slate-400">
-                    Nồng độ (Số lượng hạt)
-                  </label>
-                  <input
-                    type="range"
-                    min="10"
-                    max="150"
-                    value={conc}
-                    onChange={(e) => setConc(parseInt(e.target.value))}
-                    className="w-full accent-blue-500"
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="flex-1 glass rounded-2xl overflow-hidden relative border border-slate-700">
+          <div className="flex flex-col h-full p-4 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+            <h3 className="font-bold mb-2 text-red-500 flex items-center gap-2">
+              <i data-lucide="zap" className="w-5 h-5"></i> Yếu tố Tốc độ
+            </h3>
+
+            <div className="flex-1 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden mb-4 relative bg-slate-50 dark:bg-slate-900 shadow-inner">
               <canvas
                 ref={canvasRef}
-                width={600}
-                height={400}
+                width={320}
+                height={200}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute top-2 right-2 text-xs bg-black/50 px-2 py-1 rounded text-slate-400">
-                Mô phỏng va chạm
+              <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md text-white text-[10px] px-2 py-1 rounded border border-white/10">
+                T = {temp}°C | N = {conc}
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded-lg">
+                <div className="flex justify-between text-xs mb-2 font-bold text-slate-600 dark:text-slate-300">
+                  <span className="flex items-center gap-1">
+                    <i data-lucide="thermometer" className="w-3 h-3"></i> Nhiệt
+                    độ
+                  </span>
+                  <span>{temp}°C</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={temp}
+                  onChange={(e) => setTemp(Number(e.target.value))}
+                  className="w-full accent-red-500 h-1.5 bg-slate-200 rounded cursor-pointer"
+                />
+              </div>
+              <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded-lg">
+                <div className="flex justify-between text-xs mb-2 font-bold text-slate-600 dark:text-slate-300">
+                  <span className="flex items-center gap-1">
+                    <i data-lucide="beaker" className="w-3 h-3"></i> Nồng độ
+                  </span>
+                  <span>{conc} hạt</span>
+                </div>
+                <input
+                  type="range"
+                  min="10"
+                  max="100"
+                  value={conc}
+                  onChange={(e) => setConc(Number(e.target.value))}
+                  className="w-full accent-blue-500 h-1.5 bg-slate-200 rounded cursor-pointer"
+                />
               </div>
             </div>
           </div>
         );
       };
 
-      // --- TOOL: MOL CALCULATOR ---
-      const MolCalculator = () => {
-        const [substance, setSubstance] = useState("Fe");
-        const [M, setM] = useState(56);
-        const [mol, setMol] = useState(1);
-
-        const SUBSTANCES = [
-          { sym: "H2", m: 2 },
-          { sym: "O2", m: 32 },
-          { sym: "H2O", m: 18 },
-          { sym: "CO2", m: 44 },
-          { sym: "Fe", m: 56 },
-          { sym: "NaCl", m: 58.5 },
+      // --- QUIZ COMPONENT ---
+      const QuizSection = () => {
+        const QUESTIONS = [
+          {
+            q: "Cho 2 mol H₂ phản ứng hoàn toàn với O₂. Tính số mol H₂O thu được theo PTHH: 2H₂ + O₂ → 2H₂O?",
+            opts: ["1 mol", "2 mol", "4 mol", "0.5 mol"],
+            a: 1, // 2 mol H2 creates 2 mol H2O
+            explain: "Tỉ lệ phản ứng là 2:1:2. Vậy 2 mol H₂ tạo ra 2 mol H₂O.",
+          },
+          {
+            q: "Hiện tượng nào sau đây là biến đổi hóa học?",
+            opts: [
+              "Hòa tan muối vào nước",
+              "Nước hóa hơi",
+              "Sắt bị gỉ trong không khí",
+              "Dây tóc bóng đèn nóng sáng",
+            ],
+            a: 2,
+            explain:
+              "Sắt bị gỉ tạo ra chất mới (Oxit sắt), các hiện tượng còn lại chỉ là vật lí.",
+          },
+          {
+            q: "Để đốt cháy hoàn toàn 1 mol Cacbon (C) sinh ra CO₂, cần bao nhiêu lít khí O₂ (đkc)?",
+            opts: ["24,79 L", "49,58 L", "12,39 L", "22,4 L"],
+            a: 0,
+            explain:
+              "C + O₂ → CO₂. Tỉ lệ 1:1. 1 mol C cần 1 mol O₂. V = 1 × 24,79 = 24,79 Lít.",
+          },
+          {
+            q: "Hòa tan 20g đường vào 180g nước. Tính nồng độ phần trăm (C%) của dung dịch?",
+            opts: ["11,1%", "10%", "20%", "9%"],
+            a: 1,
+            explain: "m_dd = 20 + 180 = 200g. C% = (20/200)*100 = 10%.",
+          },
+          {
+            q: "Yếu tố nào sau đây KHÔNG làm tăng tốc độ phản ứng?",
+            opts: [
+              "Tăng nhiệt độ",
+              "Tăng diện tích bề mặt",
+              "Dùng chất xúc tác",
+              "Giảm nồng độ chất phản ứng",
+            ],
+            a: 3,
+            explain:
+              "Giảm nồng độ làm GIẢM số va chạm giữa các hạt → Giảm tốc độ phản ứng.",
+          },
         ];
 
-        const handleSubChange = (e) => {
-          const s = SUBSTANCES.find((i) => i.sym === e.target.value);
-          setSubstance(s.sym);
-          setM(s.m);
+        const [current, setCurrent] = useState(0);
+        const [finished, setFinished] = useState(false);
+        const [score, setScore] = useState(0);
+        const [showExplain, setShowExplain] = useState(false);
+        const [selected, setSelected] = useState(null);
+
+        const handleAnswer = (idx) => {
+          setSelected(idx);
+          setShowExplain(true);
+
+          if (idx === QUESTIONS[current].a) {
+            setScore((s) => s + 1);
+            confetti({
+              particleCount: 50,
+              spread: 60,
+              origin: { y: 0.8 },
+              colors: ["#10b981"],
+            });
+          }
+        };
+
+        const nextQuestion = () => {
+          setSelected(null);
+          setShowExplain(false);
+          if (current < QUESTIONS.length - 1) {
+            setCurrent((c) => c + 1);
+          } else {
+            setFinished(true);
+          }
+        };
+
+        if (finished)
+          return (
+            <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-6 animate-in fade-in zoom-in duration-300">
+              <div className="w-24 h-24 bg-yellow-100 rounded-full flex items-center justify-center border-4 border-yellow-300">
+                <span className="text-6xl">🏆</span>
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold mb-1 text-slate-800 dark:text-white">
+                  Hoàn thành xuất sắc!
+                </h2>
+                <p className="text-slate-500">Điểm số của bạn</p>
+              </div>
+              <div className="text-5xl font-display font-bold text-primary">
+                {score} / {QUESTIONS.length}
+              </div>
+
+              <button
+                onClick={() => {
+                  setFinished(false);
+                  setCurrent(0);
+                  setScore(0);
+                }}
+                className="px-8 py-3 bg-primary text-white rounded-xl font-bold shadow-lg hover:bg-blue-600 active:scale-95 transition flex items-center gap-2"
+              >
+                <i data-lucide="rotate-ccw" className="w-5 h-5"></i> Làm lại
+              </button>
+            </div>
+          );
+
+        return (
+          <div className="h-full flex flex-col p-4 max-w-2xl mx-auto justify-center">
+            <div className="mb-6 flex justify-between items-center text-sm font-bold text-slate-400">
+              <span className="bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
+                Câu {current + 1} / {QUESTIONS.length}
+              </span>
+              <span className="text-primary">Điểm: {score}</span>
+            </div>
+
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-700 mb-6 min-h-[120px] flex items-center">
+              <h3 className="text-lg font-bold text-slate-800 dark:text-white leading-relaxed">
+                {QUESTIONS[current].q}
+              </h3>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3 mb-6">
+              {QUESTIONS[current].opts.map((opt, idx) => {
+                let baseClass =
+                  "p-4 rounded-xl border-2 text-left transition font-medium relative overflow-hidden ";
+                if (selected === null) {
+                  baseClass +=
+                    "border-slate-200 dark:border-slate-700 hover:border-primary hover:bg-blue-50 dark:hover:bg-slate-700 cursor-pointer";
+                } else {
+                  if (idx === QUESTIONS[current].a)
+                    baseClass +=
+                      "border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400";
+                  else if (idx === selected)
+                    baseClass +=
+                      "border-red-500 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400";
+                  else
+                    baseClass +=
+                      "border-slate-200 dark:border-slate-700 opacity-50";
+                }
+
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => !selected && handleAnswer(idx)}
+                    className={baseClass}
+                    disabled={selected !== null}
+                  >
+                    {opt}
+                    {selected !== null && idx === QUESTIONS[current].a && (
+                      <i
+                        data-lucide="check-circle"
+                        className="absolute right-4 top-4 text-green-500 w-5 h-5"
+                      ></i>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {showExplain && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-200 dark:border-blue-800 mb-4"
+              >
+                <p className="text-sm text-blue-800 dark:text-blue-300">
+                  <strong>💡 Giải thích:</strong> {QUESTIONS[current].explain}
+                </p>
+              </motion.div>
+            )}
+
+            {selected !== null && (
+              <button
+                onClick={nextQuestion}
+                className="w-full py-3 bg-primary text-white rounded-xl font-bold shadow-lg hover:bg-blue-600 transition flex items-center justify-center gap-2 animate-in slide-in-from-bottom-2"
+              >
+                {current === QUESTIONS.length - 1
+                  ? "Xem kết quả"
+                  : "Câu tiếp theo"}{" "}
+                <i data-lucide="arrow-right" className="w-5 h-5"></i>
+              </button>
+            )}
+          </div>
+        );
+      };
+
+      // --- MAIN APP ---
+      const App = () => {
+        const [tab, setTab] = useState("theory"); // theory, lab, quiz
+        const [darkMode, setDarkMode] = useState(false);
+        const [selectedLesson, setSelectedLesson] = useState(null); // New state for modal
+
+        useEffect(() => {
+          if (darkMode) document.documentElement.classList.add("dark");
+          else document.documentElement.classList.remove("dark");
+          createIcons();
+        }, [darkMode, tab, selectedLesson]);
+
+        const renderContent = () => {
+          if (tab === "theory") {
+            return (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 overflow-y-auto h-full pb-24 custom-scrollbar">
+                {LESSONS.map((lesson, index) => (
+                  <motion.div
+                    key={lesson.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    onClick={() => setSelectedLesson(lesson)} // Make clickable
+                    className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden flex flex-col hover:shadow-lg transition-all cursor-pointer group hover:border-blue-300 dark:hover:border-blue-700"
+                  >
+                    <div
+                      className={`p-4 border-b border-slate-100 dark:border-slate-700 flex items-center gap-3 bg-gradient-to-r from-slate-50 to-white dark:from-slate-700 dark:to-slate-800 group-hover:from-blue-50 dark:group-hover:from-blue-900/30 transition-colors`}
+                    >
+                      <div
+                        className={`p-2 rounded-lg shadow-sm bg-white dark:bg-slate-600 text-${lesson.color}-500`}
+                      >
+                        <i data-lucide={lesson.icon} className="w-5 h-5"></i>
+                      </div>
+                      <h3 className="font-bold text-slate-700 dark:text-slate-200 truncate">
+                        {lesson.title}
+                      </h3>
+                      <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
+                        <i
+                          data-lucide="maximize-2"
+                          className="w-4 h-4 text-blue-400"
+                        ></i>
+                      </div>
+                    </div>
+                    <div className="p-4 text-slate-600 dark:text-slate-300 flex-1 text-sm leading-relaxed relative">
+                      {/* Truncate content visually with mask */}
+                      <div className="max-h-[150px] overflow-hidden relative">
+                        {lesson.content}
+                        <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white dark:from-slate-800 to-transparent"></div>
+                      </div>
+                      <div className="mt-2 text-center text-xs font-bold text-blue-500 uppercase tracking-wide">
+                        Bấm để xem chi tiết
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            );
+          }
+          if (tab === "lab") {
+            return (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 overflow-y-auto h-full pb-24 custom-scrollbar">
+                <LabClassification />
+                <LabGas />
+                <LabConcentration />
+                <LabSpeed />
+              </div>
+            );
+          }
+          if (tab === "quiz") return <QuizSection />;
         };
 
         return (
-          <div className="max-w-md mx-auto w-full space-y-6">
-            <div className="bg-brand-card p-6 rounded-2xl border border-slate-700 shadow-xl">
-              <h2 className="text-xl font-display font-bold text-brand-accent mb-4 flex items-center gap-2">
-                <i data-lucide="calculator"></i> Máy tính Mol
-              </h2>
-
-              {/* INPUTS */}
-              <div className="space-y-4">
-                <div>
-                  <label className="text-xs text-slate-400 uppercase font-bold">
-                    Chọn chất
-                  </label>
-                  <select
-                    value={substance}
-                    onChange={handleSubChange}
-                    className="w-full bg-slate-800 text-white p-3 rounded-lg border border-slate-600 mt-1 outline-none focus:border-brand-primary"
-                  >
-                    {SUBSTANCES.map((s) => (
-                      <option key={s.sym} value={s.sym}>
-                        {s.sym} (M = {s.m})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs text-slate-400 uppercase font-bold">
-                    Số Mol (n)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    value={mol}
-                    onChange={(e) => setMol(parseFloat(e.target.value) || 0)}
-                    className="w-full bg-slate-800 text-white p-3 rounded-lg border border-slate-600 mt-1 outline-none focus:border-brand-primary font-mono text-lg"
-                  />
-                </div>
-              </div>
-
-              {/* RESULTS */}
-              <div className="mt-8 grid grid-cols-2 gap-4">
-                <div className="bg-slate-700/50 p-4 rounded-xl border border-slate-600">
-                  <div className="text-xs text-slate-400 mb-1">
-                    Khối lượng (m)
-                  </div>
-                  <div className="text-2xl font-mono font-bold text-brand-success">
-                    {(mol * M).toFixed(2)} <span className="text-sm">g</span>
-                  </div>
-                </div>
-                <div className="bg-slate-700/50 p-4 rounded-xl border border-slate-600">
-                  <div className="text-xs text-slate-400 mb-1">
-                    Thể tích khí (đkc)
-                  </div>
-                  <div className="text-2xl font-mono font-bold text-brand-warning">
-                    {(mol * 24.79).toFixed(2)}{" "}
-                    <span className="text-sm">L</span>
-                  </div>
-                  <div className="text-[10px] text-slate-500">
-                    *Chỉ đúng với chất khí
-                  </div>
-                </div>
-                <div className="bg-slate-700/50 p-4 rounded-xl border border-slate-600 col-span-2">
-                  <div className="text-xs text-slate-400 mb-1">Số hạt (A)</div>
-                  <div className="text-xl font-mono font-bold text-white">
-                    {(mol * 6.022).toFixed(3)} x 10²³
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      };
-
-      // ==================================================================================
-      // 2. MAIN LAYOUT & NAVIGATION
-      // ==================================================================================
-
-      const App = () => {
-        const [activeTab, setActiveTab] = useState("theory"); // 'theory', 'lab', 'calc'
-        const [activeLab, setActiveLab] = useState("sort"); // 'sort', 'rate'
-
-        useEffect(() => {
-          createIcons();
-        }, [activeTab, activeLab]);
-
-        return (
-          <div className="flex h-screen bg-brand-bg text-slate-100 font-sans overflow-hidden">
-            {/* SIDEBAR (Desktop) / TOPBAR (Mobile) */}
-            <aside className="w-20 md:w-64 bg-brand-card border-r border-slate-700 flex flex-col justify-between z-20">
-              <div>
-                <div className="h-16 flex items-center justify-center md:justify-start md:px-6 border-b border-slate-700">
-                  <i
-                    data-lucide="flask-conical"
-                    className="text-brand-primary w-8 h-8"
-                  ></i>
-                  <span className="hidden md:block ml-3 font-display font-bold text-xl text-white">
-                    E-Chem 8
-                  </span>
-                </div>
-
-                <nav className="p-2 md:p-4 space-y-2">
-                  <NavBtn
-                    id="theory"
-                    icon="book-open"
-                    label="Lý Thuyết"
-                    active={activeTab}
-                    set={setActiveTab}
-                  />
-                  <NavBtn
-                    id="lab"
-                    icon="microscope"
-                    label="Phòng Lab"
-                    active={activeTab}
-                    set={setActiveTab}
-                  />
-                  <NavBtn
-                    id="calc"
-                    icon="calculator"
-                    label="Máy Tính Mol"
-                    active={activeTab}
-                    set={setActiveTab}
-                  />
-                </nav>
-              </div>
-
-              <div className="p-4 text-center hidden md:block text-xs text-slate-500">
-                Interactive Lab v3.0
-              </div>
-            </aside>
-
-            {/* MAIN CONTENT AREA */}
-            <main className="flex-1 relative overflow-hidden flex flex-col">
-              {/* Header for Mobile context mostly */}
-              <header className="h-16 border-b border-slate-700 flex items-center px-6 bg-brand-bg/80 backdrop-blur justify-between">
-                <h1 className="text-xl font-bold text-slate-200">
-                  {activeTab === "theory" && "Kiến Thức Trọng Tâm"}
-                  {activeTab === "lab" && "Mô Phỏng Tương Tác"}
-                  {activeTab === "calc" && "Công Cụ Tính Toán"}
-                  <a href="../chemstudybaby.html">----quay về trang chủ</a>
-                </h1>
-
-                {/* Lab Selector Tabs (Only show if in Lab) */}
-                {activeTab === "lab" && (
-                  <div className="flex bg-slate-800 rounded-lg p-1 gap-1">
-                    <button
-                      onClick={() => setActiveLab("sort")}
-                      className={`px-3 py-1 text-sm rounded-md transition ${
-                        activeLab === "sort"
-                          ? "bg-brand-primary text-white"
-                          : "text-slate-400 hover:text-white"
-                      }`}
-                    >
-                      Phân Loại
-                    </button>
-                    <button
-                      onClick={() => setActiveLab("rate")}
-                      className={`px-3 py-1 text-sm rounded-md transition ${
-                        activeLab === "rate"
-                          ? "bg-brand-primary text-white"
-                          : "text-slate-400 hover:text-white"
-                      }`}
-                    >
-                      Tốc Độ PƯ
-                    </button>
-                  </div>
-                )}
-              </header>
-
-              <div className="flex-1 overflow-y-auto p-4 md:p-8 relative">
-                {/* BACKGROUND ELEMENTS */}
-                <div className="absolute top-10 left-10 w-64 h-64 bg-brand-primary/10 rounded-full blur-3xl -z-10 animate-float"></div>
-                <div className="absolute bottom-10 right-10 w-96 h-96 bg-brand-accent/5 rounded-full blur-3xl -z-10"></div>
-
-                {/* CONTENT SWITHCER */}
-                <AnimatePresence mode="wait">
+          <div className="h-full flex flex-col bg-bg-light dark:bg-bg-dark transition-colors">
+            {/* LESSON MODAL */}
+            <AnimatePresence>
+              {selectedLesson && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+                  onClick={() => setSelectedLesson(null)}
+                >
                   <motion.div
-                    key={activeTab + activeLab}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="h-full max-w-5xl mx-auto"
+                    initial={{ scale: 0.9, y: 20 }}
+                    animate={{ scale: 1, y: 0 }}
+                    exit={{ scale: 0.9, y: 20 }}
+                    className="bg-white dark:bg-slate-800 w-full max-w-2xl max-h-[85vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+                    onClick={(e) => e.stopPropagation()}
                   >
-                    {activeTab === "theory" && <TheoryView />}
-                    {activeTab === "calc" && <MolCalculator />}
-                    {activeTab === "lab" && activeLab === "sort" && (
-                      <SortingGame />
-                    )}
-                    {activeTab === "lab" && activeLab === "rate" && (
-                      <ReactionRateSim />
-                    )}
+                    <div className="p-4 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-700/50">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`p-2 rounded-lg bg-white dark:bg-slate-600 text-${selectedLesson.color}-500 shadow-sm`}
+                        >
+                          <i
+                            data-lucide={selectedLesson.icon}
+                            className="w-5 h-5"
+                          ></i>
+                        </div>
+                        <h2 className="font-bold text-lg text-slate-800 dark:text-white">
+                          {selectedLesson.title}
+                        </h2>
+                      </div>
+                      <button
+                        onClick={() => setSelectedLesson(null)}
+                        className="p-2 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-full transition"
+                      >
+                        <i
+                          data-lucide="x"
+                          className="w-5 h-5 text-slate-500"
+                        ></i>
+                      </button>
+                    </div>
+                    <div className="p-6 overflow-y-auto modal-scroll text-slate-700 dark:text-slate-300 leading-relaxed text-base">
+                      {selectedLesson.content}
+                    </div>
+                    <div className="p-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/30 flex justify-end">
+                      <button
+                        onClick={() => setSelectedLesson(null)}
+                        className="px-4 py-2 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-600 transition"
+                      >
+                        Đã hiểu
+                      </button>
+                    </div>
                   </motion.div>
-                </AnimatePresence>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* TOP NAVIGATION BAR */}
+            <header className="bg-white/80 dark:bg-slate-800/90 backdrop-blur-md shadow-sm border-b border-slate-200 dark:border-slate-700 z-50 sticky top-0">
+              <div className="flex items-center justify-between px-4 h-16 max-w-7xl mx-auto w-full">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-blue-500/30 transform rotate-3">
+                    C8
+                  </div>
+                  <div>
+                    <h1 className="font-display font-bold text-lg text-slate-800 dark:text-white leading-none">
+                      Hóa Học 8
+                    </h1>
+                    <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">
+                      Chương 1: Phản Ứng Hóa Học
+                    </span>
+                  </div>
+                </div>
+
+                {/* Main Tabs */}
+                <nav className="flex gap-1 bg-slate-100 dark:bg-slate-700/50 p-1 rounded-xl">
+                  {[
+                    { id: "theory", icon: "book-open", label: "Lý thuyết" },
+                    { id: "lab", icon: "flask-conical", label: "Mô phỏng" },
+                    { id: "quiz", icon: "check-circle", label: "Bài tập" },
+                  ].map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => setTab(item.id)}
+                      className={`relative px-3 md:px-5 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${
+                        tab === item.id
+                          ? "text-slate-800 dark:text-white shadow-sm bg-white dark:bg-slate-600"
+                          : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                      }`}
+                    >
+                      <i
+                        data-lucide={item.icon}
+                        className={`w-4 h-4 ${
+                          tab === item.id ? "text-primary" : ""
+                        }`}
+                      ></i>
+                      <span className="hidden sm:inline">{item.label}</span>
+                      {tab === item.id && (
+                        <motion.div
+                          layoutId="activeTab"
+                          className="absolute inset-0 bg-transparent rounded-lg border-2 border-primary/10 dark:border-white/10 pointer-events-none"
+                        />
+                      )}
+                    </button>
+                  ))}
+                </nav>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setDarkMode(!darkMode)}
+                    className="p-2.5 text-slate-500 hover:text-orange-500 dark:text-slate-400 dark:hover:text-yellow-400 transition rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50"
+                  >
+                    <i
+                      data-lucide={darkMode ? "sun" : "moon"}
+                      className="w-5 h-5"
+                    ></i>
+                  </button>
+                  <a
+                    href="../chemstudybaby.html"
+                    className="p-2.5 text-slate-500 hover:text-red-500 dark:text-slate-400 dark:hover:text-red-400 transition rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20"
+                    title="Quay về"
+                  >
+                    <i data-lucide="log-out" className="w-5 h-5"></i>
+                  </a>
+                </div>
               </div>
+            </header>
+
+            {/* MAIN CONTENT */}
+            <main className="flex-1 overflow-hidden relative max-w-7xl mx-auto w-full">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={tab}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.2 }}
+                  className="h-full"
+                >
+                  {renderContent()}
+                </motion.div>
+              </AnimatePresence>
             </main>
           </div>
         );
       };
 
-      // --- SUB COMPONENTS ---
-
-      const NavBtn = ({ id, icon, label, active, set }) => (
-        <button
-          onClick={() => set(id)}
-          className={`w-full flex items-center justify-center md:justify-start p-3 rounded-xl transition-all duration-200 group
-            ${
-              active === id
-                ? "bg-brand-primary text-white shadow-lg shadow-brand-primary/25"
-                : "text-slate-400 hover:bg-slate-800 hover:text-white"
-            }`}
-        >
-          <i
-            data-lucide={icon}
-            className={`w-6 h-6 md:mr-3 transition-transform ${
-              active === id ? "scale-110" : "group-hover:scale-110"
-            }`}
-          ></i>
-          <span className="hidden md:block font-medium">{label}</span>
-        </button>
-      );
-
-      const TheoryView = () => {
-        const [slide, setSlide] = useState(0);
-        return (
-          <div className="flex flex-col h-full justify-center items-center">
-            <div className="glass w-full max-w-3xl p-8 rounded-3xl min-h-[400px] flex flex-col relative">
-              <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-600/50">
-                <div className="p-3 bg-brand-primary/20 rounded-xl text-brand-primary">
-                  <i data-lucide={THEORY_DATA[slide].icon}></i>
-                </div>
-                <h2 className="text-2xl font-display font-bold text-white">
-                  {THEORY_DATA[slide].title}
-                </h2>
-              </div>
-
-              <div className="flex-1">{THEORY_DATA[slide].content}</div>
-
-              <div className="flex justify-between mt-8 pt-4 border-t border-slate-600/50">
-                <button
-                  disabled={slide === 0}
-                  onClick={() => setSlide((s) => s - 1)}
-                  className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 disabled:opacity-50 transition"
-                >
-                  ← Trước
-                </button>
-                <span className="text-slate-500 font-mono self-center">
-                  {slide + 1} / {THEORY_DATA.length}
-                </span>
-                <button
-                  disabled={slide === THEORY_DATA.length - 1}
-                  onClick={() => setSlide((s) => s + 1)}
-                  className="px-4 py-2 rounded-lg bg-brand-primary hover:bg-brand-primary/80 disabled:opacity-50 transition font-bold"
-                >
-                  Sau →
-                </button>
-              </div>
-            </div>
-          </div>
-        );
-      };
-
-      // RENDER APP
       const root = ReactDOM.createRoot(document.getElementById("root"));
       root.render(<App />);
     </script>

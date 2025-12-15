@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ứng Dụng Tính Toán Nồng Độ Hóa Học</title>
+    <!-- Tải Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tải thư viện Lucide Icons (sử dụng SVG) -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Tùy chỉnh màu sắc theo chủ đề Lab */
+      :root {
+        --lab-canvas: #f0f4f8; /* Light Blue/Gray Background */
+        --lab-background: #ffffff;
+        --lab-text: #1e293b; /* Slate 900 */
+        --lab-accent: #06b6d4; /* Cyan 600 */
+        --lab-primary: #3b82f6; /* Blue 500 */
+        --lab-border: #e2e8f0; /* Slate 200 */
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--lab-canvas);
+        color: var(--lab-text);
+      }
+      /* Custom scrollbar for aesthetics */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--lab-canvas);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      .input-unit {
+        color: var(--lab-text);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="max-w-4xl mx-auto p-4 sm:p-8">
+      <header class="text-center mb-10">
+        <h1
+          class="text-4xl font-extrabold text-lab-primary flex items-center justify-center"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-flask-conical-off mr-3"
+          >
+            <path d="M10 10.74V21.7a.8.8 0 0 0 1.5.09l4.58-8.54" />
+            <path d="M14.77 11H17" />
+            <path d="M11 2h.5c.34 0 .67.04 1 .11" />
+            <path d="M8.5 2h-1c-.5 0-1 .5-1 1s.5 1 1 1h2.15" />
+            <path d="M4 22h16" />
+            <path d="m3 3 18 18" />
+          </svg>
+          Hóa Học Tốc Hành
+        </h1>
+        <p class="text-lg text-lab-text/70 mt-2">
+          Tính toán nhanh các đại lượng nồng độ dung dịch.
+        </p>
+      </header>
+
+      <main
+        class="bg-lab-background p-6 sm:p-10 rounded-3xl shadow-2xl border border-lab-border/50"
+      >
+        <!-- Khu vực Input -->
+        <section class="mb-10">
+          <h2
+            class="text-2xl font-bold text-lab-accent mb-6 border-b pb-2 border-lab-border flex items-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-edit mr-2"
+            >
+              <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+            </svg>
+            Dữ Liệu Đầu Vào
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Input: Khối lượng chất tan -->
+            <div class="flex flex-col space-y-1">
+              <label
+                for="m_chat_tan"
+                class="text-sm font-semibold text-lab-text/70 flex items-center"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-scales w-4 h-4 mr-2 text-lab-accent"
+                >
+                  <path d="m5 10 2-3 2 3" />
+                  <path d="M10 13V3" />
+                  <path d="M14 13V3" />
+                  <path d="m19 10-2-3-2 3" />
+                  <path d="M20 17H4" />
+                  <path d="M5 21h4" />
+                  <path d="M15 21h4" />
+                  <path d="M9 3h6" />
+                  <path d="M12 18a6 6 0 0 0-6 6" />
+                  <path d="M12 18a6 6 0 0 1 6 6" />
+                </svg>
+                Khối lượng chất tan (m<sub>ct</sub>)
+              </label>
+              <div
+                class="flex items-center bg-lab-background rounded-xl shadow-inner border border-lab-border"
+              >
+                <input
+                  id="m_chat_tan"
+                  type="number"
+                  oninput="calculate()"
+                  placeholder="Nhập giá trị"
+                  class="flex-grow p-3 text-lg font-mono text-lab-text bg-transparent focus:outline-none focus:ring-0 rounded-l-xl"
+                  min="0"
+                  value=""
+                />
+                <span class="p-3 text-lg font-semibold text-lab-accent">g</span>
+              </div>
+            </div>
+
+            <!-- Input: Khối lượng dung môi -->
+            <div class="flex flex-col space-y-1">
+              <label
+                for="m_dung_moi"
+                class="text-sm font-semibold text-lab-text/70 flex items-center"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-droplet w-4 h-4 mr-2 text-lab-accent"
+                >
+                  <path
+                    d="M12 22a4 4 0 0 0 4-4c0-2.8 0-5.2-1.2-6.8a2 2 0 0 0-3.6 0C8 12.8 8 15.2 8 18a4 4 0 0 0 4 4Z"
+                  />
+                  <path d="m16 16-.4-4.8" />
+                </svg>
+                Khối lượng dung môi (m<sub>dm</sub>)
+              </label>
+              <div
+                class="flex items-center bg-lab-background rounded-xl shadow-inner border border-lab-border"
+              >
+                <input
+                  id="m_dung_moi"
+                  type="number"
+                  oninput="calculate()"
+                  placeholder="Nhập giá trị"
+                  class="flex-grow p-3 text-lg font-mono text-lab-text bg-transparent focus:outline-none focus:ring-0 rounded-l-xl"
+                  min="0"
+                  value=""
+                />
+                <span class="p-3 text-lg font-semibold text-lab-accent">g</span>
+              </div>
+            </div>
+
+            <!-- Input: Thể tích dung dịch -->
+            <div class="flex flex-col space-y-1">
+              <label
+                for="V_dung_dich"
+                class="text-sm font-semibold text-lab-text/70 flex items-center"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-beaker w-4 h-4 mr-2 text-lab-accent"
+                >
+                  <path d="M4.5 3h15" />
+                  <path d="M7 3v13a5 5 0 0 0 10 0V3" />
+                  <path d="M6 18h12" />
+                </svg>
+                Thể tích dung dịch (V<sub>dd</sub>)
+              </label>
+              <div
+                class="flex items-center bg-lab-background rounded-xl shadow-inner border border-lab-border"
+              >
+                <input
+                  id="V_dung_dich"
+                  type="number"
+                  oninput="calculate()"
+                  placeholder="Nhập giá trị"
+                  class="flex-grow p-3 text-lg font-mono text-lab-text bg-transparent focus:outline-none focus:ring-0 rounded-l-xl"
+                  min="0"
+                  value=""
+                />
+                <div class="flex">
+                  <button
+                    id="volume_unit_switch"
+                    onclick="toggleVolumeUnit()"
+                    class="p-3 text-lg font-semibold transition duration-200 rounded-r-xl"
+                    style="background-color: var(--lab-primary); color: white"
+                  >
+                    ml
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Input: Khối lượng mol chất tan -->
+            <div class="flex flex-col space-y-1">
+              <label
+                for="M_chat_tan"
+                class="text-sm font-semibold text-lab-text/70 flex items-center"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-atom w-4 h-4 mr-2 text-lab-accent"
+                >
+                  <circle cx="12" cy="12" r="2" />
+                  <path d="M12 2v2" />
+                  <path d="M12 20v2" />
+                  <path d="m4.93 4.93 1.41 1.41" />
+                  <path d="m17.66 17.66 1.41 1.41" />
+                  <path d="M2 12h2" />
+                  <path d="M20 12h2" />
+                  <path d="m4.93 19.07 1.41-1.41" />
+                  <path d="m17.66 6.34 1.41-1.41" />
+                </svg>
+                Khối lượng mol chất tan (M)
+              </label>
+              <div
+                class="flex items-center bg-lab-background rounded-xl shadow-inner border border-lab-border"
+              >
+                <input
+                  id="M_chat_tan"
+                  type="number"
+                  oninput="calculate()"
+                  placeholder="Nhập giá trị"
+                  class="flex-grow p-3 text-lg font-mono text-lab-text bg-transparent focus:outline-none focus:ring-0 rounded-l-xl"
+                  min="0"
+                  value=""
+                />
+                <span class="p-3 text-lg font-semibold text-lab-accent"
+                  >g/mol</span
+                >
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Nút Reset -->
+        <div class="flex justify-center mb-10">
+          <button
+            id="reset_button"
+            onclick="resetCalculator()"
+            class="flex items-center px-6 py-3 bg-red-500 text-white font-bold rounded-full shadow-lg hover:bg-red-600 transition duration-300 transform hover:scale-105"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-refresh-cw mr-2"
+            >
+              <path d="M3 10h11a8 8 0 0 0 0-16" />
+              <path d="m7 16-4-4 4-4" />
+              <path d="M21 14h-11a8 8 0 0 0 0 16" />
+              <path d="m17 8 4 4-4 4" />
+            </svg>
+            Thiết Lập Lại
+          </button>
+        </div>
+
+        <!-- Khu vực Output -->
+        <section>
+          <h2
+            class="text-2xl font-bold text-lab-primary mb-6 border-b pb-2 border-lab-border flex items-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-flask-conical mr-2"
+            >
+              <path d="M10 16v6" />
+              <path d="M14 16v6" />
+              <path d="M8 22h8" />
+              <path d="M2 3h20" />
+              <path d="m8 3 3 13h2l3-13" />
+            </svg>
+            Kết Quả Tính Toán
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Output: Khối lượng dung dịch (Primary) -->
+            <div
+              class="bg-lab-background/80 p-4 rounded-xl border border-lab-border shadow-md transition duration-300 hover:shadow-lg hover:border-lab-primary/50"
+            >
+              <div class="flex items-center mb-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-package mr-3 text-lab-primary"
+                >
+                  <path d="m7.5 4.27 9 5.15" />
+                  <path d="M21 8V19l-9 5-9-5V8l9-5z" />
+                  <path d="m3.3 7 9 5.15 9-5.15" />
+                  <path d="M12 22.8V12" />
+                </svg>
+                <span class="text-base font-semibold text-lab-text"
+                  >Khối lượng dung dịch (m<sub>dd</sub>)</span
+                >
+              </div>
+              <div
+                class="p-3 rounded-lg border-2 border-lab-primary/30 bg-lab-primary/10"
+              >
+                <div class="text-xs text-lab-accent font-bold">
+                  m<sub>dd</sub> = m<sub>ct</sub> + m<sub>dm</sub>
+                </div>
+                <div
+                  id="m_dung_dich_result"
+                  class="text-3xl font-mono mt-2 text-lab-primary"
+                >
+                  --- <span class="text-lg text-lab-text/70">g</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Output: Nồng độ Phần trăm (C%) -->
+            <div
+              class="bg-lab-background/80 p-4 rounded-xl border border-lab-border shadow-md transition duration-300 hover:shadow-lg hover:border-lab-accent/50"
+            >
+              <div class="flex items-center mb-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-percent-circle mr-3 text-lab-accent"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="m15 9-6 6" />
+                  <path d="M9 9h.01" />
+                  <path d="M15 15h.01" />
+                </svg>
+                <span class="text-base font-semibold text-lab-text"
+                  >Nồng độ Phần trăm (C%)</span
+                >
+              </div>
+              <div
+                class="p-3 rounded-lg border-2 border-lab-accent/20 bg-lab-accent/10"
+              >
+                <!-- Công thức C% đã sửa lỗi cú pháp -->
+                <div
+                  class="text-xs text-lab-accent font-bold flex items-center"
+                >
+                  C% =
+                  <span
+                    class="inline-flex flex-col items-center leading-none text-base mx-1"
+                  >
+                    <span class="border-b border-lab-accent/50 pr-0.5 pb-[2px]"
+                      >m<sub>ct</sub></span
+                    >
+                    <span>m<sub>dd</sub></span>
+                  </span>
+                  &times; 100%
+                </div>
+                <div
+                  id="C_PhanTram_result"
+                  class="text-3xl font-mono mt-2 text-lab-text"
+                >
+                  --- <span class="text-lg text-lab-text/70">%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Output: Số mol chất tan (n) -->
+            <div
+              class="bg-lab-background/80 p-4 rounded-xl border border-lab-border shadow-md transition duration-300 hover:shadow-lg hover:border-lab-accent/50"
+            >
+              <div class="flex items-center mb-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-sigma mr-3 text-lab-accent"
+                >
+                  <path d="M18 6H7l6.5 6L7 18h11" />
+                </svg>
+                <span class="text-base font-semibold text-lab-text"
+                  >Số mol chất tan (n<sub>ct</sub>)</span
+                >
+              </div>
+              <div
+                class="p-3 rounded-lg border-2 border-lab-accent/20 bg-lab-accent/10"
+              >
+                <div class="text-xs text-lab-accent font-bold">
+                  n<sub>ct</sub> = m<sub>ct</sub> / M
+                </div>
+                <div
+                  id="n_chat_tan_result"
+                  class="text-3xl font-mono mt-2 text-lab-text"
+                >
+                  --- <span class="text-lg text-lab-text/70">mol</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Output: Nồng độ Mol (C_M) -->
+            <div
+              class="bg-lab-background/80 p-4 rounded-xl border border-lab-border shadow-md transition duration-300 hover:shadow-lg hover:border-lab-primary/50"
+            >
+              <div class="flex items-center mb-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-square-root-icon mr-3 text-lab-primary"
+                >
+                  <path d="M19.1 19V6.3c0-.8-.9-1.3-1.6-.9L6 18" />
+                  <path d="M2 12h3" />
+                </svg>
+                <span class="text-base font-semibold text-lab-text"
+                  >Nồng độ Mol (C<sub>M</sub>)</span
+                >
+              </div>
+              <div
+                class="p-3 rounded-lg border-2 border-lab-primary/30 bg-lab-primary/10"
+              >
+                <!-- Công thức C_M đã sửa lỗi cú pháp -->
+                <div
+                  class="text-xs text-lab-accent font-bold flex items-center"
+                >
+                  C<sub>M</sub> =
+                  <span
+                    class="inline-flex flex-col items-center leading-none text-base mx-1"
+                  >
+                    <span class="border-b border-lab-accent/50 pr-0.5 pb-[2px]"
+                      >n<sub>ct</sub></span
+                    >
+                    <span>V<sub>L</sub></span>
+                  </span>
+                </div>
+                <div
+                  id="C_M_result"
+                  class="text-3xl font-mono mt-2 text-lab-primary"
+                >
+                  --- <span class="text-lg text-lab-text/70">M</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      let volumeUnit = "ml"; // Biến toàn cục để lưu đơn vị thể tích
+
+      // Hàm helper để định dạng giá trị hiển thị, làm tròn đến 3 chữ số thập phân
+      function displayValue(value) {
+        if (value === null || isNaN(value) || value === Infinity || value < 0) {
+          return "---";
+        }
+        return parseFloat(value.toFixed(3));
+      }
+
+      // Hàm chuyển đổi đơn vị thể tích
+      function toggleVolumeUnit() {
+        const button = document.getElementById("volume_unit_switch");
+        volumeUnit = volumeUnit === "ml" ? "L" : "ml";
+        button.textContent = volumeUnit;
+        calculate();
+      }
+
+      // Hàm đặt lại máy tính
+      function resetCalculator() {
+        document.getElementById("m_chat_tan").value = "";
+        document.getElementById("m_dung_moi").value = "";
+        document.getElementById("V_dung_dich").value = "";
+        document.getElementById("M_chat_tan").value = "";
+
+        // Đặt lại đơn vị về ml
+        volumeUnit = "ml";
+        document.getElementById("volume_unit_switch").textContent = "ml";
+
+        // Cập nhật kết quả về ---
+        document.getElementById(
+          "m_dung_dich_result"
+        ).innerHTML = `--- <span class="text-lg text-lab-text/70">g</span>`;
+        document.getElementById(
+          "C_PhanTram_result"
+        ).innerHTML = `--- <span class="text-lg text-lab-text/70">%</span>`;
+        document.getElementById(
+          "n_chat_tan_result"
+        ).innerHTML = `--- <span class="text-lg text-lab-text/70">mol</span>`;
+        document.getElementById(
+          "C_M_result"
+        ).innerHTML = `--- <span class="text-lg text-lab-text/70">M</span>`;
+      }
+
+      // Hàm tính toán chính
+      function calculate() {
+        const m_ct = parseFloat(document.getElementById("m_chat_tan").value);
+        const m_dm = parseFloat(document.getElementById("m_dung_moi").value);
+        const V_dd = parseFloat(document.getElementById("V_dung_dich").value);
+        const M_ct = parseFloat(document.getElementById("M_chat_tan").value);
+
+        let m_dd = null;
+        let C_PhanTram = null;
+        let n_ct = null;
+        let V_L = null;
+        let C_M = null;
+
+        // 1. Khối lượng dung dịch (m_dd)
+        if (!isNaN(m_ct) && m_ct >= 0 && !isNaN(m_dm) && m_dm >= 0) {
+          m_dd = m_ct + m_dm;
+        }
+
+        // 2. Nồng độ Phần trăm (C%)
+        if (m_dd !== null && m_dd > 0 && !isNaN(m_ct) && m_ct >= 0) {
+          C_PhanTram = (m_ct / m_dd) * 100;
+        }
+
+        // 3. Số mol chất tan (n_ct)
+        if (!isNaN(m_ct) && m_ct >= 0 && !isNaN(M_ct) && M_ct > 0) {
+          n_ct = m_ct / M_ct;
+        }
+
+        // 4. Thể tích dung dịch tính bằng Lít (V_L)
+        if (!isNaN(V_dd) && V_dd >= 0) {
+          V_L = volumeUnit === "ml" ? V_dd / 1000 : V_dd;
+        }
+
+        // 5. Nồng độ Mol (C_M)
+        if (n_ct !== null && V_L !== null && V_L > 0) {
+          C_M = n_ct / V_L;
+        }
+
+        // Cập nhật kết quả trên giao diện
+        document.getElementById(
+          "m_dung_dich_result"
+        ).innerHTML = `${displayValue(
+          m_dd
+        )} <span class="text-lg text-lab-text/70">g</span>`;
+        document.getElementById(
+          "C_PhanTram_result"
+        ).innerHTML = `${displayValue(
+          C_PhanTram
+        )} <span class="text-lg text-lab-text/70">%</span>`;
+        document.getElementById(
+          "n_chat_tan_result"
+        ).innerHTML = `${displayValue(
+          n_ct
+        )} <span class="text-lg text-lab-text/70">mol</span>`;
+        document.getElementById("C_M_result").innerHTML = `${displayValue(
+          C_M
+        )} <span class="text-lg text-lab-text/70">M</span>`;
+      }
+
+      // Gọi calculate lần đầu khi trang tải xong (để hiển thị ---)
+      window.onload = function () {
+        calculate();
+      };
+    </script>
+  </body>
+</html>

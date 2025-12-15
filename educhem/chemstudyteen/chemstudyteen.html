@@ -1,23 +1,23 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="../favicon/educhem.svg" type="image/svg+xml" />
-    <title>EDUCHEM - THPT | ChemVerse Edition</title>
+    <link rel="icon" href="../../favicon/educhem.svg" type="image/svg+xml" />
+    <title>EDUCHEM - THPT | ChemStudy-Teen</title>
 
+    <!-- Font & Icons -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-
     <link
       href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;900&family=Orbitron:wght@500;700;900&display=swap"
       rel="stylesheet"
     />
 
+    <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
-
     <script
       crossorigin
       src="https://unpkg.com/react@18/umd/react.production.min.js"
@@ -31,6 +31,7 @@
 
     <script>
       tailwind.config = {
+        darkMode: "class",
         theme: {
           extend: {
             fontFamily: {
@@ -38,16 +39,36 @@
               tech: ["Orbitron", "sans-serif"],
             },
             colors: {
-              bg: "#050511", // Deep Space
-              card: "#0f1126",
+              // Dark Mode Colors
+              bgDark: "#050511",
+              cardDark: "#0f1126",
+
+              // Light Mode Colors
+              bgLight: "#f8fafc",
+              cardLight: "#ffffff",
+              textLight: "#1e293b",
+
               accent: "#00f2ff", // Cyan Neon
               primary: "#7000ff", // Electric Purple
               secondary: "#ff0055", // Neon Pink
+              success: "#0aff60", // Green Neon
             },
-            backgroundImage: {
-              "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-              glass:
-                "linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%)",
+            animation: {
+              float: "float 15s infinite linear",
+            },
+            keyframes: {
+              float: {
+                "0%": {
+                  transform: "translateY(100vh) rotate(0deg)",
+                  opacity: "0",
+                },
+                "10%": { opacity: "0.2" },
+                "90%": { opacity: "0.2" },
+                "100%": {
+                  transform: "translateY(-20vh) rotate(360deg)",
+                  opacity: "0",
+                },
+              },
             },
           },
         },
@@ -55,57 +76,11 @@
     </script>
 
     <style>
+      html {
+        scroll-behavior: smooth;
+      }
       body {
-        background-color: #050511;
-        color: #ffffff;
-        overflow-x: hidden;
-      }
-
-      /* Hiệu ứng nền Grid chuyển động */
-      .chem-grid {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: linear-gradient(
-            rgba(0, 242, 255, 0.03) 1px,
-            transparent 1px
-          ),
-          linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
-        background-size: 50px 50px;
-        z-index: -2;
-        mask-image: radial-gradient(
-          circle at center,
-          black 40%,
-          transparent 100%
-        );
-      }
-
-      /* Các hạt trôi nổi (Hexagons) */
-      .floating-hex {
-        position: fixed;
-        opacity: 0.1;
-        z-index: -1;
-        animation: float linear infinite;
-        color: #7000ff;
-      }
-
-      @keyframes float {
-        0% {
-          transform: translateY(100vh) rotate(0deg);
-          opacity: 0;
-        }
-        20% {
-          opacity: 0.2;
-        }
-        80% {
-          opacity: 0.2;
-        }
-        100% {
-          transform: translateY(-20vh) rotate(360deg);
-          opacity: 0;
-        }
+        transition: background-color 0.3s ease, color 0.3s ease;
       }
 
       /* Custom Scrollbar */
@@ -113,26 +88,60 @@
         width: 6px;
       }
       ::-webkit-scrollbar-track {
-        background: #050511;
+        background: transparent;
       }
       ::-webkit-scrollbar-thumb {
-        background: linear-gradient(to bottom, #7000ff, #00f2ff);
+        background: #94a3b8;
         border-radius: 10px;
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: linear-gradient(to bottom, #7000ff, #00f2ff);
+      }
+
+      /* Background Patterns */
+      .bg-grid-light {
+        background-size: 40px 40px;
+        background-image: linear-gradient(
+            to right,
+            rgba(0, 0, 0, 0.05) 1px,
+            transparent 1px
+          ),
+          linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+      }
+      .bg-grid-dark {
+        background-size: 50px 50px;
+        background-image: linear-gradient(
+            to right,
+            rgba(0, 242, 255, 0.03) 1px,
+            transparent 1px
+          ),
+          linear-gradient(
+            to bottom,
+            rgba(0, 242, 255, 0.03) 1px,
+            transparent 1px
+          );
+        mask-image: radial-gradient(
+          circle at center,
+          black 40%,
+          transparent 100%
+        );
       }
     </style>
   </head>
-  <body>
+  <body
+    class="bg-bgLight text-textLight dark:bg-bgDark dark:text-white min-h-screen"
+  >
     <div id="root"></div>
 
     <script type="text/babel">
-      const { useState, useEffect } = React;
+      const { useState, useEffect, useMemo } = React;
       const { motion, AnimatePresence } = window.Motion;
 
-      // --- DỮ LIỆU BÀI HỌC ---
+      // --- DỮ LIỆU BÀI HỌC THPT ---
       const coursesData = [
         // LỚP 10
         {
-          id: 1,
+          id: "10_1",
           grade: 10,
           title: "Cấu tạo nguyên tử",
           icon: "fa-atom",
@@ -140,7 +149,7 @@
           color: "from-blue-400 to-cyan-300",
         },
         {
-          id: 2,
+          id: "10_2",
           grade: 10,
           title: "Bảng tuần hoàn",
           icon: "fa-table",
@@ -148,7 +157,7 @@
           color: "from-cyan-400 to-teal-300",
         },
         {
-          id: 3,
+          id: "10_3",
           grade: 10,
           title: "Liên kết hóa học",
           icon: "fa-link",
@@ -156,7 +165,7 @@
           color: "from-emerald-400 to-green-300",
         },
         {
-          id: 4,
+          id: "10_4",
           grade: 10,
           title: "Phản ứng Oxi hóa - Khử",
           icon: "fa-fire",
@@ -164,7 +173,7 @@
           color: "from-orange-400 to-red-400",
         },
         {
-          id: 5,
+          id: "10_5",
           grade: 10,
           title: "Năng lượng hóa học",
           icon: "fa-bolt",
@@ -172,7 +181,7 @@
           color: "from-yellow-400 to-orange-300",
         },
         {
-          id: 6,
+          id: "10_6",
           grade: 10,
           title: "Tốc độ phản ứng",
           icon: "fa-tachometer-alt",
@@ -180,7 +189,7 @@
           color: "from-indigo-400 to-blue-400",
         },
         {
-          id: 7,
+          id: "10_7",
           grade: 10,
           title: "Halogen (Nhóm VIIA)",
           icon: "fa-flask",
@@ -190,7 +199,7 @@
 
         // LỚP 11
         {
-          id: 8,
+          id: "11_1",
           grade: 11,
           title: "Cân bằng hóa học",
           icon: "fa-balance-scale",
@@ -198,7 +207,7 @@
           color: "from-rose-400 to-pink-500",
         },
         {
-          id: 9,
+          id: "11_2",
           grade: 11,
           title: "Nitrogen & Sulfur",
           icon: "fa-cloud",
@@ -206,7 +215,7 @@
           color: "from-sky-400 to-blue-500",
         },
         {
-          id: 10,
+          id: "11_3",
           grade: 11,
           title: "Đại cương Hữu cơ",
           icon: "fa-book-sparkles",
@@ -214,7 +223,7 @@
           color: "from-fuchsia-400 to-purple-500",
         },
         {
-          id: 11,
+          id: "11_4",
           grade: 11,
           title: "Hydrocarbon",
           icon: "fa-burn",
@@ -222,7 +231,7 @@
           color: "from-amber-400 to-orange-500",
         },
         {
-          id: 12,
+          id: "11_5",
           grade: 11,
           title: "Dẫn xuất Halogen - Alcohol",
           icon: "fa-vial",
@@ -230,7 +239,7 @@
           color: "from-teal-400 to-emerald-500",
         },
         {
-          id: 13,
+          id: "11_6",
           grade: 11,
           title: "Hợp chất Carbonyl",
           icon: "fa-cube",
@@ -240,7 +249,7 @@
 
         // LỚP 12
         {
-          id: 14,
+          id: "12_1",
           grade: 12,
           title: "Ester - Lipid",
           icon: "fa-vials",
@@ -248,7 +257,7 @@
           color: "from-pink-400 to-rose-500",
         },
         {
-          id: 15,
+          id: "12_2",
           grade: 12,
           title: "Xà phòng & Chất giặt rửa",
           icon: "fa-soap",
@@ -256,7 +265,7 @@
           color: "from-cyan-300 to-blue-400",
         },
         {
-          id: 16,
+          id: "12_3",
           grade: 12,
           title: "Carbohydrate",
           icon: "fa-cookie-bite",
@@ -264,7 +273,7 @@
           color: "from-yellow-300 to-amber-400",
         },
         {
-          id: 17,
+          id: "12_4",
           grade: 12,
           title: "Hợp chất chứa Nitrogen",
           icon: "fa-dna",
@@ -272,7 +281,7 @@
           color: "from-green-300 to-emerald-400",
         },
         {
-          id: 18,
+          id: "12_5",
           grade: 12,
           title: "Polymer",
           icon: "fa-project-diagram",
@@ -280,7 +289,7 @@
           color: "from-blue-400 to-indigo-500",
         },
         {
-          id: 19,
+          id: "12_6",
           grade: 12,
           title: "Pin điện & Điện phân",
           icon: "fa-battery-bolt",
@@ -288,7 +297,7 @@
           color: "from-red-400 to-rose-500",
         },
         {
-          id: 20,
+          id: "12_7",
           grade: 12,
           title: "Đại cương kim loại",
           icon: "fa-industry",
@@ -296,7 +305,7 @@
           color: "from-gray-300 to-slate-400",
         },
         {
-          id: 21,
+          id: "12_8",
           grade: 12,
           title: "Kim loại nhóm IA & IIA",
           icon: "fa-layer-group",
@@ -304,9 +313,9 @@
           color: "from-purple-300 to-violet-400",
         },
         {
-          id: 22,
+          id: "12_9",
           grade: 12,
-          title: "Kim loại chuyển tiếp & Phức chất",
+          title: "Kim loại chuyển tiếp",
           icon: "fa-gem",
           link: "so_luoc_ve_day_kim_loai_chuyen_tiep_thu_nhat_va_phuc_chat/so_luoc_ve_day_kim_loai_chuyen_tiep_thu_nhat_va_phuc_chat.html",
           color: "from-gold-300 to-yellow-500",
@@ -315,238 +324,412 @@
 
       // --- COMPONENTS ---
 
-      // Background Animation Component
       const Background = () => {
+        const particleCount = window.innerWidth < 768 ? 8 : 15;
         return (
-          <>
-            <div className="chem-grid"></div>
-            {/* Tạo ngẫu nhiên các hình lục giác bay lên */}
-            {[...Array(15)].map((_, i) => (
-              <i
+          <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+            <div className="absolute inset-0 bg-grid-light dark:bg-grid-dark transition-all duration-500"></div>
+            {/* Ambient Glows */}
+            <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[100px]"></div>
+            <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-secondary/10 rounded-full blur-[100px]"></div>
+
+            {/* Particles */}
+            {[...Array(particleCount)].map((_, i) => (
+              <div
                 key={i}
-                className="fas fa-hexagon floating-hex"
+                className="absolute text-slate-300 dark:text-primary opacity-20"
                 style={{
                   left: `${Math.random() * 100}%`,
-                  fontSize: `${Math.random() * 30 + 10}px`,
-                  animationDuration: `${Math.random() * 10 + 10}s`,
-                  animationDelay: `${Math.random() * 5}s`,
+                  fontSize: `${Math.random() * 20 + 15}px`,
+                  animation: `float ${
+                    Math.random() * 10 + 15
+                  }s infinite linear`,
+                  animationDelay: `${Math.random() * 10}s`,
                 }}
-              ></i>
+              >
+                <i className="fas fa-hexagon"></i>
+              </div>
             ))}
-            {/* Hiệu ứng ánh sáng nền */}
-            <div className="fixed top-[-20%] left-[-10%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] pointer-events-none"></div>
-            <div className="fixed bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-accent/10 rounded-full blur-[120px] pointer-events-none"></div>
-          </>
+          </div>
         );
       };
 
-      // Component thẻ bài học (Card)
-      const CourseCard = ({ course }) => {
+      const ThemeToggle = ({ isDark, toggle }) => (
+        <button
+          onClick={toggle}
+          className="w-10 h-10 rounded-full bg-slate-200 dark:bg-white/10 flex items-center justify-center text-slate-600 dark:text-yellow-300 hover:bg-slate-300 dark:hover:bg-white/20 transition-all shadow-md"
+          title={isDark ? "Chuyển sang chế độ sáng" : "Chuyển sang chế độ tối"}
+        >
+          {isDark ? (
+            <i className="fas fa-sun"></i>
+          ) : (
+            <i className="fas fa-moon"></i>
+          )}
+        </button>
+      );
+
+      const CourseCard = ({ course, isDone, onToggleDone }) => {
         return (
           <motion.div
             layout
-            initial={{ opacity: 0, scale: 0.8 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.2 } }}
-            whileHover={{ y: -10, scale: 1.02 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            whileHover={{ y: -5 }}
+            transition={{ duration: 0.2 }}
             className="group relative h-full"
-            onClick={() => (window.location.href = course.link)}
           >
-            {/* Glow effect background */}
             <div
-              className={`absolute -inset-0.5 bg-gradient-to-r ${course.color} rounded-2xl opacity-20 group-hover:opacity-70 blur transition duration-500`}
-            ></div>
+              className={`
+              relative h-full flex flex-col p-6 rounded-2xl border transition-all duration-300 shadow-sm hover:shadow-xl cursor-pointer
+              bg-white/70 border-slate-200 
+              dark:bg-cardDark/90 dark:border-white/10 dark:backdrop-blur-xl
+              ${isDone ? "border-success/50 ring-1 ring-success/30" : ""}
+            `}
+              onClick={() => (window.location.href = course.link)}
+            >
+              {/* Checkbox */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleDone(course.id);
+                }}
+                className={`absolute top-4 right-4 z-20 w-8 h-8 rounded-full flex items-center justify-center border transition-all duration-300
+                  ${
+                    isDone
+                      ? "bg-success text-black border-success shadow-[0_0_10px_rgba(10,255,96,0.4)]"
+                      : "bg-slate-100 border-slate-300 text-slate-300 hover:border-accent hover:text-accent dark:bg-white/5 dark:border-white/20 dark:text-white/20"
+                  }
+                `}
+              >
+                <i className="fas fa-check text-xs"></i>
+              </button>
 
-            {/* Card Content */}
-            <div className="relative h-full bg-card/90 backdrop-blur-xl border border-white/10 rounded-xl p-6 flex flex-col items-start overflow-hidden hover:border-white/30 transition-colors cursor-pointer shadow-xl">
-              {/* Decorative Circle */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-transparent rounded-full -mr-16 -mt-16 pointer-events-none"></div>
-
-              {/* Header: Icon & Grade */}
-              <div className="flex w-full justify-between items-start mb-5">
+              {/* Icon */}
+              <div className="flex justify-between items-start mb-4">
                 <div
-                  className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${course.color} flex items-center justify-center text-white text-2xl shadow-lg shadow-purple-500/20 group-hover:rotate-12 transition-transform duration-300`}
+                  className={`w-12 h-12 rounded-xl bg-gradient-to-br ${course.color} flex items-center justify-center text-white text-xl shadow-lg group-hover:rotate-12 transition-transform duration-300`}
                 >
                   <i className={`fas ${course.icon}`}></i>
                 </div>
-                <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-bold text-gray-300 backdrop-blur-md">
+                <span className="mt-1 px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   Lớp {course.grade}
                 </span>
               </div>
 
               {/* Title */}
-              <h3 className="text-xl font-bold text-white mb-2 leading-tight group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-cyan-200 transition-all">
+              <h3
+                className={`text-lg font-bold mb-2 leading-tight transition-colors ${
+                  isDone
+                    ? "text-success"
+                    : "text-slate-800 dark:text-white group-hover:text-accent"
+                }`}
+              >
                 {course.title}
               </h3>
 
-              {/* Spacer để đẩy footer xuống đáy nếu nội dung ngắn */}
               <div className="flex-grow"></div>
 
-              {/* Footer: Action */}
-              <div className="w-full mt-4 pt-4 border-t border-white/5 flex items-center justify-between group-hover:border-white/20 transition-colors">
-                <span className="text-sm text-gray-400 font-medium">
-                  Bắt đầu học
+              {/* Footer */}
+              <div className="mt-4 pt-4 border-t border-slate-100 dark:border-white/5 flex items-center justify-between">
+                <span
+                  className={`text-xs font-semibold ${
+                    isDone
+                      ? "text-success"
+                      : "text-slate-500 dark:text-gray-400"
+                  }`}
+                >
+                  {isDone ? "Hoàn thành" : "Bắt đầu học"}
                 </span>
-                <span className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white/50 group-hover:bg-white group-hover:text-primary transition-all duration-300">
-                  <i className="fas fa-arrow-right text-xs"></i>
-                </span>
+                <i
+                  className={`fas fa-arrow-right text-xs transform group-hover:translate-x-1 transition-transform ${
+                    isDone
+                      ? "text-success"
+                      : "text-slate-300 dark:text-white/30"
+                  }`}
+                ></i>
               </div>
             </div>
           </motion.div>
         );
       };
 
-      // Ứng dụng chính
-      const App = () => {
-        const [activeTab, setActiveTab] = useState("all");
-        const [filteredCourses, setFilteredCourses] = useState(coursesData);
+      const ProgressBar = ({ percent }) => (
+        <div className="w-full max-w-md mx-auto mb-10 px-4">
+          <div className="flex justify-between text-xs font-tech text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">
+            <span>Tiến độ học tập</span>
+            <span className={percent === 100 ? "text-success" : "text-accent"}>
+              {percent}%
+            </span>
+          </div>
+          <div className="h-2 w-full bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden relative">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${percent}%` }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              className={`h-full absolute top-0 left-0 rounded-full ${
+                percent === 100
+                  ? "bg-success shadow-[0_0_10px_#0aff60]"
+                  : "bg-gradient-to-r from-primary to-accent"
+              }`}
+            ></motion.div>
+          </div>
+        </div>
+      );
 
-        // Xử lý lọc bài học
+      // --- MAIN APP ---
+      const App = () => {
+        const [isDark, setIsDark] = useState(true);
+        const [activeTab, setActiveTab] = useState("all");
+        const [completed, setCompleted] = useState([]);
+        const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+        // Theme Init
         useEffect(() => {
-          if (activeTab === "all") {
-            setFilteredCourses(coursesData);
+          const savedTheme = localStorage.getItem("theme");
+          if (savedTheme === "light") {
+            setIsDark(false);
+            document.documentElement.classList.remove("dark");
           } else {
-            setFilteredCourses(
-              coursesData.filter((c) => c.grade === parseInt(activeTab))
-            );
+            setIsDark(true);
+            document.documentElement.classList.add("dark");
           }
+        }, []);
+
+        const toggleTheme = () => {
+          const newTheme = !isDark;
+          setIsDark(newTheme);
+          if (newTheme) {
+            document.documentElement.classList.add("dark");
+            localStorage.setItem("theme", "dark");
+          } else {
+            document.documentElement.classList.remove("dark");
+            localStorage.setItem("theme", "light");
+          }
+        };
+
+        // Progress Persistence
+        useEffect(() => {
+          const saved = JSON.parse(
+            localStorage.getItem("chemstudy_thpt_progress") || "[]"
+          );
+          setCompleted(saved);
+        }, []);
+
+        useEffect(() => {
+          localStorage.setItem(
+            "chemstudy_thpt_progress",
+            JSON.stringify(completed)
+          );
+        }, [completed]);
+
+        const toggleDone = (id) => {
+          setCompleted((prev) =>
+            prev.includes(id)
+              ? prev.filter((item) => item !== id)
+              : [...prev, id]
+          );
+        };
+
+        const filteredCourses = useMemo(() => {
+          if (activeTab === "all") return coursesData;
+          return coursesData.filter((c) => c.grade === parseInt(activeTab));
         }, [activeTab]);
 
+        const progressPercent = Math.round(
+          (completed.length / coursesData.length) * 100
+        );
+
         const tabs = [
-          { id: "all", label: "Tất cả" },
+          { id: "all", label: "Tổng quan" },
           { id: "10", label: "Lớp 10" },
           { id: "11", label: "Lớp 11" },
           { id: "12", label: "Lớp 12" },
         ];
 
         return (
-          <div className="min-h-screen relative flex flex-col font-sans">
+          <div className="relative font-sans selection:bg-accent/30 selection:text-white flex flex-col min-h-screen">
             <Background />
 
             {/* HEADER */}
-            <header className="fixed w-full z-50 top-0 left-0 border-b border-white/10 bg-[#050511]/80 backdrop-blur-md">
-              <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+            <header className="fixed w-full z-50 top-0 left-0 border-b border-slate-200 dark:border-white/10 bg-white/80 dark:bg-bgDark/80 backdrop-blur-md transition-colors duration-300">
+              <div className="max-w-7xl mx-auto px-4 h-16 md:h-20 flex items-center justify-between">
                 {/* Logo */}
-                <div className="flex items-center gap-3 cursor-pointer group">
-                  <div className="relative w-10 h-10 flex items-center justify-center">
-                    <i className="fas fa-atom text-3xl text-accent group-hover:animate-spin-slow"></i>
-                    <div className="absolute inset-0 bg-accent blur-xl opacity-50"></div>
+                <div
+                  className="flex items-center gap-3 cursor-pointer group"
+                  onClick={() => (window.location.href = "../../index.html")}
+                >
+                  <div className="relative w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
+                    <i className="fas fa-atom text-2xl md:text-3xl text-accent group-hover:spin-slow"></i>
                   </div>
                   <div>
-                    <h1 className="font-tech font-bold text-2xl tracking-wider text-white">
-                      EDU
+                    <h1 className="font-tech font-bold text-xl md:text-2xl tracking-wider text-slate-800 dark:text-white">
+                      EDU{" "}
                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-primary">
                         CHEM
                       </span>
                     </h1>
-                    <p className="text-[10px] text-gray-400 uppercase tracking-[0.2em]">
-                      High School Chemistry
+                    <p className="hidden md:block text-[10px] text-slate-500 dark:text-gray-400 uppercase tracking-[0.2em]">
+                      Chemstudy-Teen
                     </p>
                   </div>
                 </div>
 
-                {/* Nav Menu (Desktop) */}
-                <nav className="hidden md:flex items-center gap-2">
-                  {[
-                    {
-                      name: "ChemStudy-Baby",
-                      link: "../chemstudybaby/chemstudybaby.html",
-                      active: false,
-                    },
-                    { name: "ChemStudy-Teen", link: "#", active: true },
-                    {
-                      name: "ChemForum",
-                      link: "../chemforum/chemforum.html",
-                      active: false,
-                    },
-                    {
-                      name: "ChemVerse",
-                      link: "../chemverse/chemverse.html",
-                      active: false,
-                      special: true,
-                    },
-                    {
-                      name: "EduChem",
-                      link: "../educhem.html",
-                      active: false,
-                      special: true,
-                    },
-                  ].map((item, idx) => (
+                {/* Desktop Nav */}
+                <div className="hidden md:flex items-center gap-4">
+                  <nav className="flex items-center gap-2">
                     <a
-                      key={idx}
-                      href={item.link}
-                      className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 relative overflow-hidden group
-                        ${
-                          item.active
-                            ? "bg-white/10 text-white shadow-[0_0_15px_rgba(255,255,255,0.1)] border border-white/20"
-                            : "text-gray-400 hover:text-white hover:bg-white/5"
-                        }
-                        ${
-                          item.special
-                            ? "border border-primary/50 text-primary hover:bg-primary hover:text-white shadow-[0_0_20px_rgba(112,0,255,0.3)]"
-                            : ""
-                        }
-                      `}
+                      href="../educhem.html"
+                      className="px-4 py-2 rounded-lg text-sm font-semibold text-slate-500 hover:text-primary dark:text-gray-400 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-white/5 transition-all"
                     >
-                      {item.name}
-                      {/* Hover effect underline */}
-                      {!item.active && !item.special && (
-                        <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>
-                      )}
+                      EduChem
                     </a>
-                  ))}
-                </nav>
+                    <a
+                      href="../chemstudybaby/chemstudybaby.html"
+                      className="px-4 py-2 rounded-lg text-sm font-semibold text-slate-500 hover:text-primary dark:text-gray-400 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-white/5 transition-all"
+                    >
+                      CS Baby
+                    </a>
+                    <a
+                      href="#"
+                      className="px-4 py-2 rounded-lg text-sm font-semibold bg-slate-100 dark:bg-white/10 text-primary dark:text-white"
+                    >
+                      CS Teen
+                    </a>
+                    <a
+                      href="../chemforum/chemforum.html"
+                      className="px-4 py-2 rounded-lg text-sm font-semibold text-slate-500 hover:text-primary dark:text-gray-400 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-white/5 transition-all"
+                    >
+                      Forum
+                    </a>
+                    <a
+                      href="../chemverse/chemverse.html"
+                      className="px-4 py-2 rounded-lg text-sm font-semibold text-slate-500 hover:text-primary dark:text-gray-400 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-white/5 transition-all"
+                    >
+                      ChemVerse
+                    </a>
+                  </nav>
+                  <div className="h-6 w-px bg-slate-300 dark:bg-white/10"></div>
+                  <ThemeToggle isDark={isDark} toggle={toggleTheme} />
+                </div>
 
-                {/* Mobile Menu Btn */}
-                <button className="md:hidden text-2xl text-white">
-                  <i className="fas fa-bars"></i>
-                </button>
+                {/* Mobile Controls */}
+                <div className="flex md:hidden items-center gap-3">
+                  <ThemeToggle isDark={isDark} toggle={toggleTheme} />
+                  <button
+                    onClick={() => setMobileMenuOpen(true)}
+                    className="w-10 h-10 flex items-center justify-center text-slate-700 dark:text-white text-xl"
+                  >
+                    <i className="fas fa-bars"></i>
+                  </button>
+                </div>
               </div>
             </header>
 
-            {/* MAIN CONTENT */}
-            <main className="flex-grow pt-32 pb-20 px-4 max-w-7xl mx-auto w-full z-10">
-              {/* Hero Section */}
-              <div className="text-center mb-16 relative">
+            {/* MOBILE MENU */}
+            <AnimatePresence>
+              {mobileMenuOpen && (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="fixed inset-0 bg-black/50 z-[60] backdrop-blur-sm md:hidden"
+                  />
+                  <motion.div
+                    initial={{ x: "100%" }}
+                    animate={{ x: 0 }}
+                    exit={{ x: "100%" }}
+                    transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                    className="fixed top-0 right-0 h-full w-[80%] max-w-xs bg-white dark:bg-cardDark z-[70] shadow-2xl p-6 flex flex-col md:hidden"
+                  >
+                    <div className="flex justify-between items-center mb-8">
+                      <h2 className="font-tech text-xl font-bold text-slate-800 dark:text-white">
+                        MENU
+                      </h2>
+                      <button
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="w-8 h-8 rounded-full bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-white flex items-center justify-center"
+                      >
+                        <i className="fas fa-times"></i>
+                      </button>
+                    </div>
+                    <nav className="flex flex-col gap-4">
+                      <a
+                        href="../chemstudybaby/chemstudybaby.html"
+                        className="p-3 rounded-xl text-slate-600 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-white/5"
+                      >
+                        ChemStudy Baby
+                      </a>
+                      <a
+                        href="#"
+                        className="p-3 rounded-xl bg-primary/10 text-primary font-bold"
+                      >
+                        ChemStudy Teen
+                      </a>
+                      <a
+                        href="../chemforum/chemforum.html"
+                        className="p-3 rounded-xl text-slate-600 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-white/5"
+                      >
+                        Chem Forum
+                      </a>
+                      <a
+                        href="../chemverse/chemverse.html"
+                        className="p-3 rounded-xl text-slate-600 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-white/5"
+                      >
+                        Chem Verse
+                      </a>
+                      <a
+                        href="../../index.html"
+                        className="p-3 rounded-xl text-slate-600 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-white/5"
+                      >
+                        Về EduChem
+                      </a>
+                    </nav>
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
+
+            {/* CONTENT */}
+            <main className="flex-grow pt-28 md:pt-32 pb-20 px-4 max-w-7xl mx-auto w-full z-10">
+              <div className="text-center mb-10 relative">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8 }}
                 >
-                  <span className="inline-block py-1.5 px-4 rounded-full bg-gradient-to-r from-primary/20 to-secondary/20 border border-primary/30 text-cyan-300 text-xs font-bold tracking-widest uppercase mb-4 shadow-[0_0_10px_rgba(0,242,255,0.2)]">
-                    Hóa học THPT
-                  </span>
-                  <h2 className="text-4xl md:text-6xl font-tech font-bold text-white mb-6 leading-tight">
-                    ChemStudy
-                    <br className="md:hidden" />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent via-primary to-secondary animate-gradient-x">
+                  <h2 className="text-4xl md:text-6xl font-tech font-bold text-slate-800 dark:text-white mb-4 leading-tight">
+                    ChemStudy{" "}
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent via-primary to-secondary">
                       Teen
                     </span>
                   </h2>
-                  <p className="text-gray-400 text-lg max-w-2xl mx-auto font-light">
-                    Hệ thống kiến thức toàn diện từ lớp 10 đến 12. Trực quan,
-                    hiện đại và miễn phí.
+                  <p className="text-slate-500 dark:text-gray-400 text-base md:text-lg max-w-2xl mx-auto font-light mb-8">
+                    Hệ thống kiến thức Hóa học THPT toàn diện (Lớp 10 - 12).
                   </p>
                 </motion.div>
+                <ProgressBar percent={progressPercent} />
               </div>
 
-              {/* Filter Tabs */}
+              {/* Tabs */}
               <div className="flex justify-center mb-12">
-                <div className="bg-white/5 p-1.5 rounded-full border border-white/10 backdrop-blur-md flex flex-wrap justify-center gap-1">
+                <div className="bg-slate-200/50 dark:bg-white/5 p-1.5 rounded-full border border-slate-300 dark:border-white/10 backdrop-blur-md flex flex-wrap justify-center gap-1 shadow-inner">
                   {tabs.map((tab) => (
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`relative px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 z-10 ${
+                      className={`relative px-4 md:px-6 py-2 rounded-full text-xs md:text-sm font-bold transition-all duration-300 z-10 ${
                         activeTab === tab.id
                           ? "text-white"
-                          : "text-gray-400 hover:text-white"
+                          : "text-slate-500 dark:text-gray-400 hover:text-primary dark:hover:text-white"
                       }`}
                     >
                       {activeTab === tab.id && (
                         <motion.div
                           layoutId="activeTab"
-                          className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-full -z-10 shadow-[0_0_20px_rgba(112,0,255,0.5)]"
+                          className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-full -z-10 shadow-md"
                           transition={{
                             type: "spring",
                             bounce: 0.2,
@@ -560,14 +743,19 @@
                 </div>
               </div>
 
-              {/* Courses Grid */}
+              {/* Grid */}
               <motion.div
                 layout
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
               >
-                <AnimatePresence>
+                <AnimatePresence mode="popLayout">
                   {filteredCourses.map((course) => (
-                    <CourseCard key={course.id} course={course} />
+                    <CourseCard
+                      key={course.id}
+                      course={course}
+                      isDone={completed.includes(course.id)}
+                      onToggleDone={toggleDone}
+                    />
                   ))}
                 </AnimatePresence>
               </motion.div>

@@ -200,15 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-/* =========================================================
-   YÊU CẦU XOAY NGANG
-========================================================= */
-function checkOrientation() {
-  const warn = document.getElementById("rotate-warning");
-  if (!warn) return;
 
-  warn.style.display = window.innerHeight > window.innerWidth ? "flex" : "none";
-}
 
 window.addEventListener("load", checkOrientation);
 window.addEventListener("resize", checkOrientation);
