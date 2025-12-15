@@ -189,11 +189,12 @@ io.on("connection", (socket) => {
 });
 
 // Chạy server tại port 3000
-const PORT = 3000;
+
+const PORT = process.env.PORT || 3000;
+
 server.listen(PORT, () => {
   console.log(`----------------------------------------`);
-  console.log(`✅ EduChem Server đang chạy!`);
-  console.log(`👉 Trang chủ: http://localhost:${PORT}/`);
-  console.log(`👉 Forum:     http://localhost:${PORT}/forum`);
+  console.log(`✅ EduChem Server đang chạy trên port ${PORT}!`);
+  // Log ra URL public nếu cần (không bắt buộc)
   console.log(`----------------------------------------`);
 });
