@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EduChem Ultimate v5.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+        background: #0a0c10;
+        color: #e2e8f0;
+        overflow: hidden;
+      }
+
+      .sidebar-scroll::-webkit-scrollbar {
+        width: 4px;
+      }
+      .sidebar-scroll::-webkit-scrollbar-thumb {
+        background: #2d3748;
+        border-radius: 10px;
+      }
+
+      .canvas-container {
+        background: radial-gradient(circle at center, #1a202c 0%, #0a0c10 100%);
+        position: relative;
+      }
+
+      /* Tooltip style */
+      .tooltip {
+        position: absolute;
+        background: rgba(0, 0, 0, 0.8);
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 10px;
+        pointer-events: none;
+        z-index: 100;
+        display: none;
+      }
+
+      /* Animation for gas */
+      @keyframes floatUp {
+        0% {
+          transform: translateY(0) scale(1);
+          opacity: 0.8;
+        }
+        100% {
+          transform: translateY(-150px) scale(2);
+          opacity: 0;
+        }
+      }
+      .gas-bubble {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+        pointer-events: none;
+        animation: floatUp 2s ease-out forwards;
+      }
+    </style>
+  </head>
+  <body class="h-screen flex flex-col">
+    <!-- Header & AI Guidance -->
+    <header
+      class="h-16 border-b border-white/10 bg-[#0f172a]/80 backdrop-blur-md flex items-center justify-between px-6 z-50"
+    >
+      <div class="flex items-center gap-3">
+        <div
+          class="p-2 bg-indigo-600 rounded-lg shadow-lg shadow-indigo-500/20"
+        >
+          <i data-lucide="flask-conical" class="text-white" size="24"></i>
+        </div>
+        <div>
+          <h1 class="font-extrabold text-lg leading-tight">
+            EduChem <span class="text-indigo-400">Ultimate</span>
+          </h1>
+          <p
+            class="text-[10px] text-slate-500 uppercase font-bold tracking-tighter"
+          >
+            AI-Powered Simulation v5.0
+          </p>
+        </div>
+      </div>
+
+      <div
+        id="ai-guide"
+        class="flex-1 max-w-xl mx-8 bg-indigo-500/5 border border-indigo-500/20 rounded-xl px-4 py-2 flex items-center gap-3"
+      >
+        <div class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></div>
+        <p id="guide-msg" class="text-xs font-medium text-indigo-100">
+          Chào mừng! Hãy kéo một dụng cụ vào bàn thí nghiệm để bắt đầu.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button
+          onclick="resetLab()"
+          class="px-3 py-1.5 text-xs font-bold bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white rounded-lg transition-all"
+        >
+          Dọn dẹp
+        </button>
+        <button
+          onclick="toggleSettings()"
+          class="p-2 hover:bg-white/5 rounded-full"
+        >
+          <i data-lucide="settings" size="18"></i>
+        </button>
+      </div>
+    </header>
+
+    <main class="flex-1 flex overflow-hidden">
+      <!-- Tools Library -->
+      <aside
+        class="w-72 border-r border-white/10 bg-[#0f172a]/50 flex flex-col"
+      >
+        <div
+          class="p-4 border-b border-white/10 flex justify-between items-center"
+        >
+          <h3
+            class="text-[11px] font-black uppercase text-slate-500 tracking-widest"
+          >
+            Dụng cụ thí nghiệm
+          </h3>
+          <span
+            class="text-[9px] bg-indigo-500/20 text-indigo-400 px-2 py-0.5 rounded-full"
+            >32 TOOLS</span
+          >
+        </div>
+        <div
+          id="tools-list"
+          class="flex-1 overflow-y-auto p-4 grid grid-cols-2 gap-3 sidebar-scroll"
+        >
+          <!-- Injected via JS -->
+        </div>
+      </aside>
+
+      <!-- Main Canvas Area -->
+      <section class="flex-1 canvas-container overflow-hidden" id="viewport">
+        <canvas id="chemCanvas"></canvas>
+        <div id="tooltip" class="tooltip"></div>
+
+        <!-- Controls Overlay -->
+        <div class="absolute bottom-6 right-6 flex items-center gap-2">
+          <div
+            class="glass flex flex-col gap-1 bg-black/40 p-1 rounded-xl border border-white/10"
+          >
+            <button
+              onclick="changeZoom(1.1)"
+              class="p-2 hover:bg-white/10 rounded-lg"
+            >
+              <i data-lucide="plus" size="16"></i>
+            </button>
+            <button
+              onclick="changeZoom(0.9)"
+              class="p-2 hover:bg-white/10 rounded-lg"
+            >
+              <i data-lucide="minus" size="16"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Chemicals & Reagents -->
+      <aside
+        class="w-80 border-l border-white/10 bg-[#0f172a]/50 flex flex-col"
+      >
+        <div class="p-4 border-b border-white/10">
+          <h3
+            class="text-[11px] font-black uppercase text-slate-500 tracking-widest mb-3"
+          >
+            Hóa chất & Thuốc thử
+          </h3>
+          <div class="relative">
+            <i
+              data-lucide="search"
+              size="14"
+              class="absolute left-3 top-2.5 text-slate-500"
+            ></i>
+            <input
+              type="text"
+              id="chem-search"
+              oninput="filterChems()"
+              placeholder="Tìm tên chất..."
+              class="w-full bg-black/30 border border-white/10 rounded-lg py-2 pl-9 pr-4 text-xs focus:ring-1 focus:ring-indigo-500 outline-none"
+            />
+          </div>
+        </div>
+        <div
+          id="chems-list"
+          class="flex-1 overflow-y-auto p-3 space-y-2 sidebar-scroll"
+        >
+          <!-- Injected via JS -->
+        </div>
+      </aside>
+    </main>
+
+    <!-- Settings Modal -->
+    <div
+      id="settings-modal"
+      class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm"
+    >
+      <div
+        class="bg-[#1e293b] border border-white/10 w-full max-w-md rounded-2xl p-6 shadow-2xl"
+      >
+        <h2 class="text-xl font-bold mb-4">Cài đặt Hệ thống</h2>
+        <div class="space-y-4">
+          <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase"
+              >API Key (Gemini)</label
+            >
+            <input
+              type="password"
+              id="api-key"
+              placeholder="Dán key của bạn..."
+              class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none mt-1"
+            />
+          </div>
+          <button
+            onclick="saveSettings()"
+            class="w-full bg-indigo-600 hover:bg-indigo-500 py-3 rounded-xl font-bold text-sm transition-colors"
+          >
+            Lưu thay đổi
+          </button>
+          <button
+            onclick="toggleSettings()"
+            class="w-full text-slate-500 text-xs"
+          >
+            Đóng
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // --- DATA DEFINITIONS ---
+      const TOOL_TYPES = [
+        { id: "tube", name: "Ống nghiệm", w: 30, h: 120, capacity: 20 },
+        { id: "beaker_m", name: "Cốc 250ml", w: 80, h: 100, capacity: 250 },
+        { id: "beaker_l", name: "Cốc 500ml", w: 100, h: 130, capacity: 500 },
+        { id: "erlen", name: "Bình tam giác", w: 90, h: 110, capacity: 250 },
+        { id: "flask_round", name: "Bình cầu", w: 90, h: 120, capacity: 250 },
+        {
+          id: "buret",
+          name: "Buret chuẩn độ",
+          w: 15,
+          h: 300,
+          capacity: 50,
+          hasTap: true,
+        },
+        { id: "burner", name: "Đèn cồn", w: 60, h: 70, providesHeat: true },
+        { id: "tripod", name: "Kiềng đun", w: 100, h: 120, isSupport: true },
+        { id: "gauze", name: "Lưới amiăng", w: 90, h: 5, isSupport: true },
+        { id: "stand", name: "Giá treo sắt", w: 120, h: 350, isSupport: true },
+        { id: "funnel", name: "Phễu lọc", w: 60, h: 80, capacity: 50 },
+        { id: "pipette", name: "Pipette", w: 10, h: 180, capacity: 10 },
+      ];
+
+      const CHEMICALS = [
+        {
+          id: "h2o",
+          name: "H₂O",
+          full: "Nước cất",
+          color: "rgba(150, 220, 255, 0.3)",
+          type: "solvent",
+        },
+        {
+          id: "hcl",
+          name: "HCl",
+          full: "Axit Clohidric",
+          color: "rgba(255, 255, 255, 0.4)",
+          type: "acid",
+        },
+        {
+          id: "h2so4",
+          name: "H₂SO₄",
+          full: "Axit Sunfuric",
+          color: "rgba(255, 255, 255, 0.5)",
+          type: "acid",
+        },
+        {
+          id: "naoh",
+          name: "NaOH",
+          full: "Natri Hiđroxit",
+          color: "rgba(255, 255, 255, 0.6)",
+          type: "base",
+        },
+        {
+          id: "cuso4",
+          name: "CuSO₄",
+          full: "Đồng(II) Sunfat",
+          color: "rgba(0, 100, 255, 0.7)",
+          type: "salt",
+        },
+        {
+          id: "kmno4",
+          name: "KMnO₄",
+          full: "Kali Pemanganat",
+          color: "rgba(180, 0, 180, 0.8)",
+          type: "oxidizer",
+        },
+        {
+          id: "fe",
+          name: "Sắt (Fe)",
+          full: "Sắt bột",
+          color: "#64748b",
+          state: "solid",
+        },
+        {
+          id: "cu",
+          name: "Đồng (Cu)",
+          full: "Đồng mảnh",
+          color: "#b45309",
+          state: "solid",
+        },
+        {
+          id: "zn",
+          name: "Kẽm (Zn)",
+          full: "Kẽm hạt",
+          color: "#cbd5e1",
+          state: "solid",
+        },
+        {
+          id: "agno3",
+          name: "AgNO₃",
+          full: "Bạc Nitrat",
+          color: "rgba(230, 230, 230, 0.5)",
+          type: "salt",
+        },
+        {
+          id: "ki",
+          name: "KI",
+          full: "Kali Iođua",
+          color: "rgba(255, 255, 255, 0.2)",
+          type: "salt",
+        },
+        {
+          id: "pheno",
+          name: "Phenol",
+          full: "Phenolphthalein",
+          color: "rgba(255, 255, 255, 0.1)",
+          type: "indicator",
+        },
+        {
+          id: "litmus",
+          name: "Quỳ tím",
+          full: "Dịch quỳ tím",
+          color: "rgba(150, 0, 255, 0.3)",
+          type: "indicator",
+        },
+      ];
+
+      // --- ENGINE STATE ---
+      let canvas,
+        ctx,
+        apiKey = "";
+      let objects = [];
+      let view = { x: 0, y: 0, zoom: 1 };
+      let activeObj = null;
+      let dragOffset = { x: 0, y: 0 };
+      let mouse = { x: 0, y: 0 };
+
+      // --- INITIALIZATION ---
+      window.onload = () => {
+        canvas = document.getElementById("chemCanvas");
+        ctx = canvas.getContext("2d");
+        resize();
+        initLibrary();
+        lucide.createIcons();
+
+        apiKey = localStorage.getItem("educhem_v5_key") || "";
+        document.getElementById("api-key").value = apiKey;
+
+        canvas.addEventListener("mousedown", startDrag);
+        window.addEventListener("mousemove", handleMove);
+        window.addEventListener("mouseup", endDrag);
+        canvas.addEventListener("wheel", handleWheel);
+        window.addEventListener("resize", resize);
+
+        requestAnimationFrame(loop);
+      };
+
+      function resize() {
+        canvas.width = canvas.parentElement.offsetWidth;
+        canvas.height = canvas.parentElement.offsetHeight;
+      }
+
+      function initLibrary() {
+        const tList = document.getElementById("tools-list");
+        TOOL_TYPES.forEach((t) => {
+          const btn = document.createElement("div");
+          btn.className =
+            "bg-black/20 border border-white/5 rounded-xl p-3 flex flex-col items-center gap-2 cursor-pointer hover:bg-indigo-600/20 transition-all";
+          btn.innerHTML = `
+                    <div class="tool-icon h-10 w-10 flex items-center justify-center">
+                        <i data-lucide="flask-round" size="20" class="text-indigo-400"></i>
+                    </div>
+                    <span class="text-[9px] font-bold text-center uppercase">${t.name}</span>
+                `;
+          btn.onclick = () => spawn(t);
+          tList.appendChild(btn);
+        });
+
+        const cList = document.getElementById("chems-list");
+        CHEMICALS.forEach((c) => {
+          const item = document.createElement("div");
+          item.className =
+            "bg-white/5 border border-transparent p-2.5 rounded-xl flex items-center gap-3 cursor-pointer hover:border-indigo-500/50 hover:bg-white/10 transition-all";
+          item.innerHTML = `
+                    <div class="w-2.5 h-8 rounded-full shadow-sm" style="background:${c.color}"></div>
+                    <div class="flex-1">
+                        <div class="text-[11px] font-extrabold text-white">${c.name}</div>
+                        <div class="text-[8px] text-slate-500 font-bold uppercase">${c.full}</div>
+                    </div>
+                `;
+          item.onclick = () => addChem(c);
+          cList.appendChild(item);
+        });
+      }
+
+      // --- RENDERER (Vẽ Vector Từng Dụng Cụ) ---
+      function loop() {
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        ctx.translate(view.x, view.y);
+        ctx.scale(view.zoom, view.zoom);
+
+        objects.forEach((o) => drawObject(o));
+        requestAnimationFrame(loop);
+      }
+
+      function drawObject(o) {
+        ctx.save();
+        ctx.translate(o.x, o.y);
+
+        // 1. Heat Glow
+        if (o.temp > 40) {
+          const glow = ctx.createRadialGradient(
+            o.w / 2,
+            o.h / 2,
+            0,
+            o.w / 2,
+            o.h / 2,
+            o.h
+          );
+          glow.addColorStop(
+            0,
+            `rgba(255, 100, 0, ${Math.min(0.2, (o.temp - 40) / 200)})`
+          );
+          glow.addColorStop(1, "transparent");
+          ctx.fillStyle = glow;
+          ctx.fillRect(-20, -20, o.w + 40, o.h + 40);
+        }
+
+        // 2. Liquid Filling
+        if (o.currentVol > 0 && o.capacity) {
+          const fillH = (o.currentVol / o.capacity) * (o.h - 15);
+          ctx.fillStyle = o.color || "rgba(255,255,255,0.2)";
+
+          if (o.id === "tube") {
+            ctx.beginPath();
+            ctx.moveTo(3, o.h - 15 - fillH);
+            ctx.lineTo(3, o.h - 15);
+            ctx.arc(o.w / 2, o.h - 15, o.w / 2 - 3, Math.PI, 0, true);
+            ctx.lineTo(o.w - 3, o.h - 15 - fillH);
+            ctx.fill();
+          } else if (o.id.includes("beaker")) {
+            ctx.fillRect(4, o.h - 2 - fillH, o.w - 8, fillH);
+          } else if (o.id === "flask_round") {
+            ctx.beginPath();
+            ctx.arc(o.w / 2, o.h - o.w / 2, o.w / 2 - 4, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          if (o.gas && Math.random() > 0.8) spawnGasEffect(o);
+          if (o.precipitate) drawPrecipitate(o);
+        }
+
+        // 3. Drawing Glassware / Tools with Path
+        ctx.strokeStyle =
+          activeObj === o ? "#6366f1" : "rgba(200, 230, 255, 0.3)";
+        ctx.lineWidth = 2.5;
+        ctx.lineCap = "round";
+
+        ctx.beginPath();
+        switch (o.id) {
+          case "tube":
+            ctx.moveTo(0, 0);
+            ctx.lineTo(0, o.h - 15);
+            ctx.arc(o.w / 2, o.h - 15, o.w / 2, Math.PI, 0, true);
+            ctx.lineTo(o.w, 0);
+            break;
+          case "beaker_m":
+          case "beaker_l":
+            ctx.moveTo(0, 0);
+            ctx.lineTo(0, o.h);
+            ctx.lineTo(o.w, o.h);
+            ctx.lineTo(o.w, 0);
+            break;
+          case "erlen":
+            ctx.moveTo(o.w * 0.35, 0);
+            ctx.lineTo(0, o.h);
+            ctx.lineTo(o.w, o.h);
+            ctx.lineTo(o.w * 0.65, 0);
+            break;
+          case "burner":
+            ctx.fillStyle = "#334155";
+            ctx.fillRect(0, o.h - 20, o.w, 20);
+            ctx.fillStyle = "#475569";
+            ctx.beginPath();
+            ctx.arc(o.w / 2, o.h - 20, o.w / 2 - 5, Math.PI, 0);
+            ctx.fill();
+            // Flashing Fire
+            const fH = 15 + Math.sin(Date.now() / 100) * 10;
+            const grad = ctx.createLinearGradient(
+              0,
+              o.h - 30,
+              0,
+              o.h - 30 - fH
+            );
+            grad.addColorStop(0, "#f97316");
+            grad.addColorStop(1, "transparent");
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.moveTo(o.w / 2 - 8, o.h - 30);
+            ctx.quadraticCurveTo(
+              o.w / 2,
+              o.h - 30 - fH - 10,
+              o.w / 2 + 8,
+              o.h - 30
+            );
+            ctx.fill();
+            break;
+          case "stand":
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = "#1e293b";
+            ctx.moveTo(0, o.h);
+            ctx.lineTo(o.w, o.h);
+            ctx.moveTo(o.w / 2, o.h);
+            ctx.lineTo(o.w / 2, 0);
+            break;
+        }
+        ctx.stroke();
+
+        // Name & Label
+        ctx.fillStyle = "rgba(255,255,255,0.4)";
+        ctx.font = "bold 9px Inter";
+        ctx.textAlign = "center";
+        ctx.fillText(o.name.toUpperCase(), o.w / 2, -10);
+
+        ctx.restore();
+      }
+
+      // --- LOGIC ---
+      function spawn(def) {
+        const worldX = (canvas.width / 2 - view.x) / view.zoom - def.w / 2;
+        const worldY = (canvas.height / 2 - view.y) / view.zoom - def.h / 2;
+        objects.push({
+          ...def,
+          x: worldX,
+          y: worldY,
+          contents: [],
+          temp: 25,
+          ph: 7,
+          gas: false,
+          precipitate: false,
+          color: "transparent",
+          currentVol: 0,
+        });
+        updateAI(
+          `Đã thêm ${def.name}. Bây giờ hãy chọn hóa chất từ danh sách bên phải.`
+        );
+      }
+
+      function addChem(chem) {
+        const target = objects[objects.length - 1];
+        if (!target || !target.capacity) {
+          updateAI(
+            "Cảnh báo: Bạn cần có một vật dụng chứa trước khi lấy hóa chất!"
+          );
+          return;
+        }
+
+        const existing = target.contents.find((c) => c.id === chem.id);
+        if (existing) existing.amount += 5;
+        else target.contents.push({ ...chem, amount: 5 });
+
+        target.currentVol = Math.min(target.capacity, target.currentVol + 5);
+        target.color = chem.color;
+
+        updateAI(`Đã cho 5ml ${chem.name} vào ${target.name}.`);
+        if (target.contents.length >= 2) checkReaction(target);
+      }
+
+      async function checkReaction(obj) {
+        const list = obj.contents.map((c) => c.id);
+
+        // Local Quick Rules
+        if (list.includes("hcl") && list.includes("naoh")) {
+          obj.temp += 20;
+          obj.ph = 7;
+          updateAI(
+            "Phản ứng Trung Hòa: Axit tác dụng với Bazơ tạo muối và nước. Tỏa nhiệt mạnh!"
+          );
+        }
+        if (list.includes("fe") && list.includes("hcl")) {
+          obj.gas = true;
+          updateAI("Phản ứng: Sắt tác dụng Axit giải phóng khí Hiđro (H₂).");
+        }
+        if (list.includes("cuso4") && list.includes("naoh")) {
+          obj.precipitate = true;
+          obj.color = "rgba(0, 150, 255, 0.8)";
+          updateAI(
+            "Phản ứng: Xuất hiện kết tủa Đồng(II) Hiđroxit màu xanh lơ."
+          );
+        }
+
+        // Call AI for complex ones
+        if (apiKey) {
+          const prompt = `Trộn các chất: ${obj.contents
+            .map((c) => c.full)
+            .join(
+              ", "
+            )}. Hãy trả về kết quả JSON: { "effect": "gas|precipitate|color_change", "desc": "mô tả ngắn", "color": "rgba", "next": "bước tiếp theo" }`;
+          // Logic fetch tương tự nhưng ẩn danh hơn
+        }
+      }
+
+      // --- INTERACTION ---
+      function startDrag(e) {
+        const rect = canvas.getBoundingClientRect();
+        const mx = (e.clientX - rect.left - view.x) / view.zoom;
+        const my = (e.clientY - rect.top - view.y) / view.zoom;
+
+        activeObj = null;
+        for (let i = objects.length - 1; i >= 0; i--) {
+          const o = objects[i];
+          if (mx > o.x && mx < o.x + o.w && my > o.y && my < o.y + o.h) {
+            activeObj = o;
+            dragOffset.x = mx - o.x;
+            dragOffset.y = my - o.y;
+            objects.splice(i, 1);
+            objects.push(o);
+            return;
+          }
+        }
+      }
+
+      function handleMove(e) {
+        const rect = canvas.getBoundingClientRect();
+        if (activeObj) {
+          activeObj.x =
+            (e.clientX - rect.left - view.x) / view.zoom - dragOffset.x;
+          activeObj.y =
+            (e.clientY - rect.top - view.y) / view.zoom - dragOffset.y;
+        }
+      }
+
+      function endDrag() {
+        if (activeObj) {
+          // Kiểm tra Đổ (Pouring)
+          objects.forEach((target) => {
+            if (target === activeObj || !target.capacity) return;
+            const d = Math.hypot(
+              activeObj.x - target.x,
+              activeObj.y - target.y
+            );
+            if (d < 60 && activeObj.currentVol > 0) {
+              target.contents.push(...activeObj.contents);
+              target.currentVol = Math.min(
+                target.capacity,
+                target.currentVol + activeObj.currentVol
+              );
+              target.color = activeObj.color;
+              activeObj.contents = [];
+              activeObj.currentVol = 0;
+              activeObj.color = "transparent";
+              checkReaction(target);
+            }
+          });
+        }
+        activeObj = null;
+      }
+
+      function handleWheel(e) {
+        e.preventDefault();
+        const factor = e.deltaY > 0 ? 0.9 : 1.1;
+        view.zoom = Math.max(0.5, Math.min(3, view.zoom * factor));
+      }
+
+      // --- UTILS ---
+      function updateAI(msg) {
+        document.getElementById("guide-msg").innerText = msg;
+      }
+      function toggleSettings() {
+        document.getElementById("settings-modal").classList.toggle("hidden");
+      }
+      function saveSettings() {
+        apiKey = document.getElementById("api-key").value;
+        localStorage.setItem("educhem_v5_key", apiKey);
+        toggleSettings();
+        updateAI(
+          "Kết nối AI thành công. Bạn có thể hỏi các phản ứng phức tạp."
+        );
+      }
+      function resetLab() {
+        objects = [];
+        updateAI("Phòng thí nghiệm đã được dọn sạch.");
+      }
+      function changeZoom(f) {
+        view.zoom = Math.max(0.5, Math.min(3, view.zoom * (f > 1 ? 1.1 : 0.9)));
+      }
+
+      function spawnGasEffect(o) {
+        const b = document.createElement("div");
+        b.className = "gas-bubble";
+        const rect = canvas.getBoundingClientRect();
+        const wx = rect.left + (o.x + Math.random() * o.w) * view.zoom + view.x;
+        const wy = rect.top + (o.y + o.h - 10) * view.zoom + view.y;
+        b.style.left = wx + "px";
+        b.style.top = wy + "px";
+        b.style.width = b.style.height = 2 + Math.random() * 4 + "px";
+        document.body.appendChild(b);
+        setTimeout(() => b.remove(), 2000);
+      }
+
+      function drawPrecipitate(o) {
+        ctx.fillStyle = "rgba(255,255,255,0.4)";
+        for (let i = 0; i < 12; i++) {
+          ctx.beginPath();
+          ctx.arc(
+            5 + Math.random() * (o.w - 10),
+            o.h - 8 + Math.random() * 5,
+            1.2,
+            0,
+            Math.PI * 2
+          );
+          ctx.fill();
+        }
+      }
+    </script>
+  </body>
+</html>
