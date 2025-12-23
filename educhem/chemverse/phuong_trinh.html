@@ -2,1184 +2,3794 @@
 <html lang="vi">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Phương trình hóa học — Mô phỏng nâng cao</title>
-    <link rel="icon" href="../favicon/educhem.svg" type="image/svg+xml" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"
+    />
+    <title>EduChem Ultimate 3.0 - Virtual Lab</title>
     <!-- Fonts & Icons -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap"
       rel="stylesheet"
     />
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-
-    <!-- MathJax for beautiful formulas -->
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <!-- MathJax -->
     <script
       id="MathJax-script"
       async
       src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
     ></script>
-
     <style>
-      /* ===========================================
-     EDUCHEM — Phương trình Hóa học (Nâng cao)
-     File duy nhất, responsive, animations, touch support.
-     =========================================== */
-
       :root {
-        --bg1: #f3fbff;
-        --card: #ffffff;
-        --muted: #6e7b86;
-        --accentA: #1f8ef1;
-        --accentB: #7d3ff0;
-        --good: #2ecc71;
-        --bad: #ff5252;
-        --glass: rgba(255, 255, 255, 0.7);
-        --radius: 12px;
-        --shadow: 0 10px 30px rgba(11, 24, 40, 0.08);
-        --maxw: 1300px;
+        --primary: #4f46e5;
+        --secondary: #ec4899;
+        --accent: #8b5cf6;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --dark: #1e293b;
+        --glass: rgba(255, 255, 255, 0.65);
+        --glass-border: rgba(255, 255, 255, 0.4);
+        --shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.15);
+        --radius: 16px;
       }
-
       * {
         box-sizing: border-box;
-      }
-      html,
-      body {
-        height: 100%;
-      }
-      body {
-        margin: 0;
-        font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto,
-          Arial;
-        background: linear-gradient(180deg, var(--bg1), #eaf5ff 60%);
-        color: #052031;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
-
-      header {
-        background: linear-gradient(90deg, var(--accentA), var(--accentB));
-        color: white;
-        padding: 28px 18px;
-        text-align: center;
-        box-shadow: 0 12px 40px rgba(31, 142, 241, 0.08);
-      }
-      header h1 {
-        margin: 0;
-        font-size: clamp(20px, 3.8vw, 36px);
-        font-weight: 800;
-        letter-spacing: -0.6px;
-      }
-      header p {
-        margin: 6px 0 0;
-        opacity: 0.94;
-      }
-
-      .container {
-        max-width: var(--maxw);
-        margin: 18px auto;
-        padding: 0 18px 60px;
-        display: grid;
-        grid-template-columns: 1fr 380px;
-        gap: 20px;
-        align-items: start;
-      }
-
-      /* Left simulation card */
-      .panel {
-        background: linear-gradient(180deg, #ffffff, #f6fbff);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        padding: 16px;
-      }
-
-      .controls {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        align-items: center;
-        margin-bottom: 10px;
-      }
-
-      .btn {
-        background: #fff;
-        border: none;
-        padding: 8px 12px;
-        border-radius: 10px;
-        cursor: pointer;
-        font-weight: 700;
-        color: var(--accentA);
-        box-shadow: 0 8px 26px rgba(11, 24, 40, 0.06);
-      }
-      .btn.ghost {
-        background: transparent;
-        color: white;
-        border: 1px solid rgba(255, 255, 255, 0.12);
-      }
-      .btn.warn {
-        background: var(--bad);
-        color: white;
-      }
-
-      .chem-list {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-bottom: 10px;
-      }
-
-      .chem-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 10px;
-        border-radius: 10px;
-        color: white;
-        font-weight: 700;
-        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        outline: none;
         user-select: none;
-        box-shadow: 0 8px 26px rgba(11, 24, 40, 0.06);
-        transition: transform 0.14s ease;
       }
-      .chem-btn:active {
-        transform: translateY(2px);
-      }
-
-      /* reaction area */
-      .reaction-area {
-        border-radius: 10px;
-        height: 540px;
-        border: 2px dashed rgba(11, 24, 40, 0.06);
-        position: relative;
+      body {
+        margin: 0;
+        font-family: "Nunito", sans-serif;
+        background: #cffafe;
+        background-image: radial-gradient(
+            at 0% 0%,
+            rgba(139, 92, 246, 0.15) 0px,
+            transparent 50%
+          ),
+          radial-gradient(
+            at 100% 0%,
+            rgba(236, 72, 153, 0.15) 0px,
+            transparent 50%
+          ),
+          radial-gradient(
+            at 100% 100%,
+            rgba(16, 185, 129, 0.1) 0px,
+            transparent 50%
+          );
+        height: 100vh;
         overflow: hidden;
-        background: linear-gradient(
-          180deg,
-          rgba(255, 255, 255, 0.6),
-          rgba(243, 249, 255, 0.95)
-        );
+        color: var(--dark);
+        display: flex;
       }
 
-      .chemical-box {
+      /* --- SIDEBAR --- */
+      .sidebar {
+        width: 280px;
+        background: var(--glass);
+        backdrop-filter: blur(16px);
+        border-right: 1px solid var(--glass-border);
+        display: flex;
+        flex-direction: column;
+        z-index: 100;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: var(--shadow);
+      }
+      .brand {
+        padding: 20px;
+        font-size: 1.4rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        letter-spacing: -0.5px;
+        cursor: pointer;
+      }
+      .search-container {
+        padding: 0 15px 10px;
+        position: relative;
+      }
+      .search-box {
+        width: 100%;
+        padding: 12px 15px 12px 40px;
+        border-radius: 12px;
+        border: 2px solid transparent;
+        background: rgba(255, 255, 255, 0.6);
+        font-family: inherit;
+        font-weight: 600;
+        transition: 0.2s;
+        font-size: 0.9rem;
+      }
+      .search-box:focus {
+        background: white;
+        border-color: var(--primary);
+      }
+      .search-icon {
         position: absolute;
-        min-width: 84px;
-        height: 56px;
-        padding: 6px 12px;
+        left: 28px;
+        top: 12px;
+        color: #94a3b8;
+      }
+      .chem-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 10px;
+        scroll-behavior: smooth;
+        padding-bottom: 50px;
+      }
+      /* Modern Scrollbar */
+      .chem-list::-webkit-scrollbar {
+        width: 5px;
+      }
+      .chem-list::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .chem-list::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
         border-radius: 10px;
-        color: #fff;
+      }
+
+      .category-header {
+        font-size: 0.7rem;
         font-weight: 800;
+        text-transform: uppercase;
+        color: #64748b;
+        margin: 15px 0 8px 5px;
+        letter-spacing: 1px;
+        position: sticky;
+        top: 0;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 8px;
+        border-radius: 6px;
+        z-index: 5;
+        backdrop-filter: blur(5px);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .chem-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+      .chem-item {
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 12px;
+        aspect-ratio: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: grab;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        transition: all 0.2s;
+        position: relative;
+      }
+      .chem-item:hover {
+        transform: translateY(-3px);
+        background: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        z-index: 2;
+      }
+      .chem-item:active {
+        cursor: grabbing;
+        transform: scale(0.95);
+      }
+      .chem-sym {
+        font-weight: 800;
+        font-size: 1rem;
+        color: var(--dark);
+      }
+      .chem-sub {
+        font-size: 0.55rem;
+        color: #64748b;
+        text-align: center;
+        line-height: 1.1;
+        margin-top: 2px;
+        max-width: 90%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .badge-conc {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 6px;
+        height: 6px;
+        background: var(--danger);
+        border-radius: 50%;
+        box-shadow: 0 0 5px var(--danger);
+      }
+
+      /* --- WORKSPACE --- */
+      .workspace {
+        flex: 1;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        background-color: #f8fafc;
+        background-image: linear-gradient(
+            rgba(148, 163, 184, 0.1) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(148, 163, 184, 0.1) 1px, transparent 1px);
+        background-size: 30px 30px;
+        overflow: hidden;
+      }
+
+      /* --- SAFETY BAR --- */
+      .safety-container {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 200px;
+        background: rgba(255, 255, 255, 0.8);
+        padding: 8px 12px;
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(5px);
+        z-index: 40;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .safety-label {
+        font-size: 0.7rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: #64748b;
+        display: flex;
+        justify-content: space-between;
+      }
+      .safety-bar-bg {
+        width: 100%;
+        height: 8px;
+        background: #e2e8f0;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .safety-bar-fill {
+        height: 100%;
+        background: var(--success);
+        width: 100%;
+        transition: width 0.5s, background-color 0.5s;
+      }
+      .safety-bar-fill.danger {
+        background: var(--danger);
+      }
+      .safety-bar-fill.warn {
+        background: var(--warning);
+      }
+
+      /* --- QUEST BOARD --- */
+      .quest-board {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        padding: 10px 20px;
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        z-index: 50;
+        border: 1px solid white;
+        transition: all 0.3s;
+        min-width: 300px;
+      }
+      .quest-info {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+      .quest-title {
+        font-size: 0.7rem;
+        font-weight: 800;
+        color: #94a3b8;
+        text-transform: uppercase;
+      }
+      .quest-target {
+        font-weight: 700;
+        color: var(--primary);
+        font-size: 0.95rem;
+      }
+      .quest-check {
+        width: 30px;
+        height: 30px;
+        background: #e2e8f0;
+        border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 10px 28px rgba(11, 24, 40, 0.12);
-        cursor: grab;
-        z-index: 30;
-        transition: transform 0.14s ease, opacity 0.14s ease,
-          box-shadow 0.14s ease;
+        color: white;
+        transition: 0.3s;
+      }
+      .quest-check.done {
+        background: var(--success);
+        transform: scale(1.1) rotate(360deg);
+        box-shadow: 0 0 15px var(--success);
+      }
+
+      /* --- HUD CONTROLS --- */
+      .hud-right {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        display: flex;
+        gap: 10px;
+        z-index: 50;
+      }
+      .tool-btn {
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
+        border: none;
+        background: white;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        color: var(--dark);
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+      .tool-btn:hover {
+        transform: translateY(-3px);
+        color: var(--primary);
+      }
+      .tool-btn:active {
+        transform: scale(0.9);
+      }
+      .tool-tooltip {
+        position: absolute;
+        bottom: -30px;
+        right: 0;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.7rem;
         white-space: nowrap;
+        pointer-events: none;
+        opacity: 0;
+        transition: 0.2s;
       }
-      .chemical-box:active {
-        cursor: grabbing;
-      }
-      .chemical-box.product {
-        border: 2px dotted rgba(255, 255, 255, 0.18);
-      }
-
-      /* product + gas + precipitate visual classes */
-      .gas {
-        filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.06));
-      }
-      .precip {
-        box-shadow: 0 14px 36px rgba(0, 0, 0, 0.12);
-        border: 2px solid rgba(255, 255, 255, 0.06);
+      .tool-btn:hover .tool-tooltip {
+        opacity: 1;
+        bottom: -35px;
       }
 
-      /* styles for many chemicals (we use class by id c-HCl etc) */
-      .c-HCl {
-        background: #e74c3c;
+      /* --- THE TRASH HOLE --- */
+      .black-hole {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        width: 80px;
+        height: 80px;
+        background: radial-gradient(circle, #1e293b 0%, transparent 70%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0.5;
+        transition: 0.3s;
+        z-index: 10;
       }
-      .c-NaOH {
-        background: #16a085;
+      .black-hole:hover,
+      .black-hole.drag-over {
+        opacity: 1;
+        transform: scale(1.1);
       }
-      .c-CaO {
-        background: #9b59b6;
+      .black-hole i {
+        color: white;
+        font-size: 1.5rem;
       }
-      .c-H2O {
-        background: #3498db;
+      .beaker {
+        position: absolute;
+        width: 80px;
+        height: 100px;
+        border: 3px solid #64748b;
+        border-radius: 0 0 16px 16px;
+        background: rgba(255, 255, 255, 0.2);
+        text-align: center;
+        color: #334155;
+        font-weight: bold;
       }
-      .c-CO2 {
-        background: #e67e22;
-      }
-      .c-NaCl {
-        background: #0fb3a3;
-      }
-      .c-Na2CO3 {
-        background: #8e44ad;
-      }
-      .c-H2SO4 {
-        background: #c0392b;
-      }
-      .c-NH3 {
-        background: #1abc9c;
-      }
-      .c-MgO {
-        background: #f1c40f;
-      }
-      .c-KOH {
-        background: #ff8a00;
-      }
-
-      /* extra chemicals added */
-      .c-K2O {
-        background: #ff6b6b;
-      }
-      .c-SO3 {
-        background: #b03a2e;
-      }
-      .c-NaHCO3 {
-        background: #6c5ce7;
-      }
-      .c-CaCO3 {
-        background: #95a5a6;
-      }
-      .c-BaCl2 {
-        background: #2d98da;
-      }
-      .c-CaCl2 {
-        background: #6ab04c;
-      }
-      .c-Na2SO4 {
-        background: #2ecc71;
-      }
-      .c-K2SO4 {
-        background: #ff9f1a;
-      }
-      .c-Fe {
-        background: #7f8c8d;
-      }
-      .c-FeSO4 {
-        background: #27ae60;
-      }
-      .c-BaSO4 {
-        background: #f7b731;
-      }
-      .c-NH4Cl {
-        background: #ff7675;
-      }
-      .c-NaHCO3 {
-        background: #00b894;
-      }
-      .c-NaOH {
-        background: #16a085;
+      .beaker-label {
+        position: absolute;
+        bottom: 4px;
+        width: 100%;
+        font-size: 0.7rem;
       }
 
-      /* right info panel */
-      .right {
+      /* --- ELEMENT BUBBLES --- */
+      .element {
+        position: absolute;
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        cursor: grab;
+        z-index: 20;
         display: flex;
         flex-direction: column;
-        gap: 12px;
-      }
-      .card {
-        background: linear-gradient(180deg, #fff, #f8fdff);
-        border-radius: 10px;
-        padding: 12px;
-        box-shadow: var(--shadow);
-      }
-      .equation {
-        font-weight: 800;
-        font-size: 16px;
-        color: var(--accentA);
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
         align-items: center;
+        justify-content: center;
+        /* Glassy Look */
+        background: radial-gradient(
+          circle at 30% 30%,
+          rgba(255, 255, 255, 0.4),
+          rgba(255, 255, 255, 0.1)
+        );
+        box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.8),
+          inset 2px 2px 5px rgba(255, 255, 255, 0.5),
+          0 5px 15px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(3px);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        transition: transform 0.1s;
       }
-      .equation .token {
-        padding: 6px 10px;
-        border-radius: 8px;
-        background: linear-gradient(
-          90deg,
-          rgba(31, 142, 241, 0.06),
-          rgba(125, 63, 240, 0.04)
+      .element:active {
+        cursor: grabbing;
+        transform: scale(1.05);
+        z-index: 100;
+      }
+
+      /* State Indicators */
+      .state-gas {
+        box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5),
+          0 0 15px rgba(255, 255, 255, 0.8);
+        border: 1px dashed rgba(255, 255, 255, 0.8);
+        animation: floatGas 3s infinite ease-in-out alternate;
+      }
+      .state-solid {
+        background: radial-gradient(
+          circle at 30% 30%,
+          rgba(255, 255, 255, 0.9),
+          rgba(241, 245, 249, 0.4)
         );
       }
-      .result {
-        color: var(--muted);
-        margin-top: 8px;
-        font-weight: 700;
+
+      /* The actual substance inside */
+      .substance {
+        position: absolute;
+        width: 85%;
+        height: 85%;
+        border-radius: 50%;
+        z-index: -1;
+        opacity: 0.8;
+        transition: background 0.5s;
+        overflow: hidden;
+      }
+      /* Liquid Animation */
+      .substance.liquid::after {
+        content: "";
+        position: absolute;
+        width: 200%;
+        height: 200%;
+        top: 40%;
+        left: -50%;
+        background-color: var(--fill-color, #ccc);
+        border-radius: 40%;
+        animation: wave 4s infinite linear;
+        opacity: 0.9;
+      }
+      .substance.solid {
+        background: radial-gradient(
+          circle at 40% 40%,
+          #fff,
+          var(--fill-color, #ccc)
+        );
+        transform: scale(0.8);
+        border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+      }
+      .substance.gas {
+        background: radial-gradient(
+          circle,
+          var(--fill-color, #fff),
+          transparent
+        );
+        opacity: 0.6;
+        filter: blur(4px);
       }
 
-      .rx-list {
-        max-height: 420px;
-        overflow: auto;
-        padding-right: 6px;
+      .el-label {
+        font-weight: 800;
+        font-size: 1.1rem;
+        text-shadow: 0 2px 4px rgba(255, 255, 255, 1);
+        color: #1e293b;
+        pointer-events: none;
       }
-      .rx-item {
-        padding: 8px 6px;
-        border-bottom: 1px dashed rgba(11, 24, 40, 0.04);
+      .el-temp {
+        position: absolute;
+        bottom: -15px;
+        font-size: 0.6rem;
+        font-weight: 800;
+        background: #ef4444;
+        color: white;
+        padding: 2px 6px;
+        border-radius: 8px;
+        opacity: 0;
+        transition: 0.3s;
+        pointer-events: none;
+      }
+      .element.hot .el-temp {
+        opacity: 1;
+        transform: translateY(-5px);
+      }
+
+      /* --- NEW TOOLS STYLES --- */
+      .burner {
+        position: absolute;
+        width: 50px;
+        height: 80px;
+        background: linear-gradient(to bottom, #94a3b8, #475569);
+        border-radius: 5px 5px 15px 15px;
+        z-index: 30;
+        cursor: grab;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        display: flex;
+        justify-content: center;
+      }
+      .burner::before {
+        content: "";
+        position: absolute;
+        top: -10px;
+        width: 20px;
+        height: 10px;
+        background: #cbd5e1;
+        border-radius: 5px;
+      }
+      .flame {
+        position: absolute;
+        top: -35px;
+        width: 20px;
+        height: 35px;
+        background: radial-gradient(
+          ellipse at bottom,
+          #fca311 0%,
+          rgba(255, 255, 255, 0) 70%
+        );
+        border-radius: 50% 50% 20% 20%;
+        filter: blur(2px);
+        animation: flicker 0.2s infinite alternate;
+        transform-origin: center bottom;
+      }
+
+      .ice-bath {
+        position: absolute;
+        width: 70px;
+        height: 50px;
+        background: linear-gradient(to bottom, #bae6fd, #7dd3fc);
+        border-radius: 5px 5px 20px 20px;
+        z-index: 29;
+        cursor: grab;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        border: 2px solid #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .ice-bath::after {
+        content: "❄️";
+        font-size: 1.5rem;
+        opacity: 0.7;
+      }
+
+      .thermometer {
+        position: absolute;
+        width: 12px;
+        height: 80px;
+        background: #f1f5f9;
+        border: 1px solid #94a3b8;
+        border-radius: 10px;
+        z-index: 35;
+        cursor: grab;
+        display: flex;
+        justify-content: center;
+      }
+      .thermometer::before {
+        content: "";
+        position: absolute;
+        bottom: 2px;
+        width: 16px;
+        height: 16px;
+        background: #ef4444;
+        border-radius: 50%;
+      }
+      .thermometer::after {
+        content: "";
+        position: absolute;
+        bottom: 10px;
+        width: 4px;
+        height: 60px;
+        background: #e2e8f0;
+        border-radius: 2px;
+      }
+      .thermo-val {
+        position: absolute;
+        top: -30px;
+        background: #1e293b;
+        color: white;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        font-weight: bold;
+        opacity: 0;
+        transition: 0.2s;
+        pointer-events: none;
+      }
+      .thermometer.reading .thermo-val {
+        opacity: 1;
+        top: -35px;
+      }
+
+      /* --- LITMUS PAPER --- */
+      .litmus {
+        position: absolute;
+        width: 20px;
+        height: 60px;
+        background: #fde047;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 30;
+        cursor: grab;
+        transform: rotate(15deg);
+      }
+
+      /* --- NOTIFICATIONS --- */
+      .toast-area {
+        position: absolute;
+        top: 90px;
+        right: 20px;
+        width: 320px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        pointer-events: none;
+        z-index: 100;
+      }
+      .toast {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 12px 15px;
+        border-radius: 12px;
+        border-left: 4px solid var(--primary);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        animation: slideIn 0.4s ease-out;
+        pointer-events: auto;
+      }
+      .toast.success {
+        border-color: var(--success);
+      }
+      .toast.warn {
+        border-color: var(--warning);
+      }
+      .toast-title {
+        font-weight: 800;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: #64748b;
+        margin-bottom: 4px;
+      }
+      .toast-msg {
         font-size: 0.95rem;
-      }
-      .rx-item strong {
-        color: #0b2433;
+        font-weight: 600;
+        color: var(--dark);
+        line-height: 1.4;
       }
 
-      /* flash animation when equation appears */
-      .flash {
-        animation: popfade 0.6s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+      /* --- MODAL (CHEMPEDIA) --- */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(5px);
+        z-index: 200;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: 0.3s;
       }
-      @keyframes popfade {
+      .modal-overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .modal-card {
+        background: white;
+        width: 90%;
+        max-width: 400px;
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+        transform: translateY(20px);
+        transition: 0.3s;
+        position: relative;
+        text-align: center;
+      }
+      .modal-overlay.active .modal-card {
+        transform: translateY(0);
+      }
+      .wiki-badge {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        margin: -50px auto 15px;
+        background: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: 900;
+        color: white;
+        box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+      }
+      .wiki-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--dark);
+        margin-bottom: 5px;
+      }
+      .wiki-sub {
+        color: #64748b;
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+        font-style: italic;
+      }
+      .wiki-desc {
+        text-align: left;
+        background: #f1f5f9;
+        padding: 15px;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        color: #334155;
+      }
+      .close-modal {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        color: #94a3b8;
+      }
+
+      /* GAME OVER SCREEN */
+      .game-over {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #1e293b;
+        z-index: 999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        display: none;
+      }
+      .game-over.active {
+        display: flex;
+        animation: slideIn 0.5s;
+      }
+      .go-title {
+        font-size: 3rem;
+        color: var(--danger);
+        font-weight: 900;
+        margin-bottom: 20px;
+      }
+      .go-btn {
+        padding: 10px 30px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.2rem;
+        cursor: pointer;
+      }
+
+      /* --- ANIMATIONS --- */
+      @keyframes wave {
         0% {
-          transform: translateY(8px) scale(0.98);
-          opacity: 0;
-        }
-        60% {
-          transform: translateY(-6px) scale(1.02);
-          opacity: 1;
+          transform: rotate(0deg);
         }
         100% {
-          transform: translateY(0) scale(1);
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes flicker {
+        0% {
+          transform: scaleY(1);
+          opacity: 0.9;
+        }
+        100% {
+          transform: scaleY(1.2) scaleX(0.9);
+          opacity: 1;
+        }
+      }
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      @keyframes floatGas {
+        from {
+          transform: translateY(0px);
+        }
+        to {
+          transform: translateY(-10px);
+        }
+      }
+      .shake {
+        animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+      }
+      @keyframes shake {
+        10%,
+        90% {
+          transform: translate3d(-1px, 0, 0);
+        }
+        20%,
+        80% {
+          transform: translate3d(2px, 0, 0);
+        }
+        30%,
+        50%,
+        70% {
+          transform: translate3d(-4px, 0, 0);
+        }
+        40%,
+        60% {
+          transform: translate3d(4px, 0, 0);
         }
       }
 
-      /* tiny helpers */
-      .muted {
-        color: var(--muted);
+      /* Mobile Responsive */
+      @media (max-width: 768px) {
+        .sidebar {
+          position: absolute;
+          left: -100%;
+          height: 100%;
+        }
+        .sidebar.active {
+          left: 0;
+        }
+        .mobile-menu-btn {
+          display: flex !important;
+        }
+        .quest-board {
+          top: auto;
+          bottom: 20px;
+          left: 20px;
+          transform: none;
+          width: calc(100% - 100px);
+          min-width: auto;
+        }
+        .black-hole {
+          bottom: 20px;
+          right: 10px;
+          width: 60px;
+          height: 60px;
+        }
+        .hud-right {
+          top: 10px;
+          right: 10px;
+        }
+        .safety-container {
+          width: 150px;
+          top: 10px;
+          left: 10px;
+        }
       }
-      .small {
-        font-size: 0.9rem;
+      .mobile-menu-btn {
+        display: none;
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        z-index: 60;
+        background: white;
+        border: none;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        color: var(--dark);
+        font-size: 1.2rem;
       }
 
-      footer {
+      .instruction {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.8rem;
+        color: #94a3b8;
+        opacity: 0.7;
+        pointer-events: none;
+        width: 100%;
         text-align: center;
-        color: var(--muted);
-        padding: 22px 0 60px;
       }
-
-      /* responsive */
-      @media (max-width: 1100px) {
-        .container {
-          grid-template-columns: 1fr;
-          padding-bottom: 40px;
-        }
-        .reaction-area {
-          height: 420px;
-        }
-      }
-
-      /* long file note: end of CSS (file intentionally long in content) */
     </style>
   </head>
   <body>
-    <header>
-      <h1>Phương trình Hóa học — Mô phỏng NÂNG CAO</h1>
-      <p>
-        Kéo thả, chạm để phản ứng — Database lớn, MathJax hiển thị công thức
-        đẹp.
-      </p>
-      <div style="margin-top: 12px">
-        <button class="btn" id="btnSeed">Seed (ví dụ)</button>
-        <button class="btn" id="btnReset">Reset</button>
-        <button class="btn" id="btnExport">Export Log (CSV)</button>
-        <button class="btn" id="btnUndo">Undo Last</button>
-      </div>
-    </header>
-
-    <div class="container">
-      <!-- left simulation -->
-      <div class="panel">
-        <div
-          style="
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
-          "
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand" onclick="window.location.reload()">
+        <i class="fa-solid fa-atom fa-spin-pulse"></i> EduChem
+        <span style="font-size: 0.8rem; opacity: 0.6; margin-top: 5px"
+          >3.0</span
         >
-          <div class="controls">
-            <div style="font-weight: 700; color: var(--accentA)">
-              Thêm chất:
-            </div>
-          </div>
-          <div style="display: flex; gap: 8px; align-items: center">
-            <input
-              id="customChem"
-              placeholder="Nhập mã chất (VD: CaCl2)"
-              style="
-                padding: 8px;
-                border-radius: 8px;
-                border: 1px solid rgba(0, 0, 0, 0.06);
-              "
-            />
-            <button class="btn" id="addCustom">Thêm</button>
-          </div>
+      </div>
+      <div class="search-container">
+        <i class="fa fa-search search-icon"></i>
+        <input
+          type="text"
+          class="search-box"
+          id="search"
+          placeholder="Tìm chất (K, H2O)..."
+        />
+      </div>
+      <div class="chem-list" id="chemList"></div>
+    </aside>
+
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">
+      <i class="fa fa-bars"></i>
+    </button>
+
+    <!-- WORKSPACE -->
+    <div class="workspace" id="bench">
+      <!-- SAFETY BAR -->
+      <div class="safety-container">
+        <div class="safety-label">
+          <span>An toàn</span> <span id="safetyVal">100%</span>
         </div>
-
-        <div class="chem-list" id="chemList"><!-- rendered by JS --></div>
-
-        <div class="panel small muted" style="margin-bottom: 10px">
-          Hướng dẫn: Nhấn vào chất để tạo 1 khối, hoặc kéo thả để di chuyển. Khi
-          hai khối chạm nhau, hệ thống sẽ kiểm tra DB để hiển thị phương trình.
-          Nếu chưa định nghĩa — sẽ báo "Có thể phản ứng nhưng chưa có dữ liệu".
+        <div class="safety-bar-bg">
+          <div class="safety-bar-fill" id="safetyFill"></div>
         </div>
-
-        <div
-          id="reactionArea"
-          class="reaction-area"
-          aria-label="Vùng phản ứng"
-        ></div>
       </div>
 
-      <!-- right info -->
-      <div class="right">
-        <div class="card">
-          <div
-            style="
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-            "
-          >
-            <div style="font-weight: 800">Kết quả</div>
-            <div class="small muted">MathJax hỗ trợ công thức đẹp</div>
-          </div>
-          <div style="margin-top: 10px" id="equationBox">
-            <div class="equation" id="equationBoxInner">
-              Phương trình sẽ hiển thị ở đây
-            </div>
-            <div class="result small muted" id="resultBox">—</div>
-          </div>
+      <!-- Quest Overlay -->
+      <div class="quest-board" id="questBoard">
+        <div class="quest-check" id="questCheck">
+          <i class="fa fa-check"></i>
         </div>
-
-        <div class="card">
-          <div
-            style="
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              margin-bottom: 8px;
-            "
-          >
-            <div style="font-weight: 800">Lịch sử / Reaction log</div>
-            <div class="small muted">Click để xoá hoặc export</div>
-          </div>
-          <div id="rxList" class="rx-list"></div>
+        <div class="quest-info">
+          <div class="quest-title">Nhiệm vụ</div>
+          <div class="quest-target" id="questText">Khởi động...</div>
+          <button onclick="spamBeaker()">SPAM BEAKER</button>
         </div>
+      </div>
 
-        <div class="card">
-          <div style="font-weight: 800; margin-bottom: 8px">
-            Danh sách Phản ứng (tách theo chất)
-          </div>
-          <div
-            id="reactionCatalog"
-            class="rx-list small muted"
-            style="max-height: 300px"
-          ></div>
+      <!-- HUD -->
+      <div class="hud-right">
+        <button class="tool-btn" onclick="lab.spawnTool('burner')">
+          <i class="fa-solid fa-fire text-warning" style="color: #f59e0b"></i>
+          <div class="tool-tooltip">Đèn cồn</div>
+        </button>
+        <button class="tool-btn" onclick="lab.spawnTool('ice')">
+          <i class="fa-regular fa-snowflake" style="color: #38bdf8"></i>
+          <div class="tool-tooltip">Chậu đá</div>
+        </button>
+        <button class="tool-btn" onclick="lab.spawnTool('thermometer')">
+          <i
+            class="fa-solid fa-temperature-three-quarters"
+            style="color: #ef4444"
+          ></i>
+          <div class="tool-tooltip">Nhiệt kế</div>
+        </button>
+        <button class="tool-btn" onclick="lab.spawnTool('litmus')">
+          <i class="fa-solid fa-scroll" style="color: #a855f7"></i>
+          <div class="tool-tooltip">Quỳ tím</div>
+        </button>
+        <button class="tool-btn" onclick="lab.clear()">
+          <i class="fa-solid fa-rotate-right"></i>
+          <div class="tool-tooltip">Xóa bàn</div>
+        </button>
+        <button class="tool-btn" onclick="toggleMute()">
+          <i class="fa-solid fa-volume-high" id="soundIcon"></i>
+        </button>
+      </div>
+
+      <!-- Toast Notification Area -->
+      <div class="toast-area" id="toastArea"></div>
+
+      <!-- Trash Hole -->
+      <div class="black-hole" id="trash">
+        <i class="fa fa-trash"></i>
+      </div>
+
+      <div class="instruction">
+        Double-click vào chất để xem thông tin • Coi chừng nổ!
+      </div>
+    </div>
+
+    <!-- GAME OVER SCREEN -->
+    <div class="game-over" id="gameOverScreen">
+      <div class="go-title">PHÒNG LAB ĐÓNG CỬA!</div>
+      <p>Bạn đã gây ra quá nhiều vụ nổ nguy hiểm.</p>
+      <br />
+      <button class="go-btn" onclick="window.location.reload()">
+        Làm lại cuộc đời
+      </button>
+    </div>
+
+    <!-- WIKI MODAL -->
+    <div class="modal-overlay" id="wikiModal">
+      <div class="modal-card">
+        <button class="close-modal" onclick="closeWiki()">
+          <i class="fa fa-times"></i>
+        </button>
+        <div class="wiki-badge" id="wikiIcon">Na</div>
+        <h2 class="wiki-title" id="wikiTitle">Natri</h2>
+        <div class="wiki-sub" id="wikiSub">Kim loại kiềm</div>
+        <div class="wiki-desc" id="wikiDesc">
+          Natri là kim loại mềm, màu trắng bạc, hoạt động hóa học mạnh. Nó phản
+          ứng mãnh liệt với nước tạo thành NaOH và khí Hidro dễ nổ.
         </div>
       </div>
     </div>
 
-    <footer>
-      Lưu file thành <strong>phuong_trinh_hoa_hoc.html</strong>. File này là bản
-      nâng cao — bạn có thể mở rộng object REACTIONS bên dưới.
-    </footer>
-
     <script>
-      /* ===========================================
-   DATA: CHEMICALS + REACTIONS
-   - REACTIONS key: sorted pair 'A+B'
-   - each reaction: { eq: string (LaTeX or text), text: description, products: [..], status: 'defined'|'possible'|'unknown', tags:[] }
-   =========================================== */
+      /**
+       * 1. DATABASE & CONFIG
+       */
+      const TYPES = {
+        metal: { name: "Kim loại", color: "#94a3b8" }, // xám bạc
+        nonmetal: { name: "Phi kim", color: "#64748b" }, // xám đậm
 
-      /* base chemicals (extended) */
-      const CHEMICALS = [
-        "HCl",
-        "NaOH",
-        "CaO",
-        "H2O",
-        "CO2",
-        "NaCl",
-        "Na2CO3",
-        "H2SO4",
-        "NH3",
-        "MgO",
-        "KOH",
-        /* added */
-        "K2O",
-        "SO3",
-        "NaHCO3",
-        "CaCO3",
-        "BaCl2",
-        "CaCl2",
-        "Na2SO4",
-        "K2SO4",
-        "Fe",
-        "FeSO4",
-        "BaSO4",
-        "NH4Cl",
-        "NaNO3",
-        "HNO3",
-        "Cu",
-        "CuSO4",
-        "AgNO3",
-        "AgCl",
-        "Zn",
-        "ZnSO4",
-        "KCl",
-        "Ca(OH)2",
-        "Na2O",
-        "NaH",
-        "H2" /* expand later */,
-      ];
+        acid: { name: "Axit", color: "#f87171" }, // đỏ
+        base: { name: "Bazơ", color: "#60a5fa" }, // xanh dương
+        salt: { name: "Muối", color: "#34d399" }, // xanh lục
 
-      /* utility to canonicalize key */
-      function pairKey(a, b) {
-        const list = [String(a), String(b)];
-        list.sort();
-        return list.join("+");
-      }
+        oxide: { name: "Oxit", color: "#fbbf24" }, // vàng
+        acidicOxide: { name: "Oxit axit", color: "#fb7185" }, // hồng đậm
+        basicOxide: { name: "Oxit bazơ", color: "#38bdf8" }, // xanh nhạt
+        amphotericOxide: { name: "Oxit lưỡng tính", color: "#a78bfa" },
 
-      /* Reactions dataset (many common ones). Expand as needed.
-   status:
-     - 'defined': reaction fully defined and will create products
-     - 'possible': reaction is possible but omitted details (author not finished)
-     - 'unknown': not defined or depends on conditions
-*/
-      const REACTIONS = {
-        // acid-base neutralization
-        [pairKey("HCl", "NaOH")]: {
-          eq: "HCl + NaOH \\rightarrow NaCl + H_2O",
-          text: "Axít + Bazơ → Muối + Nước",
-          products: ["NaCl", "H2O"],
-          status: "defined",
-          tags: ["neutralization"],
-        },
-        [pairKey("HCl", "NH3")]: {
-          eq: "NH_3 + HCl \\rightarrow NH_4Cl",
-          text: "Amoniac + Axit → Muối amoni",
-          products: ["NH4Cl"],
-          status: "defined",
-          tags: ["salt"],
-        },
+        gas: { name: "Khí", color: "#e2e8f0" }, // trắng xám
+        liquid: { name: "Chất lỏng", color: "#22d3ee" }, // cyan
+        solid: { name: "Chất rắn", color: "#78716c" }, // nâu xám
 
-        // oxides + water
-        [pairKey("CaO", "H2O")]: {
-          eq: "CaO + H_2O \\rightarrow Ca(OH)_2",
-          text: "Oxit kiềm + Nước → Bazơ",
-          products: ["Ca(OH)2"],
-          status: "defined",
-          tags: ["oxide", "hydroxide"],
-        },
-        [pairKey("MgO", "H2O")]: {
-          eq: "MgO + H_2O \\rightarrow Mg(OH)_2",
-          text: "Oxit kim loại + Nước → Bazơ yếu",
-          products: ["Mg(OH)2"],
-          status: "defined",
-          tags: ["oxide"],
-        },
+        indicator: { name: "Chỉ thị", color: "#d8b4fe" }, // tím nhạt
+        precipitate: { name: "Kết tủa", color: "#16a34a" }, // xanh đậm
+        complex: { name: "Phức chất", color: "#c084fc" }, // tím
 
-        // CO2 and water / bases
-        [pairKey("CO2", "H2O")]: {
-          eq: "CO_2 + H_2O \\rightarrowse H_2CO_3",
-          text: "CO2 hòa tan → Axit cacbonic (không bền)",
-          products: ["H2CO3"],
-          status: "defined",
-          tags: ["acid"],
-        },
-        [pairKey("CO2", "NaOH")]: {
-          eq: "2NaOH + CO_2 \\rightarrow Na_2CO_3 + H_2O",
-          text: "Kiềm + CO2 → Cacbonat",
-          products: ["Na2CO3", "H2O"],
-          status: "defined",
-          tags: ["carbonate"],
-        },
+        organic: { name: "Hữu cơ", color: "#fb923c" }, // cam
+        inorganic: { name: "Vô cơ", color: "#0ea5e9" }, // xanh biển
 
-        // carbonate + acid
-        [pairKey("Na2CO3", "H2SO4")]: {
-          eq: "Na_2CO_3 + H_2SO_4 \\rightarrow Na_2SO_4 + CO_2 \\uparrow + H_2O",
-          text: "Cacbonat + Axit → Muối + CO2 + H2O",
-          products: ["Na2SO4", "CO2", "H2O"],
-          status: "defined",
-          tags: ["gas", "carbonate"],
-        },
-        [pairKey("Na2CO3", "HCl")]: {
-          eq: "Na_2CO_3 + 2HCl \\rightarrow 2NaCl + CO_2 \\uparrow + H_2O",
-          text: "Cacbonat + Axit → Muối + CO2 + H2O",
-          products: ["NaCl", "CO2", "H2O"],
-          status: "defined",
-          tags: ["acid", "gas"],
-        },
+        oxidizer: { name: "Chất oxi hóa", color: "#ef4444" },
+        reducer: { name: "Chất khử", color: "#22c55e" },
 
-        // strong acid + strong base
-        [pairKey("H2SO4", "NaOH")]: {
-          eq: "H_2SO_4 + 2NaOH \\rightarrow Na_2SO_4 + 2H_2O",
-          text: "Axít + Bazơ → Muối + Nước",
-          products: ["Na2SO4", "H2O"],
-          status: "defined",
-          tags: ["neutralization"],
-        },
-        [pairKey("H2SO4", "KOH")]: {
-          eq: "H_2SO_4 + 2KOH \\rightarrow K_2SO_4 + 2H_2O",
-          text: "Axít + Bazơ → Muối + Nước",
-          products: ["K2SO4", "H2O"],
-          status: "defined",
-          tags: ["neutralization"],
-        },
+        electrolyte: { name: "Điện li", color: "#06b6d4" },
+        nonelectrolyte: { name: "Không điện li", color: "#a1a1aa" },
 
-        // precipitation / double displacement
-        [pairKey("BaCl2", "H2SO4")]: {
-          eq: "BaCl_2 + H_2SO_4 \\rightarrow BaSO_4 \\downarrow + 2HCl",
-          text: "Tạo kết tủa BaSO4",
-          products: ["BaSO4", "HCl"],
-          status: "defined",
-          tags: ["precipitate"],
-        },
-        [pairKey("AgNO3", "NaCl")]: {
-          eq: "AgNO_3 + NaCl \\rightarrow AgCl \\downarrow + NaNO_3",
-          text: "Tạo kết tủa bạc clorua",
-          products: ["AgCl", "NaNO3"],
-          status: "defined",
-          tags: ["precipitate"],
-        },
-
-        // metal + acid (hydrogen evolution)
-        [pairKey("Fe", "H2SO4")]: {
-          eq: "Fe + H_2SO_4 \\rightarrow FeSO_4 + H_2 \\uparrow",
-          text: "Kim loại tác dụng với axit → muối + khí H2",
-          products: ["FeSO4", "H2"],
-          status: "possible",
-          tags: ["redox"],
-        },
-
-        // sodium oxide + water
-        [pairKey("Na2O", "H2O")]: {
-          eq: "Na_2O + H_2O \\rightarrow 2NaOH",
-          text: "Oxit kim loại kiềm + Nước → Kiềm mạnh",
-          products: ["NaOH"],
-          status: "defined",
-          tags: ["oxide"],
-        },
-
-        // NaOH with ammonium salts
-        [pairKey("NaOH", "NH4Cl")]: {
-          eq: "NaOH + NH_4Cl \\rightarrow NaCl + NH_3 \\uparrow + H_2O",
-          text: "Kiềm + Muối amoni → Amoniac + Muối + Nước",
-          products: ["NaCl", "NH3", "H2O"],
-          status: "defined",
-          tags: ["gas"],
-        },
-
-        // acid + carbonate (general)
-        [pairKey("CaCO3", "HCl")]: {
-          eq: "CaCO_3 + 2HCl \\rightarrow CaCl_2 + CO_2 \\uparrow + H_2O",
-          text: "Muối cacbonat + Axit → Muối mới + CO2 + H2O",
-          products: ["CaCl2", "CO2", "H2O"],
-          status: "defined",
-          tags: ["gas"],
-        },
-
-        // many more defined reactions (examples)
-        [pairKey("NaCl", "H2O")]: {
-          eq: "NaCl \\rightarrow Na^+ + Cl^- \\text{(ion hóa trong nước)}",
-          text: "Muối hòa tan → Ion",
-          products: [],
-          status: "defined",
-          tags: ["solution"],
-        },
-
-        /* --- a bunch of extra sample entries to expand DB ---
-     (Note: in real chem, some require heat / catalyst / concentration; we mark as 'possible' or 'unknown')
-  */
-        [pairKey("SO3", "H2O")]: {
-          eq: "SO_3 + H_2O \\rightarrow H_2SO_4",
-          text: "Oxit axit + Nước → Axit mạnh",
-          products: ["H2SO4"],
-          status: "defined",
-        },
-        [pairKey("K2O", "H2O")]: {
-          eq: "K_2O + H_2O \\rightarrow 2KOH",
-          text: "Oxit kiềm + Nước → Kiềm",
-          products: ["KOH"],
-          status: "defined",
-        },
-        [pairKey("NaOH", "CO2")]: {
-          eq: "2NaOH + CO_2 \\rightarrow Na_2CO_3 + H_2O",
-          text: "NaOH + CO2 → Na2CO3",
-          products: ["Na2CO3", "H2O"],
-          status: "defined",
-        },
-        [pairKey("Ca(OH)2", "CO2")]: {
-          eq: "Ca(OH)_2 + CO_2 \\rightarrow CaCO_3 \\downarrow + H_2O",
-          text: "Hydroxide + CO2 → Cacbonat kết tủa",
-          products: ["CaCO3", "H2O"],
-          status: "defined",
-        },
-        [pairKey("H2SO4", "NaCl")]: {
-          eq: "2NaCl + H_2SO_4 \\rightarrow Na_2SO_4 + 2HCl",
-          text: "Muối + Axit (nồng) → Muối mới + axit bay hơi",
-          products: ["Na2SO4", "HCl"],
-          status: "possible",
-        },
-
-        // fallback: if absent -> 'possible' message will be shown
+        other: { name: "Khác", color: "#14b8a6" },
       };
 
-      /* Reaction log, undo stack */
-      let reactionLog = [];
-      let undoStack = [];
+      const CHEMS = [
+        // METALS
+        {
+          id: "Na",
+          name: "Natri",
+          type: "metal",
+          state: "solid",
+          hex: "#cbd5e1",
+          desc: "Kim loại kiềm mềm, phản ứng nổ với nước.",
+        },
+        {
+          id: "K",
+          name: "Kali",
+          type: "metal",
+          state: "solid",
+          hex: "#94a3b8",
+          desc: "Kim loại kiềm hoạt động mạnh hơn Natri.",
+        },
+        {
+          id: "Mg",
+          name: "Magie",
+          type: "metal",
+          state: "solid",
+          hex: "#e2e8f0",
+          desc: "Cháy sáng rực rỡ, dùng làm pháo hoa.",
+        },
+        {
+          id: "Fe",
+          name: "Sắt",
+          type: "metal",
+          state: "solid",
+          hex: "#57534e",
+          desc: "Kim loại phổ biến nhất, dễ bị gỉ.",
+        },
+        {
+          id: "Cu",
+          name: "Đồng",
+          type: "metal",
+          state: "solid",
+          hex: "#b45309",
+          desc: "Kim loại đỏ, dẫn điện tốt.",
+        },
+        {
+          id: "Zn",
+          name: "Kẽm",
+          type: "metal",
+          state: "solid",
+          hex: "#cbd5e1",
+          desc: "Dùng để mạ sắt, phản ứng với axit sinh H2.",
+        },
+        {
+          id: "Al",
+          name: "Nhôm",
+          type: "metal",
+          state: "solid",
+          hex: "#d1d5db",
+          desc: "Kim loại nhẹ, có màng oxit bảo vệ.",
+        },
+        {
+          id: "Ca",
+          name: "Canxi",
+          type: "metal",
+          state: "solid",
+          hex: "#e5e7eb",
+          desc: "Kim loại kiềm thổ, phản ứng với nước.",
+        },
+        {
+          id: "Pb",
+          name: "Chì",
+          type: "metal",
+          state: "solid",
+          hex: "#6b7280",
+          desc: "Kim loại nặng, độc.",
+        },
+        {
+          id: "Ag",
+          name: "Bạc",
+          type: "metal",
+          state: "solid",
+          hex: "#f8fafc",
+          desc: "Kim loại quý, dẫn điện tốt nhất.",
+        },
+        {
+          id: "Au",
+          name: "Vàng",
+          type: "metal",
+          state: "solid",
+          hex: "#facc15",
+          desc: "Kim loại quý, không bị oxi hóa.",
+        },
+        // NON
+        {
+          id: "P",
+          name: "Photpho",
+          type: "other",
+          state: "solid",
+          hex: "#fde68a",
+          desc: "Phi kim hoạt động, dễ cháy.",
+        },
+        {
+          id: "N2",
+          name: "Nitơ",
+          type: "gas",
+          hex: "#fff",
+          desc: "Khí trơ tương đối, chiếm 78% không khí.",
+        },
+        {
+          id: "CH4",
+          name: "Metan",
+          type: "gas",
+          hex: "#fff",
+          desc: "Khí cháy, thành phần chính của khí tự nhiên.",
+        },
+        {
+          id: "C2H4",
+          name: "Etilen",
+          type: "gas",
+          hex: "#fff",
+          desc: "Khí làm quả nhanh chín.",
+        },
+        {
+          id: "C2H5OH",
+          name: "Etanol",
+          type: "other",
+          state: "liquid",
+          hex: "#ecfeff",
+          desc: "Rượu etylic, dễ cháy.",
+        },
 
-      /* UI Elements */
-      const chemListDiv = document.getElementById("chemList");
-      const reactionArea = document.getElementById("reactionArea");
-      const eqBoxInner = document.getElementById("equationBoxInner");
-      const resultBox = document.getElementById("resultBox");
-      const rxListDiv = document.getElementById("rxList");
-      const catalogDiv = document.getElementById("reactionCatalog");
+        // ACIDS
+        {
+          id: "HCl",
+          name: "Axit Clohydric",
+          type: "acid",
+          state: "liquid",
+          hex: "rgba(239,68,68,0.8)",
+          desc: "Axit mạnh có trong dạ dày.",
+        },
+        {
+          id: "H2SO4",
+          name: "H2SO4 (Loãng)",
+          type: "acid",
+          state: "liquid",
+          hex: "rgba(239,68,68,0.8)",
+          desc: "Hóa chất công nghiệp quan trọng.",
+        },
+        {
+          id: "H2SO4_dac",
+          name: "H2SO4 (Đặc)",
+          type: "acid",
+          state: "liquid",
+          hex: "#7e22ce",
+          conc: true,
+          desc: "Háo nước cực mạnh, gây bỏng nặng.",
+        },
+        {
+          id: "HNO3",
+          name: "Axit Nitric",
+          type: "acid",
+          state: "liquid",
+          hex: "rgba(239,68,68,0.8)",
+          desc: "Axit mạnh, bốc khói trong không khí ẩm.",
+        },
+        {
+          id: "H2CO3",
+          name: "Axit Cacbonic",
+          type: "acid",
+          state: "liquid",
+          hex: "rgba(239,68,68,0.6)",
+          desc: "Axit yếu, có trong nước có gas.",
+        },
+        {
+          id: "H2S",
+          name: "Axit Sunfuhidric",
+          type: "acid",
+          state: "gas",
+          hex: "#fff",
+          desc: "Mùi trứng thối.",
+        },
+        {
+          id: "H3PO4",
+          name: "Axit Photphoric",
+          type: "acid",
+          state: "liquid",
+          hex: "rgba(239,68,68,0.6)",
+          desc: "Dùng trong phân bón.",
+        },
+        {
+          id: "HNO2",
+          name: "Axit Nitrit",
+          type: "acid",
+          state: "liquid",
+          hex: "rgba(239,68,68,0.6)",
+          desc: "Axit yếu.",
+        },
+        {
+          id: "HF",
+          name: "Axit Flohydric",
+          type: "acid",
+          state: "liquid",
+          hex: "#fb7185",
+          desc: "Ăn mòn thủy tinh.",
+        },
+        {
+          id: "CH3COOH",
+          name: "Axit Axetic",
+          type: "acid",
+          state: "liquid",
+          hex: "rgba(251,191,36,0.6)",
+          desc: "Thành phần chính của giấm ăn.",
+        },
+        // BASES
+        {
+          id: "Ca(OH)2",
+          name: "Canxi Hidroxit",
+          type: "base",
+          state: "liquid",
+          hex: "rgba(59,130,246,0.6)",
+          desc: "Nước vôi trong.",
+        },
+        {
+          id: "Mg(OH)2",
+          name: "Magie Hidroxit",
+          type: "base",
+          state: "solid",
+          hex: "#f8fafc",
+          desc: "Bazơ ít tan.",
+        },
+        {
+          id: "Al(OH)3",
+          name: "Nhôm Hidroxit",
+          type: "base",
+          state: "solid",
+          hex: "#f8fafc",
+          desc: "Bazơ lưỡng tính.",
+        },
 
-      /* Render chemical buttons (with colors) */
-      function renderChemButtons() {
-        chemListDiv.innerHTML = "";
-        CHEMICALS.forEach((id) => {
-          const btn = document.createElement("button");
-          btn.className = "chem-btn c-" + id.replace(/[^0-9A-Za-z\(\)]/g, "");
-          btn.innerHTML = `<i class="fa fa-circle-dot"></i> ${id}`;
-          btn.title = id;
-          btn.addEventListener("click", () => createBox(id));
-          chemListDiv.appendChild(btn);
-        });
+        {
+          id: "NaOH",
+          name: "Natri Hidroxit",
+          type: "base",
+          state: "liquid",
+          hex: "rgba(59,130,246,0.8)",
+          desc: "Xút ăn da, làm xà phòng.",
+        },
+        {
+          id: "KOH",
+          name: "Kali Hidroxit",
+          type: "base",
+          state: "liquid",
+          hex: "rgba(59,130,246,0.8)",
+          desc: "Kiềm mạnh.",
+        },
+        {
+          id: "Ba(OH)2",
+          name: "Bari Hidroxit",
+          type: "base",
+          state: "liquid",
+          hex: "rgba(59,130,246,0.8)",
+          desc: "Dung dịch kiềm mạnh của Bari.",
+        },
+        {
+          id: "Cu(OH)2",
+          name: "Đồng(II) Hidroxit",
+          type: "base",
+          state: "solid",
+          hex: "#2563eb",
+          desc: "Kết tủa màu xanh lam đặc trưng.",
+        },
+        {
+          id: "Fe(OH)3",
+          name: "Sắt(III) Hidroxit",
+          type: "base",
+          state: "solid",
+          hex: "#92400e",
+          desc: "Kết tủa màu nâu đỏ (gỉ sắt).",
+        },
+        // SALTS
+        {
+          id: "Na2CO3",
+          name: "Natri Cacbonat",
+          type: "salt",
+          state: "solid",
+          hex: "#fff",
+          desc: "Soda, dùng trong công nghiệp.",
+        },
+        {
+          id: "NaHCO3",
+          name: "Natri Hidrocacbonat",
+          type: "salt",
+          state: "solid",
+          hex: "#fff",
+          desc: "Baking soda.",
+        },
+        {
+          id: "CaCl2",
+          name: "Canxi Clorua",
+          type: "salt",
+          state: "solid",
+          hex: "#fff",
+          desc: "Hút ẩm mạnh.",
+        },
+        {
+          id: "MgSO4",
+          name: "Magie Sunfat",
+          type: "salt",
+          state: "solid",
+          hex: "#fff",
+          desc: "Muối Epsom.",
+        },
+        {
+          id: "KNO3",
+          name: "Kali Nitrat",
+          type: "salt",
+          state: "solid",
+          hex: "#fff",
+          desc: "Phân kali.",
+        },
+
+        {
+          id: "NaNO3",
+          name: "Natri Nitrat",
+          type: "salt",
+          state: "solid",
+          hex: "#fff",
+          desc: "Muối nitrat tan.",
+        },
+        {
+          id: "NH4Cl2",
+          name: "Amoni Clorua",
+          type: "salt",
+          state: "solid",
+          hex: "#fff",
+          desc: "Muối amoni.",
+        },
+        {
+          id: "NH4NO3",
+          name: "Amoni Nitrat",
+          type: "salt",
+          state: "solid",
+          hex: "#fff",
+          desc: "Phân đạm.",
+        },
+        {
+          id: "CuCl2",
+          name: "Đồng(II) Clorua",
+          type: "salt",
+          state: "liquid",
+          hex: "#22d3ee",
+          desc: "Dung dịch xanh lục.",
+        },
+        {
+          id: "FeSO4",
+          name: "Sắt(II) Sunfat",
+          type: "salt",
+          state: "liquid",
+          hex: "#a3e635",
+          desc: "Dung dịch xanh lục nhạt.",
+        },
+
+        {
+          id: "Fe2(SO4)3",
+          name: "Sắt(III) Sunfat",
+          type: "salt",
+          state: "liquid",
+          hex: "#facc15",
+          desc: "Dung dịch vàng nâu.",
+        },
+        {
+          id: "ZnCl2",
+          name: "Kẽm Clorua",
+          type: "salt",
+          state: "liquid",
+          hex: "#fff",
+          desc: "Muối kẽm tan.",
+        },
+        {
+          id: "ZnSO4",
+          name: "Kẽm Sunfat",
+          type: "salt",
+          state: "liquid",
+          hex: "#fff",
+          desc: "Muối tan.",
+        },
+        {
+          id: "Pb(NO3)2",
+          name: "Chì Nitrat",
+          type: "salt",
+          state: "solid",
+          hex: "#fff",
+          desc: "Muối chì tan.",
+        },
+        {
+          id: "Cu(NO3)2",
+          name: "Đồng(II) Nitrat",
+          type: "salt",
+          state: "liquid",
+          hex: "#38bdf8",
+          desc: "Dung dịch xanh lam.",
+        },
+        {
+          id: "CaCO3",
+          name: "Đá vôi",
+          type: "salt",
+          state: "solid",
+          hex: "#fff",
+          desc: "Thành phần chính của vỏ sò, đá cẩm thạch.",
+        },
+        {
+          id: "AgNO3",
+          name: "Bạc Nitrat",
+          type: "salt",
+          state: "liquid",
+          hex: "#fff",
+          desc: "Thuốc thử nhận biết ion Clorua.",
+        },
+        {
+          id: "BaCl2",
+          name: "Bari Clorua",
+          type: "salt",
+          state: "liquid",
+          hex: "#fff",
+          desc: "Thuốc thử nhận biết gốc Sunfat.",
+        },
+        {
+          id: "CuSO4",
+          name: "Đồng Sunfat",
+          type: "salt",
+          state: "liquid",
+          hex: "#0ea5e9",
+          desc: "Dung dịch màu xanh dương đẹp mắt.",
+        },
+        {
+          id: "KClO3",
+          name: "Kali Clorat",
+          type: "salt",
+          state: "solid",
+          hex: "#fff",
+          desc: "Chất oxi hóa mạnh, dùng làm thuốc nổ.",
+        },
+        {
+          id: "KMnO4",
+          name: "Thuốc tím",
+          type: "salt",
+          state: "solid",
+          hex: "#7e22ce",
+          desc: "Chất sát trùng, oxi hóa mạnh.",
+        },
+        // OXIDES & OTHER
+        {
+          id: "CO",
+          name: "Cacbon monoxit",
+          type: "oxide",
+          state: "gas",
+          hex: "#fff",
+          desc: "Khí không màu, rất độc.",
+        },
+        {
+          id: "SO3",
+          name: "Lưu huỳnh trioxit",
+          type: "oxide",
+          state: "gas",
+          hex: "#fff",
+          desc: "Tạo axit sunfuric khi gặp nước.",
+        },
+        {
+          id: "FeO",
+          name: "Sắt(II) oxit",
+          type: "oxide",
+          state: "solid",
+          hex: "#444",
+          desc: "Oxit bazơ.",
+        },
+        {
+          id: "Fe2O3",
+          name: "Sắt(III) oxit",
+          type: "oxide",
+          state: "solid",
+          hex: "#7c2d12",
+          desc: "Gỉ sắt.",
+        },
+        {
+          id: "Al2O3",
+          name: "Nhôm oxit",
+          type: "oxide",
+          state: "solid",
+          hex: "#f8fafc",
+          desc: "Oxit lưỡng tính.",
+        },
+
+        {
+          id: "H2O",
+          name: "Nước",
+          type: "other",
+          state: "liquid",
+          hex: "rgba(6,182,212,0.6)",
+          desc: "Dung môi vạn năng.",
+        },
+        {
+          id: "CuO",
+          name: "Đồng(II) Oxit",
+          type: "oxide",
+          state: "solid",
+          hex: "#000",
+          desc: "Bột màu đen.",
+        },
+        {
+          id: "CaO",
+          name: "Vôi sống",
+          type: "oxide",
+          state: "solid",
+          hex: "#fff",
+          desc: "Phản ứng với nước tỏa nhiệt lớn (Tôi vôi).",
+        },
+        {
+          id: "S",
+          name: "Lưu huỳnh",
+          type: "other",
+          state: "solid",
+          hex: "#fef08a",
+          desc: "Chất rắn màu vàng.",
+        },
+        {
+          id: "C",
+          name: "Cacbon",
+          type: "other",
+          state: "solid",
+          hex: "#000",
+          desc: "Than chì hoặc than hoạt tính.",
+        },
+        {
+          id: "Phenol",
+          name: "Phenolphthalein",
+          type: "indicator",
+          state: "liquid",
+          hex: "transparent",
+          desc: "Hóa hồng khi gặp Bazơ.",
+        },
+        // HIDDEN PRODUCTS
+        {
+          id: "MnO2",
+          name: "Mangan dioxit",
+          type: "oxide",
+          state: "solid",
+          hex: "#000",
+          desc: "Bột màu đen, chất xúc tác.",
+        },
+        {
+          id: "H2",
+          name: "Hydro",
+          type: "gas",
+          hex: "#fff",
+          desc: "Khí nhẹ nhất, dễ nổ.",
+        },
+        {
+          id: "CO2",
+          name: "Cacbonic",
+          type: "gas",
+          hex: "#fff",
+          desc: "Khí gây hiệu ứng nhà kính.",
+        },
+        {
+          id: "O2",
+          name: "Oxi",
+          type: "gas",
+          hex: "#fff",
+          desc: "Duy trì sự cháy và sự sống.",
+        },
+        {
+          id: "SO2",
+          name: "Lưu huỳnh đioxit",
+          type: "gas",
+          hex: "#fff",
+          desc: "Mùi hắc, gây mưa axit.",
+        },
+        {
+          id: "Cl2",
+          name: "Clo",
+          type: "gas",
+          hex: "#fde047",
+          desc: "Khí màu vàng lục, rất độc.",
+        },
+        {
+          id: "NO2",
+          name: "Nitơ đioxit",
+          type: "gas",
+          hex: "#92400e",
+          desc: "Khí màu nâu đỏ, độc.",
+        },
+        { id: "NaCl", name: "Muối ăn", type: "salt", hex: "#fff" },
+        { id: "KCl", name: "Kali Clorua", type: "salt", hex: "#fff" },
+        { id: "FeCl2", name: "Sắt(II) Clorua", type: "salt", hex: "#bef264" },
+        { id: "FeCl3", name: "Sắt(III) Clorua", type: "salt", hex: "#facc15" },
+        {
+          id: "AgCl",
+          name: "Bạc Clorua",
+          type: "salt",
+          state: "solid",
+          hex: "#fff",
+          desc: "Kết tủa trắng hóa đen ngoài ánh sáng.",
+        },
+        {
+          id: "BaSO4",
+          name: "Bari Sunfat",
+          type: "salt",
+          state: "solid",
+          hex: "#fff",
+          desc: "Kết tủa trắng bền vững.",
+        }, // PRECIPITATES & SPECIAL
+        {
+          id: "CuS",
+          name: "Đồng Sunfua",
+          type: "salt",
+          state: "solid",
+          hex: "#000",
+          desc: "Kết tủa đen.",
+        },
+        {
+          id: "FeS",
+          name: "Sắt Sunfua",
+          type: "salt",
+          state: "solid",
+          hex: "#1c1917",
+          desc: "Rắn màu đen.",
+        },
+        {
+          id: "CaSO4",
+          name: "Canxi Sunfat",
+          type: "salt",
+          state: "solid",
+          hex: "#fff",
+          desc: "Thạch cao.",
+        },
+        {
+          id: "Ca(HCO3)2",
+          name: "Canxi Hidrocacbonat",
+          type: "salt",
+          state: "liquid",
+          hex: "#fff",
+          desc: "Gây nước cứng.",
+        },
+        {
+          id: "Na2SO4",
+          name: "Natri Sunfat",
+          type: "salt",
+          state: "solid",
+          hex: "#fff",
+          desc: "Muối trung hòa.",
+        },
+
+        // EXTRA GASES
+        {
+          id: "NH3",
+          name: "Amoniac",
+          type: "gas",
+          hex: "#fff",
+          desc: "Mùi khai, bazơ yếu.",
+        },
+        {
+          id: "NO",
+          name: "Nitơ monoxit",
+          type: "gas",
+          hex: "#fff",
+          desc: "Không màu, dễ oxi hóa.",
+        },
+        {
+          id: "H2S_gas",
+          name: "H2S",
+          type: "gas",
+          hex: "#fff",
+          desc: "Khí độc mùi trứng thối.",
+        },
+        {
+          id: "O3",
+          name: "Ozon",
+          type: "gas",
+          hex: "#93c5fd",
+          desc: "Oxi hóa rất mạnh.",
+        },
+      ];
+
+      const REACTIONS = [
+        // DECOMPOSITION
+        {
+          in: ["CaCO3"],
+          heat: true,
+          out: ["CaO", "CO2"],
+          eq: "CaCO_3 \\xrightarrow{t^o} CaO + CO_2\\uparrow",
+        },
+        {
+          in: ["Cu(OH)2"],
+          heat: true,
+          out: ["CuO", "H2O"],
+          eq: "Cu(OH)_2 \\xrightarrow{t^o} CuO (đen) + H_2O",
+        },
+        {
+          in: ["Fe(OH)3"],
+          heat: true,
+          out: ["Fe2O3", "H2O"],
+          eq: "2Fe(OH)_3 \\xrightarrow{t^o} Fe_2O_3 + 3H_2O",
+        },
+        {
+          in: ["KClO3"],
+          heat: true,
+          out: ["KCl", "O2"],
+          eq: "2KClO_3 \\xrightarrow{t^o} 2KCl + 3O_2\\uparrow",
+          vis: "gas",
+        },
+        {
+          in: ["KMnO4"],
+          heat: true,
+          out: ["K2MnO4", "MnO2", "O2"],
+          eq: "2KMnO_4 \\xrightarrow{t^o} K_2MnO_4 + MnO_2 + O_2\\uparrow",
+          vis: "gas",
+        },
+        // ALKALI + WATER
+        {
+          in: ["Na", "H2O"],
+          out: ["NaOH", "H2"],
+          eq: "2Na + 2H_2O \\rightarrow 2NaOH + H_2\\uparrow",
+          vis: "boom",
+          sound: "boom",
+        },
+        {
+          in: ["K", "H2O"],
+          out: ["KOH", "H2"],
+          eq: "2K + 2H_2O \\rightarrow 2KOH + H_2\\uparrow",
+          vis: "boom",
+          sound: "boom",
+        },
+        // ACID + BASE
+        {
+          in: ["HCl", "NaOH"],
+          out: ["NaCl", "H2O"],
+          eq: "HCl + NaOH \\rightarrow NaCl + H_2O",
+          sound: "pour",
+        },
+        {
+          in: ["H2SO4", "Ba(OH)2"],
+          out: ["BaSO4", "H2O"],
+          eq: "H_2SO_4 + Ba(OH)_2 \\rightarrow BaSO_4\\downarrow + 2H_2O",
+          vis: "precip",
+        },
+        {
+          in: ["HCl", "Cu(OH)2"],
+          out: ["CuCl2", "H2O"],
+          eq: "2HCl + Cu(OH)_2 \\rightarrow CuCl_2 + 2H_2O",
+        },
+        // METAL + ACID
+        {
+          in: ["Fe", "HCl"],
+          out: ["FeCl2", "H2"],
+          eq: "Fe + 2HCl \\rightarrow FeCl_2 + H_2\\uparrow",
+          vis: "bubble",
+          sound: "fizz",
+        },
+        {
+          in: ["Zn", "H2SO4"],
+          out: ["ZnSO4", "H2"],
+          eq: "Zn + H_2SO_4 \\rightarrow ZnSO_4 + H_2\\uparrow",
+          vis: "bubble",
+          sound: "fizz",
+        },
+        { in: ["Cu", "HCl"], fail: "Đồng không phản ứng với HCl." },
+        // SALT REACTION
+        {
+          in: ["BaCl2", "H2SO4"],
+          out: ["BaSO4", "HCl"],
+          eq: "BaCl_2 + H_2SO_4 \\rightarrow BaSO_4\\downarrow + 2HCl",
+          vis: "precip",
+        },
+        {
+          in: ["AgNO3", "HCl"],
+          out: ["AgCl", "HNO3"],
+          eq: "AgNO_3 + HCl \\rightarrow AgCl\\downarrow + HNO_3",
+          vis: "precip",
+        },
+        {
+          in: ["CuSO4", "NaOH"],
+          out: ["Cu(OH)2", "Na2SO4"],
+          eq: "CuSO_4 + 2NaOH \\rightarrow Cu(OH)_2\\downarrow (xanh) + Na_2SO_4",
+          vis: "precip_blue",
+        },
+        {
+          in: ["FeCl3", "NaOH"],
+          out: ["Fe(OH)3", "NaCl"],
+          eq: "FeCl_3 + 3NaOH \\rightarrow Fe(OH)_3\\downarrow (nâu đỏ) + 3NaCl",
+          vis: "precip_red",
+        },
+        // REDOX
+        {
+          in: ["NH4Cl2", "Ca(OH)2"],
+          out: ["NH3", "CaCl2", "H2O"],
+          eq: "NH_4Cl_2 + Ca(OH)_2 \\rightarrow 2NH_3 + CaCl_2 + 2H_2O",
+          vis: "gas",
+        },
+        {
+          in: ["S", "O2"],
+          heat: true,
+          out: ["SO2"],
+          eq: "S + O_2 \\xrightarrow{t^o} SO_2",
+          vis: "burn_blue",
+          sound: "fire",
+        },
+        {
+          in: ["C", "O2"],
+          heat: true,
+          out: ["CO2"],
+          eq: "C + O_2 \\xrightarrow{t^o} CO_2",
+          vis: "burn_red",
+          sound: "fire",
+        },
+        {
+          in: ["CuO", "H2"],
+          heat: true,
+          out: ["Cu", "H2O"],
+          eq: "CuO + H_2 \\xrightarrow{t^o} Cu + H_2O",
+        },
+        // SPECIAL
+        {
+          in: ["Cu", "H2SO4_dac"],
+          heat: true,
+          out: ["CuSO4", "SO2", "H2O"],
+          eq: "Cu + 2H_2SO_4(đ) \\xrightarrow{t^o} CuSO_4 + SO_2\\uparrow + 2H_2O",
+          vis: "gas",
+          sound: "fizz",
+        },
+        {
+          in: ["NaOH", "Phenol"],
+          out: ["Mixture"],
+          eq: "NaOH + Phenol \\rightarrow Màu hồng",
+          vis: "pink",
+          sound: "pour",
+        },
+        // ================== DECOMPOSITION ==================
+        {
+          in: ["NaHCO3"],
+          heat: true,
+          out: ["Na2CO3", "CO2", "H2O"],
+          eq: "2NaHCO_3 \\xrightarrow{t^o} Na_2CO_3 + CO_2 + H_2O",
+          vis: "gas",
+        },
+        {
+          in: ["NH4Cl"],
+          heat: true,
+          out: ["NH3", "HCl"],
+          eq: "NH_4Cl \\xrightarrow{t^o} NH_3 + HCl",
+          vis: "gas",
+        },
+        {
+          in: ["Ca(OH)2"],
+          heat: true,
+          out: ["CaO", "H2O"],
+          eq: "Ca(OH)_2 \\xrightarrow{t^o} CaO + H_2O",
+        },
+
+        // ================== METAL + WATER ==================
+        {
+          in: ["Ca", "H2O"],
+          out: ["Ca(OH)2", "H2"],
+          eq: "Ca + 2H_2O \\rightarrow Ca(OH)_2 + H_2",
+          vis: "bubble",
+        },
+        {
+          in: ["Mg", "H2O"],
+          heat: true,
+          out: ["MgO", "H2"],
+          eq: "Mg + H_2O \\xrightarrow{t^o} MgO + H_2",
+        },
+        {
+          in: ["NaOH", "HCl", "Phenolphtalein"],
+          out: ["NaCl", "H2O"],
+          vis: "bubble",
+          eq: "NaOH + HCl → NaCl + H₂O",
+        },
+
+        // ================== METAL + ACID ==================
+        {
+          in: ["Al", "HCl"],
+          out: ["AlCl3", "H2"],
+          eq: "2Al + 6HCl \\rightarrow 2AlCl_3 + 3H_2",
+          vis: "bubble",
+        },
+        {
+          in: ["Mg", "H2SO4"],
+          out: ["MgSO4", "H2"],
+          eq: "Mg + H_2SO_4 \\rightarrow MgSO_4 + H_2",
+          vis: "bubble",
+        },
+        { in: ["Ag", "HCl"], fail: "Bạc không đẩy được Hidro khỏi axit." },
+
+        // ================== ACID + BASE ==================
+        {
+          in: ["HNO3", "KOH"],
+          out: ["KNO3", "H2O"],
+          eq: "HNO_3 + KOH \\rightarrow KNO_3 + H_2O",
+        },
+        {
+          in: ["H2CO3", "NaOH"],
+          out: ["Na2CO3", "H2O"],
+          eq: "H_2CO_3 + 2NaOH \\rightarrow Na_2CO_3 + 2H_2O",
+        },
+
+        // ================== SALT + SALT ==================
+        {
+          in: ["CaCl2", "Na2CO3"],
+          out: ["CaCO3", "NaCl"],
+          eq: "CaCl_2 + Na_2CO_3 \\rightarrow CaCO_3\\downarrow + 2NaCl",
+          vis: "precip",
+        },
+        {
+          in: ["Pb(NO3)2", "Na2SO4"],
+          out: ["PbSO4", "NaNO3"],
+          eq: "Pb(NO_3)_2 + Na_2SO_4 \\rightarrow PbSO_4\\downarrow + 2NaNO_3",
+          vis: "precip_white",
+        },
+
+        // ================== BASE + SALT ==================
+        {
+          in: ["NH4Cl", "NaOH"],
+          heat: true,
+          out: ["NH3", "NaCl", "H2O"],
+          eq: "NH_4Cl + NaOH \\xrightarrow{t^o} NH_3 + NaCl + H_2O",
+          vis: "gas",
+        },
+        {
+          in: ["CuSO4", "KOH"],
+          out: ["Cu(OH)2", "K2SO4"],
+          eq: "CuSO_4 + 2KOH \\rightarrow Cu(OH)_2\\downarrow + K_2SO_4",
+          vis: "precip_blue",
+        },
+
+        // ================== OXIDE + WATER ==================
+        {
+          in: ["SO3", "H2O"],
+          out: ["H2SO4"],
+          eq: "SO_3 + H_2O \\rightarrow H_2SO_4",
+        },
+        {
+          in: ["CO2", "H2O"],
+          out: ["H2CO3"],
+          eq: "CO_2 + H_2O \\rightarrow H_2CO_3",
+        },
+        {
+          in: ["Na2O", "H2O"],
+          out: ["NaOH"],
+          eq: "Na_2O + H_2O \\rightarrow 2NaOH",
+        },
+
+        // ================== OXIDE + ACID ==================
+        {
+          in: ["CuO", "HCl"],
+          out: ["CuCl2", "H2O"],
+          eq: "CuO + 2HCl \\rightarrow CuCl_2 + H_2O",
+        },
+        {
+          in: ["Fe2O3", "H2SO4"],
+          out: ["Fe2(SO4)3", "H2O"],
+          eq: "Fe_2O_3 + 3H_2SO_4 \\rightarrow Fe_2(SO_4)_3 + 3H_2O",
+        },
+
+        // ================== COMBUSTION ==================
+        {
+          in: ["CH4", "O2"],
+          heat: true,
+          out: ["CO2", "H2O"],
+          eq: "CH_4 + 2O_2 \\xrightarrow{t^o} CO_2 + 2H_2O",
+          vis: "fire",
+        },
+        {
+          in: ["C2H5OH", "O2"],
+          heat: true,
+          out: ["CO2", "H2O"],
+          eq: "C_2H_5OH + 3O_2 \\xrightarrow{t^o} 2CO_2 + 3H_2O",
+          vis: "fire",
+        },
+        {
+          in: ["MnO2", "HCl"],
+          out: ["MnCl2", "Cl2", "H2O"],
+          eq: "MnO_2 + 4HCl \\rightarrow MnCl_2 + Cl_2 + 2H_2O",
+          vis: "gas",
+        },
+        // ================== REDOX ==================
+        {
+          in: ["Fe", "CuSO4"],
+          out: ["FeSO4", "Cu"],
+          eq: "Fe + CuSO_4 \\rightarrow FeSO_4 + Cu",
+          vis: "deposit",
+        },
+        {
+          in: ["Zn", "CuCl2"],
+          out: ["ZnCl2", "Cu"],
+          eq: "Zn + CuCl_2 \\rightarrow ZnCl_2 + Cu",
+          vis: "deposit",
+        },
+
+        // ================== GAS IDENTIFICATION ==================
+        {
+          in: ["CO2", "Ca(OH)2"],
+          out: ["CaCO3", "H2O"],
+          eq: "CO_2 + Ca(OH)_2 \\rightarrow CaCO_3\\downarrow + H_2O",
+          vis: "precip",
+        },
+        {
+          in: ["NH3", "HCl"],
+          out: ["NH4Cl"],
+          eq: "NH_3 + HCl \\rightarrow NH_4Cl",
+          vis: "smoke_white",
+        },
+
+        // ================== FAILURE LOGIC ==================
+        {
+          in: ["Na", "HCl"],
+          fail: "Natri phản ứng quá mạnh, không dùng trong dung dịch axit.",
+        },
+        { in: ["Au", "HCl"], fail: "Vàng không tan trong HCl." },
+        { in: ["Cu", "NaOH"], fail: "Đồng không phản ứng với kiềm." }, // ================== CARBONATE / BICARBONATE ==================
+        {
+          in: ["Na2CO3", "HCl"],
+          out: ["NaCl", "CO2", "H2O"],
+          eq: "Na_2CO_3 + 2HCl \\rightarrow 2NaCl + CO_2 + H_2O",
+          vis: "gas",
+        },
+        {
+          in: ["NaHCO3", "HCl"],
+          out: ["NaCl", "CO2", "H2O"],
+          eq: "NaHCO_3 + HCl \\rightarrow NaCl + CO_2 + H_2O",
+          vis: "gas",
+        },
+        {
+          in: ["CaCO3", "HNO3"],
+          out: ["Ca(NO3)2", "CO2", "H2O"],
+          eq: "CaCO_3 + 2HNO_3 \\rightarrow Ca(NO_3)_2 + CO_2 + H_2O",
+        },
+
+        // ================== CO2 EXCESS ==================
+        {
+          in: ["CaCO3", "CO2", "H2O"],
+          out: ["Ca(HCO3)2"],
+          eq: "CaCO_3 + CO_2 + H_2O \\rightarrow Ca(HCO_3)_2",
+        },
+        {
+          in: ["Ca(HCO3)2"],
+          heat: true,
+          out: ["CaCO3", "CO2", "H2O"],
+          eq: "Ca(HCO_3)_2 \\xrightarrow{t^o} CaCO_3 + CO_2 + H_2O",
+        },
+
+        // ================== AMMONIUM SALTS ==================
+        {
+          in: ["(NH4)2SO4", "NaOH"],
+          heat: true,
+          out: ["NH3", "Na2SO4", "H2O"],
+          eq: "(NH_4)_2SO_4 + 2NaOH \\rightarrow 2NH_3 + Na_2SO_4 + 2H_2O",
+          vis: "gas",
+        },
+        {
+          in: ["NH4NO3"],
+          heat: true,
+          out: ["N2O", "H2O"],
+          eq: "NH_4NO_3 \\xrightarrow{t^o} N_2O + 2H_2O",
+          vis: "gas",
+        },
+
+        // ================== IRON SERIES ==================
+        {
+          in: ["Fe", "H2SO4"],
+          out: ["FeSO4", "H2"],
+          eq: "Fe + H_2SO_4 \\rightarrow FeSO_4 + H_2",
+          vis: "bubble",
+        },
+        {
+          in: ["FeSO4", "NaOH"],
+          out: ["Fe(OH)2", "Na2SO4"],
+          eq: "FeSO_4 + 2NaOH \\rightarrow Fe(OH)_2\\downarrow + Na_2SO_4",
+          vis: "precip_green",
+        },
+        {
+          in: ["Fe(OH)2", "O2"],
+          out: ["Fe(OH)3"],
+          eq: "4Fe(OH)_2 + O_2 + 2H_2O \\rightarrow 4Fe(OH)_3",
+          vis: "oxidize",
+        },
+        {
+          in: ["Fe(OH)3"],
+          heat: true,
+          out: ["Fe2O3", "H2O"],
+          eq: "2Fe(OH)_3 \\xrightarrow{t^o} Fe_2O_3 + 3H_2O",
+        },
+
+        // ================== COPPER SERIES ==================
+        {
+          in: ["Cu", "O2"],
+          heat: true,
+          out: ["CuO"],
+          eq: "2Cu + O_2 \\xrightarrow{t^o} 2CuO",
+        },
+        {
+          in: ["CuO", "H2SO4"],
+          out: ["CuSO4", "H2O"],
+          eq: "CuO + H_2SO_4 \\rightarrow CuSO_4 + H_2O",
+        },
+        {
+          in: ["CuSO4", "Fe"],
+          out: ["FeSO4", "Cu"],
+          eq: "Fe + CuSO_4 \\rightarrow FeSO_4 + Cu",
+          vis: "deposit",
+        },
+
+        // ================== ALUMINUM SERIES ==================
+        {
+          in: ["Al", "O2"],
+          heat: true,
+          out: ["Al2O3"],
+          eq: "4Al + 3O_2 \\xrightarrow{t^o} 2Al_2O_3",
+        },
+        {
+          in: ["Al2O3", "HCl"],
+          out: ["AlCl3", "H2O"],
+          eq: "Al_2O_3 + 6HCl \\rightarrow 2AlCl_3 + 3H_2O",
+        },
+        {
+          in: ["Al", "NaOH", "H2O"],
+          out: ["NaAlO2", "H2"],
+          eq: "2Al + 2NaOH + 2H_2O \\rightarrow 2NaAlO_2 + 3H_2",
+          vis: "bubble",
+        },
+
+        // ================== HALOGEN TESTS ==================
+        {
+          in: ["NaCl", "AgNO3"],
+          out: ["AgCl", "NaNO3"],
+          eq: "NaCl + AgNO_3 \\rightarrow AgCl\\downarrow + NaNO_3",
+          vis: "precip_white",
+        },
+        {
+          in: ["KBr", "AgNO3"],
+          out: ["AgBr", "KNO3"],
+          eq: "KBr + AgNO_3 \\rightarrow AgBr\\downarrow + KNO_3",
+          vis: "precip_yellow",
+        },
+
+        // ================== SULFATE TEST ==================
+        {
+          in: ["Na2SO4", "BaCl2"],
+          out: ["BaSO4", "NaCl"],
+          eq: "Na_2SO_4 + BaCl_2 \\rightarrow BaSO_4\\downarrow + 2NaCl",
+          vis: "precip_white",
+        },
+
+        // ================== SULFIDE ==================
+        {
+          in: ["FeS", "HCl"],
+          out: ["FeCl2", "H2S"],
+          eq: "FeS + 2HCl \\rightarrow FeCl_2 + H_2S",
+          vis: "gas",
+        },
+        {
+          in: ["H2S", "CuSO4"],
+          out: ["CuS", "H2SO4"],
+          eq: "H_2S + CuSO_4 \\rightarrow CuS\\downarrow + H_2SO_4",
+          vis: "precip_black",
+        },
+
+        // ================== NITROGEN OXIDES ==================
+        {
+          in: ["NH3", "O2"],
+          heat: true,
+          out: ["NO", "H2O"],
+          eq: "4NH_3 + 5O_2 \\xrightarrow{t^o} 4NO + 6H_2O",
+        },
+        {
+          in: ["NO", "O2"],
+          out: ["NO2"],
+          eq: "2NO + O_2 \\rightarrow 2NO_2",
+          vis: "brown_gas",
+        },
+        {
+          in: ["NO2", "H2O"],
+          out: ["HNO3", "NO"],
+          eq: "3NO_2 + H_2O \\rightarrow 2HNO_3 + NO",
+        },
+
+        // ================== ORGANIC BASIC ==================
+        {
+          in: ["C2H5OH"],
+          heat: true,
+          out: ["C2H4", "H2O"],
+          eq: "C_2H_5OH \\xrightarrow{t^o} C_2H_4 + H_2O",
+          vis: "gas",
+        },
+        {
+          in: ["C2H4", "O2"],
+          heat: true,
+          out: ["CO2", "H2O"],
+          eq: "C_2H_4 + 3O_2 \\rightarrow 2CO_2 + 2H_2O",
+          vis: "fire",
+        },
+
+        // ================== FAILURE CASES ==================
+        { in: ["Fe", "NaOH"], fail: "Sắt không phản ứng với kiềm." },
+        {
+          in: ["Cu", "HNO3"],
+          fail: "Phản ứng này cần điều kiện đặc biệt (loãng/đặc).",
+        },
+        { in: ["AgCl", "HCl"], fail: "AgCl không tan trong axit mạnh." }, // ================== ACID SPECIAL ==================
+        {
+          in: ["Cu", "HNO3_loang"],
+          out: ["Cu(NO3)2", "NO", "H2O"],
+          eq: "3Cu + 8HNO_3 \\rightarrow 3Cu(NO_3)_2 + 2NO + 4H_2O",
+          vis: "gas",
+        },
+        {
+          in: ["Cu", "HNO3_dac"],
+          out: ["Cu(NO3)2", "NO2", "H2O"],
+          eq: "Cu + 4HNO_3 \\rightarrow Cu(NO_3)_2 + 2NO_2 + 2H_2O",
+          vis: "brown_gas",
+        },
+
+        { in: ["Fe", "HNO3_dac"], fail: "HNO3 đặc làm thụ động sắt." },
+        { in: ["Al", "HNO3_dac"], fail: "Nhôm bị thụ động bởi HNO3 đặc." },
+
+        // ================== CONCENTRATED H2SO4 ==================
+        {
+          in: ["Fe", "H2SO4_dac"],
+          heat: true,
+          out: ["FeSO4", "SO2", "H2O"],
+          eq: "Fe + 2H_2SO_4 \\rightarrow FeSO_4 + SO_2 + 2H_2O",
+          vis: "gas",
+        },
+        {
+          in: ["C", "H2SO4_dac"],
+          heat: true,
+          out: ["CO2", "SO2", "H2O"],
+          eq: "C + 2H_2SO_4 \\rightarrow CO_2 + 2SO_2 + 2H_2O",
+          vis: "gas",
+        },
+
+        // ================== HALOGEN DISPLACEMENT ==================
+        {
+          in: ["Cl2", "KBr"],
+          out: ["KCl", "Br2"],
+          eq: "Cl_2 + 2KBr \\rightarrow 2KCl + Br_2",
+          vis: "brown_liquid",
+        },
+        {
+          in: ["Cl2", "KI"],
+          out: ["KCl", "I2"],
+          eq: "Cl_2 + 2KI \\rightarrow 2KCl + I_2",
+          vis: "purple",
+        },
+
+        // ================== METAL DISPLACEMENT ==================
+        {
+          in: ["Zn", "FeSO4"],
+          out: ["ZnSO4", "Fe"],
+          eq: "Zn + FeSO_4 \\rightarrow ZnSO_4 + Fe",
+          vis: "deposit",
+        },
+        { in: ["Ag", "CuSO4"], fail: "Bạc yếu hơn đồng, không phản ứng." },
+
+        // ================== BASE SPECIAL ==================
+        {
+          in: ["Al(OH)3", "NaOH"],
+          out: ["NaAlO2", "H2O"],
+          eq: "Al(OH)_3 + NaOH \\rightarrow NaAlO_2 + 2H_2O",
+        },
+        {
+          in: ["Zn(OH)2", "NaOH"],
+          out: ["Na2ZnO2", "H2O"],
+          eq: "Zn(OH)_2 + 2NaOH \\rightarrow Na_2ZnO_2 + 2H_2O",
+        },
+
+        // ================== ACIDIC OXIDES ==================
+        {
+          in: ["SO2", "NaOH"],
+          out: ["Na2SO3", "H2O"],
+          eq: "SO_2 + 2NaOH \\rightarrow Na_2SO_3 + H_2O",
+        },
+        {
+          in: ["CO2", "NaOH"],
+          out: ["NaHCO3"],
+          eq: "CO_2 + NaOH \\rightarrow NaHCO_3",
+        },
+
+        // ================== BASIC OXIDES ==================
+        {
+          in: ["CaO", "HCl"],
+          out: ["CaCl2", "H2O"],
+          eq: "CaO + 2HCl \\rightarrow CaCl_2 + H_2O",
+        },
+        {
+          in: ["MgO", "H2SO4"],
+          out: ["MgSO4", "H2O"],
+          eq: "MgO + H_2SO_4 \\rightarrow MgSO_4 + H_2O",
+        },
+
+        // ================== IDENTIFICATION ==================
+        {
+          in: ["FeCl2", "NaOH"],
+          out: ["Fe(OH)2"],
+          eq: "FeCl_2 + 2NaOH \\rightarrow Fe(OH)_2\\downarrow",
+          vis: "green_precip",
+        },
+        {
+          in: ["FeCl3", "KSCN"],
+          out: ["Complex"],
+          eq: "Fe^{3+} + SCN^- \\rightarrow Phức đỏ máu",
+          vis: "red",
+        },
+
+        {
+          in: ["NH3", "Phenol"],
+          out: ["Mixture"],
+          eq: "NH_3 + Phenol \\rightarrow Màu hồng",
+          vis: "pink",
+        },
+        {
+          in: ["CO2", "Phenol"],
+          fail: "CO2 không làm đổi màu Phenolphtalein.",
+        },
+
+        // ================== GAS REACTIONS ==================
+        {
+          in: ["H2", "O2"],
+          heat: true,
+          out: ["H2O"],
+          eq: "2H_2 + O_2 \\xrightarrow{t^o} 2H_2O",
+          vis: "boom",
+          sound: "boom",
+        },
+        {
+          in: ["SO2", "O2"],
+          heat: true,
+          out: ["SO3"],
+          eq: "2SO_2 + O_2 \\rightarrow 2SO_3",
+        },
+
+        // ================== ORGANIC ==================
+        {
+          in: ["C2H5OH", "CuO"],
+          heat: true,
+          out: ["CH3CHO", "Cu", "H2O"],
+          eq: "C_2H_5OH + CuO \\rightarrow CH_3CHO + Cu + H_2O",
+        },
+        {
+          in: ["CH3COOH", "NaOH"],
+          out: ["CH3COONa", "H2O"],
+          eq: "CH_3COOH + NaOH \\rightarrow CH_3COONa + H_2O",
+        },
+
+        // ================== WATER HARDNESS ==================
+        {
+          in: ["Ca(HCO3)2"],
+          heat: true,
+          out: ["CaCO3", "CO2", "H2O"],
+          eq: "Ca(HCO_3)_2 \\xrightarrow{t^o} CaCO_3 + CO_2 + H_2O",
+        },
+        {
+          in: ["Mg(HCO3)2"],
+          heat: true,
+          out: ["MgCO3", "CO2", "H2O"],
+          eq: "Mg(HCO_3)_2 \\xrightarrow{t^o} MgCO_3 + CO_2 + H_2O",
+        },
+
+        // ================== FAIL LOGIC ==================
+        { in: ["NaCl", "NaOH"], fail: "Hai chất tan, không phản ứng." },
+        { in: ["KNO3", "HCl"], fail: "Muối trung hòa, không phản ứng." },
+        { in: ["CO2", "AgNO3"], fail: "Không có phản ứng nhận biết." },
+        {
+          in: ["Mg", "O2"],
+          heat: true,
+          out: ["MgO"],
+          eq: "2Mg + O_2 \\xrightarrow{t^o} 2MgO",
+        },
+        {
+          in: ["Al", "O2"],
+          heat: true,
+          out: ["Al2O3"],
+          eq: "4Al + 3O_2 \\xrightarrow{t^o} 2Al_2O_3",
+        },
+        {
+          in: ["Fe", "O2"],
+          heat: true,
+          out: ["Fe2O3"],
+          eq: "4Fe + 3O_2 \\xrightarrow{t^o} 2Fe_2O_3",
+        },
+        {
+          in: ["Fe", "O2"],
+          heat: true,
+          out: ["Fe3O4"],
+          eq: "3Fe + 2O_2 \\xrightarrow{t^o} Fe_3O_4",
+        },
+        {
+          in: ["Zn", "O2"],
+          heat: true,
+          out: ["ZnO"],
+          eq: "2Zn + O_2 \\xrightarrow{t^o} 2ZnO",
+        },
+        {
+          in: ["Cu", "O2"],
+          heat: true,
+          out: ["CuO"],
+          eq: "2Cu + O_2 \\xrightarrow{t^o} 2CuO",
+        },
+        {
+          in: ["Ca", "O2"],
+          heat: true,
+          out: ["CaO"],
+          eq: "2Ca + O_2 \\xrightarrow{t^o} 2CaO",
+        },
+        {
+          in: ["C", "O2"],
+          heat: true,
+          out: ["CO2"],
+          eq: "C + O_2 \\xrightarrow{t^o} CO_2",
+        },
+        {
+          in: ["C", "O2"],
+          heat: true,
+          out: ["CO"],
+          eq: "2C + O_2 \\xrightarrow{t^o} 2CO",
+        },
+        {
+          in: ["S", "O2"],
+          heat: true,
+          out: ["SO2"],
+          eq: "S + O_2 \\xrightarrow{t^o} SO_2",
+        },
+        {
+          in: ["P", "O2"],
+          heat: true,
+          out: ["P2O5"],
+          eq: "4P + 5O_2 \\xrightarrow{t^o} 2P_2O_5",
+        },
+        {
+          in: ["H2", "O2"],
+          heat: true,
+          out: ["H2O"],
+          eq: "2H_2 + O_2 \\xrightarrow{t^o} 2H_2O",
+        },
+        {
+          in: ["CO", "O2"],
+          heat: true,
+          out: ["CO2"],
+          eq: "2CO + O_2 \\xrightarrow{t^o} 2CO_2",
+        },
+        {
+          in: ["SO2", "O2"],
+          heat: true,
+          out: ["SO3"],
+          eq: "2SO_2 + O_2 \\xrightarrow{V_2O_5,t^o} 2SO_3",
+        },
+        {
+          in: ["NH3", "O2"],
+          heat: true,
+          out: ["NO", "H2O"],
+          eq: "4NH_3 + 5O_2 \\xrightarrow{Pt,t^o} 4NO + 6H_2O",
+        },
+        {
+          in: ["CH4", "O2"],
+          heat: true,
+          out: ["CO2", "H2O"],
+          eq: "CH_4 + 2O_2 \\xrightarrow{t^o} CO_2 + 2H_2O",
+        },
+        {
+          in: ["C2H6", "O2"],
+          heat: true,
+          out: ["CO2", "H2O"],
+          eq: "2C_2H_6 + 7O_2 \\xrightarrow{t^o} 4CO_2 + 6H_2O",
+        },
+        {
+          in: ["C2H4", "O2"],
+          heat: true,
+          out: ["CO2", "H2O"],
+          eq: "C_2H_4 + 3O_2 \\xrightarrow{t^o} 2CO_2 + 2H_2O",
+        },
+        {
+          in: ["C2H5OH", "O2"],
+          heat: true,
+          out: ["CO2", "H2O"],
+          eq: "C_2H_5OH + 3O_2 \\xrightarrow{t^o} 2CO_2 + 3H_2O",
+        },
+        {
+          in: ["C6H6", "O2"],
+          heat: true,
+          out: ["CO2", "H2O"],
+          eq: "2C_6H_6 + 15O_2 \\xrightarrow{t^o} 12CO_2 + 6H_2O",
+        },
+        {
+          in: ["Fe"],
+          out: ["Fe2O3"],
+          eq: "4Fe + 3O_2 + xH_2O \\rightarrow 2Fe_2O_3·xH_2O",
+        },
+        {
+          in: ["Cu"],
+          out: ["CuO"],
+          eq: "2Cu + O_2 \\rightarrow 2CuO",
+        },
+      ];
+
+      const QUESTS = [
+        {
+          id: 1,
+          text: "Làm tan một viên đá vôi (CaCO3) bằng nhiệt.",
+          targetIn: ["CaCO3"],
+          targetOut: ["CaO", "CO2"],
+        },
+        {
+          id: 2,
+          text: "Tạo ra khí Hydro từ kim loại Kẽm.",
+          targetIn: ["Zn", "Acid"],
+          targetOut: ["H2"],
+        },
+        {
+          id: 3,
+          text: "Điều chế kết tủa xanh lam Cu(OH)2.",
+          targetIn: ["CuSO4", "NaOH"],
+          targetOut: ["Cu(OH)2"],
+        },
+        {
+          id: 4,
+          text: "Thả Natri vào nước.",
+          targetIn: ["Na", "H2O"],
+          targetOut: ["NaOH", "H2"],
+        },
+        {
+          id: 5,
+          text: "Tạo kết tủa trắng Bari Sunfat.",
+          targetIn: ["BaCl2", "H2SO4"],
+          targetOut: ["BaSO4"],
+        },
+        {
+          id: 6,
+          text: "Biến Đồng thành dung dịch xanh lam.",
+          targetIn: ["Cu", "H2SO4"],
+          targetOut: ["CuSO4"],
+        },
+        {
+          id: 7,
+          text: "Điều chế khí CO2 từ đá vôi.",
+          targetIn: ["CaCO3", "HCl"],
+          targetOut: ["CO2"],
+        },
+        {
+          id: 8,
+          text: "Trung hoà axit HCl.",
+          targetIn: ["HCl", "NaOH"],
+          targetOut: ["NaCl", "H2O"],
+        },
+        {
+          id: 9,
+          text: "Tạo kết tủa trắng Canxi Cacbonat.",
+          targetIn: ["CaCl2", "Na2CO3"],
+          targetOut: ["CaCO3"],
+        },
+        {
+          id: 10,
+          text: "Điều chế khí Oxi bằng nhiệt.",
+          targetIn: ["KClO3"],
+          targetOut: ["O2"],
+        },
+
+        {
+          id: 11,
+          text: "Đốt cháy Magie trong không khí.",
+          targetIn: ["Mg", "O2"],
+          targetOut: ["MgO"],
+        },
+        {
+          id: 12,
+          text: "Tạo dung dịch màu xanh lục sắt(II).",
+          targetIn: ["Fe", "H2SO4"],
+          targetOut: ["FeSO4"],
+        },
+        {
+          id: 13,
+          text: "Oxi hoá sắt trong không khí.",
+          targetIn: ["Fe", "O2"],
+          targetOut: ["Fe2O3"],
+        },
+        {
+          id: 14,
+          text: "Điều chế khí Clo.",
+          targetIn: ["MnO2", "HCl"],
+          targetOut: ["Cl2"],
+        },
+        {
+          id: 15,
+          text: "Tạo kết tủa nâu đỏ sắt(III).",
+          targetIn: ["FeCl3", "NaOH"],
+          targetOut: ["Fe(OH)3"],
+        },
+
+        {
+          id: 16,
+          text: "Điều chế khí NH3.",
+          targetIn: ["NH4Cl", "Ca(OH)2"],
+          targetOut: ["NH3"],
+        },
+        {
+          id: 17,
+          text: "Đốt cháy khí Metan.",
+          targetIn: ["CH4", "O2"],
+          targetOut: ["CO2", "H2O"],
+        },
+        {
+          id: 18,
+          text: "Tạo kết tủa vàng bạc clorua.",
+          targetIn: ["AgNO3", "NaCl"],
+          targetOut: ["AgCl"],
+        },
+        {
+          id: 19,
+          text: "Kim loại nhôm phản ứng với axit.",
+          targetIn: ["Al", "HCl"],
+          targetOut: ["H2"],
+        },
+        {
+          id: 20,
+          text: "Điều chế khí Hidro từ sắt.",
+          targetIn: ["Fe", "H2SO4"],
+          targetOut: ["H2"],
+        },
+
+        {
+          id: 21,
+          text: "Nhiệt phân Canxi hiđroxit.",
+          targetIn: ["Ca(OH)2"],
+          targetOut: ["CaO"],
+        },
+        {
+          id: 22,
+          text: "Cho CO2 vào nước vôi trong.",
+          targetIn: ["CO2", "Ca(OH)2"],
+          targetOut: ["CaCO3"],
+        },
+        {
+          id: 23,
+          text: "Dư CO2 làm tan kết tủa.",
+          targetIn: ["CO2", "CaCO3", "H2O"],
+          targetOut: ["Ca(HCO3)2"],
+        },
+        {
+          id: 24,
+          text: "Tạo muối Natri Sunfat.",
+          targetIn: ["NaOH", "H2SO4"],
+          targetOut: ["Na2SO4"],
+        },
+        {
+          id: 25,
+          text: "Tạo dung dịch đồng(II) clorua.",
+          targetIn: ["Cu", "Cl2"],
+          targetOut: ["CuCl2"],
+        },
+
+        {
+          id: 26,
+          text: "Oxi hoá lưu huỳnh.",
+          targetIn: ["S", "O2"],
+          targetOut: ["SO2"],
+        },
+        {
+          id: 27,
+          text: "Điều chế axit Sunfuric loãng.",
+          targetIn: ["SO3", "H2O"],
+          targetOut: ["H2SO4"],
+        },
+        {
+          id: 28,
+          text: "Tạo kết tủa trắng Nhôm hiđroxit.",
+          targetIn: ["AlCl3", "NaOH"],
+          targetOut: ["Al(OH)3"],
+        },
+        {
+          id: 29,
+          text: "Nhôm phản ứng với kiềm.",
+          targetIn: ["Al", "NaOH"],
+          targetOut: ["H2"],
+        },
+        {
+          id: 30,
+          text: "Điều chế khí CO.",
+          targetIn: ["C", "O2"],
+          targetOut: ["CO"],
+        },
+
+        {
+          id: 31,
+          text: "Khử đồng(II) oxit bằng hidro.",
+          targetIn: ["CuO", "H2"],
+          targetOut: ["Cu"],
+        },
+        {
+          id: 32,
+          text: "Khử sắt(III) oxit bằng CO.",
+          targetIn: ["Fe2O3", "CO"],
+          targetOut: ["Fe"],
+        },
+        {
+          id: 33,
+          text: "Điều chế muối Natri Clorua.",
+          targetIn: ["NaOH", "HCl"],
+          targetOut: ["NaCl"],
+        },
+        {
+          id: 34,
+          text: "Tạo kết tủa xanh lục sắt(II).",
+          targetIn: ["FeSO4", "NaOH"],
+          targetOut: ["Fe(OH)2"],
+        },
+        {
+          id: 35,
+          text: "Oxi hoá sắt(II) thành sắt(III).",
+          targetIn: ["Fe(OH)2", "O2"],
+          targetOut: ["Fe(OH)3"],
+        },
+
+        {
+          id: 36,
+          text: "Điều chế khí H2S.",
+          targetIn: ["FeS", "HCl"],
+          targetOut: ["H2S"],
+        },
+        {
+          id: 37,
+          text: "Tạo kết tủa đen Đồng sunfua.",
+          targetIn: ["CuSO4", "H2S"],
+          targetOut: ["CuS"],
+        },
+        {
+          id: 38,
+          text: "Đốt cháy photpho.",
+          targetIn: ["P", "O2"],
+          targetOut: ["P2O5"],
+        },
+        {
+          id: 39,
+          text: "Tạo axit photphoric.",
+          targetIn: ["P2O5", "H2O"],
+          targetOut: ["H3PO4"],
+        },
+        {
+          id: 40,
+          text: "Điều chế muối Canxi clorua.",
+          targetIn: ["CaCO3", "HCl"],
+          targetOut: ["CaCl2"],
+        },
+
+        {
+          id: 41,
+          text: "Oxi hoá khí NH3.",
+          targetIn: ["NH3", "O2"],
+          targetOut: ["NO"],
+        },
+        {
+          id: 42,
+          text: "Điều chế khí NO2.",
+          targetIn: ["NO", "O2"],
+          targetOut: ["NO2"],
+        },
+        {
+          id: 43,
+          text: "Tạo axit nitric.",
+          targetIn: ["NO2", "H2O"],
+          targetOut: ["HNO3"],
+        },
+        {
+          id: 44,
+          text: "Tạo muối Kali Nitrat.",
+          targetIn: ["KOH", "HNO3"],
+          targetOut: ["KNO3"],
+        },
+        {
+          id: 45,
+          text: "Đốt cháy etanol.",
+          targetIn: ["C2H5OH", "O2"],
+          targetOut: ["CO2", "H2O"],
+        },
+
+        {
+          id: 46,
+          text: "Điều chế xút NaOH.",
+          targetIn: ["Na2CO3", "Ca(OH)2"],
+          targetOut: ["NaOH"],
+        },
+        {
+          id: 47,
+          text: "Tạo kết tủa trắng Magie hiđroxit.",
+          targetIn: ["MgCl2", "NaOH"],
+          targetOut: ["Mg(OH)2"],
+        },
+        {
+          id: 48,
+          text: "Khử CO2 bằng magie.",
+          targetIn: ["CO2", "Mg"],
+          targetOut: ["C", "MgO"],
+        },
+        {
+          id: 49,
+          text: "Điều chế khí etilen.",
+          targetIn: ["C2H5OH"],
+          targetOut: ["C2H4"],
+        },
+        {
+          id: 50,
+          text: "Trung hoà nước thải axit.",
+          targetIn: ["Acid", "Ca(OH)2"],
+          targetOut: ["Muoi", "H2O"],
+        },
+      ];
+
+      /**
+       * 2. AUDIO SYSTEM (Synthesized SFX)
+       */
+      class SoundManager {
+        constructor() {
+          this.ctx = null;
+          this.muted = false;
+        }
+
+        init() {
+          if (!this.ctx) {
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+          }
+        }
+
+        play(type) {
+          if (this.muted || !this.ctx) return;
+          if (this.ctx.state === "suspended") this.ctx.resume();
+
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          switch (type) {
+            case "pop": // Spawn item
+              osc.type = "sine";
+              osc.frequency.setValueAtTime(600, t);
+              osc.frequency.exponentialRampToValueAtTime(100, t + 0.1);
+              gain.gain.setValueAtTime(0.3, t);
+              gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
+              osc.start(t);
+              osc.stop(t + 0.1);
+              break;
+            case "glass": // Trash
+              osc.type = "triangle";
+              osc.frequency.setValueAtTime(1200, t);
+              osc.frequency.exponentialRampToValueAtTime(800, t + 0.1);
+              gain.gain.setValueAtTime(0.2, t);
+              gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+              osc.start(t);
+              osc.stop(t + 0.15);
+              break;
+            case "boom": // Explosion
+              osc.type = "sawtooth";
+              osc.frequency.setValueAtTime(100, t);
+              osc.frequency.exponentialRampToValueAtTime(10, t + 0.5);
+              gain.gain.setValueAtTime(0.5, t);
+              gain.gain.exponentialRampToValueAtTime(0.01, t + 0.5);
+              osc.start(t);
+              osc.stop(t + 0.5);
+              break;
+            case "fizz": // Bubbles
+              osc.type = "square";
+              // Random fizz sounds
+              for (let i = 0; i < 5; i++) {
+                let o = this.ctx.createOscillator();
+                let g = this.ctx.createGain();
+                o.connect(g);
+                g.connect(this.ctx.destination);
+                o.type = "sawtooth";
+                o.frequency.value = 200 + Math.random() * 400;
+                g.gain.setValueAtTime(0.1, t + i * 0.05);
+                g.gain.exponentialRampToValueAtTime(0.01, t + i * 0.05 + 0.1);
+                o.start(t + i * 0.05);
+                o.stop(t + i * 0.05 + 0.1);
+              }
+              break;
+            case "success": // Quest Done
+              osc.type = "sine";
+              osc.frequency.setValueAtTime(400, t);
+              osc.frequency.setValueAtTime(600, t + 0.1);
+              osc.frequency.setValueAtTime(1000, t + 0.2);
+              gain.gain.setValueAtTime(0.2, t);
+              gain.gain.linearRampToValueAtTime(0, t + 0.6);
+              osc.start(t);
+              osc.stop(t + 0.6);
+              break;
+          }
+        }
       }
-      renderChemButtons();
+      const sfx = new SoundManager();
 
-      /* create a draggable box in reaction area */
-      let createdBoxes = [];
-      function createBox(id, x = null, y = null, options = { product: false }) {
-        const box = document.createElement("div");
-        box.className = "chemical-box" + (options.product ? " product" : "");
-        box.textContent = id;
-        box.classList.add("c-" + id.replace(/[^0-9A-Za-z\(\)]/g, ""));
-        reactionArea.appendChild(box);
+      /**
+       * 3. GAME ENGINE
+       */
+      class LabEngine {
+        addToBeaker(el, beaker) {
+          const list = JSON.parse(beaker.dataset.contents);
+          list.push(el.dataset.id);
+          beaker.dataset.contents = JSON.stringify(list);
 
-        // position
-        const ar = reactionArea.getBoundingClientRect();
-        if (x === null || y === null) {
-          const left = Math.random() * (ar.width - 140) + 20;
-          const top = Math.random() * (ar.height - 90) + 10;
-          box.style.left = left + "px";
-          box.style.top = top + "px";
-        } else {
-          box.style.left = x + "px";
-          box.style.top = y + "px";
+          this.removeElement(el);
+
+          this.showToast("Thêm vào beaker", list.join(" + "), "success");
+
+          this.checkBeakerReaction(beaker);
         }
 
-        enableDrag(box);
-        createdBoxes.push(box);
-        return box;
-      }
+        checkBeakerReaction(beaker) {
+          const ids = JSON.parse(beaker.dataset.contents).sort();
 
-      /* Dragging (mouse + touch) */
-      function enableDrag(el) {
-        let dragging = false;
-        let shiftX = 0,
-          shiftY = 0;
+          const rule = REACTIONS.find((r) => {
+            if (!r.in || r.in.length !== ids.length) return false;
+            return [...r.in].sort().every((i) => ids.includes(i));
+          });
 
-        function down(e) {
-          e.preventDefault();
-          dragging = true;
-          const rect = el.getBoundingClientRect();
-          const areaRect = reactionArea.getBoundingClientRect();
-          const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-          const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-          shiftX = clientX - rect.left;
-          shiftY = clientY - rect.top;
-          el.style.transition = "none";
-          el.style.zIndex = 100;
+          if (!rule) return;
+
+          const rect = beaker.getBoundingClientRect();
+          const pos = {
+            x: rect.left,
+            y: rect.top,
+          };
+
+          beaker.dataset.contents = JSON.stringify([]);
+          this.executeReaction(rule, [], pos);
+        }
+        constructor() {
+          this.bench = document.getElementById("bench");
+          this.trash = document.getElementById("trash");
+          this.elements = [];
+          this.tools = [];
+          this.questIndex = 0;
+          this.safety = 100;
+
+          // Load Saved Progress
+          const savedQ = localStorage.getItem("educhem_quest");
+          if (savedQ) this.questIndex = parseInt(savedQ);
+
+          this.setupDragDrop();
+          this.updateQuestUI();
+          this.updateSafetyUI();
+
+          // Init Audio on first interaction
+          window.addEventListener("click", () => sfx.init(), { once: true });
         }
 
-        function move(e) {
-          if (!dragging) return;
-          const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-          const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-          const ar = reactionArea.getBoundingClientRect();
-          let left = clientX - ar.left - shiftX;
-          let top = clientY - ar.top - shiftY;
-          left = Math.max(4, Math.min(left, ar.width - el.offsetWidth - 4));
-          top = Math.max(4, Math.min(top, ar.height - el.offsetHeight - 4));
-          el.style.left = left + "px";
-          el.style.top = top + "px";
-          // detect collisions visually while moving (optional)
+        spawn(id, x, y) {
+          const data = this.getData(id);
+          const el = document.createElement("div");
+          el.className = `element state-${data.state || "solid"}`;
+          el.dataset.id = id;
+          el.dataset.type = "element";
+
+          // Double Click for Wiki
+          el.ondblclick = () => openWiki(id);
+
+          // Visual content
+          let bg = data.hex || "#ccc";
+          let innerClass = `substance ${data.state || "solid"}`;
+          el.innerHTML = `
+                  <div class="${innerClass}" style="--fill-color:${bg}"></div>
+                  <div class="el-label">${id}</div>
+                  <div class="el-temp"><i class="fa fa-fire"></i> Hot</div>
+                `;
+          this.placeOnBench(el, x, y);
+          this.elements.push(el);
+          this.animatePop(el);
+          sfx.play("pop");
         }
 
-        function up(e) {
-          if (!dragging) return;
-          dragging = false;
-          el.style.transition = "";
-          el.style.zIndex = 30;
-          checkCollisionFor(el);
+        spawnTool(type) {
+          let el;
+          if (type === "burner") {
+            el = document.createElement("div");
+            el.className = "burner";
+            el.innerHTML = '<div class="flame"></div>';
+            el.dataset.type = "burner";
+          } else if (type === "litmus") {
+            el = document.createElement("div");
+            el.className = "litmus";
+            el.dataset.type = "litmus";
+            el.dataset.color = "neutral";
+          } else if (type === "ice") {
+            el = document.createElement("div");
+            el.className = "ice-bath";
+            el.dataset.type = "ice";
+          } else if (type === "thermometer") {
+            el = document.createElement("div");
+            el.className = "thermometer";
+            el.innerHTML = '<div class="thermo-val">25°C</div>';
+            el.dataset.type = "thermometer";
+          } else if (type === "beaker") {
+            el = document.createElement("div");
+            el.className = "beaker";
+            el.dataset.type = "beaker";
+            el.dataset.contents = JSON.stringify([]);
+            el.innerHTML = `<div class="beaker-label">Beaker</div>`;
+          }
+
+          this.placeOnBench(el);
+          this.tools.push(el);
+          this.animatePop(el);
+          sfx.play("pop");
         }
 
-        el.addEventListener("mousedown", down);
-        document.addEventListener("mousemove", move);
-        document.addEventListener("mouseup", up);
-        el.addEventListener("touchstart", down, { passive: false });
-        document.addEventListener("touchmove", move, { passive: false });
-        document.addEventListener("touchend", up);
-        el.ondragstart = () => false;
-      }
+        placeOnBench(el, x, y) {
+          const rect = this.bench.getBoundingClientRect();
+          const randX = rect.width / 2 + (Math.random() * 100 - 50);
+          const randY = rect.height / 2 + (Math.random() * 100 - 50);
+          el.style.left = (x || randX) + "px";
+          el.style.top = (y || randY) + "px";
+          this.bench.appendChild(el);
+        }
 
-      /* collision detection for moved element */
-      function checkCollisionFor(el) {
-        const boxes = Array.from(document.querySelectorAll(".chemical-box"));
-        const r1 = el.getBoundingClientRect();
-        for (const b of boxes) {
-          if (b === el) continue;
-          const r2 = b.getBoundingClientRect();
+        getData(id) {
+          return (
+            CHEMS.find((c) => c.id === id) || {
+              id: id,
+              hex: "#ccc",
+              state: "solid",
+            }
+          );
+        }
+
+        /* --- LOGIC: INTERACTION --- */
+        checkCollisions(activeEl) {
+          const r1 = activeEl.getBoundingClientRect();
+          const cx1 = r1.left + r1.width / 2;
+          const cy1 = r1.top + r1.height / 2;
+
+          // 1. Check Trash
+          const tr = this.trash.getBoundingClientRect();
           if (
-            r1.left < r2.right &&
-            r1.right > r2.left &&
-            r1.top < r2.bottom &&
-            r1.bottom > r2.top
+            Math.hypot(
+              cx1 - (tr.left + tr.width / 2),
+              cy1 - (tr.top + tr.height / 2)
+            ) < 50
           ) {
-            // collided
-            const a = el.textContent.trim();
-            const btxt = b.textContent.trim();
-            performReaction(a, btxt, el, b);
+            this.removeElement(activeEl);
             return;
           }
-        }
-      }
 
-      /* perform reaction lookup */
-      function performReaction(a, b, elA, elB) {
-        const key = pairKey(a, b);
-        const reaction = REACTIONS[key];
-        if (reaction) {
-          displayReaction(reaction.eq, reaction.text, reaction.status);
-          // create products if defined
-          if (reaction.products && reaction.products.length) {
-            const r1 = elA.getBoundingClientRect();
-            const r2 = elB.getBoundingClientRect();
-            const areaRect = reactionArea.getBoundingClientRect();
-            const x =
-              ((r1.left + r1.right) / 2 + (r2.left + r2.right) / 2) / 2 -
-              areaRect.left;
-            const y =
-              ((r1.top + r1.bottom) / 2 + (r2.top + r2.bottom) / 2) / 2 -
-              areaRect.top;
-            reaction.products.forEach((p, idx) => {
-              const offset = (idx - (reaction.products.length - 1) / 2) * 18;
-              createBox(p, x + offset, y + 6, { product: true });
+          const type = activeEl.dataset.type;
+
+          // 2. Logic: Burner (Heat Source)
+          if (type === "burner") {
+            this.elements.forEach((el) => {
+              if (this.getDist(activeEl, el) < 60) {
+                this.applyHeat(el);
+              }
             });
-            // special effects for tags
-            if (reaction.tags && reaction.tags.includes("gas")) {
-              // create gas effect near location
-              spawnGasAt(
-                (r1.left + r2.left) / 2 - areaRect.left,
-                (r1.top + r2.top) / 2 - areaRect.top
-              );
+            return;
+          }
+
+          // 3. Logic: Ice Bath (Cool Source)
+          if (type === "ice") {
+            this.elements.forEach((el) => {
+              if (this.getDist(activeEl, el) < 60) {
+                if (el.classList.contains("hot")) {
+                  el.classList.remove("hot");
+                  sfx.play("fizz"); // Cool down sound
+                  this.showToast(
+                    "Làm lạnh",
+                    `${el.dataset.id} đã nguội.`,
+                    "success"
+                  );
+                }
+              }
+            });
+            return;
+          }
+
+          // 4. Logic: Litmus
+          if (type === "litmus") {
+            this.elements.forEach((el) => {
+              if (this.getDist(activeEl, el) < 40) this.checkPH(activeEl, el);
+            });
+            return;
+          }
+
+          // 5. Logic: Thermometer
+          if (type === "thermometer") {
+            let nearest = null;
+            let minD = 100;
+            this.elements.forEach((el) => {
+              const d = this.getDist(activeEl, el);
+              if (d < 60 && d < minD) {
+                minD = d;
+                nearest = el;
+              }
+            });
+            const val = activeEl.querySelector(".thermo-val");
+            if (nearest) {
+              activeEl.classList.add("reading");
+              const isHot = nearest.classList.contains("hot");
+              val.innerText = isHot
+                ? 80 + Math.floor(Math.random() * 40) + "°C"
+                : "25°C";
+              val.style.color = isHot ? "#ef4444" : "#fff";
+            } else {
+              activeEl.classList.remove("reading");
             }
-            if (reaction.tags && reaction.tags.includes("precipitate")) {
-              spawnPrecipitation(
-                (r1.left + r2.left) / 2 - areaRect.left,
-                (r1.top + r2.top) / 2 - areaRect.top
-              );
+            return;
+          }
+
+          // 6. Logic: Element + Element
+          if (type === "element") {
+            for (let target of this.elements) {
+              if (target === activeEl) continue;
+              if (this.getDist(activeEl, target) < 60) {
+                this.processReaction(activeEl, target);
+                return; // React only with one at a time
+              }
+            }
+          } // --- ELEMENT → BEAKER ---
+          if (type === "element") {
+            this.tools.forEach((tool) => {
+              if (tool.dataset.type !== "beaker") return;
+              if (this.getDist(activeEl, tool) < 50) {
+                this.addToBeaker(activeEl, tool);
+                return;
+              }
+            });
+          }
+        }
+
+        getDist(el1, el2) {
+          const r1 = el1.getBoundingClientRect();
+          const r2 = el2.getBoundingClientRect();
+          return Math.hypot(
+            r1.left + r1.width / 2 - (r2.left + r2.width / 2),
+            r1.top + r1.height / 2 - (r2.top + r2.height / 2)
+          );
+        }
+
+        /* --- LOGIC: HEAT --- */
+        applyHeat(el) {
+          if (el.classList.contains("hot")) return;
+          el.classList.add("hot");
+
+          // Check decomposition immediately
+          const id = el.dataset.id;
+          const rule = REACTIONS.find(
+            (r) => r.in.length === 1 && r.in[0] === id && r.heat
+          );
+          if (rule) {
+            setTimeout(
+              () =>
+                this.executeReaction(rule, [el], {
+                  x: parseFloat(el.style.left),
+                  y: parseFloat(el.style.top),
+                }),
+              1000
+            );
+          }
+        }
+
+        /* --- LOGIC: PH --- */
+        checkPH(paper, el) {
+          const data = this.getData(el.dataset.id);
+          if (!data.type) return;
+          if (data.type === "acid") paper.style.backgroundColor = "#ef4444";
+          else if (data.type === "base")
+            paper.style.backgroundColor = "#3b82f6";
+          else paper.style.backgroundColor = "#fde047";
+        }
+
+        /* --- LOGIC: REACTION CORE --- */
+        processReaction(elA, elB) {
+          const idA = elA.dataset.id;
+          const idB = elB.dataset.id;
+          const isHot =
+            elA.classList.contains("hot") || elB.classList.contains("hot");
+
+          const rule = REACTIONS.find(
+            (r) => r.in.length === 2 && r.in.includes(idA) && r.in.includes(idB)
+          );
+
+          if (!rule) {
+            this.physicsBounce(elA, elB);
+            return;
+          }
+
+          if (rule.fail) {
+            this.showToast("Không phản ứng", rule.fail, "warn");
+            this.physicsBounce(elA, elB);
+            return;
+          }
+
+          if (rule.heat && !isHot) {
+            this.showToast(
+              "Chưa đủ nhiệt độ",
+              "Cần nung nóng chất phản ứng!",
+              "warn"
+            );
+            this.physicsBounce(elA, elB);
+            return;
+          }
+
+          const center = {
+            x: (parseFloat(elA.style.left) + parseFloat(elB.style.left)) / 2,
+            y: (parseFloat(elA.style.top) + parseFloat(elB.style.top)) / 2,
+          };
+          this.executeReaction(rule, [elA, elB], center);
+        }
+
+        executeReaction(rule, inputs, pos) {
+          inputs.forEach((el) => this.removeElement(el, false)); // No glass sound
+
+          // Spawn Outputs
+          if (rule.out) {
+            if (rule.out[0] === "Mixture") {
+              this.fxColor(pos.x, pos.y, "#e879f9");
+            } else {
+              rule.out.forEach((pid, i) => {
+                setTimeout(() => {
+                  this.spawn(
+                    pid,
+                    pos.x + (Math.random() * 40 - 20),
+                    pos.y + (Math.random() * 40 - 20)
+                  );
+                }, i * 150);
+              });
             }
           }
-          // remove reagents (animate)
-          animateRemove(elA);
-          animateRemove(elB);
-          // log
-          addLog(a, b, reaction.eq, reaction.text, reaction.status);
-        } else {
-          // Not in DB: show possible reaction message (author not finished)
-          displayReaction(
-            "\\text{Có thể phản ứng -- chưa định nghĩa trong DB}",
-            "Có thể phản ứng nhưng dữ liệu phương trình chưa được nhập (tác giả chưa hoàn thiện)",
-            "possible"
-          );
-          addLog(
-            a,
-            b,
-            "(chưa định nghĩa)",
-            "Có thể phản ứng nhưng chưa có phương trình",
-            "possible"
-          );
-          // gentle shake
-          [elA, elB].forEach((el) => {
-            el.style.transform = "translateY(-8px)";
-            setTimeout(() => (el.style.transform = ""), 260);
-          });
-        }
-      }
 
-      /* display reaction using MathJax */
-      function displayReaction(eq, text, status = "defined") {
-        // use MathJax to render LaTeX if present
-        eqBoxInner.classList.add("flash");
-        // clear content
-        eqBoxInner.innerHTML = "";
-        // split by arrows/plus (we still render full LaTeX block)
-        const wrapper = document.createElement("div");
-        wrapper.textContent = "";
-        // Insert LaTeX inline
-        const mathSpan = document.createElement("span");
-        mathSpan.className = "token";
-        mathSpan.innerHTML = `\\(${eq}\\)`;
-        wrapper.appendChild(mathSpan);
-        eqBoxInner.appendChild(wrapper);
-        resultBox.textContent =
-          text + (status === "possible" ? " (possible / chưa hoàn thiện)" : "");
-        // typeset MathJax
-        if (window.MathJax) {
-          MathJax.typesetPromise([mathSpan]).catch((err) =>
-            console.log(err.message)
-          );
-        }
-        setTimeout(() => eqBoxInner.classList.remove("flash"), 700);
-      }
+          // Effects
+          if (rule.sound) sfx.play(rule.sound);
+          else sfx.play("pop");
 
-      /* animate removal */
-      function animateRemove(el) {
-        el.style.transition = "transform .28s ease, opacity .28s ease";
-        el.style.transform = "scale(.84) translateY(-10px)";
-        el.style.opacity = "0";
-        setTimeout(() => {
-          try {
-            el.remove();
-          } catch (e) {}
-        }, 320);
-      }
-
-      /* spawn gas animation */
-      function spawnGasAt(x, y) {
-        const gas = document.createElement("div");
-        gas.style.position = "absolute";
-        gas.style.left = x + 10 + "px";
-        gas.style.top = y + 10 + "px";
-        gas.style.width = "20px";
-        gas.style.height = "20px";
-        gas.style.borderRadius = "50%";
-        gas.style.background =
-          "radial-gradient(circle, rgba(255,255,255,0.9), rgba(200,200,200,0.2))";
-        gas.style.opacity = "0.9";
-        gas.style.zIndex = 25;
-        reactionArea.appendChild(gas);
-        // animate upward fade
-        gas.animate(
-          [
-            { transform: "translateY(0) scale(0.8)", opacity: 0.9 },
-            { transform: "translateY(-70px) scale(1.6)", opacity: 0 },
-          ],
-          { duration: 1400, easing: "ease-out" }
-        );
-        setTimeout(() => gas.remove(), 1500);
-      }
-
-      /* spawn precipitation (falling particles) */
-      function spawnPrecipitation(x, y) {
-        const n = 9;
-        for (let i = 0; i < n; i++) {
-          const p = document.createElement("div");
-          p.style.position = "absolute";
-          p.style.left = x + (Math.random() * 40 - 20) + "px";
-          p.style.top = y + (Math.random() * 10 - 5) + "px";
-          p.style.width = "6px";
-          p.style.height = "6px";
-          p.style.borderRadius = "2px";
-          p.style.background = "rgba(200,200,200,0.95)";
-          p.style.zIndex = 22;
-          reactionArea.appendChild(p);
-          const dur = 800 + Math.random() * 800;
-          p.animate(
-            [
-              { transform: "translateY(0) scale(1)", opacity: 1 },
-              {
-                transform: `translateY(${
-                  120 + Math.random() * 60
-                }px) scale(.6)`,
-                opacity: 0.6,
-              },
-            ],
-            { duration: dur, easing: "cubic-bezier(.2,.9,.2,1)" }
-          );
-          setTimeout(() => p.remove(), dur + 60);
-        }
-      }
-
-      /* Log handling */
-      function addLog(a, b, eq, text, status = "defined") {
-        const id = Date.now() + Math.random().toString(36).slice(2, 6);
-        reactionLog.unshift({
-          id,
-          a,
-          b,
-          eq,
-          text,
-          status,
-          t: new Date().toLocaleString(),
-        });
-        undoStack.push({ type: "reaction", id });
-        renderLog();
-      }
-
-      /* render log */
-      function renderLog() {
-        rxListDiv.innerHTML = "";
-        reactionLog.forEach((item) => {
-          const div = document.createElement("div");
-          div.className = "rx-item";
-          div.innerHTML = `<strong>${item.a} + ${item.b}</strong> <div style="color:var(--muted); margin-top:6px">${item.eq} — <em>${item.text}</em> <div class="small muted">${item.t}</div></div>`;
-          rxListDiv.appendChild(div);
-        });
-      }
-
-      /* export CSV */
-      function exportCSV() {
-        if (!reactionLog.length) {
-          alert("Không có lịch sử để export");
-          return;
-        }
-        const rows = [["time", "reactants", "equation", "desc", "status"]];
-        reactionLog
-          .slice()
-          .reverse()
-          .forEach((r) => {
-            rows.push([
-              r.t,
-              `${r.a} + ${r.b}`,
-              r.eq.replace(/,/g, ";"),
-              r.text.replace(/,/g, ";"),
-              r.status,
-            ]);
-          });
-        const csv = rows
-          .map((r) =>
-            r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")
+          if (rule.vis === "boom") {
+            this.fxExplosion(pos.x, pos.y);
+            this.reduceSafety(20);
+          }
+          if (rule.vis === "gas") {
+            this.fxBubbles(pos.x, pos.y, 20);
+            this.reduceSafety(5); // Toxic gas
+          }
+          if (rule.vis === "bubble") this.fxBubbles(pos.x, pos.y, 10);
+          if (
+            rule.vis === "precip" ||
+            rule.vis === "precip_blue" ||
+            rule.vis === "precip_red"
           )
-          .join("\n");
-        const blob = new Blob([csv], { type: "text/csv" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "reaction_log.csv";
-        a.click();
-        URL.revokeObjectURL(url);
-      }
+            this.fxPrecipitate(pos.x, pos.y, rule.vis);
 
-      /* undo last (remove last products if any) */
-      function undoLast() {
-        if (!undoStack.length) {
-          alert("Không có thao tác nào để undo");
-          return;
+          // Notify & Check Quest
+          this.showToast("Phản ứng thành công", `\\(${rule.eq}\\)`, "success");
+          this.checkQuest(rule);
         }
-        const last = undoStack.pop();
-        if (last.type === "reaction") {
-          // remove the last log entry and try to remove last generated product elements (heuristic: product boxes with recent timestamps)
-          const r = reactionLog.shift();
-          renderLog();
-          // remove product boxes whose text matches products in eq (not robust but okay)
-          const prodNames =
-            r.eq.match(/[A-Za-z0-9\(\)₀₁₂₃₄₅₆₇₈₉\+\-\>\<\s]+/g) || [];
-          // best-effort: remove elements with class 'product' created recently
-          const prods = document.querySelectorAll(".chemical-box.product");
-          if (prods.length) {
-            prods[0].remove();
+
+        /* --- SAFETY SYSTEM --- */
+        reduceSafety(amount) {
+          this.safety -= amount;
+          if (this.safety < 0) this.safety = 0;
+          this.updateSafetyUI();
+
+          if (this.safety <= 0) {
+            document.getElementById("gameOverScreen").classList.add("active");
+          } else if (this.safety <= 40) {
+            this.showToast(
+              "CẢNH BÁO!",
+              "Phòng thí nghiệm sắp nổ tung!",
+              "warn"
+            );
           }
-          alert(
-            "Undo: đã xóa 1 mục lịch sử. (Một số sản phẩm có thể vẫn tồn tại)"
+        }
+
+        updateSafetyUI() {
+          const bar = document.getElementById("safetyFill");
+          const txt = document.getElementById("safetyVal");
+
+          bar.style.width = this.safety + "%";
+          txt.innerText = this.safety + "%";
+
+          bar.className = "safety-bar-fill";
+          if (this.safety <= 30) bar.classList.add("danger");
+          else if (this.safety <= 60) bar.classList.add("warn");
+        }
+
+        /* --- QUEST SYSTEM --- */
+        checkQuest(rule) {
+          if (this.questIndex >= QUESTS.length) return;
+          const q = QUESTS[this.questIndex];
+
+          let done = false;
+          if (
+            q.targetOut &&
+            q.targetOut.some((t) => rule.out && rule.out.includes(t))
+          )
+            done = true;
+
+          if (done) {
+            sfx.play("success");
+            document.getElementById("questCheck").classList.add("done");
+            this.fxConfetti();
+            setTimeout(() => {
+              this.questIndex++;
+              // Save Progress
+              localStorage.setItem("educhem_quest", this.questIndex);
+              this.updateQuestUI();
+            }, 1500);
+          }
+        }
+
+        updateQuestUI() {
+          const board = document.getElementById("questBoard");
+          const txt = document.getElementById("questText");
+          const chk = document.getElementById("questCheck");
+          chk.classList.remove("done");
+
+          if (this.questIndex >= QUESTS.length) {
+            txt.innerText = "Chúc mừng! Bạn là thiên tài hóa học!";
+            txt.style.color = "var(--success)";
+            return;
+          }
+
+          board.style.transform = "translateX(-50%) scale(0.9)";
+          setTimeout(() => {
+            txt.innerText = QUESTS[this.questIndex].text;
+            board.style.transform = "translateX(-50%) scale(1)";
+          }, 200);
+        }
+
+        /* --- UTILS --- */
+        removeElement(el, playSound = true) {
+          const idx = this.elements.indexOf(el);
+          if (idx > -1) this.elements.splice(idx, 1);
+          const idxT = this.tools.indexOf(el);
+          if (idxT > -1) this.tools.splice(idxT, 1);
+
+          el.style.transform = "scale(0) rotate(180deg)";
+          el.style.opacity = "0";
+          if (playSound) sfx.play("glass");
+          setTimeout(() => el.remove(), 300);
+        }
+
+        physicsBounce(elA, elB) {
+          elA.classList.add("shake");
+          elB.classList.add("shake");
+          setTimeout(() => {
+            elA.classList.remove("shake");
+            elB.classList.remove("shake");
+          }, 500);
+        }
+
+        clear() {
+          [...this.elements, ...this.tools].forEach((el) => el.remove());
+          this.elements = [];
+          this.tools = [];
+          sfx.play("glass");
+          // Reset safety partially on clean
+          if (this.safety > 0) {
+            this.safety = 100;
+            this.updateSafetyUI();
+          }
+        }
+
+        animatePop(el) {
+          el.animate([{ transform: "scale(0)" }, { transform: "scale(1)" }], {
+            duration: 400,
+            easing: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+          });
+        }
+
+        showToast(title, msg, type) {
+          const t = document.createElement("div");
+          t.className = `toast ${type}`;
+          t.innerHTML = `<div class="toast-title">${title}</div><div class="toast-msg">${msg}</div>`;
+          document.getElementById("toastArea").appendChild(t);
+          if (window.MathJax) MathJax.typesetPromise([t]);
+          setTimeout(() => {
+            t.style.opacity = 0;
+            t.style.transform = "translateX(50px)";
+            setTimeout(() => t.remove(), 300);
+          }, 5000);
+        }
+
+        /* --- DRAG & DROP SYSTEM --- */
+        setupDragDrop() {
+          let dragged = null;
+          let diffX = 0,
+            diffY = 0;
+
+          const onStart = (e) => {
+            const target = e.target.closest(
+              ".element, .burner, .litmus, .ice-bath, .thermometer"
+            );
+            if (!target) return;
+            e.preventDefault();
+
+            // Resume Audio Context if needed
+            sfx.init();
+
+            dragged = target;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            const rect = target.getBoundingClientRect();
+            diffX = clientX - rect.left;
+            diffY = clientY - rect.top;
+
+            target.style.zIndex = 1000;
+            target.style.transition = "none";
+          };
+
+          const onMove = (e) => {
+            if (!dragged) return;
+            e.preventDefault();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            const benchRect = this.bench.getBoundingClientRect();
+            let x = clientX - benchRect.left - diffX;
+            let y = clientY - benchRect.top - diffY;
+
+            dragged.style.left = x + "px";
+            dragged.style.top = y + "px";
+
+            // Check collisions continously for some tools
+            if (dragged.dataset.type === "thermometer") {
+              this.checkCollisions(dragged);
+            }
+
+            // Visual feedback for Trash
+            const tR = this.trash.getBoundingClientRect();
+            if (
+              Math.hypot(
+                clientX - (tR.left + tR.width / 2),
+                clientY - (tR.top + tR.height / 2)
+              ) < 60
+            ) {
+              this.trash.classList.add("drag-over");
+            } else {
+              this.trash.classList.remove("drag-over");
+            }
+          };
+
+          const onEnd = (e) => {
+            if (!dragged) return;
+            this.trash.classList.remove("drag-over");
+            this.checkCollisions(dragged);
+            dragged.style.zIndex = "";
+            dragged.style.transition = "";
+            dragged = null;
+          };
+
+          this.bench.addEventListener("mousedown", onStart);
+          this.bench.addEventListener("touchstart", onStart, {
+            passive: false,
+          });
+          window.addEventListener("mousemove", onMove);
+          window.addEventListener("touchmove", onMove, { passive: false });
+          window.addEventListener("mouseup", onEnd);
+          window.addEventListener("touchend", onEnd);
+        }
+
+        /* --- FX SYSTEM --- */
+        fxExplosion(x, y) {
+          const el = document.createElement("div");
+          el.style.cssText = `position:fixed; left:${x - 50}px; top:${
+            y - 50
+          }px; width:100px; height:100px; background:radial-gradient(circle, #fef08a, #ef4444, transparent); border-radius:50%; z-index:999; mix-blend-mode:screen; pointer-events:none;`;
+          document.body.appendChild(el);
+          el.animate(
+            [
+              { transform: "scale(0)", opacity: 1 },
+              { transform: "scale(4)", opacity: 0 },
+            ],
+            600
+          ).onfinish = () => el.remove();
+
+          // Violent shake
+          document.body.animate(
+            [
+              { transform: "translate(0,0)" },
+              { transform: "translate(-10px, 10px)" },
+              { transform: "translate(10px, -10px)" },
+              { transform: "translate(0,0)" },
+            ],
+            { duration: 300, iterations: 2 }
           );
         }
-      }
 
-      /* build reaction catalog (grouped by chemical) */
-      function buildCatalog() {
-        const groups = {};
-        for (const k in REACTIONS) {
-          const [x, y] = k.split("+");
-          if (!groups[x]) groups[x] = [];
-          if (!groups[y]) groups[y] = [];
-          const rx = REACTIONS[k];
-          groups[x].push({
-            partner: y,
-            eq: rx.eq,
-            text: rx.text,
-            status: rx.status,
-          });
-          groups[y].push({
-            partner: x,
-            eq: rx.eq,
-            text: rx.text,
-            status: rx.status,
-          });
+        fxBubbles(x, y, count) {
+          for (let i = 0; i < count; i++) {
+            const b = document.createElement("div");
+            b.style.cssText = `position:absolute; left:${x}px; top:${y}px; width:${
+              5 + Math.random() * 10
+            }px; height:${
+              5 + Math.random() * 10
+            }px; background:rgba(255,255,255,0.7); border-radius:50%; z-index:90; pointer-events:none;`;
+            this.bench.appendChild(b);
+            b.animate(
+              [
+                { transform: "translate(0,0)", opacity: 1 },
+                {
+                  transform: `translate(${Math.random() * 40 - 20}px, -${
+                    50 + Math.random() * 50
+                  }px)`,
+                  opacity: 0,
+                },
+              ],
+              1000 + Math.random() * 1000
+            ).onfinish = () => b.remove();
+          }
         }
-        catalogDiv.innerHTML = "";
-        Object.keys(groups)
-          .sort()
-          .forEach((ch) => {
-            const head = document.createElement("div");
-            head.style.marginTop = "6px";
-            head.innerHTML = `<strong>${ch}</strong>`;
-            catalogDiv.appendChild(head);
-            groups[ch].forEach((it) => {
-              const div = document.createElement("div");
-              div.className = "rx-item";
-              div.innerHTML = `<span style="font-weight:700">${ch}</span> + <span style="font-weight:700">${
-                it.partner
-              }</span> → <span style="color:var(--muted)">${
-                it.eq
-              }</span> <div class="small muted">${it.text} ${
-                it.status === "possible" ? "(possible)" : ""
-              }</div>`;
-              catalogDiv.appendChild(div);
-            });
+
+        fxColor(x, y, color) {
+          const b = document.createElement("div");
+          b.style.cssText = `position:absolute; left:${x - 30}px; top:${
+            y - 30
+          }px; width:60px; height:60px; background:${color}; filter:blur(20px); border-radius:50%; z-index:10; pointer-events:none; opacity:0.6`;
+          this.bench.appendChild(b);
+          b.animate(
+            [
+              { transform: "scale(0.5)", opacity: 0.8 },
+              { transform: "scale(2)", opacity: 0 },
+            ],
+            1500
+          ).onfinish = () => b.remove();
+        }
+
+        fxConfetti() {
+          for (let i = 0; i < 30; i++) {
+            const c = document.createElement("div");
+            c.style.cssText = `position:fixed; top:50%; left:50%; width:10px; height:10px; background:hsl(${
+              Math.random() * 360
+            }, 100%, 50%); z-index:9999; pointer-events:none;`;
+            document.body.appendChild(c);
+            const angle = Math.random() * Math.PI * 2;
+            const dist = 100 + Math.random() * 200;
+            c.animate(
+              [
+                { transform: "translate(0,0) rotate(0deg)", opacity: 1 },
+                {
+                  transform: `translate(${Math.cos(angle) * dist}px, ${
+                    Math.sin(angle) * dist
+                  }px) rotate(720deg)`,
+                  opacity: 0,
+                },
+              ],
+              1000
+            ).onfinish = () => c.remove();
+          }
+        }
+
+        fxPrecipitate(x, y, type) {
+          let color = "white";
+          if (type.includes("blue")) color = "#2563eb";
+          if (type.includes("red")) color = "#92400e";
+
+          const b = document.createElement("div");
+          b.style.cssText = `position:absolute; left:${
+            x - 10
+          }px; top:${y}px; width:20px; height:40px; background:${color}; filter:blur(4px); border-radius:10px; z-index:25; pointer-events:none; opacity:0.8`;
+          this.bench.appendChild(b);
+          b.animate(
+            [
+              { transform: "translateY(0)", opacity: 1 },
+              { transform: "translateY(20px)", opacity: 0 },
+            ],
+            1500
+          ).onfinish = () => b.remove();
+        }
+      }
+
+      /**
+       * 4. UI BUILDER
+       */
+      function initUI() {
+        const list = document.getElementById("chemList");
+        const groups = {};
+
+        // Group items by type
+        CHEMS.forEach((c) => {
+          if (!c.type || !TYPES[c.type]) return; // Skip hidden/generated
+          if (!groups[c.type]) groups[c.type] = [];
+          groups[c.type].push(c);
+        });
+
+        // Create UI
+        Object.keys(TYPES).forEach((key) => {
+          if (!groups[key]) return;
+
+          const cat = TYPES[key];
+
+          // Header
+          const h = document.createElement("div");
+          h.className = "category-header";
+          h.innerText = cat.name;
+          list.appendChild(h);
+
+          // Grid
+          const grid = document.createElement("div");
+          grid.className = "chem-grid";
+
+          groups[key].forEach((c) => {
+            const item = document.createElement("div");
+            item.className = "chem-item";
+            item.onclick = () => lab.spawn(c.id);
+
+            // Info Icon
+            const info = document.createElement("i");
+            info.className = "fa fa-info-circle";
+            info.style.cssText =
+              "position:absolute; top:2px; left:2px; font-size:0.6rem; color:#94a3b8; opacity:0.5";
+
+            let badge = "";
+            if (c.conc) badge = `<div class="badge-conc"></div>`;
+
+            item.innerHTML = `
+                    <div class="chem-sym" style="color:${
+                      c.state === "gas" ? "#64748b" : "var(--dark)"
+                    }">${c.id}</div>
+                    <div class="chem-sub">${c.name}</div>
+                    ${badge}
+                  `;
+            // Add right click to inspect
+            item.oncontextmenu = (e) => {
+              e.preventDefault();
+              openWiki(c.id);
+            };
+
+            grid.appendChild(item);
           });
+
+          list.appendChild(grid);
+        });
       }
 
-      /* helper seed */
-      function seedExample() {
-        // clear old boxes
-        document.querySelectorAll(".chemical-box").forEach((n) => n.remove());
-        createBox("HCl", 40, 30);
-        createBox("NaOH", 180, 40);
-        createBox("CO2", 120, 220);
-        createBox("CaO", 60, 260);
-        createBox("BaCl2", 260, 160);
+      function toggleSidebar() {
+        document.getElementById("sidebar").classList.toggle("active");
       }
 
-      /* animate remove pre-existing boxes when reset */
-      function resetAll() {
-        document.querySelectorAll(".chemical-box").forEach((n) => n.remove());
-        reactionLog = [];
-        renderLog();
-        eqBoxInner.innerHTML = "Phương trình sẽ hiển thị ở đây";
-        resultBox.textContent = "—";
+      function toggleMute() {
+        sfx.muted = !sfx.muted;
+        const icon = document.getElementById("soundIcon");
+        if (sfx.muted) {
+          icon.classList.replace("fa-volume-high", "fa-volume-xmark");
+        } else {
+          icon.classList.replace("fa-volume-xmark", "fa-volume-high");
+          sfx.init(); // ensure init
+        }
       }
 
-      /* add custom chemical */
-      document.getElementById("addCustom").addEventListener("click", () => {
-        const v = document.getElementById("customChem").value.trim();
-        if (!v) return alert("Nhập mã hóa chất");
-        if (!CHEMICALS.includes(v)) CHEMICALS.push(v);
-        renderChemButtons();
-        document.getElementById("customChem").value = "";
+      // --- WIKI LOGIC ---
+      function openWiki(id) {
+        const data = CHEMS.find((c) => c.id === id);
+        if (!data) return;
+
+        const m = document.getElementById("wikiModal");
+        document.getElementById("wikiIcon").innerText = id;
+        document.getElementById("wikiTitle").innerText = data.name;
+        document.getElementById("wikiSub").innerText = TYPES[data.type]
+          ? TYPES[data.type].name
+          : "Chất hóa học";
+        document.getElementById("wikiDesc").innerText =
+          data.desc || "Chưa có thông tin chi tiết cho chất này.";
+
+        m.classList.add("active");
+      }
+
+      function closeWiki() {
+        document.getElementById("wikiModal").classList.remove("active");
+      }
+
+      // Close wiki when clicking outside
+      document.getElementById("wikiModal").addEventListener("click", (e) => {
+        if (e.target === document.getElementById("wikiModal")) closeWiki();
       });
 
-      /* button bindings */
-      document.getElementById("btnSeed").addEventListener("click", seedExample);
-      document.getElementById("btnReset").addEventListener("click", () => {
-        if (confirm("Reset vùng phản ứng?")) resetAll();
+      // Filter
+      document.getElementById("search").addEventListener("input", (e) => {
+        const term = e.target.value.toLowerCase();
+        document.querySelectorAll(".chem-item").forEach((el) => {
+          const txt = el.innerText.toLowerCase();
+          el.style.display = txt.includes(term) ? "flex" : "none";
+        });
+        // Hide empty headers
+        document.querySelectorAll(".category-header").forEach((h) => {
+          const grid = h.nextElementSibling;
+          const hasVisible = [...grid.children].some(
+            (c) => c.style.display !== "none"
+          );
+          h.style.display = hasVisible ? "block" : "none";
+        });
       });
-      document.getElementById("btnExport").addEventListener("click", exportCSV);
-      document.getElementById("btnUndo").addEventListener("click", undoLast);
+      function spamBeaker(count = 1) {
+        for (let i = 0; i < count; i++) {
+          setTimeout(() => lab.spawnTool("beaker"), i * 80);
+        }
+      }
 
-      /* exports for console debugging */
-      window._phSim = { createBox, performReaction, REACTIONS, CHEMICALS };
-
-      /* build catalog and render initial demo */
-      buildCatalog();
-      seedExample();
-      renderLog();
+      // Start Game
+      const lab = new LabEngine();
+      initUI();
     </script>
   </body>
 </html>
