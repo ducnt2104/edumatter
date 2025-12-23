@@ -1,123 +1,266 @@
-/*
-* Prefixed by https://autoprefixer.github.io
-* PostCSS: v8.4.14,
-* Autoprefixer: v10.4.7
-* Browsers: last 4 version
-*/
+/* ================= VARIABLES ================= */
+:root {
+  /* Màu mặc định */
+  --primary-color: #4caf50;
+
+  --danger-color: #ff4d4d;
+  --danger-hover: #e63939;
+  --bg-light: #f8f9fa;
+  --bg-card-light: #ffffff;
+  --text-light: #2c3e50;
+  --text-sub-light: #6c757d;
+
+  --bg-dark: #121212;
+  --bg-card-dark: #1e1e1e;
+  --text-dark: #e0e0e0;
+  --text-sub-dark: #a0a0a0;
+
+  --font-size-base: 16px;
+  --font-size-large: 20px;
+
+  --radius: 12px;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ================= GLOBAL STYLES ================= */
+* {
+  box-sizing: border-box;
+}
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
   margin: 0;
-  background: #f3f3f3;
+  background-color: var(--bg-light);
+  color: var(--text-light);
+  font-size: var(--font-size-base);
+  transition: background-color var(--transition), color var(--transition),
+    font-size var(--transition);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* DARK MODE & LARGE TEXT STATES */
+body.dark-mode {
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+}
+body.large-text {
+  font-size: var(--font-size-large);
 }
 
 .settings-container {
-  padding: 20px;
+  width: 100%;
+  max-width: 600px; /* Thu gọn lại một chút cho cân đối */
+  margin: 0 auto;
+  padding: 30px 20px;
+  flex: 1;
 }
 
 h2 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
+  font-weight: 800;
+  font-size: 2rem;
+  color: var(--primary-color);
 }
 
-/* Nhóm cài đặt */
+/* ================= GROUPS & CARDS ================= */
 .settings-group {
-  background: white;
-  padding: 15px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  -webkit-box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  background-color: var(--bg-card-light);
+  padding: 25px;
+  border-radius: var(--radius);
+  margin-bottom: 25px;
+  box-shadow: var(--shadow);
+  transition: background-color var(--transition);
+  border: 1px solid transparent;
+}
+
+body.dark-mode .settings-group {
+  background-color: var(--bg-card-dark);
+  border-color: #333;
 }
 
 .settings-group h3 {
-  margin-bottom: 10px;
-  color: #555;
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: var(--primary-color);
+  font-size: 1.1em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-/* Một mục */
+/* ================= ITEMS ================= */
 .setting-item {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: justify;
-  -ms-flex-pack: justify;
   justify-content: space-between;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
   align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid #eee;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+body.dark-mode .setting-item {
+  border-bottom-color: rgba(255, 255, 255, 0.05);
 }
 
 .setting-item:last-child {
   border-bottom: none;
 }
 
-/* Switch (nút gạt ON/OFF) */
-.switch {
-  position: relative;
-  width: 50px;
-  height: 26px;
+/* Theme Color Picker */
+.color-options {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+.color-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: transform 0.2s, border-color 0.2s;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.color-circle:hover {
+  transform: scale(1.1);
+}
+.color-circle.active {
+  border-color: var(--text-light);
+  transform: scale(1.1);
+}
+body.dark-mode .color-circle.active {
+  border-color: #fff;
 }
 
+/* Switch Toggle */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 28px;
+}
 .switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
-
 .slider {
-  background: #ccc;
   position: absolute;
   cursor: pointer;
   inset: 0;
+  background-color: #ccc;
   border-radius: 34px;
-  -webkit-transition: 0.3s;
-  -o-transition: 0.3s;
   transition: 0.3s;
 }
-
 .slider:before {
-  content: "";
   position: absolute;
+  content: "";
   height: 20px;
   width: 20px;
-  left: 3px;
-  bottom: 3px;
-  background: white;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
   border-radius: 50%;
-  -webkit-transition: 0.3s;
-  -o-transition: 0.3s;
   transition: 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
-
 input:checked + .slider {
-  background: #4caf50;
+  background-color: var(--primary-color);
 }
-
 input:checked + .slider:before {
-  -webkit-transform: translateX(24px);
-  -ms-transform: translateX(24px);
   transform: translateX(24px);
 }
 
-/* Nút nguy hiểm */
-.danger-btn {
-  width: 100%;
+/* Buttons */
+.btn-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.btn {
+  flex: 1;
   padding: 12px;
-  margin-top: 10px;
   border: none;
-  background: #ff4d4d;
-  color: white;
-  font-size: 16px;
-  border-radius: 10px;
+  border-radius: 8px;
+  font-weight: 600;
   cursor: pointer;
-  -webkit-transition: 0.3s;
-  -o-transition: 0.3s;
-  transition: 0.3s;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.95em;
+}
+.danger-btn {
+  background-color: var(--danger-color);
+  color: white;
+}
+.danger-btn:hover {
+  background-color: var(--danger-hover);
+}
+.secondary-btn {
+  background-color: #e0e0e0;
+  color: #333;
+}
+.secondary-btn:hover {
+  background-color: #d0d0d0;
 }
 
-.danger-btn:hover {
-  background: #e63939;
+/* Footer */
+footer {
+  text-align: center;
+  padding: 30px;
+  color: var(--text-sub-light);
+  font-size: 0.9em;
+  margin-top: auto;
+}
+body.dark-mode footer {
+  color: var(--text-sub-dark);
+}
+footer a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* Toast */
+#toast {
+  visibility: hidden;
+  min-width: 250px;
+  background-color: var(--bg-card-dark);
+  color: #fff;
+  text-align: center;
+  border-radius: 50px;
+  padding: 14px 20px;
+  position: fixed;
+  z-index: 1000;
+  left: 50%;
+  bottom: 30px;
+  transform: translateX(-50%) translateY(20px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transition: all 0.3s;
+  border: 1px solid #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 500;
+}
+body.dark-mode #toast {
+  background-color: #333;
+  border: 1px solid #555;
+}
+#toast.show {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }

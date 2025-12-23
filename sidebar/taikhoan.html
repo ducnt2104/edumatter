@@ -3,87 +3,452 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tài khoản</title>
-    <link rel="icon" href="../favicon/edumatter.svg?v=1" type="image/svg+xml" />
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="sidebar-act.css" />
-    <link rel="stylesheet" href="taikhoan.css" />
-
-    <!-- FontAwesome -->
+    <title>Tài Khoản | EDUMATTER PRO</title>
+    <link rel="icon" href="../favicon/edumatter.svg" type="image/svg+xml" />
+    <!-- FontAwesome & Google Fonts -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="taikhoan.css" />
   </head>
-
   <body>
+    <!-- BACKGROUND CANVAS -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- CUSTOM CURSOR -->
+    <div id="custom-cursor"></div>
+    <div id="cursor-follower"></div>
+
+    <!-- NOTIFICATION CONTAINER -->
+    <div class="toast-container" id="toast-container"></div>
+
     <!-- HEADER -->
-    <header id="header">
-      <div class="header-left">
-        <h1 class="site-title">Tài khoản</h1>
-        <p class="site-slogan">Quản lý thông tin & cài đặt cá nhân</p>
+    <header>
+      <div class="logo-area">
+        <i class="fa-solid fa-atom"></i> EDUMATTER
+        <span
+          style="
+            font-size: 0.8em;
+            opacity: 0.6;
+            font-weight: 400;
+            margin-left: 5px;
+          "
+          >PRO</span
+        >
+      </div>
+      <div class="header-actions">
+        <!-- Role Switcher for Demo -->
+        <button
+          class="role-switcher"
+          onclick="App.toggleRole()"
+          title="Click để đổi vai trò (Demo)"
+        >
+          <i class="fa-solid fa-repeat"></i>
+          <span id="header-role-text">Switch Mode</span>
+        </button>
+
+        <a href="../index.html" class="nav-btn">
+          <i class="fa-solid fa-house"></i> Trang chủ
+        </a>
       </div>
     </header>
 
-    <!-- HERO SECTION -->
-    <section class="acc-hero">
-      <div class="acc-hero-inner">
-        <h2><i class="fa-solid fa-user-gear"></i> Quản lý tài khoản</h2>
-        <p>
-          Chỉnh sửa thông tin cá nhân, bảo mật và các tùy chọn nâng cao cho tài
-          khoản của bạn.
-        </p>
-      </div>
-      <div class="acc-hero-glow"></div>
-    </section>
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+      <!-- SIDEBAR -->
+      <aside>
+        <div class="sidebar-card">
+          <div class="user-quick-view">
+            <div class="avatar-wrapper">
+              <img
+                src="https://ui-avatars.com/api/?name=User&background=random"
+                alt="Avatar"
+                class="avatar-img"
+                id="sidebar-avatar"
+              />
+              <label
+                for="file-input"
+                class="change-avatar-btn"
+                title="Đổi Avatar"
+              >
+                <i class="fa-solid fa-camera"></i>
+              </label>
+              <input type="file" id="file-input" accept="image/*" />
+            </div>
+            <h3 class="user-name" id="sidebar-name">Đang tải...</h3>
+            <span class="user-role-badge" id="sidebar-role">Student</span>
+          </div>
 
-    <!-- ACCOUNT CONTENT -->
-    <section class="acc-container">
-      <!-- PERSONAL INFO -->
-      <div class="acc-block">
-        <h3><i class="fa-solid fa-id-card"></i> Thông tin cá nhân</h3>
-        <div class="acc-content">
-          <p>
-            <b>Tên người dùng:</b> <span id="acc-username">username123</span>
-          </p>
-          <p><b>Email:</b> <span id="acc-email">example@gmail.com</span></p>
-          <p><b>Ngày tạo:</b> <span id="acc-created">12/02/2025</span></p>
+          <ul class="menu-list">
+            <li
+              class="menu-item active"
+              onclick="UI.switchTab('dashboard', this)"
+            >
+              <i class="fa-solid fa-gauge-high"></i> Tổng quan
+            </li>
+            <li class="menu-item" onclick="UI.switchTab('classes', this)">
+              <i class="fa-solid fa-chalkboard-user"></i>
+              <span id="menu-class-text">Lớp học của tôi</span>
+            </li>
+            <li class="menu-item" onclick="UI.switchTab('profile', this)">
+              <i class="fa-solid fa-user"></i> Hồ sơ cá nhân
+            </li>
+            <li class="menu-item" onclick="UI.switchTab('security', this)">
+              <i class="fa-solid fa-shield-halved"></i> Bảo mật
+            </li>
+            <li class="menu-item" onclick="UI.switchTab('settings', this)">
+              <i class="fa-solid fa-gear"></i> Tùy biến giao diện
+            </li>
+            <li
+              class="menu-item"
+              style="color: var(--danger); margin-top: 20px"
+              onclick="UI.logout()"
+            >
+              <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
+            </li>
+          </ul>
         </div>
-      </div>
+      </aside>
 
-      <!-- SECURITY -->
-      <div class="acc-block">
-        <h3><i class="fa-solid fa-shield-halved"></i> Bảo mật</h3>
-        <ul>
-          <li><i class="fa-solid fa-key"></i> Đổi mật khẩu</li>
-          <li><i class="fa-solid fa-lock"></i> Bật xác thực 2 lớp (2FA)</li>
-          <li><i class="fa-solid fa-laptop"></i> Quản lý thiết bị đăng nhập</li>
-        </ul>
-      </div>
+      <!-- CONTENT PANELS -->
+      <main class="panel-container">
+        <!-- PANEL: DASHBOARD (Dynamic based on settings) -->
+        <div id="panel-dashboard" class="panel active">
+          <!-- Welcome Banner -->
+          <div
+            class="card-box"
+            style="
+              background: linear-gradient(
+                135deg,
+                rgba(75, 107, 251, 0.2),
+                rgba(168, 85, 247, 0.2)
+              );
+            "
+          >
+            <h2 style="margin-bottom: 10px; color: white">
+              👋 Xin chào, <span id="dash-name">User</span>!
+            </h2>
+            <p style="color: #ddd">
+              Hôm nay là một ngày tuyệt vời để
+              <span id="dash-action-text">học hỏi điều mới</span>.
+            </p>
+          </div>
 
-      <!-- SETTINGS -->
-      <div class="acc-block">
-        <h3><i class="fa-solid fa-gear"></i> Cài đặt tài khoản</h3>
-        <ul>
-          <li><i class="fa-solid fa-image"></i> Đổi avatar</li>
-          <li><i class="fa-solid fa-pen-to-square"></i> Cập nhật thông tin</li>
-          <li><i class="fa-solid fa-bell"></i> Tùy chỉnh thông báo</li>
-        </ul>
-      </div>
-    </section>
+          <!-- Widget: Stats (Toggleable) -->
+          <div id="widget-stats" class="widget-block">
+            <div class="stats-grid" id="stats-container">
+              <!-- JS will inject content here based on Role -->
+            </div>
+          </div>
 
-    <!-- FOOTER -->
-    <footer id="footer">
-      <p>© 2025 - Website học tập</p>
-      <p>© 2025 – Thiết kế bởi Nguyễn Tiến Đức</p>
+          <div class="form-grid">
+            <!-- Widget: Upcoming Tasks -->
+            <div
+              id="widget-tasks"
+              class="widget-block"
+              style="grid-column: span 1"
+            >
+              <div class="card-box" style="height: 100%">
+                <div class="card-header">
+                  <h2 class="card-title">
+                    <i class="fa-solid fa-list-check"></i> Nhiệm vụ sắp tới
+                  </h2>
+                </div>
+                <div class="task-list" id="task-list-container">
+                  <!-- JS Injects tasks -->
+                </div>
+              </div>
+            </div>
 
-      <a href="#"> <i class="fa-solid fa-arrow-up"></i> Quay lại đầu trang </a>
+            <!-- Widget: Activity Chart (Toggleable) -->
+            <div
+              id="widget-activity"
+              class="widget-block"
+              style="grid-column: span 1"
+            >
+              <div class="card-box" style="height: 100%">
+                <div class="card-header">
+                  <h2 class="card-title">
+                    <i class="fa-solid fa-chart-line"></i> Hoạt động 7 ngày
+                  </h2>
+                </div>
+                <div class="activity-chart" id="chart-bars">
+                  <!-- JS injects bars -->
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: 10px;
+                    color: #666;
+                    font-size: 0.8rem;
+                  "
+                >
+                  <span>T2</span><span>T3</span><span>T4</span><span>T5</span
+                  ><span>T6</span><span>T7</span><span>CN</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-      <a href="../index.html">
-        <i class="fa-solid fa-house"></i> Quay lại EDUMATTER
-      </a>
-    </footer>
+        <!-- PANEL: CLASSES -->
+        <div id="panel-classes" class="panel">
+          <div class="card-box">
+            <div class="card-header">
+              <h2 class="card-title">
+                <i class="fa-solid fa-chalkboard"></i> Quản lý lớp học
+              </h2>
+              <button
+                class="btn btn-primary"
+                id="btn-add-class"
+                onclick="App.handleClassAction()"
+              >
+                <i class="fa-solid fa-plus"></i>
+                <span id="btn-class-text">Tham gia lớp</span>
+              </button>
+            </div>
+
+            <!-- Empty State -->
+            <div
+              id="class-empty"
+              style="text-align: center; padding: 40px; display: none"
+            >
+              <i
+                class="fa-solid fa-school-circle-xmark"
+                style="font-size: 3rem; color: #444; margin-bottom: 20px"
+              ></i>
+              <p style="color: var(--text-muted)">Bạn chưa có lớp học nào.</p>
+            </div>
+
+            <!-- Grid -->
+            <div class="class-grid" id="class-list">
+              <!-- JS Injects Classes -->
+            </div>
+          </div>
+        </div>
+
+        <!-- PANEL: PROFILE -->
+        <div id="panel-profile" class="panel">
+          <div class="card-box" id="card-profile-info">
+            <div class="loading-overlay"><div class="spinner"></div></div>
+            <div class="card-header">
+              <h2 class="card-title">
+                <i class="fa-solid fa-id-card"></i> Hồ sơ chi tiết
+              </h2>
+              <button
+                class="btn btn-outline"
+                id="btn-edit-profile"
+                onclick="UI.toggleEditProfile()"
+              >
+                <i class="fa-solid fa-pen"></i> Chỉnh sửa
+              </button>
+            </div>
+
+            <form
+              id="form-profile"
+              onsubmit="event.preventDefault(); App.updateProfile();"
+            >
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Tên hiển thị</label>
+                  <input
+                    type="text"
+                    class="form-input"
+                    id="inp-username"
+                    disabled
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Email</label>
+                  <input
+                    type="email"
+                    class="form-input"
+                    id="inp-email"
+                    disabled
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Số điện thoại</label>
+                  <input
+                    type="text"
+                    class="form-input"
+                    id="inp-phone"
+                    disabled
+                    placeholder="Chưa cập nhật"
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Ngày sinh</label>
+                  <input type="date" class="form-input" id="inp-dob" disabled />
+                </div>
+                <div class="form-group full-width">
+                  <label class="form-label">Trường học / Đơn vị công tác</label>
+                  <input
+                    type="text"
+                    class="form-input"
+                    id="inp-school"
+                    disabled
+                    placeholder="Ví dụ: Đại học Bách Khoa Hà Nội"
+                  />
+                </div>
+                <div class="form-group full-width">
+                  <label class="form-label">Giới thiệu bản thân</label>
+                  <input
+                    type="text"
+                    class="form-input"
+                    id="inp-bio"
+                    disabled
+                    placeholder="Hãy viết gì đó về bạn..."
+                  />
+                </div>
+              </div>
+
+              <div
+                id="profile-actions"
+                style="display: none; margin-top: 20px; gap: 10px"
+              >
+                <button type="submit" class="btn btn-primary">
+                  Lưu thay đổi
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline"
+                  onclick="UI.cancelEditProfile()"
+                >
+                  Hủy
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- PANEL: SECURITY -->
+        <div id="panel-security" class="panel">
+          <div class="card-box" id="card-security">
+            <div class="loading-overlay"><div class="spinner"></div></div>
+            <div class="card-header">
+              <h2 class="card-title">
+                <i class="fa-solid fa-key"></i> Đổi mật khẩu
+              </h2>
+            </div>
+            <form onsubmit="event.preventDefault(); App.changePassword();">
+              <div class="form-group">
+                <label class="form-label">Mật khẩu hiện tại</label>
+                <input
+                  type="password"
+                  class="form-input"
+                  id="old-pass"
+                  required
+                />
+              </div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Mật khẩu mới</label>
+                  <input
+                    type="password"
+                    class="form-input"
+                    id="new-pass"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Xác nhận mật khẩu mới</label>
+                  <input
+                    type="password"
+                    class="form-input"
+                    id="confirm-pass"
+                    required
+                  />
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">
+                Cập nhật mật khẩu
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- PANEL: SETTINGS (CUSTOMIZATION) -->
+        <div id="panel-settings" class="panel">
+          <div class="card-box">
+            <div class="card-header">
+              <h2 class="card-title">
+                <i class="fa-solid fa-palette"></i> Tùy biến Dashboard
+              </h2>
+            </div>
+            <p style="color: var(--text-muted); margin-bottom: 20px">
+              Chọn những nội dung bạn muốn nhìn thấy trên trang Tổng quan.
+            </p>
+
+            <div class="switch-wrap">
+              <span style="color: white">Hiển thị Thống kê (Stats)</span>
+              <label class="switch">
+                <input
+                  type="checkbox"
+                  id="toggle-stats"
+                  onchange="App.toggleWidget('stats')"
+                  checked
+                />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="switch-wrap">
+              <span style="color: white">Hiển thị Nhiệm vụ sắp tới</span>
+              <label class="switch">
+                <input
+                  type="checkbox"
+                  id="toggle-tasks"
+                  onchange="App.toggleWidget('tasks')"
+                  checked
+                />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="switch-wrap">
+              <span style="color: white">Hiển thị Biểu đồ hoạt động</span>
+              <label class="switch">
+                <input
+                  type="checkbox"
+                  id="toggle-activity"
+                  onchange="App.toggleWidget('activity')"
+                  checked
+                />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="card-box">
+            <div class="card-header">
+              <h2 class="card-title">
+                <i class="fa-solid fa-trash"></i> Vùng nguy hiểm
+              </h2>
+            </div>
+            <button
+              class="btn"
+              style="
+                background: rgba(255, 60, 60, 0.1);
+                color: var(--danger);
+                border: 1px solid var(--danger);
+              "
+              onclick="App.resetData()"
+            >
+              Reset toàn bộ dữ liệu demo
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
 
     <!-- JAVASCRIPT -->
     <script src="taikhoan.js"></script>
