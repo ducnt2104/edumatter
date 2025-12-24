@@ -2,7 +2,6 @@
            1. CORE INITIALIZATION
            ========================================================= 
         */
-AOS.init({ duration: 1000, once: true, easing: "ease-out-back" });
 
 // Header Scroll Effect
 window.addEventListener("scroll", () => {
