@@ -290,3 +290,30 @@ document.querySelectorAll(".floating").forEach((el) => {
     easing: "easeInOutQuad",
   });
 });
+import express from "express";
+import fetch from "node-fetch";
+
+const app = express();
+app.use(express.json());
+
+const API_KEY = process.env.GEMINI_API_KEY;
+
+app.post("/api/chat", async (req, res) => {
+  const { text } = req.body;
+
+  const r = await fetch(
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" +
+      API_KEY,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text }] }],
+      }),
+    }
+  );
+
+  res.json(await r.json());
+});
+
+app.listen(3000);
