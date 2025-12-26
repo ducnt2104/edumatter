@@ -1,4 +1,4 @@
-const apiKey = "AIzaSyBY9U8faam16l-BCu1uFg2OzpustNiNuM0";
+const apiKey = "AIzaSyAgC7dXpj8szwVbrq4vASppzRWEacY5bxE";
 const chatWindow = document.getElementById("chat-window");
 const chatForm = document.getElementById("chat-form");
 const userInput = document.getElementById("user-input");
