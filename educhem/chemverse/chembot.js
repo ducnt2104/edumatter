@@ -1,3 +1,4 @@
+const apiKey = "AIzaSyBY9U8faam16l-BCu1uFg2OzpustNiNuM0";
 const chatWindow = document.getElementById("chat-window");
 const chatForm = document.getElementById("chat-form");
 const userInput = document.getElementById("user-input");
@@ -6,19 +7,6 @@ const imagePreview = document.getElementById("image-preview");
 const previewImg = document.getElementById("preview-img");
 
 let currentImageData = null;
-
-async function sendMessage(message) {
-  const res = await fetch("/api/chat", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      text: message,
-      image: currentImageData,
-    }),
-  });
-
-  return res.json();
-}
 
 // --- System Prompt with the knowledge base you provided ---
 const SYSTEM_PROMPT = `Bạn là "EduMatter AI", chuyên gia tư vấn giáo dục chuyên sâu về Hóa học tại Việt Nam. 
