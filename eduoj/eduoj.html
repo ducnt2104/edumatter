@@ -1,0 +1,753 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EDUOJ | AI System Core v5.0</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* --- 1. DESIGN TOKENS --- */
+      :root {
+        /* Default Dark Mode (Cyber System) */
+        --bg-body: #030504;
+        --text-main: #ffffff;
+        --text-muted: #6f8078;
+        --accent-color: #00ff41; /* Hacker Green */
+        --accent-glow: rgba(0, 255, 65, 0.4);
+        --grid-line: rgba(0, 255, 65, 0.05);
+        --card-bg: rgba(255, 255, 255, 0.03);
+        --card-border: rgba(0, 255, 65, 0.2);
+
+        --breach-red: #ff003c;
+        --breach-red-glow: rgba(255, 0, 60, 0.6);
+
+        --ease-smooth: cubic-bezier(0.23, 1, 0.32, 1);
+        --transition-speed: 0.4s;
+      }
+
+      /* Light Mode (Precision Lab) */
+      [data-theme="light"] {
+        --bg-body: #f0f2f5;
+        --text-main: #1a202c;
+        --text-muted: #64748b;
+        --accent-color: #006d77; /* Deep Teal - IT Professional feel */
+        --accent-glow: rgba(0, 109, 119, 0.3);
+        --grid-line: rgba(0, 0, 0, 0.05);
+        --card-bg: rgba(255, 255, 255, 0.6);
+        --card-border: rgba(0, 109, 119, 0.2);
+      }
+
+      /* --- 2. RESET & BASE --- */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: var(--bg-body);
+        color: var(--text-main);
+        font-family: "Inter", sans-serif;
+        overflow: hidden;
+        height: 100vh;
+        width: 100vw;
+        transition:
+          background-color var(--transition-speed),
+          color var(--transition-speed);
+        cursor: crosshair;
+      }
+
+      /* --- 3. BACKGROUND LAYERS --- */
+      #bg-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: -10;
+        filter: blur(0.8px); /* Blur nhẹ để tách lớp với UI */
+        opacity: 0.8;
+        transition: opacity 0.5s;
+      }
+
+      /* Scanlines - Hiệu ứng màn hình cũ */
+      .scanlines {
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(
+          to bottom,
+          transparent 50%,
+          rgba(0, 0, 0, 0.1) 51%
+        );
+        background-size: 100% 4px;
+        z-index: 200;
+        pointer-events: none;
+        opacity: 0.1;
+      }
+
+      /* Breach Overlay - Lớp phủ đỏ khi báo động */
+      #breach-overlay {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(
+          circle at center,
+          transparent 20%,
+          rgba(255, 0, 60, 0.1) 80%
+        );
+        box-shadow: inset 0 0 100px rgba(255, 0, 60, 0);
+        z-index: 100;
+        pointer-events: none;
+        opacity: 0;
+        transition:
+          opacity 0.8s ease,
+          box-shadow 0.3s;
+      }
+
+      /* --- 4. MAIN LAYOUT (Flexbox Center) --- */
+      .ui-wrapper {
+        position: relative;
+        z-index: 10;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; /* Header trên, Footer dưới */
+        padding: 1.5rem 3rem;
+        transition: filter 0.2s;
+      }
+
+      /* Header */
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 60px;
+      }
+
+      .sys-info {
+        font-family: "Fira Code", monospace;
+        font-size: 0.8rem;
+        color: var(--accent-color);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        line-height: 1.6;
+        display: flex;
+        gap: 2rem;
+      }
+
+      .theme-toggle {
+        background: transparent;
+        border: 1px solid var(--accent-color);
+        color: var(--accent-color);
+        padding: 5px 15px;
+        font-family: "Rajdhani", sans-serif;
+        font-weight: 700;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-transform: uppercase;
+      }
+      .theme-toggle:hover {
+        background: var(--accent-color);
+        color: var(--bg-body);
+        box-shadow: 0 0 15px var(--accent-glow);
+      }
+
+      /* Center Stage (Core + Grid) */
+      .main-stage {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3rem; /* Khoảng cách giữa Core và Grid Cards */
+        transform: translateY(
+          -20px
+        ); /* Đẩy nhẹ lên trên tâm để cân đối thị giác */
+      }
+
+      /* Core Identity */
+      .core-identity {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .diamond-wrapper {
+        width: 180px;
+        height: 180px;
+        margin-bottom: 1.5rem;
+        position: relative;
+        cursor: pointer;
+        animation: float 6s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-15px);
+        }
+      }
+
+      .brand-title {
+        font-family: "Orbitron", sans-serif;
+        font-size: clamp(3rem, 6vw, 5rem); /* Responsive font size */
+        font-weight: 900;
+        letter-spacing: 10px;
+        line-height: 1;
+        margin-bottom: 1rem;
+        background: linear-gradient(
+          180deg,
+          var(--text-main) 20%,
+          var(--accent-color) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .status-badge {
+        font-family: "Rajdhani", sans-serif;
+        font-weight: 600;
+        font-size: 0.9rem;
+        letter-spacing: 4px;
+        color: var(--accent-color);
+        padding: 6px 20px;
+        border-left: 2px solid var(--accent-color);
+        border-right: 2px solid var(--accent-color);
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--accent-glow) 50%,
+          transparent
+        );
+        text-transform: uppercase;
+      }
+
+      /* Grid Cards */
+      .grid-system {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        width: 100%;
+        max-width: 1200px;
+        padding: 0 20px;
+      }
+
+      .sys-card {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 4px;
+        padding: 20px;
+        backdrop-filter: blur(8px);
+        transition: all 0.3s var(--ease-smooth);
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+      }
+
+      .sys-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--accent-color);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .sys-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 3px;
+        height: 100%;
+        background: var(--accent-color);
+        opacity: 0.5;
+        transition: width 0.3s;
+      }
+      .sys-card:hover::before {
+        width: 100%;
+        opacity: 0.1;
+      }
+
+      .card-head {
+        font-family: "Rajdhani", sans-serif;
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-main);
+      }
+
+      .card-body {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        line-height: 1.5;
+      }
+
+      /* Footer */
+      footer {
+        display: flex;
+        justify-content: space-between;
+        font-family: "Fira Code", monospace;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        border-top: 1px solid var(--grid-line);
+        padding-top: 15px;
+      }
+
+      /* --- 5. SYSTEM BREACH FX --- */
+      body.breach-mode {
+        animation: glitch-shake 0.2s cubic-bezier(0.36, 0.07, 0.19, 0.97) both
+          infinite;
+      }
+      body.breach-mode #bg-canvas {
+        filter: hue-rotate(300deg) saturate(3);
+      }
+      body.breach-mode .ui-wrapper {
+        filter: hue-rotate(320deg) contrast(1.2);
+      }
+      body.breach-mode #breach-overlay {
+        opacity: 1;
+        box-shadow: inset 0 0 50px var(--breach-red);
+      }
+
+      @keyframes glitch-shake {
+        10%,
+        90% {
+          transform: translate3d(-1px, 0, 0);
+        }
+        20%,
+        80% {
+          transform: translate3d(2px, 0, 0);
+        }
+        30%,
+        50%,
+        70% {
+          transform: translate3d(-2px, 0, 0);
+        }
+        40%,
+        60% {
+          transform: translate3d(2px, 0, 0);
+        }
+      }
+
+      .breach-warning {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        z-index: 999;
+        pointer-events: none;
+        display: none;
+      }
+      body.breach-mode .breach-warning {
+        display: block;
+      }
+
+      .warning-title {
+        font-family: "Orbitron", sans-serif;
+        font-size: 4rem;
+        font-weight: 900;
+        color: var(--breach-red);
+        text-shadow: 0 0 20px var(--breach-red);
+        animation: flash 0.5s infinite;
+        white-space: nowrap;
+      }
+
+      .warning-sub {
+        font-family: "Fira Code", monospace;
+        font-size: 1.5rem;
+        color: var(--breach-red);
+        background: rgba(0, 0, 0, 0.8);
+        padding: 5px 20px;
+        margin-top: 10px;
+      }
+
+      @keyframes flash {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.2;
+        }
+      }
+
+      #breach-timer {
+        position: fixed;
+        bottom: 100px;
+        right: 50px;
+        font-family: "Orbitron", sans-serif;
+        font-size: 4rem;
+        color: var(--breach-red);
+        font-weight: bold;
+        display: none;
+        text-shadow: 0 0 20px var(--breach-red);
+      }
+      body.breach-mode #breach-timer {
+        display: block;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 1024px) {
+        .grid-system {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 768px) {
+        .ui-wrapper {
+          padding: 1rem;
+        }
+        .sys-info {
+          display: none;
+        } /* Hide heavy text on mobile */
+        .grid-system {
+          grid-template-columns: 1fr;
+        }
+        .brand-title {
+          font-size: 3rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Background Elements -->
+    <div class="scanlines"></div>
+    <canvas id="bg-canvas"></canvas>
+    <div id="breach-overlay"></div>
+
+    <!-- Breach UI -->
+    <div class="breach-warning">
+      <div class="warning-title">SYSTEM COMPROMISED</div>
+      <div class="warning-sub">LOCKDOWN IN PROGRESS</div>
+    </div>
+    <div id="breach-timer">10.00</div>
+
+    <!-- Main Interface -->
+    <div class="ui-wrapper">
+      <header>
+        <div class="sys-info">
+          <span><i class="fas fa-server"></i> SERVER: US-EAST-4</span>
+          <span id="coords">COORDS: 000, 000</span>
+          <span id="clock">00:00:00</span>
+        </div>
+
+        <div style="display: flex; gap: 20px; align-items: center">
+          <button class="theme-toggle" id="theme-btn">
+            <i class="fas fa-adjust"></i> MODE_SWITCH
+          </button>
+          <div
+            class="sys-info"
+            style="color: var(--breach-red); cursor: pointer"
+            onclick="activateBreach()"
+          >
+            <i class="fas fa-exclamation-triangle"></i> TRIGGER_BREACH
+          </div>
+        </div>
+      </header>
+
+      <!-- Center Stage: Core & Content -->
+      <div class="main-stage">
+        <!-- Core Identity -->
+        <div class="core-identity">
+          <div class="diamond-wrapper" onclick="activateBreach()">
+            <svg
+              viewBox="0 0 200 200"
+              fill="none"
+              style="
+                width: 100%;
+                height: 100%;
+                filter: drop-shadow(0 0 15px var(--accent-glow));
+              "
+            >
+              <!-- Outer Ring -->
+              <circle
+                cx="100"
+                cy="100"
+                r="90"
+                stroke="var(--accent-color)"
+                stroke-width="1"
+                stroke-dasharray="10 10"
+                opacity="0.3"
+                class="spin-slow"
+              />
+              <!-- Diamond Shape -->
+              <path
+                d="M100 20 L180 100 L100 180 L20 100 Z"
+                stroke="var(--accent-color)"
+                stroke-width="2"
+                fill="rgba(0,0,0,0.1)"
+              />
+              <path
+                d="M100 40 L160 100 L100 160 L40 100 Z"
+                fill="var(--accent-glow)"
+                opacity="0.3"
+              />
+              <!-- Core Detail -->
+              <rect
+                x="95"
+                y="95"
+                width="10"
+                height="10"
+                fill="var(--text-main)"
+                transform="rotate(45 100 100)"
+              />
+              <!-- Decorative Lines -->
+              <path
+                d="M100 20 V40 M100 160 V180 M20 100 H40 M160 100 H180"
+                stroke="var(--accent-color)"
+                stroke-width="2"
+              />
+            </svg>
+          </div>
+          <h1 class="brand-title">EDUOJ</h1>
+          <div class="status-badge" id="sys-status">SYSTEM ONLINE</div>
+        </div>
+
+        <!-- Navigation Grid -->
+        <div class="grid-system">
+          <div class="sys-card">
+            <div class="card-head">WEB_ARCHITECTURE</div>
+            <div class="card-body">
+              Modern DOM manipulation & neural interface protocols.
+            </div>
+          </div>
+          <div class="sys-card">
+            <div class="card-head">PYTHON_CORE</div>
+            <div class="card-body">
+              Algorithmic processing & deep learning backend pipes.
+            </div>
+          </div>
+          <div class="sys-card">
+            <div class="card-head">SYSTEM_CPP</div>
+            <div class="card-body">
+              Low-level memory management & hardware acceleration.
+            </div>
+          </div>
+          <div class="sys-card">
+            <div class="card-head">RENDER_ENGINE</div>
+            <div class="card-body">
+              3D Graphic simulation & physics loop optimization.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div>SECURE CONNECTION // TLS 1.3</div>
+        <div>EDUOJ CORP © 2026 // ALL SYSTEMS NOMINAL</div>
+      </footer>
+    </div>
+
+    <script>
+      /* --- SYSTEM CONFIG --- */
+      const config = {
+        chars:
+          "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン".split(
+            "",
+          ), // Katakana for extra cyberpunk feel
+        breachTime: 10, // Seconds
+        particleCount: window.innerWidth < 768 ? 40 : 80,
+      };
+
+      /* --- DOM ELEMENTS --- */
+      const canvas = document.getElementById("bg-canvas");
+      const ctx = canvas.getContext("2d");
+      const themeBtn = document.getElementById("theme-btn");
+      const html = document.documentElement;
+
+      let width, height;
+      let particles = [];
+      let isBreach = false;
+      let breachInterval;
+
+      /* --- 1. THEME ENGINE --- */
+      function initTheme() {
+        const savedTheme = localStorage.getItem("eduoj_theme") || "dark";
+        setTheme(savedTheme);
+      }
+
+      function setTheme(mode) {
+        html.setAttribute("data-theme", mode);
+        localStorage.setItem("eduoj_theme", mode);
+
+        // Cập nhật lại màu cho particles ngay lập tức
+        updateParticleColors();
+      }
+
+      themeBtn.addEventListener("click", () => {
+        const current = html.getAttribute("data-theme");
+        const next = current === "dark" ? "light" : "dark";
+        setTheme(next);
+      });
+
+      /* --- 2. CANVAS CORE --- */
+      function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      }
+      window.addEventListener("resize", () => {
+        resize();
+        initParticles();
+      });
+      resize();
+
+      class Particle {
+        constructor() {
+          this.reset();
+        }
+        reset() {
+          this.x = Math.random() * width;
+          this.y = Math.random() * height;
+          this.z = Math.random() * 2 + 1; // Depth factor
+          this.size = Math.random() * 12 + 8;
+          this.char =
+            config.chars[Math.floor(Math.random() * config.chars.length)];
+          this.speed = (Math.random() * 1 + 0.2) / this.z;
+          this.opacity = Math.random() * 0.5 + 0.1;
+        }
+        update() {
+          this.y += this.speed;
+          // Loop from top if goes off screen
+          if (this.y > height) {
+            this.y = -20;
+            this.x = Math.random() * width;
+            this.char =
+              config.chars[Math.floor(Math.random() * config.chars.length)];
+          }
+        }
+        draw() {
+          // Lấy màu từ CSS variables để đồng bộ với Theme
+          const style = getComputedStyle(document.documentElement);
+          const accent = style.getPropertyValue("--accent-color").trim();
+          const breach = style.getPropertyValue("--breach-red").trim();
+
+          ctx.fillStyle = isBreach ? breach : accent;
+          ctx.globalAlpha = isBreach
+            ? 0.8
+            : this.opacity /
+              (html.getAttribute("data-theme") === "light" ? 2 : 1); // Light mode mờ hơn
+          ctx.font = `${this.size}px 'Fira Code'`;
+          ctx.fillText(this.char, this.x, this.y);
+          ctx.globalAlpha = 1;
+        }
+      }
+
+      function initParticles() {
+        particles = [];
+        for (let i = 0; i < config.particleCount; i++)
+          particles.push(new Particle());
+      }
+
+      function updateParticleColors() {
+        // Hàm này gọi để refresh canvas ngay khi đổi theme
+        // Thực tế logic draw() đã handle việc lấy màu dynamic
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, width, height);
+
+        // Vẽ Grid mờ
+        const style = getComputedStyle(document.documentElement);
+        ctx.strokeStyle = style.getPropertyValue("--grid-line").trim();
+        ctx.lineWidth = 1;
+
+        // Vẽ lưới đơn giản (ít line hơn bản cũ để thoáng)
+        const step = 100;
+        ctx.beginPath();
+        for (let x = 0; x < width; x += step) {
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, height);
+        }
+        for (let y = 0; y < height; y += step) {
+          ctx.moveTo(0, y);
+          ctx.lineTo(width, y);
+        }
+        ctx.stroke();
+
+        particles.forEach((p) => {
+          p.update();
+          p.draw();
+        });
+        requestAnimationFrame(animate);
+      }
+
+      /* --- 3. BREACH LOGIC (10s Exact) --- */
+      function activateBreach() {
+        if (isBreach) return;
+        isBreach = true;
+
+        document.body.classList.add("breach-mode");
+        document.getElementById("sys-status").innerText = "CRITICAL ERROR";
+        document.getElementById("sys-status").style.borderColor =
+          "var(--breach-red)";
+        document.getElementById("sys-status").style.color = "var(--breach-red)";
+
+        let timeLeft = config.breachTime;
+        const timerDisplay = document.getElementById("breach-timer");
+
+        timerDisplay.innerText = timeLeft.toFixed(2);
+
+        clearInterval(breachInterval);
+        breachInterval = setInterval(() => {
+          timeLeft -= 0.01;
+          timerDisplay.innerText = Math.max(0, timeLeft).toFixed(2);
+
+          if (timeLeft <= 0) {
+            endBreach();
+          }
+        }, 10);
+      }
+
+      function endBreach() {
+        clearInterval(breachInterval);
+        isBreach = false;
+
+        // Smooth exit
+        document.body.classList.remove("breach-mode");
+
+        // Reset UI text
+        setTimeout(() => {
+          document.getElementById("sys-status").innerText = "SYSTEM ONLINE";
+          document.getElementById("sys-status").style.borderColor = ""; // Revert to CSS default
+          document.getElementById("sys-status").style.color = "";
+        }, 300);
+      }
+
+      /* --- 4. UTILITIES --- */
+      // Mouse interaction (Parallax UI)
+      document.addEventListener("mousemove", (e) => {
+        document.getElementById("coords").innerText =
+          `COORDS: ${e.clientX}, ${e.clientY}`;
+
+        if (!isBreach) {
+          const moveX = (e.clientX - width / 2) / 100;
+          const moveY = (e.clientY - height / 2) / 100;
+          document.querySelector(".main-stage").style.transform =
+            `translate(${moveX}px, ${moveY - 20}px)`; // Maintain -20px y offset
+        }
+      });
+
+      // Clock
+      setInterval(() => {
+        const now = new Date();
+        document.getElementById("clock").innerText =
+          now.toLocaleTimeString("en-GB");
+      }, 1000);
+
+      /* --- INIT --- */
+      initTheme();
+      initParticles();
+      animate();
+      console.log("SYSTEM CORE V5.0 LOADED");
+    </script>
+  </body>
+</html>
