@@ -1,106 +1,987 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <title>EduChem | Học tập hóa học</title>
     <link rel="icon" href="../favicon/educhem.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="educhem.css" />
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Segoe+UI:wght@300;400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Segoe+UI:wght@300;400;600&family=Share+Tech+Mono&display=swap"
       rel="stylesheet"
     />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+
+    <!-- Animation Lib -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <style>
+      /* =========================================================
+         1. SYSTEM ARCHITECTURE (CSS VARIABLES & THEMES)
+      ========================================================= */
+      :root {
+        /* Base Config */
+        --font-main: "Segoe UI", sans-serif;
+        --font-tech: "Orbitron", sans-serif;
+        --font-code: "Share Tech Mono", monospace;
+
+        --z-canvas: 0;
+        --z-ui: 10;
+        --z-panel: 100;
+        --z-mascot: 90;
+        --z-overlay: 999;
+
+        /* Default Theme: BASIC */
+        --c-bg-radial: radial-gradient(circle at center, #0f1724, #05070a);
+        --c-primary: #00d2ff;
+        --c-secondary: #3a7bd5;
+        --c-text: #ffffff;
+        --c-text-mute: rgba(255, 255, 255, 0.6);
+        --c-danger: #ff2a2a;
+
+        --glass-bg: rgba(255, 255, 255, 0.05);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --shadow-glow: 0 0 20px rgba(0, 210, 255, 0.2);
+      }
+
+      /* --- THEME 2: METAL (Kim Loại) --- */
+      [data-chem-theme="metal"] {
+        --c-bg-radial: radial-gradient(circle at center, #2c3e50, #000000);
+        --c-primary: #e0e0e0; /* Silver */
+        --c-secondary: #7f8c8d;
+        --c-danger: #ff4d4d;
+        --shadow-glow: 0 0 15px rgba(224, 224, 224, 0.4);
+      }
+
+      /* --- THEME 3: ACID (Axit) --- */
+      [data-chem-theme="acid"] {
+        --c-bg-radial: radial-gradient(circle at center, #0a1a0a, #000000);
+        --c-primary: #ccff00; /* Toxic Green */
+        --c-secondary: #33cc33;
+        --c-danger: #ff00ff; /* Purple contrast */
+        --shadow-glow: 0 0 20px rgba(204, 255, 0, 0.3);
+      }
+
+      /* --- THEME 4: BASE (Bazơ) --- */
+      [data-chem-theme="base"] {
+        --c-bg-radial: radial-gradient(circle at center, #1a0524, #05010a);
+        --c-primary: #bf00ff; /* Deep Purple */
+        --c-secondary: #7d2ae8;
+        --c-danger: #ff9900;
+        --shadow-glow: 0 0 25px rgba(191, 0, 255, 0.3);
+      }
+
+      /* --- THEME 5: ORGANIC (Hữu cơ) --- */
+      [data-chem-theme="organic"] {
+        --c-bg-radial: radial-gradient(circle at center, #1c1c1c, #0d0d0d);
+        --c-primary: #ffbf00; /* Amber/Carbon */
+        --c-secondary: #d35400;
+        --c-danger: #00ffcc;
+        --shadow-glow: 0 0 20px rgba(255, 191, 0, 0.25);
+      }
+
+      /* Global Reset */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+        font-family: var(--font-main);
+        background: var(--c-bg-radial);
+        color: var(--c-text);
+        min-height: 100vh;
+        overflow-x: hidden;
+        transition:
+          background 0.8s ease,
+          color 0.5s ease;
+      }
+
+      /* =========================================================
+         2. CANVAS & LAYOUT UI
+      ========================================================= */
+      #chem-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: var(--z-canvas);
+        pointer-events: none;
+      }
+
+      /* Header */
+      header {
+        position: relative;
+        z-index: var(--z-ui);
+        padding: 20px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--glass-border);
+      }
+      .logo-group {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      .logo-group i {
+        font-size: 2.2rem;
+        color: var(--c-primary);
+        animation: spin 10s linear infinite;
+        filter: drop-shadow(0 0 5px var(--c-primary));
+        transition: color 0.5s;
+      }
+      .site-title h1 {
+        font-family: var(--font-tech);
+        font-size: 1.6rem;
+        background: linear-gradient(90deg, #fff, var(--c-primary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        transition: 0.5s;
+      }
+
+      .nav-controls button {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        color: var(--c-text);
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        cursor: pointer;
+        margin-left: 10px;
+        transition: 0.3s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+      }
+      .nav-controls button:hover {
+        background: var(--c-primary);
+        color: #000;
+        box-shadow: 0 0 15px var(--c-primary);
+        transform: translateY(-2px);
+      }
+
+      /* Hero */
+      .hero-section {
+        text-align: center;
+        padding: 50px 20px 30px;
+        position: relative;
+        z-index: 5;
+      }
+      .hero-section h2 {
+        font-family: var(--font-tech);
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        margin-bottom: 10px;
+        text-shadow: var(--shadow-glow);
+        transition: 0.5s;
+      }
+
+      /* Grid System */
+      .chemverse-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px 40px 100px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+        position: relative;
+        z-index: 5;
+      }
+      .chem-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        padding: 30px 25px;
+        border-radius: 16px;
+        text-align: center;
+        transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        cursor: pointer;
+      }
+      .chem-card:hover {
+        transform: translateY(-10px);
+        border-color: var(--c-primary);
+        box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.5);
+      }
+      .chem-card .icon-wrapper {
+        width: 70px;
+        height: 70px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        border: 1px solid var(--glass-border);
+        transition: 0.3s;
+      }
+      .chem-card:hover .icon-wrapper {
+        background: var(--c-primary);
+        color: #000;
+        box-shadow: 0 0 20px var(--c-primary);
+      }
+      .chem-card i {
+        font-size: 28px;
+        color: var(--c-primary);
+        transition: 0.3s;
+      }
+      .chem-card:hover i {
+        color: #000;
+      }
+
+      /* =========================================================
+         3. SETTINGS PANEL (Slide-in)
+      ========================================================= */
+      #settings-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(3px);
+        z-index: 99;
+        opacity: 0;
+        pointer-events: none;
+        transition: 0.3s;
+      }
+      #settings-overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      #settings-panel {
+        position: fixed;
+        top: 0;
+        right: -320px;
+        width: 320px;
+        height: 100%;
+        background: rgba(10, 15, 25, 0.95);
+        border-left: 1px solid var(--glass-border);
+        z-index: var(--z-panel);
+        padding: 30px;
+        transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+      }
+      #settings-panel.active {
+        right: 0;
+      }
+
+      .panel-header h3 {
+        font-family: var(--font-tech);
+        color: var(--c-primary);
+        border-bottom: 1px solid var(--glass-border);
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+      }
+
+      .theme-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+      .theme-btn {
+        padding: 15px 10px;
+        border: 1px solid var(--glass-border);
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        transition: 0.2s;
+      }
+      .theme-btn:hover,
+      .theme-btn.active {
+        background: var(--c-primary);
+        color: #000;
+        border-color: var(--c-primary);
+        transform: scale(1.05);
+      }
+      .theme-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+
+      /* =========================================================
+         4. MASCOT SYSTEM: CHEM-BOT (Interactive)
+      ========================================================= */
+      #mascot-container {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: var(--z-mascot);
+        cursor: pointer;
+        transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      }
+      #mascot-container:hover {
+        transform: scale(1.1);
+      }
+      #mascot-container:active {
+        transform: scale(0.95);
+      }
+
+      .bot-body {
+        width: 90px;
+        height: 110px;
+        background: rgba(20, 20, 20, 0.8);
+        border: 2px solid var(--glass-border);
+        border-radius: 40% 40% 45% 45%;
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+      }
+      /* Liquid changes color with theme */
+      .bot-liquid {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 50%;
+        background: var(--c-primary);
+        opacity: 0.8;
+        transition:
+          background-color 0.5s,
+          height 0.3s;
+        animation: liquidMove 4s infinite linear;
+      }
+      .bot-liquid::before {
+        content: "";
+        position: absolute;
+        top: -10px;
+        left: 0;
+        width: 100%;
+        height: 20px;
+        background: inherit;
+        border-radius: 50%;
+        opacity: 0.5;
+      }
+      .bot-eyes {
+        position: absolute;
+        top: 35%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 50px;
+        display: flex;
+        justify-content: space-between;
+        z-index: 2;
+      }
+      .eye {
+        width: 16px;
+        height: 16px;
+        background: #fff;
+        border-radius: 50%;
+        box-shadow: 0 0 10px var(--c-primary);
+        transition: 0.3s;
+      }
+
+      /* Mascot States */
+      [data-mascot-state="idle"] #mascot-container {
+        animation: float 3s ease-in-out infinite;
+      }
+      [data-mascot-state="rage"] .bot-body {
+        animation: violentShake 0.1s infinite;
+        border-color: var(--c-danger);
+      }
+      [data-mascot-state="rage"] .bot-liquid {
+        background: var(--c-danger);
+        height: 90%;
+        animation: boil 0.2s infinite;
+      }
+      [data-mascot-state="rage"] .eye {
+        background: #ffff00;
+        clip-path: polygon(0 20%, 100% 0, 100% 100%, 0 80%);
+      }
+
+      /* =========================================================
+         5. RAGE MODE OVERLAY (Full Screen Effects)
+      ========================================================= */
+      #rage-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: var(--z-overlay);
+        pointer-events: none;
+        opacity: 0;
+        background: radial-gradient(
+          circle,
+          transparent 40%,
+          var(--c-danger) 100%
+        );
+        mix-blend-mode: overlay;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.3s;
+      }
+      #rage-overlay.active {
+        opacity: 1;
+      }
+
+      .rage-text {
+        font-family: var(--font-code);
+        font-size: 5rem;
+        font-weight: 900;
+        color: var(--c-danger);
+        text-shadow: 0 0 50px var(--c-danger);
+        opacity: 0;
+        transform: scale(2);
+      }
+      #rage-overlay.active .rage-text {
+        animation:
+          glitchText 0.2s infinite,
+          zoomIn 0.3s forwards;
+      }
+
+      /* Animations */
+      @keyframes spin {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+      @keyframes liquidMove {
+        0% {
+          transform: skew(0deg);
+        }
+        25% {
+          transform: skew(5deg);
+        }
+        75% {
+          transform: skew(-5deg);
+        }
+        100% {
+          transform: skew(0deg);
+        }
+      }
+      @keyframes violentShake {
+        0% {
+          transform: translate(2px, 2px) rotate(0deg);
+        }
+        100% {
+          transform: translate(-2px, -2px) rotate(-5deg);
+        }
+      }
+      @keyframes boil {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+      @keyframes zoomIn {
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      @keyframes glitchText {
+        0% {
+          opacity: 1;
+          transform: translateX(5px);
+        }
+        50% {
+          opacity: 0.8;
+          transform: translateX(-5px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      /* Mobile Fixes */
+      @media (max-width: 768px) {
+        #mascot-container {
+          right: 15px;
+          bottom: 15px;
+          transform: scale(0.8);
+        }
+        .hero-section h2 {
+          font-size: 2rem;
+        }
+        #settings-panel {
+          width: 280px;
+        }
+      }
+    </style>
   </head>
-  <body>
+
+  <body data-chem-theme="basic">
+    <!-- Default Theme -->
+
+    <!-- 1. CANVAS ENGINE -->
     <canvas id="chem-canvas"></canvas>
+
+    <!-- 2. RAGE OVERLAY -->
+    <div id="rage-overlay">
+      <div class="rage-text">UNSTABLE</div>
+    </div>
+
+    <!-- 3. SETTINGS OVERLAY & PANEL -->
+    <div id="settings-overlay"></div>
+    <aside id="settings-panel">
+      <div class="panel-header">
+        <h3><i class="fas fa-sliders-h"></i> LAB SETTINGS</h3>
+      </div>
+
+      <div class="setting-group">
+        <label
+          style="
+            color: var(--c-text-mute);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            display: block;
+          "
+          >SELECT REACTION THEME</label
+        >
+        <div class="theme-grid">
+          <button class="theme-btn active" onclick="setTheme('basic')">
+            <div class="theme-dot" style="background: #00d2ff"></div>
+            BASIC
+          </button>
+          <button class="theme-btn" onclick="setTheme('metal')">
+            <div class="theme-dot" style="background: #e0e0e0"></div>
+            METAL
+          </button>
+          <button class="theme-btn" onclick="setTheme('acid')">
+            <div class="theme-dot" style="background: #ccff00"></div>
+            ACID
+          </button>
+          <button class="theme-btn" onclick="setTheme('base')">
+            <div class="theme-dot" style="background: #bf00ff"></div>
+            BASE
+          </button>
+          <button class="theme-btn" onclick="setTheme('organic')">
+            <div class="theme-dot" style="background: #ffbf00"></div>
+            ORGANIC
+          </button>
+        </div>
+      </div>
+
+      <div
+        class="panel-footer"
+        style="
+          margin-top: auto;
+          font-size: 0.8rem;
+          color: var(--c-text-mute);
+          text-align: center;
+        "
+      >
+        EduChem
+      </div>
+    </aside>
+
+    <!-- 4. MAIN HEADER -->
     <header>
       <div class="logo-group">
         <i class="fas fa-atom"></i>
         <div class="site-title">
           <h1>EDUCHEM</h1>
-          <p>The Education Chemistry</p>
+          <p>Living Laboratory</p>
         </div>
       </div>
       <div class="nav-controls">
-        <a href="../index.html"
-          ><button title="Trang chủ"><i class="fas fa-home"></i></button
-        ></a>
-        <button id="theme-toggle" title="Chuyển chế độ Sáng/Tối">
-          <i class="fas fa-lightbulb"></i>
+        <button onclick="toggleSettings()" title="Settings">
+          <i class="fas fa-cog"></i>
         </button>
       </div>
     </header>
 
-    <div class="hero-section" data-aos="fade-down" data-aos-duration="1000">
-      <h2>Trung Tâm Điều Hành</h2>
-      <p>Chọn phân khu để bắt đầu hành trình khám phá</p>
+    <!-- 5. CONTENT HERO -->
+    <div class="hero-section" data-aos="fade-down" data-aos-duration="800">
+      <h2>Phòng Thí Nghiệm Số</h2>
+      <p style="color: var(--c-text-mute)">Chọn module để bắt đầu phản ứng</p>
     </div>
 
+    <!-- 6. GRID CARDS -->
     <main class="chemverse-container">
       <div
         class="chem-card"
-        onclick="openLink('chemstudybaby/chemstudybaby.html')"
         data-aos="zoom-in"
-        data-aos-delay="100"
+        data-aos-delay="0"
+        onclick="window.location.href = 'chemstudybaby/chemstudybaby.html'"
       >
         <div class="icon-wrapper"><i class="fas fa-flask"></i></div>
-        <h3>CHEMSTUDY BABY</h3>
-        <p>Kiến thức nền tảng Hóa học THCS.<br />Dành cho người mới bắt đầu.</p>
+        <h3>ChemStudy Baby</h3>
+        <p
+          style="color: var(--c-text-mute); font-size: 0.9rem; margin-top: 10px"
+        >
+          Hóa Học Cơ Bản (THCS)
+        </p>
       </div>
 
       <div
         class="chem-card"
-        onclick="openLink('chemstudyteen/chemstudyteen.html')"
+        data-aos="zoom-in"
+        data-aos-delay="100"
+        onclick="window.location.href = 'chemstudyteen/chemstudyteen.html'"
+      >
+        <div class="icon-wrapper">
+          <i class="fas fa-vial"></i>
+        </div>
+        <h3>ChemStudy Teen</h3>
+        <p
+          style="color: var(--c-text-mute); font-size: 0.9rem; margin-top: 10px"
+        >
+          Hóa Học Nâng Cao (THPT)
+        </p>
+      </div>
+
+      <div
+        class="chem-card"
         data-aos="zoom-in"
         data-aos-delay="200"
+        onclick="window.location.href = 'chemforum/chemforum.html'"
       >
-        <div class="icon-wrapper"><i class="fas fa-vial"></i></div>
-        <h3>CHEMSTUDY TEEN</h3>
-        <p>Kiến thức chuyên sâu Hóa học THPT.<br />Luyện thi và nâng cao.</p>
+        <div class="icon-wrapper"><i class="fas fa-burn"></i></div>
+        <h3>ChemForum</h3>
+        <p
+          style="color: var(--c-text-mute); font-size: 0.9rem; margin-top: 10px"
+        >
+          Diễn đàn Hóa Học
+        </p>
       </div>
 
       <div
         class="chem-card"
-        onclick="openLink('chemforum/chemforum.html')"
         data-aos="zoom-in"
         data-aos-delay="300"
+        onclick="window.location.href = 'chemverse/chemverse.html'"
       >
-        <div class="icon-wrapper"><i class="fas fa-comments"></i></div>
-        <h3>CHEMFORUM</h3>
-        <p>Diễn đàn thảo luận sôi nổi.<br />Hỏi đáp và chia sẻ tài liệu.</p>
-      </div>
-
-      <div
-        class="chem-card"
-        onclick="openLink('chemverse/chemverse.html')"
-        data-aos="zoom-in"
-        data-aos-delay="400"
-      >
-        <div class="icon-wrapper"><i class="fas fa-globe-asia"></i></div>
+        <div class="icon-wrapper"><i class="fas fa-cube"></i></div>
         <h3>CHEMVERSE</h3>
-        <p>Vũ trụ mô phỏng 3D.<br />Trải nghiệm trực quan sống động.</p>
-      </div>
-
-      <div
-        class="chem-card"
-        style="opacity: 0.7"
-        onclick="openLink('../suco.html')"
-        data-aos="zoom-in"
-        data-aos-delay="500"
-      >
-        <div class="icon-wrapper"><i class="fas fa-tools"></i></div>
-        <h3>ĐANG XÂY DỰNG</h3>
-        <p>Khu vực đang thi công.<br />Vui lòng quay lại sau.</p>
+        <p
+          style="color: var(--c-text-mute); font-size: 0.9rem; margin-top: 10px"
+        >
+          Vũ Trụ Hóa Học
+        </p>
       </div>
     </main>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.1/aos.js"></script>
-    <script src="educhem.js"></script>
+
+    <!-- 7. CHEM-BOT MASCOT -->
+    <div
+      id="mascot-container"
+      data-mascot-state="idle"
+      title="Click me for Reaction!"
+    >
+      <div class="bot-body">
+        <div class="bot-liquid"></div>
+        <div class="bot-eyes">
+          <div class="eye"></div>
+          <div class="eye"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /**
+       * EDUCHEM 3.0 ENGINE
+       * Features: Theme Engine, Advanced Canvas, Rage Mode, Settings
+       */
+
+      // --- GLOBALS & DOM REFERENCES ---
+      let canvas, ctx;
+      let particles = [];
+      let rageParticles = [];
+      const body = document.body;
+      const panel = document.getElementById("settings-panel");
+      const overlay = document.getElementById("settings-overlay");
+      const mascot = document.getElementById("mascot-container");
+      const rageOverlay = document.getElementById("rage-overlay");
+      const rageText = document.querySelector(".rage-text");
+
+      // --- STATE MANAGEMENT ---
+      const AppState = {
+        theme: localStorage.getItem("educhem-theme") || "basic",
+        isRage: false,
+        settingsOpen: false,
+      };
+
+      // --- THEME ENGINE ---
+      function setTheme(themeName) {
+        AppState.theme = themeName;
+        body.setAttribute("data-chem-theme", themeName);
+        localStorage.setItem("educhem-theme", themeName);
+
+        // Update UI Buttons
+        document
+          .querySelectorAll(".theme-btn")
+          .forEach((btn) => btn.classList.remove("active"));
+        const btns = document.querySelectorAll(".theme-btn");
+        if (btns.length > 0) {
+          if (themeName === "basic") btns[0].classList.add("active");
+          if (themeName === "metal") btns[1].classList.add("active");
+          if (themeName === "acid") btns[2].classList.add("active");
+          if (themeName === "base") btns[3].classList.add("active");
+          if (themeName === "organic") btns[4].classList.add("active");
+        }
+
+        // Adapt particles if canvas is ready
+        if (canvas) initCanvas();
+      }
+
+      // --- SETTINGS UI ---
+      function toggleSettings() {
+        AppState.settingsOpen = !AppState.settingsOpen;
+        if (AppState.settingsOpen) {
+          panel.classList.add("active");
+          overlay.classList.add("active");
+        } else {
+          panel.classList.remove("active");
+          overlay.classList.remove("active");
+        }
+      }
+      overlay.addEventListener("click", toggleSettings);
+
+      // --- ADVANCED CANVAS ENGINE ---
+      function getPrimaryColor() {
+        const style = getComputedStyle(document.body);
+        return style.getPropertyValue("--c-primary").trim();
+      }
+
+      class Particle {
+        constructor() {
+          this.reset();
+        }
+
+        reset() {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height;
+          this.size = Math.random() * 2 + 1;
+          this.alpha = Math.random() * 0.5 + 0.2;
+
+          if (AppState.theme === "acid") {
+            this.vx = 0;
+            this.vy = Math.random() * 2 + 1;
+          } else if (AppState.theme === "metal") {
+            this.vx = (Math.random() - 0.5) * 4;
+            this.vy = (Math.random() - 0.5) * 4;
+            this.size = Math.random() * 3;
+          } else if (AppState.theme === "base") {
+            this.vx = (Math.random() - 0.5) * 0.5;
+            this.vy = (Math.random() - 0.5) * 0.5;
+            this.size = Math.random() * 5 + 2;
+          } else if (AppState.theme === "organic") {
+            this.vx = Math.random() - 0.5;
+            this.vy = Math.random() - 0.5;
+          } else {
+            this.vx = Math.random() - 0.5;
+            this.vy = Math.random() - 0.5;
+          }
+        }
+
+        update() {
+          if (AppState.isRage) {
+            this.x += (Math.random() - 0.5) * 10;
+            this.y += (Math.random() - 0.5) * 10;
+          } else {
+            this.x += this.vx;
+            this.y += this.vy;
+          }
+
+          if (
+            this.x < 0 ||
+            this.x > canvas.width ||
+            this.y < 0 ||
+            this.y > canvas.height
+          ) {
+            if (AppState.theme === "acid") {
+              this.y = 0;
+              this.x = Math.random() * canvas.width;
+            } else {
+              this.vx *= -1;
+              this.vy *= -1;
+            }
+          }
+        }
+
+        draw() {
+          const color = getPrimaryColor();
+          ctx.fillStyle = color;
+          ctx.globalAlpha = this.alpha;
+          ctx.beginPath();
+
+          if (AppState.theme === "organic") {
+            for (let i = 0; i < 6; i++) {
+              ctx.lineTo(
+                this.x + this.size * Math.cos((i * Math.PI) / 3),
+                this.y + this.size * Math.sin((i * Math.PI) / 3),
+              );
+            }
+          } else if (AppState.theme === "metal") {
+            ctx.rect(this.x, this.y, this.size, this.size);
+          } else {
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          }
+          ctx.fill();
+        }
+      }
+
+      const FORMULAS = {
+        basic: ["H2O", "O2", "H+"],
+        acid: ["H2SO4", "HCl", "H3O+", "☣"],
+        base: ["NaOH", "OH-", "NH3"],
+        metal: ["Fe2+", "Cu", "Ag+", "⚡"],
+        organic: ["C6H6", "CH4", "C2H5OH"],
+      };
+
+      class RageParticle {
+        constructor() {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height;
+          this.vx = (Math.random() - 0.5) * 15;
+          this.vy = (Math.random() - 0.5) * 15;
+          this.text =
+            FORMULAS[AppState.theme][
+              Math.floor(Math.random() * FORMULAS[AppState.theme].length)
+            ];
+          this.size = Math.random() * 20 + 10;
+          this.life = 1.0;
+        }
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          this.life -= 0.02;
+        }
+        draw() {
+          if (this.life <= 0) return;
+          ctx.font = `bold ${this.size}px monospace`;
+          ctx.fillStyle = getComputedStyle(body).getPropertyValue("--c-danger");
+          ctx.globalAlpha = this.life;
+          ctx.fillText(this.text, this.x, this.y);
+        }
+      }
+
+      function initCanvas() {
+        if (!canvas) return;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        particles = [];
+        const count = window.innerWidth < 768 ? 40 : 80;
+        for (let i = 0; i < count; i++) particles.push(new Particle());
+      }
+
+      function animate() {
+        if (!ctx) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        particles.forEach((p) => {
+          p.update();
+          p.draw();
+        });
+
+        if (AppState.theme !== "acid") {
+          ctx.strokeStyle = getPrimaryColor();
+          ctx.lineWidth = 0.2;
+          for (let i = 0; i < particles.length; i++) {
+            for (let j = i; j < particles.length; j++) {
+              const dx = particles[i].x - particles[j].x;
+              const dy = particles[i].y - particles[j].y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist < 120) {
+                ctx.globalAlpha = 1 - dist / 120;
+                ctx.beginPath();
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.stroke();
+              }
+            }
+          }
+        }
+
+        if (AppState.isRage) {
+          rageParticles.forEach((p) => {
+            p.update();
+            p.draw();
+          });
+          if (rageParticles.length < 50) rageParticles.push(new RageParticle());
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      // --- CHEMICAL RAGE MODE ---
+      mascot.addEventListener("click", () => {
+        if (AppState.isRage) return;
+        triggerRage();
+      });
+
+      function triggerRage() {
+        AppState.isRage = true;
+        mascot.setAttribute("data-mascot-state", "rage");
+        rageOverlay.classList.add("active");
+        document.body.style.animation = "violentShake 0.5s infinite";
+
+        const warnings = {
+          basic: "REACTION UNSTABLE",
+          acid: "CORROSIVE LEAK",
+          metal: "SYSTEM OVERLOAD",
+          base: "PH LEVEL CRITICAL",
+          organic: "CARBON RUPTURE",
+        };
+        rageText.innerText = warnings[AppState.theme] || "DANGER";
+
+        setTimeout(() => {
+          AppState.isRage = false;
+          mascot.setAttribute("data-mascot-state", "idle");
+          rageOverlay.classList.remove("active");
+          document.body.style.animation = "";
+          rageParticles = [];
+        }, 5000);
+      }
+
+      // --- INIT ---
+      window.onload = () => {
+        // First get the DOM elements
+        canvas = document.getElementById("chem-canvas");
+        ctx = canvas.getContext("2d");
+
+        // Then initialize settings and theme
+        AOS.init();
+        setTheme(AppState.theme);
+
+        // Start engine
+        initCanvas();
+        animate();
+        window.addEventListener("resize", initCanvas);
+      };
+    </script>
   </body>
 </html>

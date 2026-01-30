@@ -1,315 +1,430 @@
-<!DOCTYPE html>
-<html lang="vi">
+<html>
+  <!doctype html>
   <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width,initial-scale=1,viewport-fit=cover"
-    />
-    <meta name="theme-color" content="#ef4444" />
-    <title>PomodoroKios — Ultra Focus v4.0</title>
-    <link rel="icon" href="../favicon/educhem.svg" type="image/svg+xml" />
-    <!-- Fonts / Icons / Libs -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap"
-      rel="stylesheet"
-    />
-    <script
-      src="https://kit.fontawesome.com/2e8e1a6b8f.js"
-      crossorigin="anonymous"
-      defer
-    ></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OVERSEER | Forced Focus System</title>
+    <style>
+      :root {
+        --primary: #00ff41;
+        --danger: #ff003c;
+        --bg: #050505;
+        --surface: #0a0a0a;
+        --font: "Courier New", Courier, monospace;
+      }
 
-    <!-- Core Styles -->
-    <link rel="stylesheet" href="css/core.css" />
-    <link rel="stylesheet" href="css/ultra.css" />
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        overflow: hidden;
+        cursor: crosshair;
+      }
+
+      body {
+        background-color: var(--bg);
+        color: var(--primary);
+        font-family: var(--font);
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        transition: background 0.1s ease;
+      }
+
+      /* UI States */
+      body.danger {
+        background-color: #200;
+        --primary: var(--danger);
+        animation: shake 0.1s infinite;
+      }
+      body.flow {
+        --primary: #00e5ff;
+      }
+      body.hardcore {
+        --primary: #7000ff;
+      }
+
+      @keyframes shake {
+        0% {
+          transform: translate(1px, 1px);
+        }
+        50% {
+          transform: translate(-1px, -2px);
+        }
+        100% {
+          transform: translate(0, 0);
+        }
+      }
+
+      /* Layout */
+      #interface {
+        display: none;
+        grid-template-rows: auto 1fr auto;
+        height: 100vh;
+        padding: 20px;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--primary);
+        padding-bottom: 10px;
+      }
+
+      #camera-feed {
+        width: 200px;
+        height: 120px;
+        background: #000;
+        border: 1px solid var(--primary);
+        position: relative;
+      }
+
+      #v-stream {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(1) brightness(0.5) contrast(1.2);
+        transform: scaleX(-1);
+      }
+
+      .scanline {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--primary);
+        opacity: 0.3;
+        animation: scan 2s linear infinite;
+      }
+
+      @keyframes scan {
+        from {
+          top: 0;
+        }
+        to {
+          top: 100%;
+        }
+      }
+
+      /* Main Display */
+      main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+
+      #timer {
+        font-size: 12rem;
+        font-weight: 900;
+        text-shadow: 0 0 20px var(--primary);
+      }
+
+      #overseer-box {
+        border: 1px solid var(--primary);
+        padding: 20px;
+        width: 500px;
+        background: rgba(0, 255, 65, 0.05);
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      #bot-face {
+        font-size: 3rem;
+        margin-bottom: 10px;
+      }
+
+      /* Score & Logs */
+      .status-panel {
+        text-align: right;
+      }
+      #score-display {
+        font-size: 4rem;
+        font-weight: bold;
+      }
+
+      #logs {
+        font-size: 0.7rem;
+        height: 100px;
+        overflow: hidden;
+        opacity: 0.6;
+        width: 100%;
+        border-top: 1px solid var(--primary);
+        padding-top: 10px;
+      }
+
+      /* Overlays */
+      #init-screen {
+        position: fixed;
+        inset: 0;
+        background: #000;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .btn {
+        background: transparent;
+        border: 1px solid var(--primary);
+        color: var(--primary);
+        padding: 15px 40px;
+        text-transform: uppercase;
+        font-weight: bold;
+        margin-top: 20px;
+        transition: 0.2s;
+      }
+
+      .btn:hover {
+        background: var(--primary);
+        color: #000;
+      }
+
+      #afk-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.9);
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 200;
+      }
+
+      .glitch-text {
+        animation: glitch 0.3s infinite;
+      }
+      @keyframes glitch {
+        0% {
+          transform: skew(0deg);
+        }
+        50% {
+          transform: skew(10deg);
+          color: #fff;
+        }
+        100% {
+          transform: skew(-10deg);
+        }
+      }
+    </style>
   </head>
+  <body id="body">
+    <div id="init-screen">
+      <h1 class="glitch-text">OVERSEER SYSTEM v1.0</h1>
+      <p style="margin: 20px; text-align: center; max-width: 500px">
+        ACCESSING BIOMETRICS. FULLSCREEN MANDATORY. ESCAPE IS PROHIBITED.
+      </p>
+      <button id="btn-init" class="btn">Initialize Giao Thức</button>
+    </div>
 
-  <body data-theme="light">
-    <div
-      id="app"
-      class="app"
-      role="application"
-      aria-label="PomodoroKios Ultra Focus"
-    >
-      <!-- ===== MAIN CARD ===== -->
-      <main class="main-card" role="main">
-        <header class="app-header" role="banner">
-          <div class="title-row center">
-            <h1>PomodoroKios <span class="ver">v4.0</span></h1>
-            <small class="beta" aria-hidden="true">Ultra</small>
-          </div>
-          <p class="subtitle" data-lang="subtitle">
-            Tập trung thông minh — Học hiệu quả — Giao diện nhẹ và đẹp
-          </p>
-        </header>
+    <div id="afk-overlay">
+      <h1 style="font-size: 5rem; color: var(--danger)">AFK DETECTED</h1>
+      <p id="afk-timer" style="font-size: 8rem">5</p>
+    </div>
 
-        <!-- TIMER SECTION -->
-        <section class="timer" aria-labelledby="timerLabel">
-          <h2 id="timerLabel" class="sr-only">Bộ đếm Pomodoro</h2>
+    <div id="interface">
+      <header>
+        <div id="camera-feed">
+          <video id="v-stream" autoplay playsinline muted></video>
+          <div class="scanline"></div>
+        </div>
+        <div class="status-panel">
+          <div>DISCIPLINE SCORE</div>
+          <div id="score-display">100</div>
+          <div id="status-mode">STATUS: NOMINAL</div>
+        </div>
+      </header>
 
-          <!-- Progress ring -->
-          <div class="progress-wrap column-center">
-            <div class="progress-ring" aria-hidden="true">
-              <svg
-                width="200"
-                height="200"
-                viewBox="0 0 200 200"
-                role="img"
-                aria-hidden="true"
-              >
-                <circle
-                  class="ring-bg"
-                  cx="100"
-                  cy="100"
-                  r="90"
-                  stroke-width="10"
-                  fill="none"
-                ></circle>
-                <circle
-                  id="ringProgress"
-                  class="ring-progress"
-                  cx="100"
-                  cy="100"
-                  r="90"
-                  stroke-width="10"
-                  fill="none"
-                ></circle>
-              </svg>
-              <div class="time-overlay">
-                <div id="time" class="time-display" aria-live="polite">
-                  25:00
-                </div>
-                <div
-                  id="sessionDesc"
-                  class="session-desc"
-                  data-lang="sessionFocus"
-                  aria-atomic="true"
-                >
-                  Đang làm việc: 25 phút
-                </div>
-              </div>
-            </div>
-
-            <!-- Linear progress -->
-            <div
-              class="progress"
-              role="progressbar"
-              aria-valuemin="0"
-              aria-valuemax="100"
-            >
-              <i id="progressBar" style="width: 0%"></i>
-            </div>
-          </div>
-
-          <!-- Controls -->
-          <div class="controls toolbar">
-            <button
-              id="startBtn"
-              class="btn primary"
-              data-lang="start"
-              title="Bắt đầu"
-            >
-              ▶️ Bắt đầu
-            </button>
-            <button
-              id="pauseBtn"
-              class="btn"
-              data-lang="pause"
-              title="Tạm dừng"
-            >
-              ⏸️ Tạm dừng
-            </button>
-            <button
-              id="skipBtn"
-              class="btn ghost"
-              data-lang="skip"
-              title="Bỏ qua"
-            >
-              ⏭️ Bỏ qua
-            </button>
-            <button
-              id="resetBtn"
-              class="btn ghost"
-              data-lang="reset"
-              title="Đặt lại"
-            >
-              🔁 Đặt lại
-            </button>
-            <button
-              id="hardcoreBtn"
-              class="btn small ghost"
-              title="Chế độ Hardcore"
-            >
-              🔒 Hardcore
-            </button>
-          </div>
-
-          <!-- Config -->
-          <div class="config" aria-hidden="false">
-            <label
-              >Work
-              <input
-                id="workMins"
-                type="number"
-                min="5"
-                value="25"
-                aria-label="Số phút làm việc"
-            /></label>
-            <label
-              >Short
-              <input
-                id="shortMins"
-                type="number"
-                min="1"
-                value="5"
-                aria-label="Nghỉ ngắn"
-            /></label>
-            <label
-              >Long
-              <input
-                id="longMins"
-                type="number"
-                min="5"
-                value="15"
-                aria-label="Nghỉ dài"
-            /></label>
-            <label
-              >Long every
-              <input
-                id="cyclesBeforeLong"
-                type="number"
-                min="1"
-                value="4"
-                aria-label="Số chu kỳ trước khi nghỉ dài"
-              />
-              cycles</label
-            >
-          </div>
-        </section>
-
-        <!-- TODO SECTION -->
-        <section class="todo-section" aria-labelledby="todoLabel">
-          <h3 id="todoLabel" data-lang="todoTitle">Nhiệm vụ hôm nay</h3>
-          <div class="todo-add">
-            <input
-              id="newTask"
-              type="text"
-              placeholder="Thêm nhiệm vụ..."
-              aria-label="Thêm nhiệm vụ mới"
-            />
-            <button id="addTask" class="btn small" data-lang="add">
-              ➕ Thêm
-            </button>
-          </div>
-          <div
-            id="todoList"
-            class="todo-list"
-            role="list"
-            aria-live="polite"
-          ></div>
-        </section>
-
-        <!-- STATS SECTION -->
-        <section class="stats" aria-labelledby="statsLabel">
-          <h3 id="statsLabel" data-lang="statsTitle">Thống kê học tập</h3>
-          <canvas id="chart" aria-label="Biểu đồ thống kê" role="img"></canvas>
-        </section>
+      <main>
+        <div id="timer">25:00</div>
+        <div id="overseer-box">
+          <div id="bot-face">[⊙]</div>
+          <div id="bot-msg">MONITORING COMMENCED.</div>
+        </div>
+        <button id="btn-start" class="btn">Start Focus Session</button>
       </main>
 
-      <!-- ===== SIDEBAR ===== -->
-      <aside class="side-card" role="complementary" aria-label="Cài đặt nhanh">
-        <h3 data-lang="quickSettings">⚙️ Cài đặt nhanh</h3>
-
-        <div class="settings-list">
-          <label
-            ><input type="checkbox" id="pauseOnBlur" checked />
-            <span data-lang="pauseOnBlur">Tự dừng khi rời tab</span></label
-          >
-          <label
-            ><input type="checkbox" id="blockRefresh" checked />
-            <span data-lang="blockRefresh">Chặn F5 / Ctrl+R</span></label
-          >
-          <label
-            ><input type="checkbox" id="autoFull" />
-            <span data-lang="autoFull">Toàn màn hình khi bắt đầu</span></label
-          >
-          <label
-            ><input type="checkbox" id="vibrateOnEnd" checked />
-            <span data-lang="vibrate">Rung khi kết thúc</span></label
-          >
-        </div>
-
-        <hr />
-
-        <div class="progress-summary">
-          <p>📈 <span data-lang="progress">Tiến trình</span></p>
-          <p>
-            <span data-lang="completed">Hoàn thành:</span>
-            <strong id="completed">0</strong>
-          </p>
-          <p>
-            <span data-lang="violations">Vi phạm:</span>
-            <strong id="violations">0</strong>
-          </p>
-        </div>
-
-        <hr />
-
-        <div class="theme-lang">
-          <h4 data-lang="appearance">🎨 Giao diện & Ngôn ngữ</h4>
-          <div class="button-group">
-            <button id="toggleTheme" class="btn small" title="Đổi giao diện">
-              🌗
-            </button>
-            <button id="toggleLang" class="btn small" title="Đổi ngôn ngữ">
-              🇻🇳
-            </button>
-            <button id="exportBtn" class="btn small ghost" title="Xuất dữ liệu">
-              ⬇️ Export
-            </button>
-          </div>
-        </div>
-      </aside>
+      <footer id="logs">
+        <div>[SYSTEM] NEURAL LINK ESTABLISHED...</div>
+      </footer>
     </div>
 
-    <!-- ===== OVERLAY / MODALS ===== -->
-    <div id="ultraChallengeMount" aria-hidden="true"></div>
+    <script>
+       const state = { score: 100, timeLeft: 1500, isActive: false, afkCounter: 0, violations: 0, audioCtx: null, noise: null, lastAct: Date.now() };
 
-    <div id="overlay" class="overlay" aria-hidden="true">
-      <div class="overlay-box" role="dialog" aria-modal="true">
-        <h3 data-lang="overlayTitle">🚫 Bạn rời khỏi cửa sổ học tập</h3>
-        <p data-lang="overlayMsg">
-          Hệ thống đã tạm dừng. Quay lại để tiếp tục nhé!
-        </p>
-        <div class="overlay-actions">
-          <button id="resumeBtn" class="btn primary" data-lang="resume">
-            ▶️ Tiếp tục
-          </button>
-          <button id="cancelOverlayBtn" class="btn ghost" data-lang="cancel">
-            Hủy
-          </button>
-        </div>
-      </div>
-    </div>
+      const dom = {
+          body: document.getElementById(&#39;body&#39;),
+          init: document.getElementById(&#39;init-screen&#39;),
+          ui: document.getElementById(&#39;interface&#39;),
+          timer: document.getElementById(&#39;timer&#39;),
+          score: document.getElementById(&#39;score-display&#39;),
+          face: document.getElementById(&#39;bot-face&#39;),
+          msg: document.getElementById(&#39;bot-msg&#39;),
+          logs: document.getElementById(&#39;logs&#39;),
+          afk: document.getElementById(&#39;afk-overlay&#39;),
+          afkTime: document.getElementById(&#39;afk-timer&#39;),
+          video: document.getElementById(&#39;v-stream&#39;)
+      };
 
-    <!-- ===== FOOTER ===== -->
-    <footer role="contentinfo" class="footer">
-      <div class="social-links">
-        <a href="https://m.me/100075597477910" target="_blank" rel="noopener"
-          ><i class="fab fa-facebook-messenger"></i> Facebook</a
-        >
-        <a href="mailto:ducnt21042010@gmail.com" target="_blank" rel="noopener"
-          ><i class="fas fa-envelope"></i> Gmail</a
-        >
-        <a href="tel:0342266204"><i class="fas fa-phone"></i> 0342266204</a>
-      </div>
-      <p class="footer-note">© 2025 PomodoroKios — Designed by Đức</p>
-    </footer>
+      // --- Audio System ---
+      function initAudio() {
+          state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const bufferSize = 2 * state.audioCtx.sampleRate;
+          const noiseBuffer = state.audioCtx.createBuffer(1, bufferSize, state.audioCtx.sampleRate);
+          const output = noiseBuffer.getChannelData(0);
+          for (let i = 0; i &lt; bufferSize; i++) output[i] = Math.random() * 2 - 1;
 
-    <!-- ===== SCRIPTS ===== -->
-    <script src="js/lang-theme.v3.js" defer></script>
-    <script src="js/app.ultra.v4.0.js" defer></script>
+          state.noise = state.audioCtx.createBufferSource();
+          state.noise.buffer = noiseBuffer;
+          state.noise.loop = true;
+          const gain = state.audioCtx.createGain();
+          gain.gain.value = 0.02;
+          state.noise.connect(gain);
+          gain.connect(state.audioCtx.destination);
+          state.noise.start();
+      }
+
+      function playAlert(freq = 440, type = &#39;square&#39;, dur = 0.5) {
+          if (!state.audioCtx) return;
+          const osc = state.audioCtx.createOscillator();
+          const g = state.audioCtx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, state.audioCtx.currentTime);
+          g.gain.setValueAtTime(0.1, state.audioCtx.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.01, state.audioCtx.currentTime + dur);
+          osc.connect(g);
+          g.connect(state.audioCtx.destination);
+          osc.start();
+          osc.stop(state.audioCtx.currentTime + dur);
+      }
+
+      // --- Core Logic ---
+      async function startSystem() {
+          try {
+              const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+              dom.video.srcObject = stream;
+              initAudio();
+              dom.init.style.display = &#39;none&#39;;
+              dom.ui.style.display = &#39;grid&#39;;
+              log(&quot;BIOMETRIC FEED ACTIVE.&quot;);
+          } catch (e) {
+              alert(&quot;ACCESS DENIED. SYSTEM CANNOT OPERATE WITHOUT SURVEILLANCE.&quot;);
+          }
+      }
+
+      function log(m) {
+          const div = document.createElement(&#39;div&#39;);
+          div.textContent = `[${new Date().toLocaleTimeString()}] ${m}`;
+          dom.logs.prepend(div);
+      }
+
+      function updateScore(points) {
+          state.score += points;
+          dom.score.textContent = state.score;
+          if (state.score &lt; 50) dom.body.className = &#39;danger&#39;;
+          else if (state.score &gt; 90) dom.body.className = &#39;flow&#39;;
+      }
+
+      function speak(txt) {
+          const msg = new SpeechSynthesisUtterance(txt);
+          msg.rate = 0.8;
+          msg.pitch = 0.2;
+          window.speechSynthesis.speak(msg);
+      }
+
+      function punish(reason, pts) {
+          updateScore(-pts);
+          log(`VIOLATION: ${reason} (-${pts})`);
+          dom.face.textContent = &#39;[]&#39;;
+          dom.msg.textContent = reason;
+          playAlert(100, &#39;sawtooth&#39;, 0.8);
+          speak(reason);
+      }
+
+      // --- Controls ---
+      document.getElementById(&#39;btn-init&#39;).onclick = startSystem;
+
+      document.getElementById(&#39;btn-start&#39;).onclick = () =&gt; {
+          document.documentElement.requestFullscreen();
+          state.isActive = true;
+          document.getElementById(&#39;btn-start&#39;).style.display = &#39;none&#39;;
+          speak(&quot;Session started. Do not fail me.&quot;);
+          startTimer();
+      };
+
+      function startTimer() {
+          setInterval(() =&gt; {
+              if (!state.isActive) return;
+
+              state.timeLeft--;
+              const m = Math.floor(state.timeLeft / 60);
+              const s = state.timeLeft % 60;
+              dom.timer.textContent = `${m}:${s &lt; 10 ? &#39;0&#39;+s : s}`;
+
+              // Random Checks
+              if (Math.random() &lt; 0.05) {
+                  const check = [&quot;Look at the screen.&quot;, &quot;I see you.&quot;, &quot;Stay focused.&quot;][Math.floor(Math.random()*3)];
+                  dom.msg.textContent = check;
+              }
+
+              // AFK Check
+              if (Date.now() - state.lastAct &gt; 15000) triggerAFK();
+
+              if (state.timeLeft &lt;= 0) {
+                  state.isActive = false;
+                  speak(&quot;Session complete. Discipline maintained.&quot;);
+                  location.reload();
+              }
+          }, 1000);
+      }
+
+      function triggerAFK() {
+          dom.afk.style.display = &#39;flex&#39;;
+          let countdown = 5;
+          const itv = setInterval(() =&gt; {
+              countdown--;
+              dom.afkTime.textContent = countdown;
+              if (countdown &lt;= 0) {
+                  clearInterval(itv);
+                  punish(&quot;AFK TERMINATION&quot;, 15);
+                  dom.afk.style.display = &#39;none&#39;;
+              }
+              if (Date.now() - state.lastAct &lt; 1000) {
+                  clearInterval(itv);
+                  dom.afk.style.display = &#39;none&#39;;
+              }
+          }, 1000);
+      }
+
+      // --- Security ---
+      window.addEventListener(&#39;keydown&#39;, e =&gt; {
+          state.lastAct = Date.now();
+          const forbidden = [&#39;F5&#39;, &#39;r&#39;, &#39;R&#39;, &#39;F11&#39;, &#39;w&#39;, &#39;W&#39;];
+          if (e.ctrlKey &amp;&amp; forbidden.includes(e.key) || e.key === &#39;F5&#39; || e.key === &#39;Escape&#39;) {
+              e.preventDefault();
+              punish(&quot;ESCAPE ATTEMPT DETECTED&quot;, 5);
+          }
+      });
+
+      window.addEventListener(&#39;mousemove&#39;, () =&gt; state.lastAct = Date.now());
+
+      document.addEventListener(&#39;visibilitychange&#39;, () =&gt; {
+          if (document.hidden &amp;&amp; state.isActive) {
+              punish(&quot;TAB ABANDONMENT&quot;, 10);
+          }
+      });
+
+      document.addEventListener(&#39;fullscreenchange&#39;, () =&gt; {
+          if (!document.fullscreenElement &amp;&amp; state.isActive) {
+              punish(&quot;FULLSCREEN BREACH&quot;, 20);
+              dom.body.classList.add(&#39;danger&#39;);
+          }
+      });
+
+      // Disable context menu
+      document.addEventListener(&#39;contextmenu&#39;, e =&gt; e.preventDefault());
+    </script>
   </body>
 </html>
