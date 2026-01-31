@@ -1,50 +1,52 @@
-<!DOCTYPE html>
-<html lang="vi">
+<!doctype html>
+<html lang="vi" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
-    <title>Hóa Học 8 | Phản Ứng Hóa Học (Full)</title>
-    <link rel="icon" href="../../../favicon/educhem.svg" type="image/svg+xml" />
-    <!-- React & Libraries -->
-    <script
-      crossorigin
-      src="https://unpkg.com/react@18/umd/react.development.js"
-    ></script>
-    <script
-      crossorigin
-      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
-    ></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EDUMATTER | Hóa Học Tương Tác</title>
 
-    <!-- Fonts -->
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;700&display=swap"
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@300;400;600&display=swap"
       rel="stylesheet"
     />
 
+    <!-- Tailwind Config -->
     <script>
       tailwind.config = {
         darkMode: "class",
         theme: {
           extend: {
             fontFamily: {
-              sans: ["Nunito", "sans-serif"],
-              display: ["Quicksand", "sans-serif"],
+              sans: ["Inter", "sans-serif"],
+              display: ["Space Grotesk", "sans-serif"],
             },
             colors: {
-              primary: { DEFAULT: "#3b82f6", dark: "#2563eb" },
-              secondary: { DEFAULT: "#8b5cf6", dark: "#7c3aed" },
-              accent: { DEFAULT: "#f59e0b", dark: "#d97706" },
-              success: { DEFAULT: "#10b981", dark: "#059669" },
-              danger: { DEFAULT: "#ef4444", dark: "#dc2626" },
-              bg: { light: "#f8fafc", dark: "#0f172a" },
+              primary: "#3b82f6",
+              secondary: "#10b981",
+              accent: "#8b5cf6",
+              dark: "#0f172a",
+              glass: "rgba(255, 255, 255, 0.1)",
+              glassDark: "rgba(15, 23, 42, 0.6)",
+            },
+            animation: {
+              float: "float 6s ease-in-out infinite",
+              "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+            },
+            keyframes: {
+              float: {
+                "0%, 100%": { transform: "translateY(0)" },
+                "50%": { transform: "translateY(-20px)" },
+              },
             },
           },
         },
@@ -52,1250 +54,1574 @@
     </script>
 
     <style>
-      body {
-        transition: background-color 0.3s ease, color 0.3s ease;
+      /* Custom Variables for Footer provided in prompt */
+      :root {
+        --footer-bg: #0f172a;
+        --footer-text: #e2e8f0;
+        --p-primary: #3b82f6;
       }
+
+      html.dark :root {
+        --footer-bg: #020617;
+      }
+
+      /* Glassmorphism Utilities */
+      .glass-panel {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .dark .glass-panel {
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .glass-card {
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .dark .glass-card {
+        background: rgba(30, 41, 59, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .glass-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Gradient Text */
+      .text-gradient {
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-image: linear-gradient(to right, #3b82f6, #8b5cf6, #ec4899);
+      }
+
+      /* Custom Scrollbar */
       ::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+      .dark ::-webkit-scrollbar-track {
+        background: #0f172a;
       }
       ::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
+        background: #888;
         border-radius: 4px;
       }
-      .dark ::-webkit-scrollbar-thumb {
-        background: #475569;
+      ::-webkit-scrollbar-thumb:hover {
+        background: #555;
       }
-      .glass {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(10px);
+
+      /* Footer Styles (From Request) */
+      footer {
+        background: var(--footer-bg);
+        color: var(--footer-text);
+        padding: 100px 5% 40px;
+        position: relative;
+        overflow: hidden;
+        transition:
+          background-color 0.8s ease,
+          color 0.8s ease;
       }
-      .dark .glass {
-        background: rgba(15, 23, 42, 0.7);
+      .footer-waves {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        background: var(--footer-bg);
+        clip-path: polygon(
+          0% 45%,
+          16% 44%,
+          33% 50%,
+          54% 60%,
+          70% 61%,
+          84% 59%,
+          100% 52%,
+          100% 100%,
+          0% 100%
+        );
+        transition: background-color 0.8s;
       }
-      .modal-scroll::-webkit-scrollbar {
-        width: 4px;
+      .footer-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 60px;
+        max-width: 1200px;
+        margin: 0 auto;
       }
-      .modal-scroll::-webkit-scrollbar-track {
-        background: transparent;
+      .footer-brand h2 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 2rem;
+        margin-bottom: 20px;
       }
-      .modal-scroll::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 4px;
+      .footer-links h4,
+      h3 {
+        margin-bottom: 25px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--p-primary);
+      }
+      .contact-item {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        color: #94a3b8;
+        transition: 0.3s;
+      }
+      .contact-item i {
+        color: var(--p-primary);
+      }
+      .contact-item:hover {
+        color: white;
+        transform: translateX(5px);
+      }
+      .copyright {
+        margin-top: 80px;
+        text-align: center;
+        padding-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        color: #475569;
+        font-size: 0.9rem;
+      }
+      .icon-btn {
+        color: #94a3b8;
+        font-size: 1.2rem;
+        transition: 0.3s;
+      }
+      .icon-btn:hover {
+        color: white;
+        transform: scale(1.1);
+      }
+
+      /* Interactive Elements */
+      .slider-thumb::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        background: #3b82f6;
+        cursor: pointer;
+        border-radius: 50%;
+      }
+
+      /* Utility for content boxes */
+      .content-box {
+        @apply p-6 rounded-xl bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700;
+      }
+      .knowledge-list li {
+        @apply mb-2 flex items-start gap-2;
+      }
+      .knowledge-list i {
+        @apply mt-1.5 text-xs;
       }
     </style>
   </head>
   <body
-    class="bg-bg-light text-slate-800 dark:bg-bg-dark dark:text-slate-100 font-sans h-screen flex flex-col overflow-hidden selection:bg-blue-200 dark:selection:bg-blue-900"
+    class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300 font-sans selection:bg-primary selection:text-white"
   >
-    <div id="root" class="h-full flex flex-col"></div>
+    <!-- HEADER -->
+    <header
+      class="fixed w-full top-0 z-50 glass-panel border-b border-slate-200 dark:border-slate-800"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <!-- Logo -->
+          <div
+            class="flex-shrink-0 flex items-center gap-2 cursor-pointer"
+            onclick="window.scrollTo(0, 0)"
+          >
+            <i
+              class="fa-solid fa-atom text-3xl text-primary animate-spin-slow"
+            ></i>
+            <span class="font-display font-bold text-2xl tracking-tight"
+              >EDU<span class="text-primary">MATTER</span></span
+            >
+          </div>
 
-    <script type="text/babel">
-      const { useState, useEffect, useRef, useMemo } = React;
-      const { motion, AnimatePresence } = window.Motion;
-      const { createIcons } = window.lucide;
+          <!-- Navigation -->
+          <nav class="hidden md:flex space-x-6">
+            <a
+              href="#topic1"
+              class="text-xs lg:text-sm font-medium hover:text-primary transition-colors"
+              >Biến đổi</a
+            >
+            <a
+              href="#topic2"
+              class="text-xs lg:text-sm font-medium hover:text-primary transition-colors"
+              >Năng lượng</a
+            >
+            <a
+              href="#topic3"
+              class="text-xs lg:text-sm font-medium hover:text-primary transition-colors"
+              >Bảo toàn</a
+            >
+            <a
+              href="#topic4"
+              class="text-xs lg:text-sm font-medium hover:text-primary transition-colors"
+              >Mol</a
+            >
+            <a
+              href="#topic5"
+              class="text-xs lg:text-sm font-medium hover:text-primary transition-colors"
+              >Tốc độ</a
+            >
+            <a
+              href="#topic6"
+              class="text-xs lg:text-sm font-medium hover:text-primary transition-colors"
+              >Nồng độ</a
+            >
+          </nav>
 
-      // --- DATA: THEORY (Based strictly on provided text) ---
-      const LESSONS = [
-        {
-          id: 1,
-          title: "I. Biến đổi chất",
-          icon: "refresh-cw",
-          color: "blue",
-          content: (
-            <div className="space-y-4">
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
-                  <h3 className="font-bold text-blue-600 dark:text-blue-400 mb-2 flex items-center gap-2">
-                    <i data-lucide="snowflake" className="w-4 h-4"></i> Biến đổi
-                    Vật lí
-                  </h3>
-                  <p className="text-sm mb-2 text-slate-600 dark:text-slate-300">
-                    Chỉ thay đổi trạng thái, hình dạng, kích thước.{" "}
-                    <strong>Không tạo chất mới.</strong>
-                  </p>
-                  <ul className="text-xs list-disc ml-4 space-y-1 text-slate-500 dark:text-slate-400">
-                    <li>Nước đóng băng ↔ Băng tan</li>
-                    <li>Xé giấy, kim loại dát mỏng</li>
-                  </ul>
-                </div>
-                <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl border border-purple-200 dark:border-purple-800">
-                  <h3 className="font-bold text-purple-600 dark:text-purple-400 mb-2 flex items-center gap-2">
-                    <i data-lucide="flame" className="w-4 h-4"></i> Biến đổi Hóa
-                    học
-                  </h3>
-                  <p className="text-sm mb-2 text-slate-600 dark:text-slate-300">
-                    Chất biến đổi tạo ra <strong>chất mới</strong> với tính chất
-                    khác.
-                  </p>
-                  <ul className="text-xs list-disc ml-4 space-y-1 text-slate-500 dark:text-slate-400">
-                    <li>Fe + O₂ → Fe₂O₃ (Gỉ sắt)</li>
-                    <li>H₂ + Cl₂ → 2HCl</li>
-                  </ul>
-                </div>
-              </div>
-              <div className="overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700">
-                <table className="w-full text-sm text-left">
-                  <thead className="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200">
-                    <tr>
-                      <th className="p-2">Tiêu chí</th>
-                      <th className="p-2">Vật lí</th>
-                      <th className="p-2">Hóa học</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-700 bg-white dark:bg-slate-800">
-                    <tr>
-                      <td className="p-2 font-bold">Tính chất</td>
-                      <td className="p-2 text-slate-500">Giữ nguyên</td>
-                      <td className="p-2 text-primary font-bold">Thay đổi</td>
-                    </tr>
-                    <tr>
-                      <td className="p-2 font-bold">Chất mới</td>
-                      <td className="p-2 text-slate-500">Không</td>
-                      <td className="p-2 text-primary font-bold">Có</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg text-sm border-l-4 border-yellow-500 text-slate-700 dark:text-slate-300">
-                <strong>Em có biết?</strong> Dù là biến đổi nào, số lượng nguyên
-                tử không đổi → Khối lượng được bảo toàn.
-              </div>
-            </div>
-          ),
-        },
-        {
-          id: 2,
-          title: "II. Phản ứng Hóa học",
-          icon: "flask-conical",
-          color: "purple",
-          content: (
-            <div className="space-y-4">
-              <div className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700">
-                <h3 className="font-bold mb-2 text-primary">
-                  Khái niệm & Diễn biến
-                </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-300 mb-2">
-                  Quá trình chất này biến thành chất khác. Liên kết giữa các
-                  nguyên tử thay đổi, nhưng số lượng nguyên tử giữ nguyên.
-                </p>
-                <div className="font-mono text-center bg-slate-100 dark:bg-slate-900 p-2 rounded text-sm text-slate-800 dark:text-green-400">
-                  Zn + 2HCl → ZnCl₂ + H₂
-                </div>
-              </div>
+          <!-- Dark Mode Toggle -->
+          <button
+            id="theme-toggle"
+            class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors focus:outline-none"
+          >
+            <i class="fas fa-moon dark:hidden text-slate-600"></i>
+            <i class="fas fa-sun hidden dark:block text-yellow-400"></i>
+          </button>
+        </div>
+      </div>
+    </header>
 
-              <div className="space-y-2">
-                <h4 className="font-bold text-sm uppercase text-slate-500">
-                  Dấu hiệu nhận biết
-                </h4>
-                <div className="grid grid-cols-2 gap-2 text-sm">
-                  <div className="p-2 bg-slate-50 dark:bg-slate-700/50 rounded flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-red-500"></span>{" "}
-                    Đổi màu sắc
-                  </div>
-                  <div className="p-2 bg-slate-50 dark:bg-slate-700/50 rounded flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-yellow-500"></span>{" "}
-                    Tạo kết tủa
-                  </div>
-                  <div className="p-2 bg-slate-50 dark:bg-slate-700/50 rounded flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-blue-500"></span>{" "}
-                    Sủi bọt khí
-                  </div>
-                  <div className="p-2 bg-slate-50 dark:bg-slate-700/50 rounded flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-orange-500"></span>{" "}
-                    Tỏa/Thu nhiệt
-                  </div>
-                </div>
-              </div>
+    <!-- HERO SECTION -->
+    <section class="relative pt-32 pb-20 overflow-hidden">
+      <div class="absolute inset-0 z-0">
+        <div
+          class="absolute top-20 left-10 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float"
+        ></div>
+        <div
+          class="absolute top-40 right-10 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float"
+          style="animation-delay: 2s"
+        ></div>
+        <div
+          class="absolute -bottom-10 left-1/2 w-72 h-72 bg-pink-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float"
+          style="animation-delay: 4s"
+        ></div>
+      </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-100 dark:border-red-800">
-                  <div className="font-bold text-red-500 text-sm mb-1">
-                    🔥 Tỏa nhiệt
-                  </div>
-                  <div className="text-xs text-slate-600 dark:text-slate-300">
-                    Nóng lên (VD: Đốt than, gas)
-                  </div>
-                </div>
-                <div className="p-3 bg-cyan-50 dark:bg-cyan-900/20 rounded-xl border border-cyan-100 dark:border-cyan-800">
-                  <div className="font-bold text-cyan-500 text-sm mb-1">
-                    ❄️ Thu nhiệt
-                  </div>
-                  <div className="text-xs text-slate-600 dark:text-slate-300">
-                    Lạnh đi / Cần nhiệt (VD: Nung đá vôi)
-                  </div>
-                </div>
-              </div>
-            </div>
-          ),
-        },
-        {
-          id: 3,
-          title: "III. ĐL Bảo toàn KL",
-          icon: "scale",
-          color: "green",
-          content: (
-            <div className="flex flex-col items-center text-center space-y-6">
-              <motion.div
-                animate={{ rotate: [0, 5, -5, 0] }}
-                transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                className="p-6 bg-green-50 dark:bg-green-900/20 rounded-full border-4 border-green-200 dark:border-green-800"
+      <div class="relative z-10 max-w-7xl mx-auto px-4 text-center">
+        <span
+          class="inline-block py-1 px-3 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 text-xs font-semibold tracking-wide uppercase mb-4"
+        >
+          Chương trình Hóa Học 8-9
+        </span>
+        <h1
+          class="font-display text-5xl md:text-7xl font-bold mb-6 leading-tight"
+        >
+          Khám Phá Thế Giới <br />
+          <span class="text-gradient">Nguyên Tử & Phản Ứng</span>
+        </h1>
+        <p
+          class="mt-4 max-w-2xl mx-auto text-xl text-slate-600 dark:text-slate-300"
+        >
+          Hệ thống kiến thức tương tác hóa học hiện đại.
+        </p>
+        <div class="mt-10 flex justify-center gap-4">
+          <a
+            href="#topic1"
+            class="px-8 py-3 rounded-full bg-primary hover:bg-blue-600 text-white font-semibold shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-1"
+          >
+            Vào bài học ngay <i class="fas fa-arrow-right ml-2"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <main class="max-w-7xl mx-auto px-4 pb-20 space-y-24">
+      <!-- TOPIC 1: BIẾN ĐỔI VẬT LÍ & HÓA HỌC -->
+      <section id="topic1" class="scroll-mt-24">
+        <div class="flex items-center gap-4 mb-8">
+          <div
+            class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-primary text-xl"
+          >
+            <i class="fas fa-shapes"></i>
+          </div>
+          <h2 class="font-display text-3xl font-bold">
+            I. Biến Đổi Vật Lí & Hóa Học
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- Theory & Content -->
+          <div class="glass-card p-8 rounded-2xl h-full space-y-6">
+            <div>
+              <h3
+                class="text-xl font-bold mb-3 flex items-center gap-2 text-primary"
               >
-                <i data-lucide="scale" className="w-12 h-12 text-green-600"></i>
-              </motion.div>
+                <i class="fas fa-book-open"></i> 1. Kiến thức trọng tâm
+              </h3>
+              <ul
+                class="knowledge-list text-slate-600 dark:text-slate-300 text-sm"
+              >
+                <li>
+                  <i class="fas fa-circle text-[8px] text-blue-500"></i>
+                  <span
+                    ><strong>Biến đổi vật lí:</strong> Hiện tượng chất có sự
+                    biến đổi về trạng thái, kích thước, hình dạng... nhưng vẫn
+                    giữ nguyên là chất ban đầu.</span
+                  >
+                </li>
+                <li>
+                  <i class="fas fa-circle text-[8px] text-red-500"></i>
+                  <span
+                    ><strong>Biến đổi hóa học:</strong> Hiện tượng chất có sự
+                    biến đổi tạo ra chất mới.</span
+                  >
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 class="text-lg font-bold mb-3 text-secondary">
+                <i class="fas fa-list-ul"></i> 2. Ví dụ cụ thể
+              </h3>
+              <ul class="text-sm space-y-2">
+                <li
+                  class="p-2 bg-blue-50 dark:bg-blue-900/20 rounded border-l-4 border-blue-500"
+                >
+                  <strong>Vật lí:</strong> Nước đá tan chảy, hòa tan đường, bẻ
+                  cong dây sắt.
+                </li>
+                <li
+                  class="p-2 bg-red-50 dark:bg-red-900/20 rounded border-l-4 border-red-500"
+                >
+                  <strong>Hóa học:</strong> Đốt cháy giấy, đinh sắt gỉ, nung đá
+                  vôi.
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 class="text-lg font-bold mb-3 text-accent">
+                <i class="fas fa-pen-fancy"></i> 3. Bài tập vận dụng
+              </h3>
+              <div
+                class="text-sm bg-slate-100 dark:bg-slate-800 p-3 rounded italic"
+              >
+                <p class="mb-2"><strong>Bài 1:</strong> Phân loại:</p>
+                <ul class="list-disc pl-5">
+                  <li>a) Thổi thủy tinh (Vật lí)</li>
+                  <li>b) Cơm ôi thiu (Hóa học)</li>
+                  <li>c) Bẻ viên phấn (Vật lí)</li>
+                </ul>
+                <p class="mt-2">
+                  <strong>Bài 2:</strong> Đốt nến: Nến chảy lỏng (Vật lí) -> Nến
+                  cháy tạo CO2 (Hóa học).
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Simulation & Experiment Detail -->
+          <div
+            class="glass-card p-8 rounded-2xl bg-white dark:bg-slate-800 border-l-4 border-primary"
+          >
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-xl font-bold text-primary">
+                <i class="fas fa-flask"></i> 4. Thí nghiệm chi tiết
+              </h3>
+              <span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded"
+                >Muối ăn (Vật Lí)</span
+              >
+            </div>
+
+            <!-- Experiment Text Description -->
+            <div
+              class="text-sm text-slate-600 dark:text-slate-400 mb-4 bg-slate-50 dark:bg-slate-900 p-3 rounded"
+            >
+              <strong>Quy trình:</strong> Hòa tan muối vào nước (B1) -> Đun sôi
+              dung dịch (B3) -> Nước bay hơi hết, thu lại được muối rắn (Hiện
+              tượng). <br /><em class="text-xs text-blue-500"
+                >Kết luận: Không tạo chất mới -> Biến đổi vật lí.</em
+              >
+            </div>
+
+            <!-- Interactive Sim -->
+            <div
+              class="bg-slate-100 dark:bg-slate-900 rounded-xl p-6 mb-4 min-h-[180px] flex items-center justify-center relative overflow-hidden"
+              id="sim1-display"
+            >
+              <div
+                id="sim1-content"
+                class="text-center transition-all duration-500"
+              >
+                <i class="fas fa-cube text-6xl text-blue-400 mb-2"></i>
+                <p>Nước Đá (Rắn)</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <button
+                onclick="runSim1('physical')"
+                class="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-medium transition-all text-sm"
+              >
+                Mô phỏng: Nước đá tan
+              </button>
+              <button
+                onclick="runSim1('chemical')"
+                class="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white font-medium transition-all text-sm"
+              >
+                Mô phỏng: Đốt cháy giấy
+              </button>
+            </div>
+            <p
+              id="sim1-feedback"
+              class="mt-4 text-sm text-center italic text-slate-500 min-h-[20px]"
+            ></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- TOPIC 2: NĂNG LƯỢNG PHẢN ỨNG -->
+      <section id="topic2" class="scroll-mt-24">
+        <div class="flex items-center gap-4 mb-8">
+          <div
+            class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900 flex items-center justify-center text-purple-600 text-xl"
+          >
+            <i class="fas fa-bolt"></i>
+          </div>
+          <h2 class="font-display text-3xl font-bold">
+            II. Phản Ứng & Năng Lượng
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div class="lg:col-span-1 glass-card p-8 rounded-2xl">
+            <h3 class="text-xl font-bold mb-4 text-purple-600">
+              1. Kiến Thức & Bài Tập
+            </h3>
+
+            <div class="mb-4">
+              <h4 class="font-bold text-sm mb-2">Khái niệm:</h4>
+              <p class="text-xs mb-2">
+                Chất phản ứng -> Sản phẩm. Liên kết thay đổi, số nguyên tử giữ
+                nguyên.
+              </p>
+            </div>
+
+            <div class="space-y-2 mb-6">
+              <div
+                class="p-2 bg-red-50 dark:bg-red-900/20 rounded border-l-2 border-red-500 text-xs"
+              >
+                <strong class="text-red-600">Tỏa nhiệt:</strong> Giải phóng
+                nhiệt (Đốt than).
+              </div>
+              <div
+                class="p-2 bg-blue-50 dark:bg-blue-900/20 rounded border-l-2 border-blue-500 text-xs"
+              >
+                <strong class="text-blue-600">Thu nhiệt:</strong> Nhận nhiệt
+                (Nung vôi).
+              </div>
+            </div>
+
+            <div class="border-t pt-4 border-slate-200 dark:border-slate-700">
+              <h4 class="font-bold text-sm mb-2 text-accent">
+                2. Bài tập vận dụng
+              </h4>
+              <ul class="text-xs space-y-2 list-disc pl-4">
+                <li>
+                  <strong>Bài 1:</strong> Đốt Methane (CH4). Chất PƯ: CH4, O2.
+                  Sản phẩm: CO2, H2O.
+                </li>
+                <li>
+                  <strong>Bài 2:</strong> Giấm + Baking soda -> Sủi bọt khí (Dấu
+                  hiệu có PƯ).
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="lg:col-span-2 glass-card p-8 rounded-2xl">
+            <h3 class="text-xl font-bold mb-4 text-purple-600">
+              <i class="fas fa-fire-burner"></i> 3. Mô phỏng: Sắt + Lưu Huỳnh
+            </h3>
+            <div class="flex flex-col md:flex-row gap-6">
+              <div
+                class="flex-1 bg-slate-900 rounded-xl p-4 relative overflow-hidden h-64 flex items-center justify-center border border-slate-700"
+              >
+                <!-- Animation Container -->
+                <div id="sim2-container" class="relative text-center">
+                  <div
+                    id="sim2-substance"
+                    class="w-24 h-8 bg-gray-400 rounded mx-auto mb-2 transition-colors duration-1000"
+                  ></div>
+                  <div
+                    id="sim2-fire"
+                    class="hidden text-red-500 text-4xl animate-bounce absolute -bottom-8 left-1/2 -translate-x-1/2"
+                  >
+                    <i class="fas fa-fire"></i>
+                  </div>
+                  <p id="sim2-label" class="text-white mt-2 font-mono">
+                    Fe + S (Bột)
+                  </p>
+                </div>
+                <div
+                  id="sim2-magnet"
+                  class="absolute top-4 right-4 text-red-500 text-4xl hidden transition-transform duration-500"
+                >
+                  <i class="fas fa-magnet"></i>
+                </div>
+              </div>
+              <div class="flex-1 space-y-4">
+                <div class="space-y-2 text-sm">
+                  <button
+                    onclick="sim2Action('mix')"
+                    class="w-full text-left px-4 py-2 bg-slate-100 dark:bg-slate-700 rounded hover:bg-slate-200 dark:hover:bg-slate-600 transition"
+                  >
+                    B1: Trộn Fe và S (7:4)
+                  </button>
+                  <button
+                    onclick="sim2Action('magnet_before')"
+                    class="w-full text-left px-4 py-2 bg-slate-100 dark:bg-slate-700 rounded hover:bg-slate-200 dark:hover:bg-slate-600 transition"
+                  >
+                    B2: Thử nam châm (Hút Fe)
+                  </button>
+                  <button
+                    onclick="sim2Action('heat')"
+                    class="w-full text-left px-4 py-2 bg-red-100 dark:bg-red-900/30 text-red-600 rounded hover:bg-red-200 transition"
+                  >
+                    B3: Đun nóng (Tỏa nhiệt)
+                  </button>
+                  <button
+                    onclick="sim2Action('magnet_after')"
+                    class="w-full text-left px-4 py-2 bg-slate-100 dark:bg-slate-700 rounded hover:bg-slate-200 dark:hover:bg-slate-600 transition"
+                  >
+                    B4: Thử nam châm (Sau PƯ)
+                  </button>
+                </div>
+                <div
+                  id="sim2-log"
+                  class="text-xs p-3 bg-black text-green-400 font-mono rounded h-24 overflow-y-auto"
+                >
+                  > Sẵn sàng thí nghiệm...
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TOPIC 3: BẢO TOÀN KHỐI LƯỢNG -->
+      <section id="topic3" class="scroll-mt-24">
+        <div class="flex items-center gap-4 mb-8">
+          <div
+            class="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900 flex items-center justify-center text-green-600 text-xl"
+          >
+            <i class="fas fa-scale-balanced"></i>
+          </div>
+          <h2 class="font-display text-3xl font-bold">
+            III. Bảo Toàn Khối Lượng
+          </h2>
+        </div>
+
+        <div class="glass-card p-8 rounded-2xl">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+            <!-- Theory Section -->
+            <div>
+              <h3 class="text-xl font-bold mb-4">1. Kiến Thức Trọng Tâm</h3>
+              <p class="mb-4 text-sm text-slate-600 dark:text-slate-300">
+                <strong>Định luật:</strong> Tổng khối lượng sản phẩm = Tổng khối
+                lượng chất tham gia.
+              </p>
+              <div
+                class="bg-primary/10 p-3 rounded-lg border-l-4 border-primary font-mono text-primary text-sm font-bold mb-6"
+              >
+                m(tham gia) = m(sản phẩm)
+              </div>
+
+              <h3 class="text-xl font-bold mb-3 text-secondary">
+                2. Bài Tập Vận Dụng
+              </h3>
+              <div class="space-y-3 text-sm">
+                <div class="bg-green-50 dark:bg-green-900/20 p-3 rounded">
+                  <strong>Bài 1:</strong> Tính m(BaSO4)<br />
+                  20.8g BaCl2 + 14.2g Na2SO4 -> m(BaSO4) + 11.7g NaCl<br />
+                  <span class="text-green-600 font-bold"
+                    >=> m = 20.8 + 14.2 - 11.7 = 23.3g</span
+                  >
+                </div>
+                <div class="bg-green-50 dark:bg-green-900/20 p-3 rounded">
+                  <strong>Bài 2:</strong> Cân bằng: 3Fe + 2O2 -> Fe3O4<br />
+                  Tỉ lệ số phân tử: 3 : 2 : 1
+                </div>
+              </div>
+            </div>
+
+            <!-- Experiment Simulation -->
+            <div
+              class="bg-slate-50 dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-700 relative"
+            >
+              <h4 class="text-center font-bold mb-4 text-green-600">
+                3. Thí nghiệm: BaCl2 + Na2SO4
+              </h4>
+              <div class="text-xs text-center mb-4 text-slate-500">
+                Mục tiêu: Chứng minh tổng khối lượng không đổi (mA = mB)
+              </div>
+
+              <div class="flex justify-center items-end h-40 gap-8 mb-4">
+                <!-- Beaker 1 -->
+                <div
+                  id="beaker1"
+                  class="w-16 h-24 border-2 border-slate-400 border-t-0 rounded-b-lg relative bg-white/10 backdrop-blur cursor-pointer transition-transform hover:-translate-y-2"
+                  onclick="mixChemicals()"
+                >
+                  <div
+                    class="absolute bottom-0 w-full h-1/2 bg-blue-300/50 rounded-b-sm flex items-center justify-center text-xs"
+                  >
+                    BaCl₂
+                  </div>
+                  <div class="absolute -top-6 w-full text-center text-xs">
+                    Cốc 1
+                  </div>
+                </div>
+                <!-- Beaker 2 -->
+                <div
+                  id="beaker2"
+                  class="w-16 h-24 border-2 border-slate-400 border-t-0 rounded-b-lg relative bg-white/10 backdrop-blur"
+                >
+                  <div
+                    id="liquid2"
+                    class="absolute bottom-0 w-full h-1/2 bg-yellow-300/50 rounded-b-sm flex items-center justify-center text-xs transition-all duration-1000"
+                  >
+                    Na₂SO₄
+                  </div>
+                  <div class="absolute -top-6 w-full text-center text-xs">
+                    Cốc 2
+                  </div>
+                </div>
+              </div>
+
+              <!-- Scale Display -->
+              <div
+                class="w-48 mx-auto bg-gray-800 text-red-500 font-mono text-2xl py-2 px-4 rounded text-center border-4 border-gray-300 shadow-inner"
+              >
+                <span id="weight-display">250.00</span> g
+              </div>
+
+              <div class="mt-4 text-center">
+                <button
+                  onclick="mixChemicals()"
+                  class="px-6 py-2 bg-green-500 text-white rounded-full hover:bg-green-600 transition shadow-lg shadow-green-500/30 text-sm"
+                >
+                  <i class="fas fa-flask mr-2"></i>Đổ Cốc 1 vào Cốc 2
+                </button>
+                <button
+                  onclick="resetScale()"
+                  class="ml-2 px-4 py-2 text-slate-500 hover:text-slate-700"
+                >
+                  <i class="fas fa-rotate-right"></i>
+                </button>
+              </div>
+              <p
+                id="scale-result"
+                class="text-center mt-2 text-sm text-green-600 font-bold h-6"
+              ></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TOPIC 4: MOL & TỈ KHỐI -->
+      <section id="topic4" class="scroll-mt-24">
+        <div class="flex items-center gap-4 mb-8">
+          <div
+            class="w-12 h-12 rounded-xl bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center text-yellow-600 text-xl"
+          >
+            <i class="fas fa-cloud"></i>
+          </div>
+          <h2 class="font-display text-3xl font-bold">
+            IV. Mol & Tỉ Khối Chất Khí
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Concept & Exercises -->
+          <div class="glass-card p-6 rounded-2xl">
+            <h3 class="text-xl font-bold mb-4">1. Kiến thức & Bài tập</h3>
+            <ul class="space-y-3 text-sm mb-6">
+              <li>🧪 <strong>Mol:</strong> 6,022 x 10²³ hạt.</li>
+              <li>⚖️ <strong>Khối lượng Mol (M):</strong> g/mol.</li>
+              <li>🎈 <strong>Thể tích Mol (đkc):</strong> 24,79 lít.</li>
+              <li>📏 <strong>Tỉ khối:</strong> dA/B = MA/MB. (kk = 29).</li>
+            </ul>
+
+            <div
+              class="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border border-yellow-200 dark:border-yellow-800"
+            >
+              <h4
+                class="font-bold text-sm text-yellow-700 dark:text-yellow-400 mb-2"
+              >
+                2. Bài tập vận dụng:
+              </h4>
+              <div class="space-y-2 text-sm">
+                <p>
+                  <strong>Bài 1:</strong> Khối lượng 0.5 mol O2?<br />
+                  m = n × M = 0.5 × 32 =
+                  <span class="font-bold text-red-500">16g</span>
+                </p>
+                <div class="h-px bg-yellow-200 dark:bg-yellow-800 my-2"></div>
+                <p>
+                  <strong>Bài 2:</strong> CO2 nặng/nhẹ hơn không khí?<br />
+                  d(CO2/kk) = 44/29 ≈ 1.52 > 1<br />
+                  <span class="font-bold text-red-500"
+                    >=> Nặng hơn không khí 1.52 lần.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Balloon -->
+          <div
+            class="glass-card p-6 rounded-2xl flex flex-col items-center justify-center bg-sky-50 dark:bg-slate-800"
+          >
+            <h4 class="font-bold text-sky-600 mb-4">
+              Mô phỏng Thể Tích Khí (đkc)
+            </h4>
+
+            <div
+              class="relative h-48 w-full flex items-center justify-center border-b border-slate-300 dark:border-slate-600 mb-4"
+            >
+              <div
+                id="balloon"
+                class="w-16 h-16 bg-red-400 rounded-full opacity-80 transition-all duration-700 flex items-center justify-center text-white font-bold shadow-xl"
+              >
+                1 mol
+              </div>
+            </div>
+
+            <div class="w-full px-8">
+              <label class="block text-sm font-medium mb-2"
+                >Số mol (n):
+                <span id="mol-val" class="text-primary font-bold"
+                  >1</span
+                ></label
+              >
+              <input
+                type="range"
+                min="0.5"
+                max="3"
+                step="0.5"
+                value="1"
+                id="mol-slider"
+                class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer slider-thumb"
+                oninput="updateBalloon(this.value)"
+              />
+              <div class="flex justify-between text-xs mt-2 text-slate-500">
+                <span>0.5 mol</span>
+                <span>3 mol</span>
+              </div>
+            </div>
+            <div class="mt-4 text-center">
+              <p class="text-sm">
+                Thể tích V =
+                <span id="volume-val" class="font-bold text-sky-600"
+                  >24.79</span
+                >
+                lít
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TOPIC 5: TÍNH TOÁN & TỐC ĐỘ -->
+      <section id="topic5" class="scroll-mt-24">
+        <div class="flex items-center gap-4 mb-8">
+          <div
+            class="w-12 h-12 rounded-xl bg-red-100 dark:bg-red-900 flex items-center justify-center text-red-600 text-xl"
+          >
+            <i class="fas fa-gauge-high"></i>
+          </div>
+          <h2 class="font-display text-3xl font-bold">
+            V. Tính Theo PTHH & Tốc Độ
+          </h2>
+        </div>
+
+        <div class="glass-card p-8 rounded-2xl mb-8">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Theory Column -->
+            <div class="space-y-6">
               <div>
-                <div className="text-2xl font-display font-bold text-green-600 mb-2">
-                  ∑m<sub>trước</sub> = ∑m<sub>sau</sub>
-                </div>
-                <p className="text-sm text-slate-600 dark:text-slate-300 max-w-md mx-auto">
-                  "Trong phản ứng hóa học, tổng khối lượng các chất tham gia
-                  bằng tổng khối lượng các chất sản phẩm."
+                <h3 class="text-lg font-bold mb-2">1. Kiến thức & Bài tập</h3>
+                <ul class="text-sm list-disc pl-5 space-y-1">
+                  <li>Tính theo PTHH: n = m/M, V, ...</li>
+                  <li>Hiệu suất H% = (Thực tế / Lý thuyết) x 100%.</li>
+                  <li>
+                    Yếu tố ảnh hưởng tốc độ: Nồng độ, nhiệt độ, diện tích, xúc
+                    tác.
+                  </li>
+                </ul>
+              </div>
+              <div class="bg-red-50 dark:bg-red-900/20 p-4 rounded text-sm">
+                <h4 class="font-bold text-red-600 mb-2">2. Bài tập vận dụng</h4>
+                <p class="mb-2">
+                  <strong>Bài 1:</strong> Nung 25g CaCO3 -> CaO?<br />
+                  nCaCO3 = 0.25 mol -> nCaO = 0.25 -> mCaO = 0.25x56 =
+                  <span class="font-bold">14g</span>.
+                </p>
+                <p>
+                  <strong>Bài 2:</strong> Tại sao chẻ nhỏ củi dễ cháy?<br />
+                  => Tăng <span class="font-bold">diện tích tiếp xúc</span> giữa
+                  củi và oxi.
                 </p>
               </div>
-              <div className="w-full bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm text-left border border-slate-100 dark:border-slate-700">
-                <h4 className="font-bold text-sm mb-2 text-primary">
-                  Phương trình Hóa học (PTHH)
-                </h4>
-                <p className="text-xs mb-3 text-slate-500">
-                  Biểu diễn bằng công thức và hệ số cân bằng.
-                </p>
-                <div className="flex justify-center items-center gap-2 font-mono font-bold text-lg">
-                  <span className="text-blue-500">2H₂</span>
-                  <span className="text-slate-400">+</span>
-                  <span className="text-red-500">O₂</span>
-                  <span className="text-slate-400">→</span>
-                  <span className="text-purple-500">2H₂O</span>
-                </div>
-              </div>
             </div>
-          ),
-        },
-        {
-          id: 4,
-          title: "IV. Mol & Tỉ khối",
-          icon: "box",
-          color: "orange",
-          content: (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-3">
-                <div className="bg-orange-50 dark:bg-orange-900/20 p-3 rounded-xl border border-orange-200 dark:border-orange-800">
-                  <div className="text-xs uppercase text-slate-500 mb-1">
-                    Số Avogadro (N)
-                  </div>
-                  <div className="font-bold text-orange-600 text-lg">
-                    6,022 × 10²³
-                  </div>
-                  <div className="text-xs text-slate-600 dark:text-slate-400">
-                    hạt/mol
-                  </div>
-                </div>
-                <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-xl border border-blue-200 dark:border-blue-800">
-                  <div className="text-xs uppercase text-slate-500 mb-1">
-                    Thể tích khí (đkc)
-                  </div>
-                  <div className="font-bold text-blue-600 text-lg">24,79</div>
-                  <div className="text-xs text-slate-600 dark:text-slate-400">
-                    Lít (25°C, 1 bar)
-                  </div>
-                </div>
-              </div>
 
-              <div className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm space-y-3 border border-slate-100 dark:border-slate-700">
-                <h4 className="font-bold text-sm text-slate-500 uppercase">
-                  Công thức cần nhớ
-                </h4>
-
-                <div className="flex justify-between items-center p-2 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
-                  <span className="text-sm">Từ Khối lượng (m)</span>
-                  <code className="font-mono font-bold text-primary">
-                    n = m / M
-                  </code>
-                </div>
-
-                <div className="flex justify-between items-center p-2 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
-                  <span className="text-sm">Từ Thể tích khí (V)</span>
-                  <code className="font-mono font-bold text-secondary">
-                    n = V / 24,79
-                  </code>
-                </div>
-
-                <div className="flex justify-between items-center p-2 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
-                  <span className="text-sm">Tỉ khối hơi (d)</span>
-                  <code className="font-mono font-bold text-accent">
-                    d<sub>A/B</sub> = M<sub>A</sub> / M<sub>B</sub>
-                  </code>
-                </div>
-              </div>
-              <div className="text-xs text-center italic text-slate-400">
-                (M: Khối lượng mol, đơn vị g/mol)
-              </div>
-            </div>
-          ),
-        },
-        {
-          id: 5,
-          title: "V. Tính theo PTHH",
-          icon: "calculator",
-          color: "pink",
-          content: (
-            <div className="space-y-4">
-              <div className="text-center">
-                <h3 className="font-bold text-lg text-primary">
-                  Quy trình 3 bước
-                </h3>
-                <p className="text-xs text-slate-500">
-                  Để giải bài toán hóa học cơ bản
-                </p>
-              </div>
-
-              <div className="space-y-2 relative">
-                {/* Connecting Line */}
-                <div className="absolute left-[19px] top-4 bottom-4 w-0.5 bg-slate-200 dark:bg-slate-700"></div>
-
-                <div className="relative flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 z-10">
-                  <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold shrink-0 shadow-lg shadow-blue-500/30">
-                    1
-                  </div>
-                  <div className="text-sm">
-                    <strong>Viết PTHH:</strong> Viết và cân bằng phương trình.
-                  </div>
-                </div>
-
-                <div className="relative flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 z-10">
-                  <div className="w-8 h-8 rounded-full bg-purple-500 text-white flex items-center justify-center font-bold shrink-0 shadow-lg shadow-purple-500/30">
-                    2
-                  </div>
-                  <div className="text-sm">
-                    <strong>Tính số Mol:</strong> Đổi dữ kiện (m, V) ra số mol
-                    (n).
-                  </div>
-                </div>
-
-                <div className="relative flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 z-10">
-                  <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold shrink-0 shadow-lg shadow-green-500/30">
-                    3
-                  </div>
-                  <div className="text-sm">
-                    <strong>Tính toán:</strong> Dùng tỉ lệ PTHH suy ra mol chất
-                    cần tìm → Đổi ra m hoặc V.
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl border border-yellow-200 dark:border-yellow-800 text-center">
-                <div className="font-bold text-yellow-700 dark:text-yellow-500 text-sm mb-1 uppercase tracking-wider">
-                  Hiệu suất (H%)
-                </div>
-                <div className="font-mono text-lg font-bold text-slate-800 dark:text-white">
-                  H% = (m<sub>tt</sub> / m<sub>lt</sub>) × 100%
-                </div>
-                <div className="text-[10px] text-slate-500 mt-1">
-                  tt: thực tế thu được | lt: lý thuyết tính toán
-                </div>
-              </div>
-            </div>
-          ),
-        },
-        {
-          id: 6,
-          title: "VI. Nồng độ DD",
-          icon: "droplet",
-          color: "teal",
-          content: (
-            <div className="space-y-4">
-              <div className="bg-teal-50 dark:bg-teal-900/20 p-4 rounded-xl border border-teal-200 dark:border-teal-800">
-                <h3 className="font-bold text-teal-700 dark:text-teal-400 mb-2 flex items-center gap-2">
-                  <i data-lucide="maximize" className="w-4 h-4"></i> Độ tan (S)
-                </h3>
-                <p className="text-sm text-slate-700 dark:text-slate-300">
-                  Số gam chất tan tối đa trong <strong>100g nước</strong> để tạo
-                  dung dịch bão hòa ở nhiệt độ xác định.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 gap-3">
-                <div className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border-l-4 border-blue-500">
-                  <h3 className="font-bold text-blue-600 mb-1">
-                    Nồng độ Mol (C<sub>M</sub>)
-                  </h3>
-                  <div className="flex items-center justify-between">
-                    <div className="font-mono text-2xl font-bold">
-                      C<sub>M</sub> = n / V
-                    </div>
-                    <div className="text-right text-xs text-slate-500">
-                      n: số mol (mol)
-                      <br />
-                      V: thể tích dd (lít)
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border-l-4 border-pink-500">
-                  <h3 className="font-bold text-pink-600 mb-1">
-                    Nồng độ % (C%)
-                  </h3>
-                  <div className="flex items-center justify-between">
-                    <div className="font-mono text-xl font-bold flex items-center gap-2">
-                      C% ={" "}
-                      <div className="flex flex-col text-center text-sm leading-none">
-                        <span>
-                          m<sub>ct</sub>
-                        </span>
-                        <span className="border-t border-slate-400 w-full block pt-0.5">
-                          m<sub>dd</sub>
-                        </span>
-                      </div>{" "}
-                      × 100
-                    </div>
-                    <div className="text-right text-xs text-slate-500">
-                      m<sub>dd</sub> = m<sub>ct</sub> + m<sub>dm</sub>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ),
-        },
-        {
-          id: 7,
-          title: "VII. Tốc độ PƯ",
-          icon: "zap",
-          color: "red",
-          content: (
-            <div className="space-y-4">
-              <p className="text-sm italic text-center text-slate-500">
-                "Tốc độ phản ứng là độ biến thiên nồng độ chất trong một đơn vị
-                thời gian."
+            <!-- Experiment Column -->
+            <div
+              class="border-l pl-0 md:pl-8 border-slate-200 dark:border-slate-700"
+            >
+              <h3 class="text-lg font-bold mb-4 text-red-600">
+                3. Thí nghiệm: Xúc tác H₂O₂ + MnO₂
+              </h3>
+              <p class="text-xs mb-4">
+                Mô phỏng ảnh hưởng của chất xúc tác MnO2 lên tốc độ phân hủy
+                H2O2.
               </p>
 
-              <div className="space-y-2">
-                <h4 className="font-bold text-xs uppercase text-slate-400 mb-2">
-                  Các yếu tố làm tăng tốc độ
-                </h4>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl text-center border border-red-100 dark:border-red-800 card-hover transition-all">
-                    <i
-                      data-lucide="thermometer"
-                      className="w-6 h-6 mx-auto mb-2 text-red-500"
-                    ></i>
-                    <span className="block font-bold text-sm text-slate-700 dark:text-slate-200">
-                      Nhiệt độ ↑
-                    </span>
-                  </div>
-                  <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl text-center border border-blue-100 dark:border-blue-800 card-hover transition-all">
-                    <i
-                      data-lucide="beaker"
-                      className="w-6 h-6 mx-auto mb-2 text-blue-500"
-                    ></i>
-                    <span className="block font-bold text-sm text-slate-700 dark:text-slate-200">
-                      Nồng độ ↑
-                    </span>
-                  </div>
-                  <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-xl text-center border border-green-100 dark:border-green-800 card-hover transition-all">
-                    <i
-                      data-lucide="expand"
-                      className="w-6 h-6 mx-auto mb-2 text-green-500"
-                    ></i>
-                    <span className="block font-bold text-sm text-slate-700 dark:text-slate-200">
-                      Diện tích bề mặt ↑
-                    </span>
-                  </div>
-                  <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-xl text-center border border-purple-100 dark:border-purple-800 card-hover transition-all">
-                    <i
-                      data-lucide="wand-2"
-                      className="w-6 h-6 mx-auto mb-2 text-purple-500"
-                    ></i>
-                    <span className="block font-bold text-sm text-slate-700 dark:text-slate-200">
-                      Chất xúc tác
-                    </span>
-                  </div>
+              <div class="flex gap-4 mb-4">
+                <button
+                  onclick="runCatalyst(false)"
+                  class="flex-1 py-2 text-sm border border-slate-300 rounded hover:bg-slate-100 dark:hover:bg-slate-700 transition"
+                >
+                  Không xúc tác
+                </button>
+                <button
+                  onclick="runCatalyst(true)"
+                  class="flex-1 py-2 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition shadow-lg shadow-red-500/30"
+                >
+                  Thêm MnO₂
+                </button>
+              </div>
+
+              <div
+                class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 h-48 relative flex items-end justify-center gap-12 pb-4"
+              >
+                <!-- Tube 1 -->
+                <div
+                  class="relative w-12 h-32 border-2 border-slate-400 border-t-0 rounded-b-lg bg-blue-50/30"
+                >
+                  <div
+                    class="absolute bottom-0 w-full h-16 bg-blue-200/50"
+                  ></div>
+                  <div
+                    id="bubbles-1"
+                    class="absolute bottom-0 w-full h-16 overflow-hidden"
+                  ></div>
+                  <span
+                    class="absolute -bottom-6 w-full text-center text-[10px]"
+                    >Thường</span
+                  >
+                </div>
+                <!-- Tube 2 -->
+                <div
+                  class="relative w-12 h-32 border-2 border-slate-400 border-t-0 rounded-b-lg bg-blue-50/30"
+                >
+                  <div
+                    class="absolute bottom-0 w-full h-16 bg-blue-200/50"
+                  ></div>
+                  <div
+                    id="mno2-powder"
+                    class="absolute bottom-0 w-full h-2 bg-black hidden"
+                  ></div>
+                  <div
+                    id="bubbles-2"
+                    class="absolute bottom-0 w-full h-16 overflow-hidden"
+                  ></div>
+                  <span
+                    class="absolute -bottom-6 w-full text-center text-[10px] text-red-500 font-bold"
+                    >+ MnO₂</span
+                  >
                 </div>
               </div>
-              <div className="text-xs text-slate-500 bg-slate-100 dark:bg-slate-800 p-2 rounded">
-                * Chất xúc tác làm tăng tốc độ phản ứng nhưng không bị tiêu hao
-                sau phản ứng.
+              <div class="mt-4 text-xs italic" id="catalyst-desc">
+                Chọn điều kiện...
               </div>
             </div>
-          ),
+          </div>
+        </div>
+      </section>
+
+      <!-- TOPIC 6: NỒNG ĐỘ DUNG DỊCH -->
+      <section id="topic6" class="scroll-mt-24">
+        <div class="flex items-center gap-4 mb-8">
+          <div
+            class="w-12 h-12 rounded-xl bg-pink-100 dark:bg-pink-900 flex items-center justify-center text-pink-600 text-xl"
+          >
+            <i class="fas fa-vial"></i>
+          </div>
+          <h2 class="font-display text-3xl font-bold">VI. Nồng Độ Dung Dịch</h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- Theory -->
+          <div class="space-y-6">
+            <div class="glass-card p-6 rounded-xl border-l-4 border-pink-500">
+              <h4 class="font-bold text-lg mb-2">1. Kiến thức</h4>
+              <p
+                class="font-mono bg-slate-100 dark:bg-slate-800 p-2 rounded text-center text-sm mb-2"
+              >
+                C% = (mct / mdd) × 100%
+              </p>
+              <p
+                class="font-mono bg-slate-100 dark:bg-slate-800 p-2 rounded text-center text-sm"
+              >
+                CM = n / V (mol/l)
+              </p>
+            </div>
+
+            <div class="glass-card p-6 rounded-xl border-l-4 border-purple-500">
+              <h4 class="font-bold text-lg mb-2">2. Bài tập vận dụng</h4>
+              <div class="text-sm space-y-3">
+                <p>
+                  <strong>Bài 1:</strong> 20g muối + 80g nước.<br />
+                  mdd = 20 + 80 = 100g. <br />
+                  <span class="font-bold text-pink-600"
+                    >=> C% = (20/100)*100 = 20%.</span
+                  >
+                </p>
+
+                <p>
+                  <strong>Bài 2:</strong> 200ml dd chứa 0.1 mol NaOH.<br />
+                  V = 0.2 lít. <br />
+                  <span class="font-bold text-purple-600"
+                    >=> CM = 0.1 / 0.2 = 0.5 M.</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Simulation: Mixing -->
+          <div class="glass-card p-6 rounded-2xl">
+            <h3 class="font-bold mb-2 text-center">
+              3. Thí nghiệm: Pha 100g dd Đường 15%
+            </h3>
+            <p class="text-xs text-center text-slate-500 mb-4">
+              Tính toán: m(đường) = 15g, m(nước) = 85g.
+            </p>
+
+            <div class="flex flex-col items-center">
+              <div
+                class="relative w-40 h-48 border-2 border-slate-400 border-t-0 rounded-b-xl mb-4 bg-white/5"
+              >
+                <div
+                  id="solute"
+                  class="absolute bottom-0 w-full h-0 bg-white opacity-80 transition-all duration-500"
+                ></div>
+                <!-- Sugar -->
+                <div
+                  id="solvent"
+                  class="absolute bottom-0 w-full h-0 bg-blue-300 opacity-40 transition-all duration-500"
+                ></div>
+                <!-- Water -->
+                <div
+                  class="absolute top-1/2 left-1/2 -translate-x-1/2 text-xs font-mono"
+                  id="beaker-label"
+                >
+                  Trống
+                </div>
+              </div>
+
+              <div class="flex gap-2 mb-4">
+                <button
+                  onclick="addSugar()"
+                  class="px-3 py-1 bg-white border border-slate-300 rounded text-sm hover:bg-slate-50 dark:bg-slate-700 dark:border-slate-600"
+                >
+                  B1: +15g Đường
+                </button>
+                <button
+                  onclick="addWater()"
+                  class="px-3 py-1 bg-blue-100 border border-blue-200 text-blue-700 rounded text-sm hover:bg-blue-200"
+                >
+                  B2: +85g Nước
+                </button>
+                <button
+                  onclick="mixSolution()"
+                  class="px-3 py-1 bg-pink-500 text-white rounded text-sm hover:bg-pink-600"
+                >
+                  B3: Khuấy
+                </button>
+              </div>
+              <div id="concentration-result" class="font-bold text-pink-600">
+                C% = 0%
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GAME HÓA - BÀI TẬP CỦNG CỐ -->
+      <section id="quiz" class="py-12">
+        <div
+          class="glass-panel p-8 rounded-3xl border border-primary/20 shadow-2xl shadow-primary/10 relative overflow-hidden"
+        >
+          <div class="absolute top-0 left-0 w-full h-2 bg-slate-200">
+            <div
+              id="progress-bar"
+              class="h-full bg-gradient-to-r from-primary to-accent w-0 transition-all duration-500"
+            ></div>
+          </div>
+
+          <div class="text-center mb-8 mt-4">
+            <span
+              class="text-accent font-bold tracking-widest uppercase text-sm"
+              >Thử Thách</span
+            >
+            <h2 class="text-3xl font-display font-bold mt-2">
+              Kiểm Tra Kiến Thức
+            </h2>
+          </div>
+
+          <div id="quiz-container" class="max-w-2xl mx-auto">
+            <!-- Question injected here -->
+            <div id="question-box" class="text-center space-y-6">
+              <h3 id="question-text" class="text-xl font-medium">Loading...</h3>
+              <div
+                id="options-grid"
+                class="grid grid-cols-1 md:grid-cols-2 gap-4"
+              >
+                <!-- Options -->
+              </div>
+              <p id="feedback" class="h-6 text-sm font-bold"></p>
+            </div>
+
+            <!-- Result Screen (Hidden by default) -->
+            <div id="result-box" class="hidden text-center">
+              <div class="text-6xl mb-4">🎉</div>
+              <h3 class="text-2xl font-bold mb-2">Hoàn Thành Xuất Sắc!</h3>
+              <p class="text-slate-500 mb-6">
+                Bạn đã nắm vững các kiến thức cơ bản.
+              </p>
+              <button
+                onclick="resetQuiz()"
+                class="px-6 py-2 bg-primary text-white rounded-full"
+              >
+                Làm lại
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Action Buttons (From Prompt) -->
+      <div
+        class="flex flex-col sm:flex-row justify-center items-center gap-6 mt-12 mb-20"
+      >
+        <button
+          onclick="window.location.href = 'bai_tap.html'"
+          style="
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.35);
+            transition: 0.3s ease;
+          "
+          onmouseover="
+            this.style.transform = 'translateY(-3px) scale(1.03)';
+            this.style.boxShadow = '0 18px 45px rgba(99,102,241,.55)';
+          "
+          onmouseout="
+            this.style.transform = 'translateY(0) scale(1)';
+            this.style.boxShadow = '0 10px 30px rgba(59,130,246,.35)';
+          "
+        >
+          <i class="fas fa-pen-to-square"></i> Bài tập củng cố
+        </button>
+
+        <button
+          onclick="window.location.href = '../chemstudybaby.html'"
+          style="
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.35);
+            transition: 0.3s ease;
+          "
+          onmouseover="
+            this.style.transform = 'translateY(-3px)';
+            this.style.boxShadow = '0 18px 45px rgba(22,163,74,.55)';
+          "
+          onmouseout="
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 10px 30px rgba(34,197,94,.35)';
+          "
+        >
+          <i class="fas fa-arrow-left"></i> Quay về CS Junior
+        </button>
+      </div>
+    </main>
+
+    <!-- Footer (From Prompt - EXACT STRUCTURE) -->
+    <footer>
+      <div class="footer-waves"></div>
+      <div class="footer-grid">
+        <div class="footer-brand" data-aos="fade-right">
+          <h2>EDUMATTER</h2>
+          <p style="color: #94a3b8; line-height: 1.8">
+            Kiến tạo môi trường học tập cảm xúc, nơi tri thức được số hóa và
+            truyền tải đầy cảm hứng.
+          </p>
+          <div style="display: flex; gap: 15px; margin-top: 30px">
+            <a href="https://www.facebook.com/ducnt214" class="icon-btn"
+              ><i class="fab fa-facebook" alt="facebook"></i
+            ></a>
+            <a href="https://github.com/ducnt2104" class="icon-btn" alt="github"
+              ><i class="fab fa-github"></i
+            ></a>
+            <a
+              href="https://www.tiktok.com/@ktbtcthm210"
+              class="icon-btn"
+              alt="tiktok"
+              ><i class="fab fa-tiktok"></i
+            ></a>
+          </div>
+        </div>
+        <div class="footer-links" data-aos="fade-up">
+          <h3>Liên hệ nhanh</h3>
+          <div class="contact-item">
+            <i class="fas fa-envelope"></i> <span>ducnt21042010@gmail.com</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-phone"></i> <span>034 226 6204</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-location-dot"></i>
+            <span>THPT Tôn Đức Thắng, Đồng Nai</span>
+          </div>
+        </div>
+        <div class="footer-links" data-aos="fade-left">
+          <h4>Đội ngũ DNT</h4>
+          <p style="color: #94a3b8">
+            "Sáng tạo không ngừng - Vươn tầm tri thức"
+          </p>
+          <div
+            style="
+              margin-top: 20px;
+              padding: 15px;
+              background: rgba(255, 255, 255, 0.05);
+              border-radius: 15px;
+            "
+          >
+            <p style="font-size: 0.8rem; color: #fff">
+              Dự án được phát triển bởi các thành viên đam mê công nghệ tại Việt
+              Nam.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="copyright">
+        <p>
+          © 2024 EDUMATTER Educational Ecosystem. Designed with
+          <i class="fas fa-heart" style="color: #ef4444"></i> by DNT Team.
+        </p>
+      </div>
+    </footer>
+
+    <!-- LOGIC JAVASCRIPT -->
+    <script>
+      // --- 1. Dark Mode Logic ---
+      const themeToggle = document.getElementById("theme-toggle");
+      const html = document.documentElement;
+
+      // Check local storage or system preference
+      if (
+        localStorage.theme === "dark" ||
+        (!("theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        html.classList.add("dark");
+      } else {
+        html.classList.remove("dark");
+      }
+
+      themeToggle.addEventListener("click", () => {
+        html.classList.toggle("dark");
+        localStorage.theme = html.classList.contains("dark") ? "dark" : "light";
+      });
+
+      // --- 2. Topic 1: Physical vs Chemical Simulation ---
+      function runSim1(type) {
+        const display = document.getElementById("sim1-content");
+        const feedback = document.getElementById("sim1-feedback");
+
+        display.style.opacity = "0";
+
+        setTimeout(() => {
+          if (type === "physical") {
+            display.innerHTML = `
+                        <div class="animate-bounce">
+                            <i class="fas fa-water text-6xl text-blue-500 mb-2"></i>
+                            <p>Nước Lỏng</p>
+                        </div>`;
+            feedback.textContent =
+              "Hiện tượng: Nước đá tan chảy thành nước lỏng. Chất vẫn là H₂O. -> Biến đổi VẬT LÍ.";
+            feedback.className =
+              "mt-4 text-sm text-center font-bold text-blue-600";
+          } else {
+            display.innerHTML = `
+                        <div class="animate-pulse">
+                            <i class="fas fa-fire-flame-simple text-6xl text-orange-500 mb-2"></i>
+                            <i class="fas fa-smog text-4xl text-gray-400 absolute top-0 right-10 animate-float"></i>
+                            <p>Tro & Khí</p>
+                        </div>`;
+            feedback.textContent =
+              "Hiện tượng: Giấy cháy thành than và khí CO₂. Chất đã biến đổi. -> Biến đổi HÓA HỌC.";
+            feedback.className =
+              "mt-4 text-sm text-center font-bold text-red-600";
+          }
+          display.style.opacity = "1";
+        }, 300);
+      }
+
+      // --- 3. Topic 2: Fe + S Reaction Simulation ---
+      let sim2State = 0;
+      function sim2Action(action) {
+        const log = document.getElementById("sim2-log");
+        const sub = document.getElementById("sim2-substance");
+        const fire = document.getElementById("sim2-fire");
+        const magnet = document.getElementById("sim2-magnet");
+        const label = document.getElementById("sim2-label");
+
+        if (action === "mix") {
+          sub.className =
+            "w-24 h-8 bg-gradient-to-r from-gray-400 to-yellow-300 rounded mx-auto mb-2 transition-colors duration-1000";
+          label.innerText = "Hỗn hợp Fe (Xám) + S (Vàng)";
+          log.innerHTML += `<br>> Đã trộn Fe và S (7:4).`;
+          sim2State = 1;
+        } else if (action === "magnet_before") {
+          if (sim2State < 1) {
+            alert("Hãy trộn trước!");
+            return;
+          }
+          magnet.classList.remove("hidden");
+          magnet.style.transform = "translateX(-50px)";
+          setTimeout(() => {
+            log.innerHTML += `<br>> Nam châm hút Fe. Tách được Fe ra khỏi S. (Chưa PƯ)`;
+            magnet.style.transform = "translateX(0px)";
+            setTimeout(() => magnet.classList.add("hidden"), 1000);
+          }, 500);
+        } else if (action === "heat") {
+          if (sim2State < 1) {
+            alert("Hãy trộn trước!");
+            return;
+          }
+          fire.classList.remove("hidden");
+          log.innerHTML += `<br>> Đang đun nóng... Phản ứng tỏa nhiệt mạnh!`;
+
+          setTimeout(() => {
+            fire.classList.add("hidden");
+            sub.className = "w-24 h-8 bg-slate-800 rounded mx-auto mb-2"; // Black FeS
+            label.innerText = "Sản phẩm FeS (Đen)";
+            log.innerHTML += `<br>> PƯ kết thúc. Tạo chất rắn FeS.`;
+            sim2State = 2;
+          }, 3000);
+        } else if (action === "magnet_after") {
+          if (sim2State < 2) {
+            alert("Chưa có phản ứng!");
+            return;
+          }
+          magnet.classList.remove("hidden");
+          magnet.style.transform = "translateX(-50px)";
+          setTimeout(() => {
+            log.innerHTML += `<br>> Nam châm KHÔNG hút. Fe đã tạo thành chất mới FeS.`;
+            magnet.style.transform = "translateX(0px)";
+            setTimeout(() => magnet.classList.add("hidden"), 1000);
+          }, 500);
+        }
+        log.scrollTop = log.scrollHeight;
+      }
+
+      // --- 4. Topic 3: Conservation Scale ---
+      let scaleMixed = false;
+      function mixChemicals() {
+        if (scaleMixed) return;
+        const beaker1 = document.getElementById("beaker1");
+        const liq2 = document.getElementById("liquid2");
+        const resultText = document.getElementById("scale-result");
+
+        // Animation
+        beaker1.style.transform = "translate(100px, -50px) rotate(45deg)";
+        beaker1.style.opacity = "0"; // Simulate pouring out
+
+        setTimeout(() => {
+          liq2.style.height = "80%";
+          liq2.classList.remove("bg-yellow-300/50");
+          liq2.classList.add("bg-white"); // Precipitate color
+          liq2.innerText = "BaSO₄ (Tủa)";
+          resultText.innerText = "mA = mB = 250.00g (Khối lượng KHÔNG ĐỔI)";
+          scaleMixed = true;
+        }, 800);
+      }
+
+      function resetScale() {
+        scaleMixed = false;
+        document.getElementById("beaker1").style.transform = "none";
+        document.getElementById("beaker1").style.opacity = "1";
+        const liq2 = document.getElementById("liquid2");
+        liq2.style.height = "50%";
+        liq2.className =
+          "absolute bottom-0 w-full h-1/2 bg-yellow-300/50 rounded-b-sm flex items-center justify-center text-xs transition-all duration-1000";
+        liq2.innerText = "Na₂SO₄";
+        document.getElementById("scale-result").innerText = "";
+      }
+
+      // --- 5. Topic 4: Mol & Volume ---
+      function updateBalloon(mol) {
+        const balloon = document.getElementById("balloon");
+        const volDisplay = document.getElementById("volume-val");
+        const molDisplay = document.getElementById("mol-val");
+
+        const size = 4 + mol * 1.5; // base 4rem
+        balloon.style.width = `${size}rem`;
+        balloon.style.height = `${size}rem`;
+        balloon.innerText = `${mol} mol`;
+
+        molDisplay.innerText = mol;
+        // V = n * 24.79
+        volDisplay.innerText = (mol * 24.79).toFixed(2);
+      }
+
+      // --- 6. Topic 5: Catalyst ---
+      function runCatalyst(hasCatalyst) {
+        const bubbles1 = document.getElementById("bubbles-1");
+        const bubbles2 = document.getElementById("bubbles-2");
+        const powder = document.getElementById("mno2-powder");
+        const desc = document.getElementById("catalyst-desc");
+
+        // Reset
+        bubbles1.innerHTML = "";
+        bubbles2.innerHTML = "";
+
+        // Create bubbles function
+        const createBubbles = (container, rate) => {
+          const count = hasCatalyst && container === bubbles2 ? 20 : 5;
+          for (let i = 0; i < count; i++) {
+            const b = document.createElement("div");
+            b.className =
+              "absolute bg-white rounded-full opacity-70 animate-float";
+            b.style.width = Math.random() * 8 + 4 + "px";
+            b.style.height = b.style.width;
+            b.style.left = Math.random() * 100 + "%";
+            b.style.bottom = Math.random() * 10 + "%";
+            b.style.animationDuration = Math.random() * 2 + 0.5 + "s";
+            container.appendChild(b);
+          }
+        };
+
+        if (hasCatalyst) {
+          powder.classList.remove("hidden");
+          createBubbles(bubbles2, "fast");
+          createBubbles(bubbles1, "slow"); // Control
+          desc.innerHTML = `<span class="text-red-600 font-bold">Hiện tượng:</span> Ống có MnO₂ sủi bọt khí O₂ rất mạnh. MnO₂ là xúc tác.`;
+        } else {
+          powder.classList.add("hidden");
+          createBubbles(bubbles1, "slow");
+          desc.innerHTML = `H₂O₂ tự phân hủy rất chậm.`;
+        }
+      }
+
+      // --- 7. Topic 6: Concentration ---
+      let sugarMass = 0;
+      let waterMass = 0;
+      let isMixed = false;
+
+      function addSugar() {
+        if (isMixed) resetConcentration();
+        sugarMass += 15;
+        document.getElementById("solute").style.height = "15%"; // Visual only
+        document.getElementById("solute").style.backgroundColor = "#fff";
+        document.getElementById("beaker-label").innerText =
+          `Đường: ${sugarMass}g`;
+      }
+      function addWater() {
+        if (isMixed) resetConcentration();
+        waterMass += 85;
+        document.getElementById("solvent").style.height = "70%"; // Visual
+        document.getElementById("beaker-label").innerText =
+          `Nước: ${waterMass}g`;
+      }
+      function mixSolution() {
+        if (sugarMass === 0 || waterMass === 0) {
+          alert("Cần cả đường và nước!");
+          return;
+        }
+        isMixed = true;
+        document.getElementById("solute").style.opacity = "0"; // Dissolved
+        document.getElementById("solvent").style.backgroundColor =
+          "rgba(255, 255, 255, 0.8)"; // Syrupy look
+        document.getElementById("solvent").style.height = "85%";
+
+        const c_percent = (sugarMass / (sugarMass + waterMass)) * 100;
+        document.getElementById("beaker-label").innerText = "Dung dịch 15%";
+        document.getElementById("concentration-result").innerText =
+          `C% = (${sugarMass} / ${sugarMass + waterMass}) * 100% = ${c_percent}%`;
+      }
+      function resetConcentration() {
+        sugarMass = 0;
+        waterMass = 0;
+        isMixed = false;
+        document.getElementById("solute").style.height = "0";
+        document.getElementById("solute").style.opacity = "0.8";
+        document.getElementById("solvent").style.height = "0";
+        document.getElementById("solvent").style.backgroundColor = "#93c5fd";
+        document.getElementById("concentration-result").innerText = "C% = 0%";
+        document.getElementById("beaker-label").innerText = "Trống";
+      }
+
+      // --- 8. Gamified Quiz ---
+      const questions = [
+        {
+          q: "Hiện tượng nào sau đây là biến đổi HÓA HỌC?",
+          options: [
+            "Nước đá tan chảy",
+            "Đường tan trong nước",
+            "Đốt cháy mẩu giấy",
+            "Dây sắt bị cắt nhỏ",
+          ],
+          correct: 2,
+          hint: "Tìm quá trình tạo ra chất mới (màu sắc, mùi, khí...).",
+        },
+        {
+          q: "Để chứng minh định luật bảo toàn khối lượng, ta cần dụng cụ gì?",
+          options: ["Đèn cồn", "Cân điện tử", "Ống nghiệm", "Kẹp gỗ"],
+          correct: 1,
+          hint: "Dụng cụ dùng để đo khối lượng.",
+        },
+        {
+          q: "Chẻ nhỏ củi giúp bếp cháy to hơn vì:",
+          options: [
+            "Tăng nhiệt độ",
+            "Tăng nồng độ O2",
+            "Tăng diện tích tiếp xúc",
+            "Có chất xúc tác",
+          ],
+          correct: 2,
+          hint: "Chẻ nhỏ làm tăng bề mặt tiếp xúc với không khí.",
+        },
+        {
+          q: "Ở điều kiện chuẩn (25°C, 1 bar), 1 mol khí chiếm thể tích bao nhiêu?",
+          options: ["22.4 lít", "24.79 lít", "22.79 lít", "24.4 lít"],
+          correct: 1,
+          hint: "Con số mới trong chương trình GDPT 2018.",
         },
       ];
 
-      // --- LAB COMPONENTS ---
+      let currentQ = 0;
+      let score = 0;
 
-      // 1. Classification Game
-      const LabClassification = () => {
-        const [items, setItems] = useState([
-          { id: 1, text: "Nước đóng băng ❄️", type: "vl" },
-          { id: 2, text: "Fe + O₂ (Gỉ sắt) 🔩", type: "hh" },
-          { id: 3, text: "Xé giấy vụn 📄", type: "vl" },
-          { id: 4, text: "Đốt cháy than 🔥", type: "hh" },
-          { id: 5, text: "Dát mỏng nhôm 🔨", type: "vl" },
-          { id: 6, text: "Nung đá vôi (CaCO₃) ⛰️", type: "hh" },
-        ]);
-        const [score, setScore] = useState(0);
+      function loadQuiz() {
+        if (currentQ >= questions.length) {
+          document.getElementById("question-box").classList.add("hidden");
+          document.getElementById("result-box").classList.remove("hidden");
+          return;
+        }
 
-        const handleClassify = (item, choice) => {
-          if (item.type === choice) {
-            setScore((s) => s + 1);
-            confetti({
-              particleCount: 30,
-              spread: 50,
-              origin: { y: 0.7 },
-              colors: choice === "vl" ? ["#3b82f6"] : ["#8b5cf6"],
-            });
-          }
-          setItems((prev) => prev.filter((i) => i.id !== item.id));
-        };
+        const qData = questions[currentQ];
+        document.getElementById("question-text").innerText =
+          `Câu ${currentQ + 1}: ${qData.q}`;
+        document.getElementById("feedback").innerText = "";
 
-        const currentItem = items[0];
+        const grid = document.getElementById("options-grid");
+        grid.innerHTML = "";
 
-        return (
-          <div className="flex flex-col items-center justify-center h-full p-4 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-            <h3 className="font-bold text-lg mb-1 text-primary flex items-center gap-2">
-              <i data-lucide="gamepad-2" className="w-5 h-5"></i> Phân loại Biến
-              đổi
-            </h3>
-            <div className="text-xs text-slate-400 mb-4">
-              Chọn Vật lí hoặc Hóa học
-            </div>
+        qData.options.forEach((opt, idx) => {
+          const btn = document.createElement("button");
+          btn.className =
+            "p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700 transition-all text-left text-sm";
+          btn.innerText = opt;
+          btn.onclick = () => checkAnswer(idx, btn);
+          grid.appendChild(btn);
+        });
 
-            <div className="mb-4 font-bold text-2xl text-accent">{score}/6</div>
+        // Update progress
+        const pct = (currentQ / questions.length) * 100;
+        document.getElementById("progress-bar").style.width = `${pct}%`;
+      }
 
-            <div className="w-full max-w-sm h-48 flex flex-col justify-center relative">
-              <AnimatePresence mode="wait">
-                {currentItem ? (
-                  <motion.div
-                    key={currentItem.id}
-                    initial={{ scale: 0.8, opacity: 0, y: 20 }}
-                    animate={{ scale: 1, opacity: 1, y: 0 }}
-                    exit={{ scale: 0.8, opacity: 0, y: -20 }}
-                    className="absolute inset-0 m-auto h-32 w-full bg-slate-100 dark:bg-slate-700 rounded-2xl shadow-inner flex items-center justify-center p-4 text-center"
-                  >
-                    <span className="text-xl font-bold text-slate-700 dark:text-white">
-                      {currentItem.text}
-                    </span>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-center w-full"
-                  >
-                    <div className="text-5xl mb-2">🎉</div>
-                    <p className="font-bold">Hoàn thành!</p>
-                    <button
-                      onClick={() => window.location.reload()}
-                      className="mt-4 px-4 py-2 bg-slate-200 dark:bg-slate-600 rounded-lg text-sm font-bold hover:bg-slate-300 transition"
-                    >
-                      Chơi lại
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+      function checkAnswer(selectedIdx, btnElement) {
+        const qData = questions[currentQ];
+        const feedback = document.getElementById("feedback");
 
-            {currentItem && (
-              <div className="grid grid-cols-2 gap-4 w-full max-w-sm mt-4">
-                <button
-                  onClick={() => handleClassify(currentItem, "vl")}
-                  className="p-4 bg-blue-500 text-white rounded-xl font-bold hover:bg-blue-600 shadow-lg active:scale-95 transition flex flex-col items-center"
-                >
-                  <span className="text-xs opacity-70 mb-1">TRẠNG THÁI</span>
-                  VẬT LÍ
-                </button>
-                <button
-                  onClick={() => handleClassify(currentItem, "hh")}
-                  className="p-4 bg-purple-500 text-white rounded-xl font-bold hover:bg-purple-600 shadow-lg active:scale-95 transition flex flex-col items-center"
-                >
-                  <span className="text-xs opacity-70 mb-1">CHẤT MỚI</span>
-                  HÓA HỌC
-                </button>
-              </div>
-            )}
-          </div>
-        );
-      };
+        // Disable all buttons
+        const btns = document.querySelectorAll("#options-grid button");
+        btns.forEach((b) => (b.disabled = true));
 
-      // 2. Gas Volume Lab
-      const LabGas = () => {
-        const [mol, setMol] = useState(1);
-        return (
-          <div className="flex flex-col items-center h-full p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-            <h3 className="font-bold text-lg mb-2 text-blue-500 flex items-center gap-2">
-              <i data-lucide="wind" className="w-5 h-5"></i> Thể tích Khí (đkc)
-            </h3>
-            <div className="text-xs text-slate-400 mb-6 text-center">
-              Ở điều kiện chuẩn (25°C, 1 bar), 1 mol khí bất kỳ chiếm 24,79 Lít
-            </div>
+        if (selectedIdx === qData.correct) {
+          btnElement.classList.add(
+            "bg-green-500",
+            "text-white",
+            "border-green-500",
+          );
+          feedback.innerText = "Chính xác! 🎉";
+          feedback.className = "text-green-500 font-bold mt-4 animate-bounce";
+          score++;
+          setTimeout(() => {
+            currentQ++;
+            loadQuiz();
+          }, 1500);
+        } else {
+          btnElement.classList.add(
+            "bg-red-500",
+            "text-white",
+            "border-red-500",
+          );
+          feedback.innerText = `Sai rồi! Gợi ý: ${qData.hint}`;
+          feedback.className = "text-red-500 font-bold mt-4";
 
-            <div className="flex-1 flex items-end justify-center relative w-full mb-8">
-              {/* Balloon */}
-              <motion.div
-                className="bg-gradient-to-tr from-blue-400 to-blue-300 opacity-90 border-2 border-blue-500 rounded-[50%_50%_50%_50%_/_40%_40%_60%_60%] flex items-center justify-center text-white font-bold text-sm shadow-[0_10px_30px_rgba(59,130,246,0.4)] relative z-10"
-                animate={{
-                  width: Math.max(60, Math.sqrt(mol) * 120),
-                  height: Math.max(70, Math.sqrt(mol) * 130),
-                  y: [0, -10, 0],
-                }}
-                transition={{
-                  y: { duration: 3, repeat: Infinity, ease: "easeInOut" },
-                }}
-              >
-                <span className="drop-shadow-md">
-                  {(mol * 24.79).toFixed(1)} L
-                </span>
-              </motion.div>
-              {/* String */}
-              <div className="absolute bottom-[-20px] w-0.5 h-20 bg-slate-400 z-0"></div>
-            </div>
-
-            <div className="w-full max-w-md bg-slate-50 dark:bg-slate-900 p-5 rounded-xl border border-slate-100 dark:border-slate-800">
-              <div className="flex justify-between mb-4 text-sm">
-                <span className="font-bold text-slate-700 dark:text-slate-200">
-                  Số mol (n) = {mol}
-                </span>
-                <span className="font-mono text-blue-500 font-bold">
-                  V = n × 24,79
-                </span>
-              </div>
-              <input
-                type="range"
-                min="0.1"
-                max="5"
-                step="0.1"
-                value={mol}
-                onChange={(e) => setMol(parseFloat(e.target.value))}
-                className="w-full accent-blue-500 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer"
-              />
-              <div className="flex justify-between text-xs text-slate-400 mt-2">
-                <span>0.1 mol</span>
-                <span>5 mol</span>
-              </div>
-            </div>
-          </div>
-        );
-      };
-
-      // 3. Concentration Lab
-      const LabConcentration = () => {
-        const [solute, setSolute] = useState(10);
-        const [solvent, setSolvent] = useState(100);
-
-        const cPercent = (solute / (solute + solvent)) * 100;
-        // Visual opacity logic
-        const opacity = Math.min(Math.max(cPercent / 40, 0.05), 1);
-
-        return (
-          <div className="flex flex-col items-center h-full p-4 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-            <h3 className="font-bold text-lg mb-2 text-teal-600 flex items-center gap-2">
-              <i data-lucide="flask-round" className="w-5 h-5"></i> Pha chế (C%)
-            </h3>
-
-            <div className="relative w-40 h-52 border-4 border-t-0 border-slate-300 dark:border-slate-600 rounded-b-3xl mb-6 bg-slate-50 dark:bg-slate-900 overflow-hidden shadow-inner">
-              {/* Water Level */}
-              <motion.div
-                className="absolute bottom-0 left-0 right-0 bg-blue-100/50 dark:bg-blue-900/30 transition-all duration-500 border-t border-blue-200/50"
-                style={{ height: `${(solvent / 300) * 100}%` }}
-              />
-              {/* Solution Color Overlay */}
-              <motion.div
-                className="absolute bottom-0 left-0 right-0 bg-teal-500 mix-blend-multiply transition-all duration-500"
-                style={{
-                  height: `${((solvent + solute) / 300) * 100}%`,
-                  opacity: opacity,
-                }}
-              />
-              {/* Labels */}
-              <div className="absolute top-1/2 left-0 right-0 text-center pointer-events-none">
-                <span className="bg-white/80 dark:bg-black/60 px-2 py-1 rounded text-xs font-bold backdrop-blur-sm">
-                  {cPercent.toFixed(1)}%
-                </span>
-              </div>
-
-              {/* Bubbles animation */}
-              <div className="absolute bottom-0 w-full h-full overflow-hidden pointer-events-none">
-                {Array.from({ length: Math.floor(solute / 5) }).map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="absolute bg-white/40 rounded-full w-1 h-1"
-                    initial={{
-                      bottom: 0,
-                      left: `${Math.random() * 100}%`,
-                      opacity: 0,
-                    }}
-                    animate={{
-                      bottom: `${Math.random() * 100}%`,
-                      opacity: [0, 1, 0],
-                    }}
-                    transition={{
-                      duration: 2 + Math.random() * 2,
-                      repeat: Infinity,
-                      delay: Math.random() * 2,
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 w-full">
-              <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
-                <div className="text-[10px] uppercase text-slate-500 font-bold mb-2">
-                  Chất tan (Muối)
-                </div>
-                <div className="text-xl font-bold mb-2 text-teal-600">
-                  {solute} g
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  step="5"
-                  value={solute}
-                  onChange={(e) => setSolute(Number(e.target.value))}
-                  className="w-full accent-teal-500 h-1.5 bg-slate-200 rounded cursor-pointer"
-                />
-              </div>
-              <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
-                <div className="text-[10px] uppercase text-slate-500 font-bold mb-2">
-                  Dung môi (Nước)
-                </div>
-                <div className="text-xl font-bold mb-2 text-blue-500">
-                  {solvent} g
-                </div>
-                <input
-                  type="range"
-                  min="50"
-                  max="200"
-                  step="10"
-                  value={solvent}
-                  onChange={(e) => setSolvent(Number(e.target.value))}
-                  className="w-full accent-blue-500 h-1.5 bg-slate-200 rounded cursor-pointer"
-                />
-              </div>
-            </div>
-          </div>
-        );
-      };
-
-      // 4. Speed Lab (Particles)
-      const LabSpeed = () => {
-        const canvasRef = useRef(null);
-        const [temp, setTemp] = useState(25); // Celsius
-        const [conc, setConc] = useState(30); // Number of particles
-
-        useEffect(() => {
-          const canvas = canvasRef.current;
-          const ctx = canvas.getContext("2d");
-          let animationId;
-
-          // Initialize particles
-          let particles = Array.from({ length: conc }, () => ({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            vx: Math.random() - 0.5,
-            vy: Math.random() - 0.5,
-            r: 2 + Math.random() * 2,
-            color: Math.random() > 0.5 ? "#ef4444" : "#3b82f6", // Reactants A and B
-          }));
-
-          const animate = () => {
-            // Clear with trail effect
-            ctx.fillStyle = document.documentElement.classList.contains("dark")
-              ? "rgba(15, 23, 42, 0.3)"
-              : "rgba(248, 250, 252, 0.3)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            particles.forEach((p) => {
-              // Speed depends on temperature
-              const speedMultiplier = (temp + 20) / 30;
-
-              p.x += p.vx * speedMultiplier;
-              p.y += p.vy * speedMultiplier;
-
-              // Bounce
-              if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-              if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-
-              ctx.beginPath();
-              ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-              ctx.fillStyle = p.color;
-              ctx.fill();
-            });
-
-            animationId = requestAnimationFrame(animate);
-          };
-
-          animate();
-          return () => cancelAnimationFrame(animationId);
-        }, [temp, conc]);
-
-        return (
-          <div className="flex flex-col h-full p-4 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-            <h3 className="font-bold mb-2 text-red-500 flex items-center gap-2">
-              <i data-lucide="zap" className="w-5 h-5"></i> Yếu tố Tốc độ
-            </h3>
-
-            <div className="flex-1 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden mb-4 relative bg-slate-50 dark:bg-slate-900 shadow-inner">
-              <canvas
-                ref={canvasRef}
-                width={320}
-                height={200}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md text-white text-[10px] px-2 py-1 rounded border border-white/10">
-                T = {temp}°C | N = {conc}
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded-lg">
-                <div className="flex justify-between text-xs mb-2 font-bold text-slate-600 dark:text-slate-300">
-                  <span className="flex items-center gap-1">
-                    <i data-lucide="thermometer" className="w-3 h-3"></i> Nhiệt
-                    độ
-                  </span>
-                  <span>{temp}°C</span>
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={temp}
-                  onChange={(e) => setTemp(Number(e.target.value))}
-                  className="w-full accent-red-500 h-1.5 bg-slate-200 rounded cursor-pointer"
-                />
-              </div>
-              <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded-lg">
-                <div className="flex justify-between text-xs mb-2 font-bold text-slate-600 dark:text-slate-300">
-                  <span className="flex items-center gap-1">
-                    <i data-lucide="beaker" className="w-3 h-3"></i> Nồng độ
-                  </span>
-                  <span>{conc} hạt</span>
-                </div>
-                <input
-                  type="range"
-                  min="10"
-                  max="100"
-                  value={conc}
-                  onChange={(e) => setConc(Number(e.target.value))}
-                  className="w-full accent-blue-500 h-1.5 bg-slate-200 rounded cursor-pointer"
-                />
-              </div>
-            </div>
-          </div>
-        );
-      };
-
-      // --- QUIZ COMPONENT ---
-      const QuizSection = () => {
-        const QUESTIONS = [
-          {
-            q: "Cho 2 mol H₂ phản ứng hoàn toàn với O₂. Tính số mol H₂O thu được theo PTHH: 2H₂ + O₂ → 2H₂O?",
-            opts: ["1 mol", "2 mol", "4 mol", "0.5 mol"],
-            a: 1, // 2 mol H2 creates 2 mol H2O
-            explain: "Tỉ lệ phản ứng là 2:1:2. Vậy 2 mol H₂ tạo ra 2 mol H₂O.",
-          },
-          {
-            q: "Hiện tượng nào sau đây là biến đổi hóa học?",
-            opts: [
-              "Hòa tan muối vào nước",
-              "Nước hóa hơi",
-              "Sắt bị gỉ trong không khí",
-              "Dây tóc bóng đèn nóng sáng",
-            ],
-            a: 2,
-            explain:
-              "Sắt bị gỉ tạo ra chất mới (Oxit sắt), các hiện tượng còn lại chỉ là vật lí.",
-          },
-          {
-            q: "Để đốt cháy hoàn toàn 1 mol Cacbon (C) sinh ra CO₂, cần bao nhiêu lít khí O₂ (đkc)?",
-            opts: ["24,79 L", "49,58 L", "12,39 L", "22,4 L"],
-            a: 0,
-            explain:
-              "C + O₂ → CO₂. Tỉ lệ 1:1. 1 mol C cần 1 mol O₂. V = 1 × 24,79 = 24,79 Lít.",
-          },
-          {
-            q: "Hòa tan 20g đường vào 180g nước. Tính nồng độ phần trăm (C%) của dung dịch?",
-            opts: ["11,1%", "10%", "20%", "9%"],
-            a: 1,
-            explain: "m_dd = 20 + 180 = 200g. C% = (20/200)*100 = 10%.",
-          },
-          {
-            q: "Yếu tố nào sau đây KHÔNG làm tăng tốc độ phản ứng?",
-            opts: [
-              "Tăng nhiệt độ",
-              "Tăng diện tích bề mặt",
-              "Dùng chất xúc tác",
-              "Giảm nồng độ chất phản ứng",
-            ],
-            a: 3,
-            explain:
-              "Giảm nồng độ làm GIẢM số va chạm giữa các hạt → Giảm tốc độ phản ứng.",
-          },
-        ];
-
-        const [current, setCurrent] = useState(0);
-        const [finished, setFinished] = useState(false);
-        const [score, setScore] = useState(0);
-        const [showExplain, setShowExplain] = useState(false);
-        const [selected, setSelected] = useState(null);
-
-        const handleAnswer = (idx) => {
-          setSelected(idx);
-          setShowExplain(true);
-
-          if (idx === QUESTIONS[current].a) {
-            setScore((s) => s + 1);
-            confetti({
-              particleCount: 50,
-              spread: 60,
-              origin: { y: 0.8 },
-              colors: ["#10b981"],
-            });
-          }
-        };
-
-        const nextQuestion = () => {
-          setSelected(null);
-          setShowExplain(false);
-          if (current < QUESTIONS.length - 1) {
-            setCurrent((c) => c + 1);
-          } else {
-            setFinished(true);
-          }
-        };
-
-        if (finished)
-          return (
-            <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-6 animate-in fade-in zoom-in duration-300">
-              <div className="w-24 h-24 bg-yellow-100 rounded-full flex items-center justify-center border-4 border-yellow-300">
-                <span className="text-6xl">🏆</span>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold mb-1 text-slate-800 dark:text-white">
-                  Hoàn thành xuất sắc!
-                </h2>
-                <p className="text-slate-500">Điểm số của bạn</p>
-              </div>
-              <div className="text-5xl font-display font-bold text-primary">
-                {score} / {QUESTIONS.length}
-              </div>
-
-              <button
-                onClick={() => {
-                  setFinished(false);
-                  setCurrent(0);
-                  setScore(0);
-                }}
-                className="px-8 py-3 bg-primary text-white rounded-xl font-bold shadow-lg hover:bg-blue-600 active:scale-95 transition flex items-center gap-2"
-              >
-                <i data-lucide="rotate-ccw" className="w-5 h-5"></i> Làm lại
-              </button>
-            </div>
+          // Highlight correct answer
+          btns[qData.correct].classList.add(
+            "bg-green-100",
+            "dark:bg-green-900",
+            "border-green-500",
           );
 
-        return (
-          <div className="h-full flex flex-col p-4 max-w-2xl mx-auto justify-center">
-            <div className="mb-6 flex justify-between items-center text-sm font-bold text-slate-400">
-              <span className="bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
-                Câu {current + 1} / {QUESTIONS.length}
-              </span>
-              <span className="text-primary">Điểm: {score}</span>
-            </div>
+          setTimeout(() => {
+            currentQ++;
+            loadQuiz();
+          }, 2500); // Wait longer for reading hint
+        }
+      }
 
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-700 mb-6 min-h-[120px] flex items-center">
-              <h3 className="text-lg font-bold text-slate-800 dark:text-white leading-relaxed">
-                {QUESTIONS[current].q}
-              </h3>
-            </div>
+      function resetQuiz() {
+        currentQ = 0;
+        score = 0;
+        document.getElementById("question-box").classList.remove("hidden");
+        document.getElementById("result-box").classList.add("hidden");
+        loadQuiz();
+      }
 
-            <div className="grid grid-cols-1 gap-3 mb-6">
-              {QUESTIONS[current].opts.map((opt, idx) => {
-                let baseClass =
-                  "p-4 rounded-xl border-2 text-left transition font-medium relative overflow-hidden ";
-                if (selected === null) {
-                  baseClass +=
-                    "border-slate-200 dark:border-slate-700 hover:border-primary hover:bg-blue-50 dark:hover:bg-slate-700 cursor-pointer";
-                } else {
-                  if (idx === QUESTIONS[current].a)
-                    baseClass +=
-                      "border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400";
-                  else if (idx === selected)
-                    baseClass +=
-                      "border-red-500 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400";
-                  else
-                    baseClass +=
-                      "border-slate-200 dark:border-slate-700 opacity-50";
-                }
-
-                return (
-                  <button
-                    key={idx}
-                    onClick={() => !selected && handleAnswer(idx)}
-                    className={baseClass}
-                    disabled={selected !== null}
-                  >
-                    {opt}
-                    {selected !== null && idx === QUESTIONS[current].a && (
-                      <i
-                        data-lucide="check-circle"
-                        className="absolute right-4 top-4 text-green-500 w-5 h-5"
-                      ></i>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-
-            {showExplain && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-200 dark:border-blue-800 mb-4"
-              >
-                <p className="text-sm text-blue-800 dark:text-blue-300">
-                  <strong>💡 Giải thích:</strong> {QUESTIONS[current].explain}
-                </p>
-              </motion.div>
-            )}
-
-            {selected !== null && (
-              <button
-                onClick={nextQuestion}
-                className="w-full py-3 bg-primary text-white rounded-xl font-bold shadow-lg hover:bg-blue-600 transition flex items-center justify-center gap-2 animate-in slide-in-from-bottom-2"
-              >
-                {current === QUESTIONS.length - 1
-                  ? "Xem kết quả"
-                  : "Câu tiếp theo"}{" "}
-                <i data-lucide="arrow-right" className="w-5 h-5"></i>
-              </button>
-            )}
-          </div>
-        );
-      };
-
-      // --- MAIN APP ---
-      const App = () => {
-        const [tab, setTab] = useState("theory"); // theory, lab, quiz
-        const [darkMode, setDarkMode] = useState(false);
-        const [selectedLesson, setSelectedLesson] = useState(null); // New state for modal
-
-        useEffect(() => {
-          if (darkMode) document.documentElement.classList.add("dark");
-          else document.documentElement.classList.remove("dark");
-          createIcons();
-        }, [darkMode, tab, selectedLesson]);
-
-        const renderContent = () => {
-          if (tab === "theory") {
-            return (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 overflow-y-auto h-full pb-24 custom-scrollbar">
-                {LESSONS.map((lesson, index) => (
-                  <motion.div
-                    key={lesson.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    onClick={() => setSelectedLesson(lesson)} // Make clickable
-                    className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden flex flex-col hover:shadow-lg transition-all cursor-pointer group hover:border-blue-300 dark:hover:border-blue-700"
-                  >
-                    <div
-                      className={`p-4 border-b border-slate-100 dark:border-slate-700 flex items-center gap-3 bg-gradient-to-r from-slate-50 to-white dark:from-slate-700 dark:to-slate-800 group-hover:from-blue-50 dark:group-hover:from-blue-900/30 transition-colors`}
-                    >
-                      <div
-                        className={`p-2 rounded-lg shadow-sm bg-white dark:bg-slate-600 text-${lesson.color}-500`}
-                      >
-                        <i data-lucide={lesson.icon} className="w-5 h-5"></i>
-                      </div>
-                      <h3 className="font-bold text-slate-700 dark:text-slate-200 truncate">
-                        {lesson.title}
-                      </h3>
-                      <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
-                        <i
-                          data-lucide="maximize-2"
-                          className="w-4 h-4 text-blue-400"
-                        ></i>
-                      </div>
-                    </div>
-                    <div className="p-4 text-slate-600 dark:text-slate-300 flex-1 text-sm leading-relaxed relative">
-                      {/* Truncate content visually with mask */}
-                      <div className="max-h-[150px] overflow-hidden relative">
-                        {lesson.content}
-                        <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white dark:from-slate-800 to-transparent"></div>
-                      </div>
-                      <div className="mt-2 text-center text-xs font-bold text-blue-500 uppercase tracking-wide">
-                        Bấm để xem chi tiết
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            );
-          }
-          if (tab === "lab") {
-            return (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 overflow-y-auto h-full pb-24 custom-scrollbar">
-                <LabClassification />
-                <LabGas />
-                <LabConcentration />
-                <LabSpeed />
-              </div>
-            );
-          }
-          if (tab === "quiz") return <QuizSection />;
-        };
-
-        return (
-          <div className="h-full flex flex-col bg-bg-light dark:bg-bg-dark transition-colors">
-            {/* LESSON MODAL */}
-            <AnimatePresence>
-              {selectedLesson && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
-                  onClick={() => setSelectedLesson(null)}
-                >
-                  <motion.div
-                    initial={{ scale: 0.9, y: 20 }}
-                    animate={{ scale: 1, y: 0 }}
-                    exit={{ scale: 0.9, y: 20 }}
-                    className="bg-white dark:bg-slate-800 w-full max-w-2xl max-h-[85vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <div className="p-4 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-700/50">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`p-2 rounded-lg bg-white dark:bg-slate-600 text-${selectedLesson.color}-500 shadow-sm`}
-                        >
-                          <i
-                            data-lucide={selectedLesson.icon}
-                            className="w-5 h-5"
-                          ></i>
-                        </div>
-                        <h2 className="font-bold text-lg text-slate-800 dark:text-white">
-                          {selectedLesson.title}
-                        </h2>
-                      </div>
-                      <button
-                        onClick={() => setSelectedLesson(null)}
-                        className="p-2 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-full transition"
-                      >
-                        <i
-                          data-lucide="x"
-                          className="w-5 h-5 text-slate-500"
-                        ></i>
-                      </button>
-                    </div>
-                    <div className="p-6 overflow-y-auto modal-scroll text-slate-700 dark:text-slate-300 leading-relaxed text-base">
-                      {selectedLesson.content}
-                    </div>
-                    <div className="p-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/30 flex justify-end">
-                      <button
-                        onClick={() => setSelectedLesson(null)}
-                        className="px-4 py-2 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-600 transition"
-                      >
-                        Đã hiểu
-                      </button>
-                    </div>
-                  </motion.div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* TOP NAVIGATION BAR */}
-            <header className="bg-white/80 dark:bg-slate-800/90 backdrop-blur-md shadow-sm border-b border-slate-200 dark:border-slate-700 z-50 sticky top-0">
-              <div className="flex items-center justify-between px-4 h-16 max-w-7xl mx-auto w-full">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-blue-500/30 transform rotate-3">
-                    C8
-                  </div>
-                  <div>
-                    <h1 className="font-display font-bold text-lg text-slate-800 dark:text-white leading-none">
-                      Hóa Học 8
-                    </h1>
-                    <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">
-                      Chương 1: Phản Ứng Hóa Học
-                    </span>
-                  </div>
-                </div>
-
-                {/* Main Tabs */}
-                <nav className="flex gap-1 bg-slate-100 dark:bg-slate-700/50 p-1 rounded-xl">
-                  {[
-                    { id: "theory", icon: "book-open", label: "Lý thuyết" },
-                    { id: "lab", icon: "flask-conical", label: "Mô phỏng" },
-                    { id: "quiz", icon: "check-circle", label: "Bài tập" },
-                  ].map((item) => (
-                    <button
-                      key={item.id}
-                      onClick={() => setTab(item.id)}
-                      className={`relative px-3 md:px-5 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${
-                        tab === item.id
-                          ? "text-slate-800 dark:text-white shadow-sm bg-white dark:bg-slate-600"
-                          : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
-                      }`}
-                    >
-                      <i
-                        data-lucide={item.icon}
-                        className={`w-4 h-4 ${
-                          tab === item.id ? "text-primary" : ""
-                        }`}
-                      ></i>
-                      <span className="hidden sm:inline">{item.label}</span>
-                      {tab === item.id && (
-                        <motion.div
-                          layoutId="activeTab"
-                          className="absolute inset-0 bg-transparent rounded-lg border-2 border-primary/10 dark:border-white/10 pointer-events-none"
-                        />
-                      )}
-                    </button>
-                  ))}
-                </nav>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setDarkMode(!darkMode)}
-                    className="p-2.5 text-slate-500 hover:text-orange-500 dark:text-slate-400 dark:hover:text-yellow-400 transition rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50"
-                  >
-                    <i
-                      data-lucide={darkMode ? "sun" : "moon"}
-                      className="w-5 h-5"
-                    ></i>
-                  </button>
-                  <a
-                    href="../chemstudybaby.html"
-                    className="p-2.5 text-slate-500 hover:text-red-500 dark:text-slate-400 dark:hover:text-red-400 transition rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20"
-                    title="Quay về"
-                  >
-                    <i data-lucide="log-out" className="w-5 h-5"></i>
-                  </a>
-                </div>
-              </div>
-            </header>
-
-            {/* MAIN CONTENT */}
-            <main className="flex-1 overflow-hidden relative max-w-7xl mx-auto w-full">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={tab}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.2 }}
-                  className="h-full"
-                >
-                  {renderContent()}
-                </motion.div>
-              </AnimatePresence>
-            </main>
-          </div>
-        );
-      };
-
-      const root = ReactDOM.createRoot(document.getElementById("root"));
-      root.render(<App />);
+      // Init Quiz
+      loadQuiz();
     </script>
   </body>
 </html>

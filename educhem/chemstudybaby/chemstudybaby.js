@@ -1,5 +1,32 @@
 const thcsCourses = [
   {
+    id: "6_1",
+    grade: 6,
+    title: "Oxygen và không khí",
+    desc: "Thành phần, tính chất và vai trò của oxy và không khí.",
+    icon: "fa-wind",
+    link: "oxygen_khong_khi/oxygen_khong_khi.html",
+    color: "from-blue-400 to-indigo-300",
+  },
+  {
+    id: "6_2",
+    grade: 6,
+    title: "VẬT LIỆU – NHIÊN LIỆU – NGUYÊN LIỆU – LƯƠNG THỰC, THỰC PHẨM",
+    desc: "Phân loại, tính chất và ứng dụng trong đời sống.",
+    icon: "fa-leaf",
+    link: "vat_lieu_nhien_lieu_nguyen_lieu_luong_thuc_thuc_pham/vat_lieu_nhien_lieu_nguyen_lieu_luong_thuc_thuc_pham.html",
+    color: "from-green-400 to-lime-300",
+  },
+  {
+    id: "6_3",
+    grade: 6,
+    title: " CHẤT TINH KHIẾT – HỖN HỢP – PHƯƠNG PHÁP TÁCH CHẤT",
+    desc: "Phân biệt chất tinh khiết, hỗn hợp và phương pháp tách chất.",
+    icon: "fa-filter",
+    link: "chat_tinh_khiet_hon_hop_phuong_phap_tach_chat/chat_tinh_khiet_hon_hop_phuong_phap_tach_chat.html",
+    color: "from-amber-400 to-yellow-300",
+  },
+  {
     id: "7_1",
     grade: 7,
     title: "Nguyên tử & Nguyên tố",
@@ -123,13 +150,13 @@ function setTheme(isDark) {
     els.html.classList.add("dark");
     localStorage.setItem("theme", "dark");
     els.themeBtns.forEach(
-      (btn) => (btn.innerHTML = '<i class="fas fa-sun"></i>')
+      (btn) => (btn.innerHTML = '<i class="fas fa-sun"></i>'),
     );
   } else {
     els.html.classList.remove("dark");
     localStorage.setItem("theme", "light");
     els.themeBtns.forEach(
-      (btn) => (btn.innerHTML = '<i class="fas fa-moon"></i>')
+      (btn) => (btn.innerHTML = '<i class="fas fa-moon"></i>'),
     );
   }
 }
@@ -137,7 +164,7 @@ function setTheme(isDark) {
 // 2. Progress Logic
 function loadProgress() {
   const saved = JSON.parse(
-    localStorage.getItem("chemstudy_thcs_progress") || "[]"
+    localStorage.getItem("chemstudy_thcs_progress") || "[]",
   );
   STATE.completed = saved;
   updateProgressUI();
@@ -154,7 +181,7 @@ function toggleCourseComplete(id, event) {
 
   localStorage.setItem(
     "chemstudy_thcs_progress",
-    JSON.stringify(STATE.completed)
+    JSON.stringify(STATE.completed),
   );
   updateProgressUI();
   renderCourses(); // Re-render to show updated styles
