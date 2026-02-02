@@ -1,0 +1,482 @@
+// --- DATA ---
+// Mapping answers: A=0, B=1, C=2, D=3
+const questionData = [
+  // I. NHẬN BIẾT (10 CÂU)
+  {
+    id: 1,
+    section: 1,
+    q: "Kim loại nào sau đây dẫn điện tốt nhất?",
+    options: ["A. Cu", "B. Ag", "C. Al", "D. Au"],
+    correct: 1,
+  }, // 1B
+  {
+    id: 2,
+    section: 1,
+    q: "Kim loại duy nhất ở thể lỏng trong điều kiện thường là",
+    options: ["A. Na", "B. Ca", "C. Hg", "D. Al"],
+    correct: 2,
+  }, // 2C
+  {
+    id: 3,
+    section: 1,
+    q: "Tính chất vật lí chung của kim loại không bao gồm tính chất nào sau đây?",
+    options: [
+      "A. Tính dẫn điện",
+      "B. Tính dẫn nhiệt",
+      "C. Tính giòn",
+      "D. Tính dẻo",
+    ],
+    correct: 2,
+  }, // 3C
+  {
+    id: 4,
+    section: 1,
+    q: "Kim loại đứng trước H trong dãy hoạt động hóa học có khả năng giải phóng khí hydrogen từ dung dịch acid là",
+    options: ["A. Cu", "B. Ag", "C. Fe", "D. Au"],
+    correct: 2,
+  }, // 4C
+  {
+    id: 5,
+    section: 1,
+    q: "Nhóm kim loại nào sau đây phản ứng với nước ở nhiệt độ thường?",
+    options: [
+      "A. K, Na, Ca, Ba",
+      "B. Cu, Ag, Au, Fe",
+      "C. Al, Zn, Mg, Pb",
+      "D. Fe, Ni, Sn, Pb",
+    ],
+    correct: 0,
+  }, // 5A
+  {
+    id: 6,
+    section: 1,
+    q: "Kim loại tác dụng với oxygen thường tạo thành",
+    options: ["A. oxide acid.", "B. oxide base.", "C. muối.", "D. acid."],
+    correct: 1,
+  }, // 6B
+  {
+    id: 7,
+    section: 1,
+    q: "Dãy kim loại nào sau đây được sắp xếp theo chiều hoạt động hóa học giảm dần?",
+    options: [
+      "A. K, Na, Mg, Al",
+      "B. Al, Mg, Na, K",
+      "C. Cu, Ag, Au, Fe",
+      "D. Fe, Zn, Al, Mg",
+    ],
+    correct: 0,
+  }, // 7A
+  {
+    id: 8,
+    section: 1,
+    q: "Phi kim thường dẫn điện và dẫn nhiệt",
+    options: [
+      "A. tốt như kim loại.",
+      "B. tốt hơn kim loại.",
+      "C. kém (trừ graphite dẫn điện).",
+      "D. rất tốt.",
+    ],
+    correct: 2,
+  }, // 8C
+  {
+    id: 9,
+    section: 1,
+    q: "Kim loại có vẻ sáng lấp lánh được gọi là",
+    options: [
+      "A. tính dẻo.",
+      "B. tính dẫn điện.",
+      "C. tính dẫn nhiệt.",
+      "D. ánh kim.",
+    ],
+    correct: 3,
+  }, // 9D
+  {
+    id: 10,
+    section: 1,
+    q: "Phi kim ở điều kiện thường có thể tồn tại ở các trạng thái",
+    options: [
+      "A. chỉ có thể rắn.",
+      "B. chỉ có thể khí.",
+      "C. rắn, lỏng hoặc khí.",
+      "D. chỉ có thể lỏng.",
+    ],
+    correct: 2,
+  }, // 10C
+
+  // II. THÔNG HIỂU (10 CÂU)
+  {
+    id: 11,
+    section: 2,
+    q: "Ứng dụng của nhôm làm giấy bọc thực phẩm dựa trên tính chất vật lí nào?",
+    options: [
+      "A. Tính dẫn điện",
+      "B. Tính dẫn nhiệt",
+      "C. Tính dẻo",
+      "D. Ánh kim",
+    ],
+    correct: 2,
+  }, // 11C
+  {
+    id: 12,
+    section: 2,
+    q: "Đinh sắt làm mất màu xanh của dung dịch CuSO4 vì",
+    options: [
+      "A. sắt hoạt động hóa học mạnh hơn đồng.",
+      "B. sắt hoạt động hóa học yếu hơn đồng.",
+      "C. sắt không phản ứng với muối đồng.",
+      "D. sắt là kim loại đứng sau đồng trong dãy hoạt động.",
+    ],
+    correct: 0,
+  }, // 12A
+  {
+    id: 13,
+    section: 2,
+    q: "Hiện tượng xảy ra khi cho một mẩu Na nhỏ vào nước có pha phenolphthalein là",
+    options: [
+      "A. sủi bọt khí và dung dịch chuyển màu hồng.",
+      "B. sủi bọt khí và dung dịch mất màu.",
+      "C. mẩu Na chìm xuống đáy ống nghiệm.",
+      "D. không có hiện tượng gì xảy ra.",
+    ],
+    correct: 0,
+  }, // 13A
+  {
+    id: 14,
+    section: 2,
+    q: "Khi rắc bột nhôm trên ngọn lửa đèn cồn, hiện tượng quan sát được là",
+    options: [
+      "A. nhôm cháy sáng tạo thành những tia lửa.",
+      "B. nhôm không cháy.",
+      "C. nhôm tan chảy và bốc khói đen.",
+      "D. nhôm tạo thành dung dịch màu xanh.",
+    ],
+    correct: 0,
+  }, // 14A
+  {
+    id: 15,
+    section: 2,
+    q: "Vì sao đồng thường được dùng làm lõi dây dẫn điện thay vì bạc?",
+    options: [
+      "A. Đồng dẫn điện tốt hơn bạc.",
+      "B. Đồng rẻ hơn và phổ biến hơn bạc.",
+      "C. Đồng có tính dẻo cao hơn bạc.",
+      "D. Đồng không bị gỉ sét như bạc.",
+    ],
+    correct: 1,
+  }, // 15B
+  {
+    id: 16,
+    section: 2,
+    q: "Oxide tạo bởi phi kim lưu huỳnh (S) khi tác dụng với oxygen thường là",
+    options: [
+      "A. oxide base.",
+      "B. oxide acid.",
+      "C. oxide lưỡng tính.",
+      "D. oxide trung tính.",
+    ],
+    correct: 1,
+  }, // 16B
+  {
+    id: 17,
+    section: 2,
+    q: "Trong phản ứng hóa học giữa Na và Cl2 để tạo thành muối NaCl, nguyên tử Na đã",
+    options: [
+      "A. nhường 1 electron.",
+      "B. nhận 1 electron.",
+      "C. nhường 2 electron.",
+      "D. nhận 2 electron.",
+    ],
+    correct: 0,
+  }, // 17A
+  {
+    id: 18,
+    section: 2,
+    q: "Kim loại đứng sau H trong dãy hoạt động hóa học là",
+    options: ["A. Zn", "B. Pb", "C. Cu", "D. Mg"],
+    correct: 2,
+  }, // 18C
+  {
+    id: 19,
+    section: 2,
+    q: "Để bảo quản kim loại Natri trong phòng thí nghiệm, người ta thường ngâm trong",
+    options: ["A. nước.", "B. rượu.", "C. dầu hỏa.", "D. dung dịch acid."],
+    correct: 2,
+  }, // 19C
+  {
+    id: 20,
+    section: 2,
+    q: "Dãy gồm các phi kim là",
+    options: [
+      "A. C, S, O2, Cl2",
+      "B. Fe, Cu, Al, Zn",
+      "C. Na, K, Mg, Ca",
+      "D. Ag, Au, Pt, Hg",
+    ],
+    correct: 0,
+  }, // 20A
+
+  // III. VẬN DỤNG (6 CÂU)
+  {
+    id: 21,
+    section: 3,
+    q: "Cho 5,6 gam sắt tác dụng hoàn toàn với dung dịch HCl dư. Thể tích khí H2 thu được ở điều kiện chuẩn (đkc) là",
+    options: [
+      "A. 2,240 lít.",
+      "B. 2,479 lít.",
+      "C. 4,958 lít.",
+      "D. 1,239 lít.",
+    ],
+    correct: 1,
+  }, // 21B
+  {
+    id: 22,
+    section: 3,
+    q: "Để tách đồng ra khỏi hỗn hợp bột gồm Cu và Fe, người ta dùng dư dung dịch nào sau đây?",
+    options: [
+      "A. Dung dịch NaOH",
+      "B. Dung dịch HCl",
+      "C. Dung dịch CuSO4",
+      "D. Dung dịch NaCl",
+    ],
+    correct: 1,
+  }, // 22B
+  {
+    id: 23,
+    section: 3,
+    q: "Cho 10 gam hỗn hợp Cu và Mg vào dung dịch HCl dư, thu được 4,958 lít khí H2 (đkc). Thành phần phần trăm khối lượng của Cu trong hỗn hợp là",
+    options: ["A. 48%", "B. 52%", "C. 24%", "D. 76%"],
+    correct: 1,
+  }, // 23B
+  {
+    id: 24,
+    section: 3,
+    q: "Đốt cháy hoàn toàn 2,4 gam Mg trong khí oxygen dư thu được bao nhiêu gam oxide?",
+    options: ["A. 4,0 gam", "B. 3,6 gam", "C. 8,0 gam", "D. 2,0 gam"],
+    correct: 0,
+  }, // 24A
+  {
+    id: 25,
+    section: 3,
+    q: "Cho dây bạc vào dung dịch nào sau đây sẽ có phản ứng hóa học xảy ra?",
+    options: [
+      "A. HCl",
+      "B. Cu(NO3)2",
+      "C. AgNO3",
+      "D. Không phản ứng với dung dịch nào ở trên",
+    ],
+    correct: 3,
+  }, // 25D
+  {
+    id: 26,
+    section: 3,
+    q: "Cho m gam Al tác dụng với dung dịch CuSO4 dư, sau phản ứng thu được 9,6 gam Cu. Giá trị của m là",
+    options: ["A. 2,7 gam", "B. 5,4 gam", "C. 8,1 gam", "D. 4,5 gam"],
+    correct: 0,
+  }, // 26A
+
+  // IV. VẬN DỤNG CAO (4 CÂU)
+  {
+    id: 27,
+    section: 4,
+    q: "Cho 15,5 gam hỗn hợp gồm Al và Fe tác dụng với dung dịch HCl dư thu được 11,151 lít khí H2 (đkc). Khối lượng của Fe trong hỗn hợp là",
+    options: ["A. 5,6 gam", "B. 11,2 gam", "C. 2,7 gam", "D. 8,4 gam"],
+    correct: 1,
+  }, // 27B
+  {
+    id: 28,
+    section: 4,
+    q: "Ngâm một đinh sắt có khối lượng 10 gam vào dung dịch CuSO4. Sau một thời gian lấy đinh sắt ra, rửa sạch, làm khô, cân lại thấy khối lượng đinh sắt là 10,2 gam. Khối lượng đồng bám trên đinh sắt là",
+    options: ["A. 0,2 gam", "B. 1,6 gam", "C. 1,28 gam", "D. 0,8 gam"],
+    correct: 1,
+  }, // 28B
+  {
+    id: 29,
+    section: 4,
+    q: "Khử hoàn toàn 16 gam một oxide sắt bằng khí CO ở nhiệt độ cao, thu được 11,2 gam sắt. Công thức của oxide sắt là",
+    options: ["A. FeO", "B. Fe2O3", "C. Fe3O4", "D. Không xác định được"],
+    correct: 1,
+  }, // 29B
+  {
+    id: 30,
+    section: 4,
+    q: "Cho 0,1 mol một kim loại R tác dụng với khí chlorine dư thu được 13,35 gam muối chloride. Kim loại R là",
+    options: ["A. Al", "B. Fe", "C. Mg", "D. Zn"],
+    correct: 0,
+  }, // 30A
+];
+
+const sectionTitles = {
+  1: "I. NHẬN BIẾT (10 CÂU)",
+  2: "II. THÔNG HIỂU (10 CÂU)",
+  3: "III. VẬN DỤNG (6 CÂU)",
+  4: "IV. VẬN DỤNG CAO (4 CÂU)",
+};
+
+const userAnswers = {}; // Store: { questionId: optionIndex }
+let isSubmitted = false;
+
+// --- RENDER LOGIC ---
+function initQuiz() {
+  const container = document.getElementById("quizContainer");
+  let currentSection = 0;
+
+  questionData.forEach((item, index) => {
+    // Render Section Title if changed
+    if (item.section !== currentSection) {
+      currentSection = item.section;
+      const secTitle = document.createElement("div");
+      secTitle.className = "section-title";
+      secTitle.innerText = sectionTitles[currentSection];
+      container.appendChild(secTitle);
+    }
+
+    // Create Card
+    const card = document.createElement("div");
+    card.className = "question-card";
+    card.id = `q-card-${item.id}`;
+
+    // Header
+    const qHeader = document.createElement("div");
+    qHeader.className = "q-header";
+    qHeader.innerHTML = `
+                    <div class="q-number">Câu ${item.id}</div>
+                    <div class="q-text">${item.q}</div>
+                `;
+
+    // Options
+    const optionsGrid = document.createElement("div");
+    optionsGrid.className = "options-grid";
+
+    item.options.forEach((opt, idx) => {
+      const inputId = `q${item.id}_opt${idx}`;
+
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = `question_${item.id}`;
+      input.id = inputId;
+      input.value = idx;
+      input.onchange = () => handleSelect(item.id, idx);
+
+      const label = document.createElement("label");
+      label.className = "option-label";
+      label.setAttribute("for", inputId);
+      label.innerText = opt;
+      label.id = `label_q${item.id}_opt${idx}`;
+
+      optionsGrid.appendChild(input);
+      optionsGrid.appendChild(label);
+    });
+
+    card.appendChild(qHeader);
+    card.appendChild(optionsGrid);
+    container.appendChild(card);
+  });
+}
+
+// --- INTERACTION LOGIC ---
+function handleSelect(questionId, optionIndex) {
+  if (isSubmitted) return;
+  userAnswers[questionId] = optionIndex;
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = questionData.length;
+  const answered = Object.keys(userAnswers).length;
+  const percentage = (answered / total) * 100;
+
+  document.getElementById("progressBar").style.width = `${percentage}%`;
+  document.getElementById("progressText").innerText =
+    `${answered}/${total} câu đã làm`;
+}
+
+// --- SUBMIT & GRADING LOGIC ---
+function submitQuiz() {
+  if (isSubmitted) return;
+
+  const total = questionData.length;
+  const answered = Object.keys(userAnswers).length;
+
+  if (answered < total) {
+    const confirmSubmit = confirm(
+      `Bạn mới làm ${answered}/${total} câu. Bạn có chắc chắn muốn nộp bài không?`,
+    );
+    if (!confirmSubmit) return;
+  }
+
+  isSubmitted = true;
+  document.getElementById("submitBtn").disabled = true;
+  document.getElementById("submitBtn").innerText = "Đã nộp bài";
+  document.getElementById("submitBtn").style.backgroundColor = "#9ca3af";
+
+  let correctCount = 0;
+
+  // Grading Loop
+  questionData.forEach((item) => {
+    const card = document.getElementById(`q-card-${item.id}`);
+    card.classList.add("graded");
+    const userChoice = userAnswers[item.id];
+
+    // Highlight Correct Answer (Always show green)
+    const correctLabel = document.getElementById(
+      `label_q${item.id}_opt${item.correct}`,
+    );
+    if (correctLabel) correctLabel.classList.add("correct");
+
+    // Check user choice
+    if (userChoice !== undefined) {
+      if (userChoice === item.correct) {
+        correctCount++;
+      } else {
+        // Highlight Incorrect user choice (Red)
+        const wrongLabel = document.getElementById(
+          `label_q${item.id}_opt${userChoice}`,
+        );
+        if (wrongLabel) wrongLabel.classList.add("incorrect");
+      }
+    }
+
+    // Disable inputs
+    const inputs = document.getElementsByName(`question_${item.id}`);
+    inputs.forEach((inp) => (inp.disabled = true));
+  });
+
+  showResultModal(correctCount, total);
+}
+
+function showResultModal(correct, total) {
+  const score = (correct / total) * 10;
+  const roundedScore = Math.round(score * 10) / 10; // 1 decimal place
+
+  let feedback = "";
+  let color = "";
+
+  if (roundedScore >= 8.0) {
+    feedback = "RẤT TỐT! Kiến thức của bạn rất vững.";
+    color = "#10b981"; // Green
+  } else if (roundedScore >= 6.0) {
+    feedback = "ĐẠT. Bạn đã nắm được kiến thức cơ bản.";
+    color = "#f59e0b"; // Orange
+  } else {
+    feedback = "CẦN ÔN LẠI. Hãy xem kỹ lại các câu sai nhé.";
+    color = "#ef4444"; // Red
+  }
+
+  document.getElementById("modalScore").innerText = roundedScore;
+  document.getElementById("modalScore").style.backgroundColor = color;
+  document.getElementById("modalCorrectCount").innerText = correct;
+  document.getElementById("modalFeedback").innerText = feedback;
+  document.getElementById("modalTitle").innerText =
+    roundedScore >= 6 ? "Chúc mừng!" : "Cố gắng lên!";
+
+  document.getElementById("resultModal").classList.add("active");
+}
+
+function closeModal() {
+  document.getElementById("resultModal").classList.remove("active");
+  // Scroll to top to review
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// --- INIT ---
+window.onload = initQuiz;

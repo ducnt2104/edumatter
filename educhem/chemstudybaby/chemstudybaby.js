@@ -44,23 +44,24 @@ const thcsCourses = [
     link: "phan_tu_don_chat_hop_chat/phan_tu_don_chat_hop_chat.html",
     color: "from-cyan-400 to-teal-300",
   },
+
   {
     id: "8_1",
-    grade: 8,
-    title: "Acid • Base • Oxide • Muối",
-    desc: "Phân loại – tính chất – phản ứng – độ mạnh pH.",
-    icon: "fa-vial",
-    link: "acid_base_oxide_salt_pH/acid_base_oxide_salt_pH.html",
-    color: "from-orange-400 to-red-400",
-  },
-  {
-    id: "8_2",
     grade: 8,
     title: "Phản ứng hóa học",
     desc: "Dấu hiệu – bản chất – định luật – cân bằng phương trình.",
     icon: "fa-bolt",
     link: "phan_ung_hoa_hoc/phan_ung_hoa_hoc.html",
     color: "from-yellow-400 to-orange-300",
+  },
+  {
+    id: "8_2",
+    grade: 8,
+    title: "Acid • Base • Oxide • Muối",
+    desc: "Phân loại – tính chất – phản ứng – độ mạnh pH.",
+    icon: "fa-vial",
+    link: "acid_base_oxide_salt_pH/acid_base_oxide_salt_pH.html",
+    color: "from-orange-400 to-red-400",
   },
   {
     id: "9_1",

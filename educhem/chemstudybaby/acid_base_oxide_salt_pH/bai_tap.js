@@ -1,0 +1,472 @@
+// --- DATA ---
+// Mapping answers: A=0, B=1, C=2, D=3
+const questionData = [
+  // I. NHẬN BIẾT
+  {
+    id: 1,
+    section: 1,
+    q: "Theo khái niệm, acid là những hợp chất mà phân tử có một hay nhiều nguyên tử hydrogen liên kết với",
+    options: [
+      "A. nhóm hydroxide.",
+      "B. nguyên tử oxygen.",
+      "C. gốc acid.",
+      "D. nguyên tử kim loại.",
+    ],
+    correct: 2,
+  }, // 1C
+  {
+    id: 2,
+    section: 1,
+    q: "Dung dịch nào sau đây làm đổi màu giấy quỳ tím thành đỏ?",
+    options: ["A. NaOH.", "B. HCl.", "C. NaCl.", "D. KOH."],
+    correct: 1,
+  }, // 2B
+  {
+    id: 3,
+    section: 1,
+    q: "Base là hợp chất mà phân tử có một nguyên tử kim loại liên kết với một hay nhiều",
+    options: [
+      "A. gốc acid.",
+      "B. nguyên tử oxygen.",
+      "C. nhóm hydroxide.",
+      "D. nguyên tử hydrogen.",
+    ],
+    correct: 2,
+  }, // 3C
+  {
+    id: 4,
+    section: 1,
+    q: "Thang pH được dùng để đánh giá độ acid hoặc base của dung dịch trong khoảng giá trị từ",
+    options: ["A. 0 đến 10.", "B. 1 đến 10.", "C. 0 đến 14.", "D. 1 đến 14."],
+    correct: 3,
+  }, // 4D
+  {
+    id: 5,
+    section: 1,
+    q: "Oxide là hợp chất của oxygen với",
+    options: [
+      "A. một nguyên tố khác.",
+      "B. một kim loại bất kì.",
+      "C. một phi kim bất kì.",
+      "D. nhóm hydroxide.",
+    ],
+    correct: 0,
+  }, // 5A
+  {
+    id: 6,
+    section: 1,
+    q: "Chất nào sau đây là oxide acid?",
+    options: ["A. CaO.", "B. CuO.", "C. SO2.", "D. Na2O."],
+    correct: 2,
+  }, // 6C
+  {
+    id: 7,
+    section: 1,
+    q: "Muối là hợp chất được tạo ra khi thay thế ion H+ trong acid bằng",
+    options: [
+      "A. ion OH-.",
+      "B. nguyên tử oxygen.",
+      "C. ion kim loại hoặc ion ammonium.",
+      "D. nhóm hydroxide.",
+    ],
+    correct: 2,
+  }, // 7C
+  {
+    id: 8,
+    section: 1,
+    q: "Phân đạm cung cấp cho cây trồng nguyên tố dinh dưỡng nào sau đây?",
+    options: ["A. Phosphorus.", "B. Nitrogen.", "C. Potassium.", "D. Calcium."],
+    correct: 1,
+  }, // 8B
+  {
+    id: 9,
+    section: 1,
+    q: "Công thức hóa học của phân Urea là",
+    options: ["A. NH4NO3.", "B. (NH2)2CO.", "C. Ca(H2PO4)2.", "D. KCl."],
+    correct: 1,
+  }, // 9B
+  {
+    id: 10,
+    section: 1,
+    q: "Chất nào sau đây là base tan trong nước (kiềm)?",
+    options: ["A. Cu(OH)2.", "B. Fe(OH)3.", "C. NaOH.", "D. Al(OH)3."],
+    correct: 2,
+  }, // 10C
+
+  // II. THÔNG HIỂU
+  {
+    id: 11,
+    section: 2,
+    q: "Cho các chất: KCl, H2SO3, NaOH, HClO4. Số lượng chất thuộc loại acid là",
+    options: ["A. 1.", "B. 2.", "C. 3.", "D. 4."],
+    correct: 1,
+  }, // 11B
+  {
+    id: 12,
+    section: 2,
+    q: "Khi cho hạt kẽm (Zn) vào ống nghiệm chứa dung dịch HCl, hiện tượng quan sát được là",
+    options: [
+      "A. không có hiện tượng gì.",
+      "B. có sủi bọt khí không màu.",
+      "C. xuất hiện kết tủa trắng.",
+      "D. dung dịch chuyển sang màu xanh.",
+    ],
+    correct: 1,
+  }, // 12B
+  {
+    id: 13,
+    section: 2,
+    q: "Một dung dịch có giá trị pH = 2. Kết luận nào sau đây là đúng?",
+    options: [
+      "A. Dung dịch có môi trường trung tính.",
+      "B. Dung dịch có môi trường base.",
+      "C. Dung dịch có môi trường acid.",
+      "D. Dung dịch làm quỳ tím hóa xanh.",
+    ],
+    correct: 2,
+  }, // 13C
+  {
+    id: 14,
+    section: 2,
+    q: "Phản ứng giữa dung dịch NaOH và dung dịch HCl được gọi là phản ứng",
+    options: ["A. phân hủy.", "B. trung hòa.", "C. thế.", "D. hóa hợp."],
+    correct: 1,
+  }, // 14B
+  {
+    id: 15,
+    section: 2,
+    q: "Oxide nào sau đây tác dụng được với cả dung dịch acid và dung dịch base?",
+    options: ["A. Al2O3.", "B. CuO.", "C. CO2.", "D. CO."],
+    correct: 0,
+  }, // 15A
+  {
+    id: 16,
+    section: 2,
+    q: "Khi sục khí CO2 vào dung dịch nước vôi trong Ca(OH)2 dư, hiện tượng xảy ra là",
+    options: [
+      "A. dung dịch chuyển sang màu hồng.",
+      "B. có sủi bọt khí mạnh.",
+      "C. xuất hiện vẩn đục màu trắng.",
+      "D. không có hiện tượng gì.",
+    ],
+    correct: 2,
+  }, // 16C
+  {
+    id: 17,
+    section: 2,
+    q: "Cặp chất nào sau đây xảy ra phản ứng tạo thành kết tủa trắng?",
+    options: [
+      "A. NaCl và AgNO3.",
+      "B. HCl và KOH.",
+      "C. Zn và H2SO4.",
+      "D. CuO và HCl.",
+    ],
+    correct: 0,
+  }, // 17A
+  {
+    id: 18,
+    section: 2,
+    q: "Để tẩy gỉ sét (thành phần chính là Fe2O3) trên các đồ dùng bằng sắt thép, người ta có thể dùng",
+    options: [
+      "A. dung dịch muối ăn.",
+      "B. giấm ăn (acid acetic).",
+      "C. nước vôi trong.",
+      "D. dung dịch NaOH.",
+    ],
+    correct: 1,
+  }, // 18B
+  {
+    id: 19,
+    section: 2,
+    q: "Loại phân bón nào giúp bộ rễ cây trồng phát triển mạnh?",
+    options: [
+      "A. Phân đạm.",
+      "B. Phân kali.",
+      "C. Phân lân.",
+      "D. Phân vi lượng.",
+    ],
+    correct: 2,
+  }, // 19C
+  {
+    id: 20,
+    section: 2,
+    q: "Kí hiệu NPK 15-5-25 trên bao bì phân bón cho biết tỉ lệ phần trăm khối lượng của",
+    options: [
+      "A. N, P, K.",
+      "B. N, P2O5, K2O.",
+      "C. N2, P, K.",
+      "D. NH4+, PO43-, K+.",
+    ],
+    correct: 1,
+  }, // 20B
+
+  // III. VẬN DỤNG
+  {
+    id: 21,
+    section: 3,
+    q: "Cho 6,5 gam Zn tác dụng hoàn toàn với dung dịch HCl dư. Thể tích khí H2 thoát ra ở điều kiện chuẩn (25 °C, 1 bar) là (Cho Zn = 65)",
+    options: [
+      "A. 2,479 lít.",
+      "B. 2,24 lít.",
+      "C. 4,958 lít.",
+      "D. 1,239 lít.",
+    ],
+    correct: 0,
+  }, // 21A
+  {
+    id: 22,
+    section: 3,
+    q: "Nhỏ vài giọt dung dịch phenolphthalein vào ống nghiệm đựng dung dịch NaOH, sau đó nhỏ từ từ dung dịch HCl vào cho đến dư. Hiện tượng quan sát được là",
+    options: [
+      "A. dung dịch từ không màu chuyển sang hồng rồi mất màu.",
+      "B. dung dịch có màu hồng không thay đổi.",
+      "C. dung dịch từ hồng chuyển sang xanh.",
+      "D. dung dịch có sủi bọt khí và mất màu hồng.",
+    ],
+    correct: 0,
+  }, // 22A
+  {
+    id: 23,
+    section: 3,
+    q: "Cho dãy các oxide sau: CaO, SO2, CO, Fe2O3, Al2O3. Số lượng oxide base trong dãy là",
+    options: ["A. 1.", "B. 2.", "C. 3.", "D. 4."],
+    correct: 1,
+  }, // 23B (CaO, Fe2O3)
+  {
+    id: 24,
+    section: 3,
+    q: "Cho một đinh sắt sạch vào dung dịch CuSO4. Sau một thời gian, hiện tượng quan sát được là",
+    options: [
+      "A. đinh sắt tan hết, dung dịch không màu.",
+      "B. có lớp kim loại màu đỏ bám ngoài đinh sắt, màu xanh của dung dịch nhạt dần.",
+      "C. có sủi bọt khí không màu, đinh sắt tan dần.",
+      "D. có kết tủa xanh lam tạo thành đáy ống nghiệm.",
+    ],
+    correct: 1,
+  }, // 24B
+  {
+    id: 25,
+    section: 3,
+    q: "Hàm lượng % nitrogen có trong phân đạm ammonium nitrate (NH4NO3) là (Cho N = 14, H = 1, O = 16)",
+    options: ["A. 35%.", "B. 17,5%.", "C. 28%.", "D. 46%."],
+    correct: 0,
+  }, // 25A
+  {
+    id: 26,
+    section: 3,
+    q: "Để phân biệt hai dung dịch không màu là HCl và Na2SO4, thuốc thử tối ưu nhất nên dùng là",
+    options: [
+      "A. giấy quỳ tím.",
+      "B. dung dịch phenolphthalein.",
+      "C. dung dịch NaCl.",
+      "D. nước cất.",
+    ],
+    correct: 0,
+  }, // 26A
+
+  // IV. VẬN DỤNG CAO
+  {
+    id: 27,
+    section: 4,
+    q: "Hòa tan hoàn toàn 8 gam một oxide kim loại hóa trị II cần dùng vừa đủ 200 ml dung dịch HCl 1M. Công thức phân tử của oxide đó là (Cho Mg=24, Ca=40, Cu=64, Zn=65)",
+    options: ["A. CaO.", "B. CuO.", "C. MgO.", "D. ZnO."],
+    correct: 1,
+  }, // 27B
+  {
+    id: 28,
+    section: 4,
+    q: "Trộn 100 ml dung dịch BaCl2 1M với 100 ml dung dịch Na2SO4 1,2M. Sau khi phản ứng kết thúc, khối lượng kết tủa thu được là (Cho Ba=137, S=32, O=16)",
+    options: ["A. 23,3 gam.", "B. 27,96 gam.", "C. 46,6 gam.", "D. 11,65 gam."],
+    correct: 0,
+  }, // 28A
+  {
+    id: 29,
+    section: 4,
+    q: "Đốt cháy hoàn toàn ... (Nội dung câu hỏi này bị thiếu trong dữ liệu đầu vào, đáp án giả định theo bảng đáp án là A)",
+    options: ["A. Đáp án A", "B. Đáp án B", "C. Đáp án C", "D. Đáp án D"],
+    correct: 0,
+  }, // 29A Placeholder
+  {
+    id: 30,
+    section: 4,
+    q: "Cho m gam hỗn hợp gồm Mg và Fe tác dụng vừa đủ với dung dịch chứa 0,2 mol H2SO4 loãng, thu được dung dịch X và 4,958 lít khí H2 (đkc). Cô cạn dung dịch X thu được lượng muối khan là",
+    options: ["A. 19,2 gam.", "B. 24,0 gam.", "C. 28,8 gam.", "D. 31,2 gam."],
+    correct: 1,
+  }, // 30B
+];
+
+const sectionTitles = {
+  1: "I. NHẬN BIẾT (10 CÂU)",
+  2: "II. THÔNG HIỂU (10 CÂU)",
+  3: "III. VẬN DỤNG (6 CÂU)",
+  4: "IV. VẬN DỤNG CAO (4 CÂU)",
+};
+
+const userAnswers = {}; // Store: { questionId: optionIndex }
+let isSubmitted = false;
+
+// --- RENDER LOGIC ---
+function initQuiz() {
+  const container = document.getElementById("quizContainer");
+  let currentSection = 0;
+
+  questionData.forEach((item, index) => {
+    // Render Section Title if changed
+    if (item.section !== currentSection) {
+      currentSection = item.section;
+      const secTitle = document.createElement("div");
+      secTitle.className = "section-title";
+      secTitle.innerText = sectionTitles[currentSection];
+      container.appendChild(secTitle);
+    }
+
+    // Create Card
+    const card = document.createElement("div");
+    card.className = "question-card";
+    card.id = `q-card-${item.id}`;
+
+    // Header
+    const qHeader = document.createElement("div");
+    qHeader.className = "q-header";
+    qHeader.innerHTML = `
+                    <div class="q-number">Câu ${item.id}</div>
+                    <div class="q-text">${item.q}</div>
+                `;
+
+    // Options
+    const optionsGrid = document.createElement("div");
+    optionsGrid.className = "options-grid";
+
+    item.options.forEach((opt, idx) => {
+      const inputId = `q${item.id}_opt${idx}`;
+
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = `question_${item.id}`;
+      input.id = inputId;
+      input.value = idx;
+      input.onchange = () => handleSelect(item.id, idx);
+
+      const label = document.createElement("label");
+      label.className = "option-label";
+      label.setAttribute("for", inputId);
+      label.innerText = opt;
+      label.id = `label_q${item.id}_opt${idx}`;
+
+      optionsGrid.appendChild(input);
+      optionsGrid.appendChild(label);
+    });
+
+    card.appendChild(qHeader);
+    card.appendChild(optionsGrid);
+    container.appendChild(card);
+  });
+}
+
+// --- INTERACTION LOGIC ---
+function handleSelect(questionId, optionIndex) {
+  if (isSubmitted) return;
+  userAnswers[questionId] = optionIndex;
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = questionData.length;
+  const answered = Object.keys(userAnswers).length;
+  const percentage = (answered / total) * 100;
+
+  document.getElementById("progressBar").style.width = `${percentage}%`;
+  document.getElementById("progressText").innerText =
+    `${answered}/${total} câu đã làm`;
+}
+
+// --- SUBMIT & GRADING LOGIC ---
+function submitQuiz() {
+  if (isSubmitted) return;
+
+  const total = questionData.length;
+  const answered = Object.keys(userAnswers).length;
+
+  if (answered < total) {
+    const confirmSubmit = confirm(
+      `Bạn mới làm ${answered}/${total} câu. Bạn có chắc chắn muốn nộp bài không?`,
+    );
+    if (!confirmSubmit) return;
+  }
+
+  isSubmitted = true;
+  document.getElementById("submitBtn").disabled = true;
+  document.getElementById("submitBtn").innerText = "Đã nộp bài";
+  document.getElementById("submitBtn").style.backgroundColor = "#9ca3af";
+
+  let correctCount = 0;
+
+  // Grading Loop
+  questionData.forEach((item) => {
+    const card = document.getElementById(`q-card-${item.id}`);
+    card.classList.add("graded");
+    const userChoice = userAnswers[item.id];
+
+    // Highlight Correct Answer (Always show green)
+    const correctLabel = document.getElementById(
+      `label_q${item.id}_opt${item.correct}`,
+    );
+    if (correctLabel) correctLabel.classList.add("correct");
+
+    // Check user choice
+    if (userChoice !== undefined) {
+      if (userChoice === item.correct) {
+        correctCount++;
+      } else {
+        // Highlight Incorrect user choice (Red)
+        const wrongLabel = document.getElementById(
+          `label_q${item.id}_opt${userChoice}`,
+        );
+        if (wrongLabel) wrongLabel.classList.add("incorrect");
+      }
+    }
+
+    // Disable inputs
+    const inputs = document.getElementsByName(`question_${item.id}`);
+    inputs.forEach((inp) => (inp.disabled = true));
+  });
+
+  showResultModal(correctCount, total);
+}
+
+function showResultModal(correct, total) {
+  const score = (correct / total) * 10;
+  const roundedScore = Math.round(score * 10) / 10; // 1 decimal place
+
+  let feedback = "";
+  let color = "";
+
+  if (roundedScore >= 8.0) {
+    feedback = "RẤT TỐT! Kiến thức của bạn rất vững.";
+    color = "#10b981"; // Green
+  } else if (roundedScore >= 6.0) {
+    feedback = "ĐẠT. Bạn đã nắm được kiến thức cơ bản.";
+    color = "#f59e0b"; // Orange
+  } else {
+    feedback = "CẦN ÔN LẠI. Hãy xem kỹ lại các câu sai nhé.";
+    color = "#ef4444"; // Red
+  }
+
+  document.getElementById("modalScore").innerText = roundedScore;
+  document.getElementById("modalScore").style.backgroundColor = color;
+  document.getElementById("modalCorrectCount").innerText = correct;
+  document.getElementById("modalFeedback").innerText = feedback;
+  document.getElementById("modalTitle").innerText =
+    roundedScore >= 6 ? "Chúc mừng!" : "Cố gắng lên!";
+
+  document.getElementById("resultModal").classList.add("active");
+}
+
+function closeModal() {
+  document.getElementById("resultModal").classList.remove("active");
+  // Scroll to top to review
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// --- INIT ---
+window.onload = initQuiz;
