@@ -1,0 +1,1712 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Đa Phương Thức - Edumatter</title>
+    <link rel="icon" href="../../../../favicon/eduoj.svg" />
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Tailwind CSS (via CDN for styling speed) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "edu-bg": "#0f172a",
+              "edu-card": "#1e293b",
+              "edu-accent": "#38bdf8", // Sky 400
+              "edu-purple": "#a78bfa", // Violet 400
+              "edu-success": "#34d399",
+              "footer-bg": "#0f172a",
+              "footer-text": "#94a3b8",
+              "p-primary": "#38bdf8",
+            },
+            fontFamily: {
+              head: ['"Space Grotesk"', "sans-serif"],
+              body: ['"Inter"', "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      /* Global & Animations */
+      :root {
+        --footer-bg: #0f172a;
+        --footer-text: #94a3b8;
+        --p-primary: #38bdf8;
+      }
+
+      body {
+        background-color: var(--footer-bg);
+        color: #e2e8f0;
+        font-family: "Inter", sans-serif;
+        scroll-behavior: smooth;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      .btn-font {
+        font-family: "Space Grotesk", sans-serif;
+      }
+
+      /* Gradient Text */
+      .text-gradient {
+        background: linear-gradient(to right, #38bdf8, #a78bfa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0f172a;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #334155;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #475569;
+      }
+
+      /* Glassmorphism Card */
+      .glass-card {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+      .glass-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px -10px rgba(56, 189, 248, 0.3);
+        border-color: rgba(56, 189, 248, 0.3);
+      }
+
+      /* Progress Bar */
+      #progress-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        z-index: 100;
+        background: rgba(255, 255, 255, 0.1);
+      }
+      #progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #38bdf8, #a78bfa);
+        width: 0%;
+        transition: width 0.2s;
+      }
+
+      /* Simulation: Mockup */
+      .mockup-preview {
+        background-image: radial-gradient(
+          circle at center,
+          #334155 1px,
+          transparent 1px
+        );
+        background-size: 20px 20px;
+      }
+
+      /* Simulation: Before/After Slider */
+      .slider-container {
+        position: relative;
+        width: 100%;
+        height: 300px;
+        overflow: hidden;
+        border-radius: 12px;
+      }
+      .slider-img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .slider-resizer {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 4px;
+        height: 100%;
+        background: #fff;
+        z-index: 10;
+        cursor: ew-resize;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      }
+      .slider-handle {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 40px;
+        height: 40px;
+        background: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #000;
+        z-index: 11;
+      }
+
+      /* Simulation: Audio Visualizer */
+      .bar {
+        width: 6px;
+        background: #a78bfa;
+        border-radius: 3px;
+        animation: bounce 1s infinite ease-in-out;
+      }
+      @keyframes bounce {
+        0%,
+        100% {
+          height: 10px;
+        }
+        50% {
+          height: 40px;
+        }
+      }
+
+      /* Accordion for Exercises */
+      .accordion-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+      }
+      .accordion-active .accordion-content {
+        max-height: 500px;
+      }
+      .accordion-active .fa-chevron-down {
+        transform: rotate(180deg);
+      }
+
+      /* --- PROVIDED FOOTER CSS (DO NOT MODIFY) --- */
+      footer {
+        background: var(--footer-bg);
+        color: var(--footer-text);
+        padding: 100px 5% 40px;
+        position: relative;
+        overflow: hidden;
+        -webkit-transition:
+          background-color 0.8s ease,
+          color 0.8s ease;
+        -o-transition:
+          background-color 0.8s ease,
+          color 0.8s ease;
+        transition:
+          background-color 0.8s ease,
+          color 0.8s ease;
+      }
+
+      .footer-waves {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        background: var(--footer-bg);
+        -webkit-clip-path: polygon(
+          0% 45%,
+          16% 44%,
+          33% 50%,
+          54% 60%,
+          70% 61%,
+          84% 59%,
+          100% 52%,
+          100% 100%,
+          0% 100%
+        );
+        clip-path: polygon(
+          0% 45%,
+          16% 44%,
+          33% 50%,
+          54% 60%,
+          70% 61%,
+          84% 59%,
+          100% 52%,
+          100% 100%,
+          0% 100%
+        );
+        -webkit-transition: background-color 0.8s;
+        -o-transition: background-color 0.8s;
+        transition: background-color 0.8s;
+      }
+
+      .footer-grid {
+        display: -ms-grid;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 60px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .footer-brand h2 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 2rem;
+        margin-bottom: 20px;
+      }
+
+      .footer-links h4,
+      h3 {
+        margin-bottom: 25px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--p-primary);
+      }
+
+      .contact-item {
+        margin-bottom: 15px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        gap: 15px;
+        color: #94a3b8;
+        -webkit-transition: 0.3s;
+        -o-transition: 0.3s;
+        transition: 0.3s;
+      }
+      .contact-item i {
+        color: var(--p-primary);
+      }
+      .contact-item:hover {
+        color: white;
+        -webkit-transform: translateX(5px);
+        -ms-transform: translateX(5px);
+        transform: translateX(5px);
+      }
+
+      .copyright {
+        margin-top: 80px;
+        text-align: center;
+        padding-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        color: #475569;
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 768px) {
+        header {
+          padding: 0 20px;
+        }
+        .site-title {
+          font-size: 1.4rem;
+        }
+      }
+    </style>
+  </head>
+  <body class="antialiased selection:bg-edu-accent selection:text-black">
+    <!-- Scroll Progress -->
+    <div id="progress-container"><div id="progress-bar"></div></div>
+
+    <!-- HEADER -->
+    <header
+      class="relative pt-20 pb-12 px-6 border-b border-white/5 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"
+    >
+      <div
+        class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6"
+      >
+        <div data-aos="fade-right">
+          <a
+            href="../AI.html"
+            class="inline-flex items-center gap-2 text-edu-accent hover:text-white transition mb-4 group"
+          >
+            <i
+              class="fas fa-arrow-left group-hover:-translate-x-1 transition"
+            ></i>
+            Quay về AI Center
+          </a>
+          <h1 class="text-4xl md:text-5xl font-bold mb-2 text-white">
+            AI <span class="text-gradient">ĐA PHƯƠNG THỨC</span>
+          </h1>
+          <p class="text-slate-400 text-lg">IMAGE • VIDEO • AUDIO • VOICE</p>
+          <p
+            class="mt-2 text-sm text-slate-500 font-mono border-l-2 border-edu-accent pl-3"
+          >
+            Học - Thử nghiệm - Sáng tạo với AI thế hệ mới
+          </p>
+        </div>
+
+        <!-- Quick Nav -->
+        <div class="flex gap-4">
+          <a
+            href="#lesson3"
+            class="px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition backdrop-blur flex items-center gap-3"
+          >
+            <div
+              class="w-10 h-10 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center"
+            >
+              <i class="fas fa-image"></i>
+            </div>
+            <div>
+              <div class="text-xs text-slate-400">BÀI 3</div>
+              <div class="font-bold">Image & Video</div>
+            </div>
+          </a>
+          <a
+            href="#lesson4"
+            class="px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition backdrop-blur flex items-center gap-3"
+          >
+            <div
+              class="w-10 h-10 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center"
+            >
+              <i class="fas fa-music"></i>
+            </div>
+            <div>
+              <div class="text-xs text-slate-400">BÀI 4</div>
+              <div class="font-bold">Music & Voice</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-12 space-y-24">
+      <!-- ================================================================================== -->
+      <!-- CHƯƠNG 2 - BÀI 3 -->
+      <!-- ================================================================================== -->
+      <section id="lesson3" class="scroll-mt-24">
+        <div class="flex items-center gap-4 mb-8">
+          <span
+            class="text-6xl font-bold text-white/5 select-none absolute -ml-4 -mt-4"
+            >03</span
+          >
+          <h2 class="text-3xl font-bold text-edu-accent z-10 relative">
+            BÀI 3: XỬ LÝ HÌNH ẢNH, MOCKUP VÀ VIDEO (PART 1)
+          </h2>
+        </div>
+
+        <!-- I. MỤC TIÊU -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
+          <div class="glass-card p-6">
+            <i class="fas fa-cube text-3xl text-edu-accent mb-4"></i>
+            <h3 class="font-bold mb-2">Mockup Sản Phẩm</h3>
+            <p class="text-sm text-slate-400">
+              Tạo ảnh quảng cáo chuyên nghiệp không cần in ấn.
+            </p>
+          </div>
+          <div class="glass-card p-6">
+            <i
+              class="fas fa-wand-magic-sparkles text-3xl text-edu-purple mb-4"
+            ></i>
+            <h3 class="font-bold mb-2">Phục Chế Ảnh</h3>
+            <p class="text-sm text-slate-400">
+              Làm nét, tô màu ảnh cũ bằng Gemini.
+            </p>
+          </div>
+          <div class="glass-card p-6">
+            <i class="fas fa-file-invoice text-3xl text-emerald-400 mb-4"></i>
+            <h3 class="font-bold mb-2">OCR Dữ Liệu</h3>
+            <p class="text-sm text-slate-400">
+              Trích xuất ảnh viết tay sang Excel.
+            </p>
+          </div>
+          <div class="glass-card p-6">
+            <i class="fas fa-video text-3xl text-rose-400 mb-4"></i>
+            <h3 class="font-bold mb-2">Ảnh sang Video</h3>
+            <p class="text-sm text-slate-400">Marketing sinh động với Veo 2.</p>
+          </div>
+        </div>
+
+        <!-- II. KIẾN THỨC NỀN -->
+        <div class="mb-16">
+          <h3
+            class="text-2xl font-head font-bold text-white mb-6 border-l-4 border-edu-accent pl-4"
+          >
+            II. Kiến thức nền tảng
+          </h3>
+          <div class="grid md:grid-cols-2 gap-8">
+            <div class="glass-card p-6">
+              <h4 class="text-xl font-bold text-edu-accent mb-3">
+                Mockup là gì?
+              </h4>
+              <p class="text-slate-300 leading-relaxed mb-4">
+                Mockup là ảnh sản phẩm "giả" nhưng nhìn giống hệt hàng thật.
+                Giúp khảo sát sở thích khách hàng và Pre-order để giảm rủi ro
+                tồn kho.
+              </p>
+              <div
+                class="bg-black/30 rounded-lg p-3 text-center border border-dashed border-slate-600"
+              >
+                <span class="text-xs text-slate-500 uppercase">Minh họa</span>
+                <div class="flex justify-center gap-4 mt-2">
+                  <div
+                    class="w-16 h-20 bg-white rounded shadow-lg flex items-center justify-center text-slate-900 font-bold text-xs"
+                  >
+                    Design
+                  </div>
+                  <i class="fas fa-arrow-right self-center text-slate-500"></i>
+                  <div
+                    class="w-20 h-24 bg-slate-700 rounded shadow-lg flex items-center justify-center relative"
+                  >
+                    <div
+                      class="absolute inset-0 bg-cover rounded opacity-50"
+                      style="
+                        background-image: url(&quot;https://images.unsplash.com/photo-1595341888016-a392ef81b7de?auto=format&fit=crop&q=80&w=200&quot;);
+                      "
+                    ></div>
+                    <div
+                      class="w-8 h-10 bg-white/90 z-10 flex items-center justify-center text-[8px] text-black font-bold"
+                    >
+                      Design
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="glass-card p-6">
+              <h4 class="text-xl font-bold text-edu-purple mb-3">
+                Tư duy "Ra lệnh vẽ"
+              </h4>
+              <p class="text-slate-300 mb-4">Công thức 3 yếu tố cốt lõi:</p>
+              <div class="flex flex-col gap-3">
+                <div
+                  class="flex items-center gap-4 bg-slate-800/50 p-3 rounded-lg border-l-4 border-rose-500"
+                >
+                  <i class="fas fa-user text-rose-500"></i>
+                  <div>
+                    <strong class="text-white">Chủ thể</strong><br /><span
+                      class="text-xs text-slate-400"
+                      >Vẽ cái gì? (Túi, Mèo, Xe...)</span
+                    >
+                  </div>
+                </div>
+                <div
+                  class="flex items-center gap-4 bg-slate-800/50 p-3 rounded-lg border-l-4 border-yellow-500"
+                >
+                  <i class="fas fa-paint-brush text-yellow-500"></i>
+                  <div>
+                    <strong class="text-white">Chi tiết</strong><br /><span
+                      class="text-xs text-slate-400"
+                      >Màu sắc, ánh sáng, decor xung quanh</span
+                    >
+                  </div>
+                </div>
+                <div
+                  class="flex items-center gap-4 bg-slate-800/50 p-3 rounded-lg border-l-4 border-blue-500"
+                >
+                  <i class="fas fa-layer-group text-blue-500"></i>
+                  <div>
+                    <strong class="text-white">Phong cách</strong><br /><span
+                      class="text-xs text-slate-400"
+                      >3D, Anime, Realistic, Vintage</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- III. SIMULATIONS -->
+        <div class="space-y-16">
+          <!-- 1. MOCKUP SIMULATION -->
+          <div class="glass-card p-1 border-t-4 border-edu-accent">
+            <div class="bg-slate-900/50 p-6 rounded-b-xl">
+              <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-white">
+                  <i class="fas fa-laptop-code mr-2"></i>Thực hành 1: Tạo Mockup
+                  Túi Tote
+                </h3>
+                <span
+                  class="bg-edu-accent/20 text-edu-accent px-3 py-1 rounded-full text-xs font-bold animate-pulse"
+                  >INTERACTIVE</span
+                >
+              </div>
+
+              <div class="grid md:grid-cols-2 gap-8">
+                <!-- Controls -->
+                <div class="space-y-6">
+                  <div>
+                    <label class="block text-sm text-slate-400 mb-2"
+                      >Màu túi (Context)</label
+                    >
+                    <div class="flex gap-3">
+                      <button
+                        onclick="setMockupColor('beige')"
+                        class="w-12 h-12 rounded-full border-2 border-slate-600 bg-[#E8DCC4] focus:ring-2 focus:ring-white"
+                      ></button>
+                      <button
+                        onclick="setMockupColor('green')"
+                        class="w-12 h-12 rounded-full border-2 border-slate-600 bg-[#15803d] focus:ring-2 focus:ring-white"
+                      ></button>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-sm text-slate-400 mb-2"
+                      >Phong cách (Style)</label
+                    >
+                    <select
+                      id="mockupStyle"
+                      onchange="updateMockup()"
+                      class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-edu-accent"
+                    >
+                      <option value="hoathinh">Hoạt hình (Cartoon)</option>
+                      <option value="3d">3D Render</option>
+                      <option value="that">Ảnh thật (Realistic)</option>
+                    </select>
+                  </div>
+                  <div class="bg-slate-800 p-4 rounded-lg">
+                    <p class="text-xs text-slate-500 uppercase mb-2">
+                      Prompt Generator (AI sẽ đọc dòng này)
+                    </p>
+                    <p
+                      id="mockupPrompt"
+                      class="text-edu-accent font-mono text-sm leading-relaxed"
+                    >
+                      "Túi Tote màu beige, in hình bánh xèo, đặt trên bàn học,
+                      phong cách hoạt hình..."
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Preview -->
+                <div
+                  class="relative h-64 bg-slate-800 rounded-xl overflow-hidden mockup-preview flex items-center justify-center border border-slate-700"
+                >
+                  <div
+                    id="mockupBag"
+                    class="w-32 h-40 bg-[#E8DCC4] rounded-md shadow-2xl relative flex items-center justify-center transition-all duration-500"
+                  >
+                    <div
+                      class="absolute -top-10 w-4 h-20 border-x-4 border-t-4 border-inherit rounded-t-full"
+                    ></div>
+                    <div class="text-center p-2">
+                      <i
+                        class="fas fa-utensils text-2xl text-orange-500 mb-1"
+                      ></i>
+                      <div class="text-[10px] font-bold text-slate-800">
+                        BANH XEO
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="absolute bottom-4 right-4 text-xs text-slate-500 font-mono"
+                  >
+                    Generated by Edumatter AI
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. PHOTO RESTORATION -->
+          <div class="glass-card p-6">
+            <h3 class="text-xl font-bold text-white mb-4">
+              <i class="fas fa-magic mr-2"></i>Thực hành 2: Phục chế ảnh cũ
+              (Gemini)
+            </h3>
+            <p class="mb-4 text-sm text-slate-400">
+              Kéo thanh trượt để xem kết quả phục chế.
+            </p>
+
+            <div class="slider-container" id="restorationSlider">
+              <!-- After Image (Clean) -->
+              <div
+                class="slider-img bg-slate-200 flex items-center justify-center"
+              >
+                <div class="text-center">
+                  <i class="fas fa-user-tie text-6xl text-slate-800"></i>
+                  <p class="mt-2 text-slate-900 font-bold">ẢNH ĐÃ PHỤC CHẾ</p>
+                  <p class="text-xs text-slate-600">Sắc nét, màu tự nhiên</p>
+                </div>
+              </div>
+              <!-- Before Image (Old) - Clapped -->
+              <div
+                class="slider-img bg-sepia-600 flex items-center justify-center absolute top-0 left-0 w-full h-full"
+                id="beforeImage"
+                style="background: #5d4037; clip-path: inset(0 50% 0 0)"
+              >
+                <div class="text-center opacity-50 blur-[1px]">
+                  <i class="fas fa-user-tie text-6xl text-[#d7ccc8]"></i>
+                  <p class="mt-2 text-[#d7ccc8] font-bold">ẢNH CŨ</p>
+                  <p class="text-xs text-[#a1887f]">Mờ, nhiễu hạt, xước</p>
+                  <div
+                    class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/dust.png')] opacity-30"
+                  ></div>
+                </div>
+              </div>
+              <!-- Resizer -->
+              <div class="slider-resizer" id="resizer">
+                <div class="slider-handle">
+                  <i class="fas fa-arrows-alt-h"></i>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="mt-4 bg-slate-800/50 p-3 rounded border-l-4 border-edu-purple"
+            >
+              <strong class="text-edu-purple text-sm">PROMPT MẪU:</strong>
+              <p class="text-sm text-slate-300 italic">
+                "Đóng vai chuyên gia phục chế, giữ nguyên bố cục và khuôn mặt,
+                tô màu tự nhiên và làm nét các chi tiết bị mờ."
+              </p>
+            </div>
+          </div>
+
+          <!-- 3. OCR SIMULATION -->
+          <div class="glass-card p-6">
+            <h3 class="text-xl font-bold text-white mb-6">
+              <i class="fas fa-eye mr-2"></i>Thực hành 3: OCR Ảnh viết tay
+              (ChatGPT Vision)
+            </h3>
+
+            <div class="grid md:grid-cols-2 gap-8">
+              <!-- Input -->
+              <div
+                class="flex flex-col items-center justify-center border-2 border-dashed border-slate-600 rounded-xl p-8 bg-slate-800/30"
+              >
+                <div
+                  class="bg-white text-slate-800 p-4 rounded shadow -rotate-2 w-48 font-handwriting mb-4 text-sm font-serif"
+                >
+                  <p>Sổ tay 08/02</p>
+                  <hr class="border-black my-1" />
+                  <p>- Táo: 5kg x 30k</p>
+                  <p>- Cam: 2kg x 25k</p>
+                  <p>- Lê: 4kg x 40k</p>
+                </div>
+                <button
+                  onclick="runOCR()"
+                  id="ocrBtn"
+                  class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold transition shadow-lg shadow-emerald-500/30"
+                >
+                  <i class="fas fa-bolt mr-2"></i>Trích xuất dữ liệu
+                </button>
+              </div>
+
+              <!-- Output -->
+              <div
+                class="bg-slate-900 border border-slate-700 rounded-xl overflow-hidden relative"
+              >
+                <div
+                  class="bg-slate-800 px-4 py-2 border-b border-slate-700 flex gap-2"
+                >
+                  <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                  <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                  <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                  <span class="ml-2 text-xs text-slate-400"
+                    >Excel_Data.xlsx</span
+                  >
+                </div>
+                <div
+                  id="ocrLoader"
+                  class="hidden absolute inset-0 bg-slate-900/90 z-10 flex flex-col items-center justify-center"
+                >
+                  <div
+                    class="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-500 mb-2"
+                  ></div>
+                  <p class="text-xs text-emerald-400">Analyzing image...</p>
+                </div>
+                <table class="w-full text-sm text-left text-slate-300">
+                  <thead class="text-xs text-slate-400 uppercase bg-slate-800">
+                    <tr>
+                      <th class="px-4 py-3">Mặt hàng</th>
+                      <th class="px-4 py-3">SL</th>
+                      <th class="px-4 py-3">Đơn giá</th>
+                      <th class="px-4 py-3 text-right">Thành tiền</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ocrTableBody">
+                    <!-- JS will populate -->
+                    <tr>
+                      <td
+                        colspan="4"
+                        class="text-center py-10 text-slate-600 italic"
+                      >
+                        Chưa có dữ liệu...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. VIDEO WORKFLOW -->
+          <div class="glass-card p-6 relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-4 opacity-10">
+              <i class="fas fa-video text-9xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-6">
+              4. Workflow: Ảnh → Video (Google AI Studio)
+            </h3>
+
+            <div class="flex flex-col md:flex-row items-center gap-4 mb-8">
+              <div
+                class="bg-slate-800 p-4 rounded-lg text-center border border-slate-600 w-full md:w-auto"
+              >
+                <i class="fas fa-image text-2xl text-blue-400 mb-2"></i>
+                <div class="text-sm font-bold">Bước 1: Tạo Ảnh</div>
+                <div class="text-xs text-slate-400">
+                  Nhất quán nhân vật (ChatGPT)
+                </div>
+              </div>
+              <i class="fas fa-arrow-right text-slate-500 hidden md:block"></i>
+              <i class="fas fa-arrow-down text-slate-500 md:hidden"></i>
+              <div
+                class="bg-slate-800 p-4 rounded-lg text-center border border-slate-600 w-full md:w-auto"
+              >
+                <i class="fas fa-film text-2xl text-rose-400 mb-2"></i>
+                <div class="text-sm font-bold">Bước 2: Veo 2 Model</div>
+                <div class="text-xs text-slate-400">Thêm Motion Prompt</div>
+              </div>
+              <i class="fas fa-arrow-right text-slate-500 hidden md:block"></i>
+              <i class="fas fa-arrow-down text-slate-500 md:hidden"></i>
+              <div
+                class="bg-slate-800 p-4 rounded-lg text-center border border-slate-600 w-full md:w-auto"
+              >
+                <i
+                  class="fas fa-play-circle text-2xl text-emerald-400 mb-2"
+                ></i>
+                <div class="text-sm font-bold">Video 5s</div>
+                <div class="text-xs text-slate-400">Marketing TikTok</div>
+              </div>
+            </div>
+
+            <div class="bg-black/40 p-4 rounded-xl border border-white/10">
+              <div class="flex justify-between items-center mb-3">
+                <strong class="text-rose-400 text-sm"
+                  >MOTION PROMPT VÍ DỤ:</strong
+                >
+                <button
+                  onclick="animateFrog()"
+                  class="text-xs bg-white/10 hover:bg-white/20 px-3 py-1 rounded transition"
+                >
+                  <i class="fas fa-play mr-1"></i> Xem thử
+                </button>
+              </div>
+              <p class="text-slate-300 italic text-sm mb-4">
+                "Chú ếch con ngồi yên, chớp mắt nhẹ, đầu hơi nghiêng tò mò; tia
+                nắng chiếu xuống giếng, bụi sáng lơ lửng chậm rãi"
+              </p>
+
+              <div class="grid grid-cols-3 gap-2">
+                <!-- Simulated Frames -->
+                <div
+                  id="frog1"
+                  class="aspect-square bg-slate-700 rounded overflow-hidden relative group"
+                >
+                  <div
+                    class="absolute inset-0 flex items-center justify-center text-4xl"
+                  >
+                    🐸
+                  </div>
+                  <div
+                    class="absolute bottom-1 left-1 text-[10px] bg-black/50 px-1 rounded"
+                  >
+                    Cảnh 1: Đáy giếng
+                  </div>
+                </div>
+                <div
+                  id="frog2"
+                  class="aspect-square bg-slate-700 rounded overflow-hidden relative group opacity-50"
+                >
+                  <div
+                    class="absolute inset-0 flex items-center justify-center text-4xl"
+                  >
+                    🧗‍♂️
+                  </div>
+                  <div
+                    class="absolute bottom-1 left-1 text-[10px] bg-black/50 px-1 rounded"
+                  >
+                    Cảnh 2: Leo lên
+                  </div>
+                </div>
+                <div
+                  id="frog3"
+                  class="aspect-square bg-slate-700 rounded overflow-hidden relative group opacity-50"
+                >
+                  <div
+                    class="absolute inset-0 flex items-center justify-center text-4xl"
+                  >
+                    🦋
+                  </div>
+                  <div
+                    class="absolute bottom-1 left-1 text-[10px] bg-black/50 px-1 rounded"
+                  >
+                    Cảnh 3: Ngắm hoa
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- V. QUY TRÌNH 5 BƯỚC -->
+        <div class="mt-16">
+          <h3 class="text-2xl font-bold mb-6">
+            V. Quy trình viết Prompt 5 bước
+          </h3>
+          <div class="flex flex-wrap justify-center gap-4">
+            <div
+              class="bg-slate-800 p-4 rounded-lg border-b-4 border-blue-500 w-40"
+            >
+              <span class="text-4xl font-bold text-slate-700">1</span>
+              <div class="font-bold mt-2">Vai trò</div>
+              <div class="text-xs text-slate-400">Nhiếp ảnh gia/Họa sĩ</div>
+            </div>
+            <div
+              class="bg-slate-800 p-4 rounded-lg border-b-4 border-green-500 w-40"
+            >
+              <span class="text-4xl font-bold text-slate-700">2</span>
+              <div class="font-bold mt-2">Sản phẩm</div>
+              <div class="text-xs text-slate-400">Mô tả vật chính</div>
+            </div>
+            <div
+              class="bg-slate-800 p-4 rounded-lg border-b-4 border-yellow-500 w-40"
+            >
+              <span class="text-4xl font-bold text-slate-700">3</span>
+              <div class="font-bold mt-2">Bối cảnh</div>
+              <div class="text-xs text-slate-400">Kể chuyện/Background</div>
+            </div>
+            <div
+              class="bg-slate-800 p-4 rounded-lg border-b-4 border-red-500 w-40"
+            >
+              <span class="text-4xl font-bold text-slate-700">4</span>
+              <div class="font-bold mt-2">Kỹ thuật</div>
+              <div class="text-xs text-slate-400">Góc máy, Tỉ lệ</div>
+            </div>
+            <div
+              class="bg-slate-800 p-4 rounded-lg border-b-4 border-purple-500 w-40"
+            >
+              <span class="text-4xl font-bold text-slate-700">5</span>
+              <div class="font-bold mt-2">Phong cách</div>
+              <div class="text-xs text-slate-400">Mood & Art Style</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <hr class="border-slate-800" />
+
+      <!-- ================================================================================== -->
+      <!-- CHƯƠNG 2 - BÀI 4 -->
+      <!-- ================================================================================== -->
+      <section id="lesson4" class="scroll-mt-24">
+        <div class="flex items-center gap-4 mb-8">
+          <span
+            class="text-6xl font-bold text-white/5 select-none absolute -ml-4 -mt-4"
+            >04</span
+          >
+          <h2 class="text-3xl font-bold text-edu-purple z-10 relative">
+            BÀI 4: SÁNG TẠO ÂM NHẠC & GIỌNG ĐỌC AI (PART 2)
+          </h2>
+        </div>
+
+        <!-- I. MỤC TIÊU -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+          <div class="glass-card p-6 flex items-start gap-4">
+            <div class="bg-purple-500/20 p-3 rounded-lg">
+              <i class="fas fa-music text-purple-400 text-xl"></i>
+            </div>
+            <div>
+              <h3 class="font-bold mb-1">Suno AI Master</h3>
+              <p class="text-sm text-slate-400">
+                Tạo bài hát hoàn chỉnh với Lyrics, Meta-tags và Kỹ thuật tiếng
+                Việt.
+              </p>
+            </div>
+          </div>
+          <div class="glass-card p-6 flex items-start gap-4">
+            <div class="bg-blue-500/20 p-3 rounded-lg">
+              <i class="fas fa-microphone-lines text-blue-400 text-xl"></i>
+            </div>
+            <div>
+              <h3 class="font-bold mb-1">TTS Chuyên Nghiệp</h3>
+              <p class="text-sm text-slate-400">
+                Chuyển văn bản thành giọng đọc tự nhiên trên Google AI Studio.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- II & III. KIẾN THỨC & THỰC HÀNH -->
+        <div class="grid lg:grid-cols-2 gap-12">
+          <!-- Column 1: Suno AI -->
+          <div class="space-y-8">
+            <div
+              class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-white/5 shadow-2xl"
+            >
+              <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-white">
+                  <i class="fas fa-guitar mr-2"></i>Suno AI - Custom Mode
+                </h3>
+                <div class="text-xs bg-slate-700 px-2 py-1 rounded">
+                  50 Credits Left
+                </div>
+              </div>
+
+              <div class="space-y-4">
+                <div>
+                  <label
+                    class="text-xs text-slate-400 uppercase font-bold mb-1 block"
+                    >Lyrics (Lời bài hát)</label
+                  >
+                  <textarea
+                    id="sunoLyrics"
+                    class="w-full h-32 bg-slate-950 border border-slate-700 rounded-lg p-3 text-sm text-slate-300 font-mono focus:border-edu-purple focus:outline-none"
+                    placeholder="[Intro]&#10;Piano nhẹ nhàng...&#10;&#10;[Verse 1]&#10;Bước chân nhẹ trên phố đông..."
+                  ></textarea>
+                  <div class="flex gap-2 mt-2 overflow-x-auto pb-2">
+                    <span
+                      class="text-[10px] bg-slate-700 hover:bg-edu-purple cursor-pointer px-2 py-1 rounded transition"
+                      onclick="addTag('[Intro]')"
+                      >[Intro]</span
+                    >
+                    <span
+                      class="text-[10px] bg-slate-700 hover:bg-edu-purple cursor-pointer px-2 py-1 rounded transition"
+                      onclick="addTag('[Chorus]')"
+                      >[Chorus]</span
+                    >
+                    <span
+                      class="text-[10px] bg-slate-700 hover:bg-edu-purple cursor-pointer px-2 py-1 rounded transition"
+                      onclick="addTag('[Verse]')"
+                      >[Verse]</span
+                    >
+                    <span
+                      class="text-[10px] bg-slate-700 hover:bg-edu-purple cursor-pointer px-2 py-1 rounded transition"
+                      onclick="addTag('[Outro]')"
+                      >[Outro]</span
+                    >
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    class="text-xs text-slate-400 uppercase font-bold mb-1 block"
+                    >Style of Music</label
+                  >
+                  <input
+                    type="text"
+                    id="sunoStyle"
+                    class="w-full bg-slate-950 border border-slate-700 rounded-lg p-3 text-sm"
+                    placeholder="V-Pop, Male Voice, 128 BPM, Happy"
+                  />
+                </div>
+
+                <button
+                  onclick="createSong()"
+                  id="createBtn"
+                  class="w-full bg-edu-purple hover:bg-purple-500 text-white font-bold py-3 rounded-lg transition flex justify-center items-center gap-2"
+                >
+                  <span>Create Song</span> <i class="fas fa-bolt"></i>
+                </button>
+
+                <!-- Audio Player Simulation -->
+                <div
+                  id="audioPlayer"
+                  class="hidden mt-4 bg-slate-800 rounded-lg p-3 flex items-center gap-4 border border-slate-700"
+                >
+                  <div
+                    class="w-10 h-10 rounded bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center"
+                  >
+                    <i class="fas fa-music text-white"></i>
+                  </div>
+                  <div class="flex-1">
+                    <div class="text-sm font-bold text-white">
+                      Bánh Mì Sài Gòn (AI Ver)
+                    </div>
+                    <div class="text-xs text-slate-400">Suno AI • 03:24</div>
+                    <div
+                      class="w-full h-1 bg-slate-600 rounded mt-2 overflow-hidden"
+                    >
+                      <div class="h-full bg-edu-purple w-1/3"></div>
+                    </div>
+                  </div>
+                  <div class="flex gap-1 items-end h-6" id="visualizer">
+                    <div class="bar"></div>
+                    <div class="bar" style="animation-delay: 0.1s"></div>
+                    <div class="bar" style="animation-delay: 0.2s"></div>
+                    <div class="bar" style="animation-delay: 0.3s"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Kỹ thuật tiếng Việt -->
+            <div class="glass-card p-6">
+              <h4 class="text-lg font-bold text-edu-purple mb-3">
+                Kỹ thuật Tiếng Việt
+              </h4>
+              <ul class="space-y-3 text-sm">
+                <li class="flex items-start gap-3">
+                  <i class="fas fa-check text-green-400 mt-1"></i>
+                  <div>
+                    <strong>VIẾT HOA:</strong> Để AI hét to/nhấn mạnh.
+                    <br /><span class="text-slate-500"
+                      >VD: "AI BÁNH MÌ NÓNG ĐÊ"</span
+                    >
+                  </div>
+                </li>
+                <li class="flex items-start gap-3">
+                  <i class="fas fa-check text-green-400 mt-1"></i>
+                  <div>
+                    <strong>Phiên âm:</strong> Sửa lỗi đọc sai. <br /><span
+                      class="text-slate-500"
+                      >VD: "giòn" -> "zòn", "đê" -> "đêê" (kéo dài)</span
+                    >
+                  </div>
+                </li>
+                <li class="flex items-start gap-3">
+                  <i class="fas fa-check text-green-400 mt-1"></i>
+                  <div>
+                    <strong>Dấu câu:</strong> Dùng dấu phẩy (,) để ngắt nhịp
+                    đúng chỗ.
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Column 2: TTS & Theory -->
+          <div class="space-y-8">
+            <div class="glass-card p-6">
+              <h3 class="text-xl font-bold text-white mb-4">
+                <i class="fas fa-list-check mr-2"></i>Quy trình 3 vòng
+                (Iteration)
+              </h3>
+              <div class="relative pl-6 border-l-2 border-slate-700 space-y-6">
+                <div class="relative">
+                  <span
+                    class="absolute -left-[31px] bg-slate-800 border border-slate-600 w-6 h-6 rounded-full flex items-center justify-center text-xs"
+                    >1</span
+                  >
+                  <h4 class="font-bold text-slate-200">Phác thảo</h4>
+                  <p class="text-sm text-slate-400">
+                    Tạo 2-4 bản nháp để chọn Vibe.
+                  </p>
+                </div>
+                <div class="relative">
+                  <span
+                    class="absolute -left-[31px] bg-slate-800 border border-slate-600 w-6 h-6 rounded-full flex items-center justify-center text-xs"
+                    >2</span
+                  >
+                  <h4 class="font-bold text-slate-200">Chẩn đoán</h4>
+                  <p class="text-sm text-slate-400">
+                    Nghe & soi lỗi (Tempo, độ rõ chữ, độ dày nhạc cụ).
+                  </p>
+                </div>
+                <div class="relative">
+                  <span
+                    class="absolute -left-[31px] bg-slate-800 border border-edu-purple w-6 h-6 rounded-full flex items-center justify-center text-xs bg-edu-purple text-white"
+                    >3</span
+                  >
+                  <h4 class="font-bold text-edu-purple">Hoàn thiện</h4>
+                  <p class="text-sm text-slate-400">
+                    Dùng tính năng Extend hoặc Remix để chốt bài.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- TTS Checklist -->
+            <div class="bg-white/5 p-6 rounded-xl border border-white/10">
+              <h3 class="text-lg font-bold mb-4">
+                TTS Quality Check (Google AI Studio)
+              </h3>
+              <p class="text-xs text-slate-400 mb-4">
+                Click để kiểm tra chất lượng file Audio:
+              </p>
+
+              <div class="space-y-2">
+                <label
+                  class="flex items-center gap-3 p-3 bg-slate-800 rounded cursor-pointer hover:bg-slate-750 transition"
+                >
+                  <input
+                    type="checkbox"
+                    class="w-5 h-5 accent-edu-accent"
+                    onchange="updateTTSProgress()"
+                  />
+                  <span class="text-sm"
+                    >Phát âm rõ chữ (Clear articulation)</span
+                  >
+                </label>
+                <label
+                  class="flex items-center gap-3 p-3 bg-slate-800 rounded cursor-pointer hover:bg-slate-750 transition"
+                >
+                  <input
+                    type="checkbox"
+                    class="w-5 h-5 accent-edu-accent"
+                    onchange="updateTTSProgress()"
+                  />
+                  <span class="text-sm">Ngắt nghỉ đúng cụm nghĩa</span>
+                </label>
+                <label
+                  class="flex items-center gap-3 p-3 bg-slate-800 rounded cursor-pointer hover:bg-slate-750 transition"
+                >
+                  <input
+                    type="checkbox"
+                    class="w-5 h-5 accent-edu-accent"
+                    onchange="updateTTSProgress()"
+                  />
+                  <span class="text-sm">Giọng ổn định, không bị robot</span>
+                </label>
+                <label
+                  class="flex items-center gap-3 p-3 bg-slate-800 rounded cursor-pointer hover:bg-slate-750 transition"
+                >
+                  <input
+                    type="checkbox"
+                    class="w-5 h-5 accent-edu-accent"
+                    onchange="updateTTSProgress()"
+                  />
+                  <span class="text-sm">Nhấn đúng từ khóa quan trọng</span>
+                </label>
+              </div>
+              <div class="mt-4 h-2 bg-slate-700 rounded-full overflow-hidden">
+                <div
+                  id="ttsProgress"
+                  class="h-full bg-emerald-500 w-0 transition-all duration-500"
+                ></div>
+              </div>
+              <p id="ttsStatus" class="text-xs text-center mt-2 text-slate-500">
+                0/4 Tiêu chí đạt
+              </p>
+            </div>
+
+            <!-- Lỗi sai thường gặp -->
+            <div class="grid grid-cols-2 gap-4">
+              <div
+                class="bg-red-500/10 border border-red-500/20 p-4 rounded-lg"
+              >
+                <i class="fas fa-triangle-exclamation text-red-400 mb-2"></i>
+                <h4 class="font-bold text-red-400 text-sm">Copyright</h4>
+                <p class="text-xs text-slate-400">
+                  Không dùng tên ca sĩ thật (Sơn Tùng, Mono...).
+                </p>
+              </div>
+              <div
+                class="bg-yellow-500/10 border border-yellow-500/20 p-4 rounded-lg"
+              >
+                <i class="fas fa-link text-yellow-400 mb-2"></i>
+                <h4 class="font-bold text-yellow-400 text-sm">Link Only</h4>
+                <p class="text-xs text-slate-400">
+                  Cẩn thận khi share, khó thu hồi.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VII. BÀI TẬP PHÂN CẤP -->
+      <section class="mt-20">
+        <h2 class="text-3xl font-bold text-center mb-10 text-white">
+          BÀI TẬP THỰC HÀNH
+        </h2>
+        <div class="space-y-4">
+          <!-- Level 1 -->
+          <div class="glass-card overflow-hidden accordion-item">
+            <button
+              class="w-full p-6 flex justify-between items-center text-left focus:outline-none"
+              onclick="toggleAccordion(this)"
+            >
+              <div>
+                <span
+                  class="text-xs font-bold bg-blue-500 text-white px-2 py-1 rounded mr-2"
+                  >NHẬN BIẾT</span
+                >
+                <span class="font-bold text-lg">Mockup & Meta-tags</span>
+              </div>
+              <i
+                class="fas fa-chevron-down text-slate-400 transition-transform duration-300"
+              ></i>
+            </button>
+            <div class="accordion-content bg-slate-800/50 px-6">
+              <div class="py-4 border-t border-slate-700">
+                <p class="mb-4">
+                  1. Mockup là gì và có lợi ích gì cho việc bán hàng
+                  pre-order?<br />2. Các thẻ [Intro], [Chorus] có tác dụng gì?
+                </p>
+                <button
+                  onclick="
+                    showHint(
+                      this,
+                      'Mockup là ảnh giả lập sản phẩm thật. Giúp bán trước (pre-order) không lo tồn kho. Thẻ [Chorus] giúp AI biết đó là điệp khúc cần hát cao trào.',
+                    )
+                  "
+                  class="text-sm text-edu-accent hover:underline"
+                >
+                  <i class="far fa-lightbulb mr-1"></i>Gợi ý
+                </button>
+                <p
+                  class="hidden mt-2 text-emerald-400 text-sm bg-slate-900 p-2 rounded border border-emerald-500/30"
+                ></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Level 2 -->
+          <div class="glass-card overflow-hidden accordion-item">
+            <button
+              class="w-full p-6 flex justify-between items-center text-left focus:outline-none"
+              onclick="toggleAccordion(this)"
+            >
+              <div>
+                <span
+                  class="text-xs font-bold bg-emerald-500 text-white px-2 py-1 rounded mr-2"
+                  >THÔNG HIỂU</span
+                >
+                <span class="font-bold text-lg">Tại sao cần Iteration?</span>
+              </div>
+              <i
+                class="fas fa-chevron-down text-slate-400 transition-transform duration-300"
+              ></i>
+            </button>
+            <div class="accordion-content bg-slate-800/50 px-6">
+              <div class="py-4 border-t border-slate-700">
+                <p class="mb-4">
+                  Tại sao nên tạo 2-3 phiên bản audio cùng lúc thay vì chốt ngay
+                  bản đầu tiên?
+                </p>
+                <button
+                  onclick="
+                    showHint(
+                      this,
+                      'Vì AI có tính ngẫu nhiên (randomness). Tạo nhiều bản giúp ta so sánh được Melody nào bắt tai hơn để phát triển tiếp.',
+                    )
+                  "
+                  class="text-sm text-edu-accent hover:underline"
+                >
+                  <i class="far fa-lightbulb mr-1"></i>Gợi ý
+                </button>
+                <p
+                  class="hidden mt-2 text-emerald-400 text-sm bg-slate-900 p-2 rounded border border-emerald-500/30"
+                ></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Level 3 -->
+          <div class="glass-card overflow-hidden accordion-item">
+            <button
+              class="w-full p-6 flex justify-between items-center text-left focus:outline-none"
+              onclick="toggleAccordion(this)"
+            >
+              <div>
+                <span
+                  class="text-xs font-bold bg-yellow-500 text-white px-2 py-1 rounded mr-2"
+                  >VẬN DỤNG</span
+                >
+                <span class="font-bold text-lg"
+                  >OCR Sổ tay & Lyrics Môi trường</span
+                >
+              </div>
+              <i
+                class="fas fa-chevron-down text-slate-400 transition-transform duration-300"
+              ></i>
+            </button>
+            <div class="accordion-content bg-slate-800/50 px-6">
+              <div class="py-4 border-t border-slate-700">
+                <p class="mb-4">
+                  Nhiệm vụ: Chụp ảnh danh sách mua sắm và dùng AI chuyển thành
+                  Excel. Sau đó viết 1 đoạn Lyrics về "Bảo vệ môi trường" có
+                  dùng thẻ [Verse].
+                </p>
+                <div
+                  class="bg-slate-900 p-3 rounded text-xs font-mono text-slate-400"
+                >
+                  [Verse 1]<br />
+                  Rừng xanh đang khóc than,<br />
+                  Dòng sông đen ngập tràn...
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Level 4 -->
+          <div class="glass-card overflow-hidden accordion-item">
+            <button
+              class="w-full p-6 flex justify-between items-center text-left focus:outline-none"
+              onclick="toggleAccordion(this)"
+            >
+              <div>
+                <span
+                  class="text-xs font-bold bg-rose-500 text-white px-2 py-1 rounded mr-2"
+                  >VẬN DỤNG CAO</span
+                >
+                <span class="font-bold text-lg"
+                  >Video Quảng Cáo & Bài Hát Sinh Nhật</span
+                >
+              </div>
+              <i
+                class="fas fa-chevron-down text-slate-400 transition-transform duration-300"
+              ></i>
+            </button>
+            <div class="accordion-content bg-slate-800/50 px-6">
+              <div class="py-4 border-t border-slate-700">
+                <p class="mb-4">
+                  Kết hợp tất cả kỹ năng: Tạo bài hát Chúc mừng sinh nhật (có
+                  phiên âm tiếng Việt chuẩn) + Tạo Video 5s quảng cáo túi Tote.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER (EXACT COPY AS REQUESTED) -->
+    <footer>
+      <div class="footer-waves"></div>
+      <div class="footer-grid">
+        <div class="footer-brand" data-aos="fade-right">
+          <h2>EDUMATTER</h2>
+          <p style="color: #94a3b8; line-height: 1.8">
+            Kiến tạo môi trường học tập cảm xúc, nơi tri thức được số hóa và
+            truyền tải đầy cảm hứng.
+          </p>
+          <div style="display: flex; gap: 15px; margin-top: 30px">
+            <a href="https://www.facebook.com/ducnt214" class="icon-btn"
+              ><i class="fab fa-facebook" alt="facebook"></i
+            ></a>
+            <a href="https://github.com/ducnt2104" class="icon-btn" alt="github"
+              ><i class="fab fa-github"></i
+            ></a>
+            <a
+              href="https://www.tiktok.com/@ktbtcthm210"
+              class="icon-btn"
+              alt="tiktok"
+              ><i class="fab fa-tiktok"></i
+            ></a>
+          </div>
+        </div>
+        <div class="footer-links" data-aos="fade-up">
+          <h3>Liên hệ nhanh</h3>
+          <div class="contact-item">
+            <i class="fas fa-envelope"></i>
+            <span>ducnt21042010@gmail.com</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-phone"></i>
+            <span>034 226 6204</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-location-dot"></i>
+            <span>THPT Tôn Đức Thắng, Đồng Nai</span>
+          </div>
+        </div>
+        <div class="footer-links" data-aos="fade-left">
+          <h4>Đội ngũ DNT</h4>
+          <p style="color: #94a3b8">
+            "Sáng tạo không ngừng - Vươn tầm tri thức"
+          </p>
+          <div
+            style="
+              margin-top: 20px;
+              padding: 15px;
+              background: rgba(255, 255, 255, 0.05);
+              border-radius: 15px;
+            "
+          >
+            <p style="font-size: 0.8rem; color: #fff">
+              Dự án được phát triển bởi các thành viên đam mê công nghệ tại Việt
+              Nam.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="copyright">
+        <p>
+          © 2024 EDUMATTER Educational Ecosystem. Designed with
+          <i class="fas fa-heart" style="color: #ef4444"></i> by DNT Team.
+        </p>
+      </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script>
+      // 1. SCROLL PROGRESS
+      window.onscroll = function () {
+        let winScroll =
+          document.body.scrollTop || document.documentElement.scrollTop;
+        let height =
+          document.documentElement.scrollHeight -
+          document.documentElement.clientHeight;
+        let scrolled = (winScroll / height) * 100;
+        document.getElementById("progress-bar").style.width = scrolled + "%";
+      };
+
+      // 2. MOCKUP SIMULATION
+      let currentMockupColor = "beige";
+      let currentMockupStyle = "hoathinh";
+
+      const colors = {
+        beige: "#E8DCC4",
+        green: "#15803d",
+      };
+
+      function setMockupColor(color) {
+        currentMockupColor = color;
+        document.getElementById("mockupBag").style.backgroundColor =
+          colors[color];
+        // Visual feedback on selected color
+        updateMockup();
+      }
+
+      function updateMockup() {
+        currentMockupStyle = document.getElementById("mockupStyle").value;
+        const promptBox = document.getElementById("mockupPrompt");
+        const bag = document.getElementById("mockupBag");
+
+        // Generate Prompt Text
+        let colorText =
+          currentMockupColor === "beige" ? "màu beige" : "màu xanh lá";
+        let styleText = "";
+        if (currentMockupStyle === "hoathinh")
+          styleText = "phong cách hoạt hình, nét vẽ vector";
+        if (currentMockupStyle === "3d")
+          styleText = "phong cách 3D render, ánh sáng studio, bóng đổ mềm";
+        if (currentMockupStyle === "that")
+          styleText = "ảnh thật (photorealistic), chất liệu vải canvas rõ nét";
+
+        promptBox.innerText = `"Túi Tote ${colorText}, in hình bánh xèo, đặt trên bàn học, ${styleText}..."`;
+
+        // Visual Simulation changes
+        if (currentMockupStyle === "3d") {
+          bag.style.boxShadow =
+            "20px 20px 60px #0f1218, -20px -20px 60px #1e2430";
+          bag.style.transform = "perspective(500px) rotateY(10deg)";
+        } else if (currentMockupStyle === "that") {
+          bag.style.boxShadow = "5px 5px 15px rgba(0,0,0,0.5)";
+          bag.style.transform = "none";
+          bag.style.backgroundImage =
+            "url('https://www.transparenttextures.com/patterns/canvas-orange.png')";
+        } else {
+          // Cartoon
+          bag.style.boxShadow = "8px 8px 0px rgba(0,0,0,0.8)";
+          bag.style.transform = "none";
+          bag.style.backgroundImage = "none";
+          bag.style.border = "2px solid black";
+        }
+      }
+
+      // 3. PHOTO RESTORATION SLIDER
+      const slider = document.getElementById("restorationSlider");
+      const beforeImage = document.getElementById("beforeImage");
+      const resizer = document.getElementById("resizer");
+      let isResizing = false;
+
+      slider.addEventListener("mousedown", (e) => {
+        isResizing = true;
+      });
+      window.addEventListener("mouseup", (e) => {
+        isResizing = false;
+      });
+      slider.addEventListener("mousemove", (e) => {
+        if (!isResizing) return;
+        const rect = slider.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const percent = (x / rect.width) * 100;
+
+        if (percent >= 0 && percent <= 100) {
+          beforeImage.style.clipPath = `inset(0 ${100 - percent}% 0 0)`;
+          resizer.style.left = percent + "%";
+        }
+      });
+
+      // Touch support for mobile
+      slider.addEventListener("touchstart", (e) => {
+        isResizing = true;
+      });
+      window.addEventListener("touchend", (e) => {
+        isResizing = false;
+      });
+      slider.addEventListener("touchmove", (e) => {
+        if (!isResizing) return;
+        const rect = slider.getBoundingClientRect();
+        const x = e.touches[0].clientX - rect.left;
+        const percent = (x / rect.width) * 100;
+        if (percent >= 0 && percent <= 100) {
+          beforeImage.style.clipPath = `inset(0 ${100 - percent}% 0 0)`;
+          resizer.style.left = percent + "%";
+        }
+      });
+
+      // 4. OCR SIMULATION
+      function runOCR() {
+        const btn = document.getElementById("ocrBtn");
+        const loader = document.getElementById("ocrLoader");
+        const tbody = document.getElementById("ocrTableBody");
+
+        // UI States
+        btn.disabled = true;
+        btn.innerHTML =
+          '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+        loader.classList.remove("hidden");
+
+        setTimeout(() => {
+          loader.classList.add("hidden");
+          btn.innerHTML = '<i class="fas fa-check mr-2"></i>Hoàn thành';
+          btn.classList.replace("bg-emerald-500", "bg-slate-600");
+
+          // Generated Data
+          const data = [
+            { item: "Táo", sl: 5, price: 30000 },
+            { item: "Cam", sl: 2, price: 25000 },
+            { item: "Lê", sl: 4, price: 40000 },
+          ];
+
+          tbody.innerHTML = "";
+          let totalBill = 0;
+
+          data.forEach((row, index) => {
+            const thanhTien = row.sl * row.price;
+            totalBill += thanhTien;
+            setTimeout(() => {
+              tbody.innerHTML += `
+                            <tr class="border-b border-slate-700 animate-[fadeIn_0.5s_ease-out]">
+                                <td class="px-4 py-3 font-bold text-white">${row.item}</td>
+                                <td class="px-4 py-3">${row.sl} kg</td>
+                                <td class="px-4 py-3 text-slate-400">${row.price.toLocaleString()}đ</td>
+                                <td class="px-4 py-3 text-right font-mono text-emerald-400">${thanhTien.toLocaleString()}đ</td>
+                            </tr>
+                        `;
+            }, index * 300);
+          });
+
+          // Total Row
+          setTimeout(() => {
+            tbody.innerHTML += `
+                        <tr class="bg-slate-800/50">
+                            <td colspan="3" class="px-4 py-3 font-bold text-right text-white">TỔNG CỘNG:</td>
+                            <td class="px-4 py-3 text-right font-bold text-xl text-edu-accent">${totalBill.toLocaleString()}đ</td>
+                        </tr>
+                    `;
+          }, 1000);
+        }, 1500);
+      }
+
+      // 5. VIDEO ANIMATION SIMULATION
+      function animateFrog() {
+        const frogs = [
+          document.getElementById("frog1"),
+          document.getElementById("frog2"),
+          document.getElementById("frog3"),
+        ];
+        let current = 0;
+
+        // Reset
+        frogs.forEach((f) => {
+          f.classList.add("opacity-50");
+          f.classList.remove("border-2", "border-rose-500");
+        });
+
+        const interval = setInterval(() => {
+          // Dim all
+          frogs.forEach((f) => {
+            f.classList.add("opacity-50");
+            f.classList.remove("border-2", "border-rose-500");
+          });
+
+          // Highlight current
+          frogs[current].classList.remove("opacity-50");
+          frogs[current].classList.add(
+            "border-2",
+            "border-rose-500",
+            "scale-105",
+            "transition",
+          );
+
+          current++;
+          if (current >= 3) {
+            clearInterval(interval);
+            // Reset after animation finishes
+            setTimeout(() => {
+              frogs.forEach((f) =>
+                f.classList.remove("scale-105", "border-2", "border-rose-500"),
+              );
+              frogs[0].classList.remove("opacity-50");
+            }, 1000);
+          }
+        }, 800);
+      }
+
+      // 6. SUNO & TTS
+      function addTag(tag) {
+        const textarea = document.getElementById("sunoLyrics");
+        textarea.value += tag + "\n";
+        textarea.focus();
+      }
+
+      function createSong() {
+        const btn = document.getElementById("createBtn");
+        const player = document.getElementById("audioPlayer");
+
+        if (document.getElementById("sunoLyrics").value === "") {
+          alert("Vui lòng nhập Lyrics trước!");
+          return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML =
+          '<i class="fas fa-spinner fa-spin mr-2"></i>Generating...';
+
+        setTimeout(() => {
+          btn.innerHTML = 'Create Song <i class="fas fa-bolt"></i>';
+          btn.disabled = false;
+          player.classList.remove("hidden");
+          player.classList.add("animate-[fadeIn_0.5s_ease-out]");
+        }, 2000);
+      }
+
+      function updateTTSProgress() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        const checkedCount = Array.from(checkboxes).filter(
+          (cb) => cb.checked,
+        ).length;
+        const progress = document.getElementById("ttsProgress");
+        const status = document.getElementById("ttsStatus");
+
+        const percent = (checkedCount / 4) * 100;
+        progress.style.width = percent + "%";
+        status.innerText = `${checkedCount}/4 Tiêu chí đạt`;
+
+        if (checkedCount === 4) {
+          status.innerText = "TUYỆT VỜI! SẴN SÀNG XUẤT BẢN";
+          status.classList.add("text-emerald-400", "font-bold");
+        }
+      }
+
+      // 7. ACCORDION LOGIC
+      function toggleAccordion(button) {
+        const item = button.parentElement;
+        item.classList.toggle("accordion-active");
+      }
+
+      function showHint(btn, text) {
+        const p = btn.nextElementSibling;
+        p.innerText = text;
+        p.classList.remove("hidden");
+        btn.classList.add("hidden");
+      }
+    </script>
+  </body>
+</html>

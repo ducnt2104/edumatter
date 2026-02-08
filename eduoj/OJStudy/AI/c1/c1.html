@@ -1,0 +1,1833 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Fundamentals & Prompt Engineering | EDUMATTER</title>
+    <link rel="icon" href="../../../../favicon/eduoj.svg" />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+    <style>
+      :root {
+        --bg-dark: #0f172a;
+        --bg-card: #1e293b;
+        --primary: #3b82f6;
+        --accent: #8b5cf6;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --text-light: #f8fafc;
+        --text-gray: #94a3b8;
+        --font-heading: "Space Grotesk", sans-serif;
+        --font-body: "Inter", sans-serif;
+        --font-code: "JetBrains Mono", monospace;
+
+        /* Footer variables required by mandatory footer */
+        --footer-bg: #0b1120;
+        --footer-text: #94a3b8;
+        --p-primary: #3b82f6;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: var(--font-body);
+        background-color: var(--bg-dark);
+        color: var(--text-light);
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar {
+        width: 10px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg-dark);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--bg-card);
+        border-radius: 5px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--primary);
+      }
+
+      /* Utility Classes */
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 20px;
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-light);
+        text-decoration: none;
+        border-radius: 30px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        margin-top: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .btn-back:hover {
+        background: var(--primary);
+        transform: translateX(-5px);
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: var(--font-heading);
+      }
+
+      .highlight {
+        color: var(--primary);
+        font-weight: 700;
+      }
+
+      .gradient-text {
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      /* Sections */
+      section {
+        padding: 60px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .section-title {
+        font-size: 2.5rem;
+        margin-bottom: 40px;
+        text-align: center;
+        position: relative;
+      }
+
+      .section-title::after {
+        content: "";
+        display: block;
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        margin: 15px auto 0;
+        border-radius: 2px;
+      }
+
+      /* --- COMPONENTS & SIMULATIONS --- */
+
+      /* Cards */
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+      }
+
+      .feature-card {
+        background: var(--bg-card);
+        padding: 25px;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(59, 130, 246, 0.15);
+        border-color: var(--primary);
+      }
+
+      .feature-card i {
+        font-size: 2rem;
+        color: var(--primary);
+        margin-bottom: 15px;
+        display: block;
+      }
+
+      /* Comparison Table (Google vs AI) */
+      .comparison-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        margin: 40px 0;
+      }
+
+      .comparison-col {
+        background: rgba(255, 255, 255, 0.03);
+        padding: 30px;
+        border-radius: 20px;
+        text-align: center;
+        transition: 0.3s;
+      }
+
+      .comparison-col.google {
+        border-top: 5px solid var(--warning);
+      }
+      .comparison-col.ai {
+        border-top: 5px solid var(--accent);
+      }
+
+      .comparison-col:hover {
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      /* LLM Simulation (Next Token) */
+      .llm-sim-container {
+        background: #000;
+        border-radius: 12px;
+        padding: 30px;
+        font-family: var(--font-code);
+        margin: 30px 0;
+        border: 1px solid #333;
+        position: relative;
+      }
+
+      .llm-sim-text {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+      }
+
+      .token-btn {
+        background: var(--bg-card);
+        border: 1px solid var(--primary);
+        color: var(--primary);
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-right: 10px;
+        transition: 0.2s;
+        font-family: var(--font-code);
+      }
+
+      .token-btn:hover {
+        background: var(--primary);
+        color: white;
+      }
+
+      /* Dice Rule Simulation */
+      .dice-sim {
+        text-align: center;
+        margin: 20px 0;
+      }
+      .dice-btn {
+        background: linear-gradient(135deg, var(--warning), #f97316);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        font-weight: bold;
+        box-shadow: 0 5px 15px rgba(245, 158, 11, 0.4);
+        transition: 0.2s;
+      }
+      .dice-btn:active {
+        transform: scale(0.95);
+      }
+      .dice-result {
+        margin-top: 20px;
+        min-height: 60px;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        font-style: italic;
+      }
+
+      /* Pilot Co-Pilot Slider */
+      .slider-container {
+        background: var(--bg-card);
+        padding: 30px;
+        border-radius: 15px;
+        margin-top: 20px;
+      }
+      .range-slider {
+        width: 100%;
+        height: 10px;
+        background: #334155;
+        border-radius: 5px;
+        outline: none;
+        -webkit-appearance: none;
+      }
+      .range-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 25px;
+        height: 25px;
+        background: var(--primary);
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 0 10px var(--primary);
+      }
+      .slider-labels {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+        font-weight: 600;
+      }
+
+      /* Ethics Checklist */
+      .checklist-item {
+        display: flex;
+        align-items: center;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+      .checklist-item:hover {
+        background: rgba(239, 68, 68, 0.2);
+      }
+      .checklist-item.checked {
+        background: rgba(16, 185, 129, 0.1);
+        border-color: var(--success);
+      }
+      .checklist-item i {
+        margin-right: 15px;
+        font-size: 1.2rem;
+      }
+
+      /* Exercise Accordion */
+      .accordion {
+        margin-top: 20px;
+      }
+      .accordion-item {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        margin-bottom: 10px;
+        overflow: hidden;
+      }
+      .accordion-header {
+        background: var(--bg-card);
+        padding: 15px 20px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 600;
+      }
+      .accordion-body {
+        padding: 0 20px;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+        background: rgba(0, 0, 0, 0.2);
+      }
+      .accordion-body.active {
+        padding: 20px;
+        max-height: 500px;
+      }
+
+      /* LESSON 2 SPECIFIC */
+      .ai-ecosystem {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        justify-content: center;
+      }
+      .ai-tool-chip {
+        background: #334155;
+        padding: 10px 20px;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: 0.3s;
+        border: 1px solid transparent;
+      }
+      .ai-tool-chip:hover,
+      .ai-tool-chip.active {
+        background: var(--primary);
+        border-color: #fff;
+        transform: scale(1.05);
+      }
+
+      /* Prompt Builder Lab */
+      .prompt-lab {
+        background: #1e293b;
+        border: 1px solid #475569;
+        border-radius: 16px;
+        padding: 30px;
+        margin-top: 30px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      }
+      .lab-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+      }
+      .input-group {
+        display: flex;
+        flex-direction: column;
+      }
+      .input-group label {
+        margin-bottom: 8px;
+        color: var(--primary);
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+      .input-group textarea,
+      .input-group select {
+        background: #0f172a;
+        border: 1px solid #334155;
+        color: #fff;
+        padding: 12px;
+        border-radius: 8px;
+        font-family: var(--font-body);
+        resize: vertical;
+      }
+      .prompt-result {
+        margin-top: 25px;
+        background: #000;
+        padding: 20px;
+        border-radius: 8px;
+        border-left: 4px solid var(--success);
+        font-family: var(--font-code);
+        min-height: 100px;
+      }
+      .btn-generate {
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 20px;
+        width: 100%;
+        transition: 0.3s;
+      }
+      .btn-generate:hover {
+        opacity: 0.9;
+        letter-spacing: 1px;
+      }
+
+      /* Real World Gallery */
+      .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+      }
+      .gallery-item {
+        position: relative;
+        height: 150px;
+        background: #334155;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        cursor: pointer;
+      }
+      .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.6;
+        transition: 0.3s;
+      }
+      .gallery-item:hover img {
+        opacity: 0.3;
+        transform: scale(1.1);
+      }
+      .gallery-caption {
+        position: absolute;
+        bottom: -100%;
+        left: 0;
+        width: 100%;
+        padding: 10px;
+        background: rgba(0, 0, 0, 0.8);
+        transition: 0.3s;
+        text-align: center;
+        font-size: 0.85rem;
+      }
+      .gallery-item:hover .gallery-caption {
+        bottom: 0;
+      }
+      .gallery-icon {
+        position: absolute;
+        font-size: 2rem;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      /* Persona Flowchart */
+      .flowchart {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        margin: 40px 0;
+        position: relative;
+      }
+      .flow-step {
+        background: var(--bg-card);
+        padding: 20px;
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border: 2px solid var(--primary);
+        z-index: 2;
+        text-align: center;
+        box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+      }
+      .flow-step h4 {
+        font-size: 0.9rem;
+        margin-top: 5px;
+      }
+      .flow-line {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--text-gray);
+        z-index: 1;
+        transform: translateY(-50%);
+      }
+
+      @media (max-width: 768px) {
+        .comparison-wrapper {
+          grid-template-columns: 1fr;
+        }
+        .flowchart {
+          flex-direction: column;
+          gap: 40px;
+        }
+        .flow-line {
+          width: 2px;
+          height: 100%;
+          left: 50%;
+          top: 0;
+          transform: translateX(-50%);
+        }
+      }
+
+      /* Paste Mandatory CSS Here */
+      footer {
+        background: var(--footer-bg);
+        color: var(--footer-text);
+        padding: 100px 5% 40px;
+        position: relative;
+        overflow: hidden;
+        -webkit-transition:
+          background-color 0.8s ease,
+          color 0.8s ease;
+        -o-transition:
+          background-color 0.8s ease,
+          color 0.8s ease;
+        transition:
+          background-color 0.8s ease,
+          color 0.8s ease;
+        margin-top: 100px; /* Added spacing from content */
+      }
+
+      .footer-waves {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        background: var(--footer-bg);
+        -webkit-clip-path: polygon(
+          0% 45%,
+          16% 44%,
+          33% 50%,
+          54% 60%,
+          70% 61%,
+          84% 59%,
+          100% 52%,
+          100% 100%,
+          0% 100%
+        );
+        clip-path: polygon(
+          0% 45%,
+          16% 44%,
+          33% 50%,
+          54% 60%,
+          70% 61%,
+          84% 59%,
+          100% 52%,
+          100% 100%,
+          0% 100%
+        );
+        -webkit-transition: background-color 0.8s;
+        -o-transition: background-color 0.8s;
+        transition: background-color 0.8s;
+      }
+
+      .footer-grid {
+        display: -ms-grid;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 60px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .footer-brand h2 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 2rem;
+        margin-bottom: 20px;
+        color: white;
+      }
+
+      .footer-links h4,
+      h3 {
+        margin-bottom: 25px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--p-primary);
+      }
+
+      .contact-item {
+        margin-bottom: 15px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        gap: 15px;
+        color: #94a3b8;
+        -webkit-transition: 0.3s;
+        -o-transition: 0.3s;
+        transition: 0.3s;
+      }
+      .contact-item i {
+        color: var(--p-primary);
+      }
+      .contact-item:hover {
+        color: white;
+        -webkit-transform: translateX(5px);
+        -ms-transform: translateX(5px);
+        transform: translateX(5px);
+      }
+
+      .icon-btn {
+        color: #94a3b8;
+        font-size: 1.5rem;
+        transition: 0.3s;
+      }
+      .icon-btn:hover {
+        color: var(--p-primary);
+      }
+
+      .copyright {
+        margin-top: 80px;
+        text-align: center;
+        padding-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        color: #475569;
+        font-size: 0.9rem;
+      }
+
+      .contact-item span {
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- HEADER -->
+    <div class="container">
+      <header
+        style="
+          padding: 20px 0;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        "
+      >
+        <a href="../AI.html" class="btn-back"
+          ><i class="fas fa-arrow-left"></i> Quay về AI Hub</a
+        >
+        <div style="margin-top: 30px; text-align: center" data-aos="fade-down">
+          <h1 class="gradient-text" style="font-size: 3rem">
+            CHƯƠNG 1: NỀN TẢNG VỀ AI & PROMPT
+          </h1>
+          <p style="color: var(--text-gray)">
+            Khám phá bản chất trí tuệ nhân tạo & Nghệ thuật ra lệnh
+          </p>
+        </div>
+      </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="container">
+      <!-- ====================== BÀI 1 ====================== -->
+      <section id="lesson1">
+        <h2 class="section-title" data-aos="fade-up">
+          BÀI 1: BẢN CHẤT CỦA AI TẠO SINH & NGUYÊN TẮC VÀNG
+        </h2>
+
+        <!-- I. MỤC TIÊU -->
+        <div style="margin-bottom: 60px">
+          <h3 style="margin-bottom: 20px; color: var(--primary)">
+            <i class="fas fa-bullseye"></i> I. MỤC TIÊU HỌC TẬP
+          </h3>
+          <div class="card-grid">
+            <div class="feature-card" data-aos="zoom-in" data-aos-delay="0">
+              <i class="fas fa-brain"></i>
+              <h4>Hiểu đúng Gen AI</h4>
+              <p>
+                Phân biệt được AI Tạo sinh với các công cụ tìm kiếm truyền
+                thống.
+              </p>
+            </div>
+            <div class="feature-card" data-aos="zoom-in" data-aos-delay="100">
+              <i class="fas fa-scale-balanced"></i>
+              <h4>3 Nguyên tắc vàng</h4>
+              <p>Nắm vững Xúc xắc, Hội thoại, Phi công & Trợ lý.</p>
+            </div>
+            <div class="feature-card" data-aos="zoom-in" data-aos-delay="200">
+              <i class="fas fa-eye-slash"></i>
+              <h4>Nhận diện Hallucination</h4>
+              <p>Biết cách phát hiện "ảo giác" và luôn kiểm chứng thông tin.</p>
+            </div>
+            <div class="feature-card" data-aos="zoom-in" data-aos-delay="300">
+              <i class="fas fa-user-shield"></i>
+              <h4>Đạo đức AI</h4>
+              <p>
+                Xác định vị thế và trách nhiệm người dùng chuẩn "Công dân số".
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- II. KIẾN THỨC NỀN -->
+        <article style="margin-bottom: 60px" data-aos="fade-right">
+          <h3 style="margin-bottom: 20px; color: var(--primary)">
+            <i class="fas fa-layer-group"></i> II. KIẾN THỨC NỀN
+          </h3>
+
+          <div
+            style="
+              background: rgba(255, 255, 255, 0.02);
+              padding: 30px;
+              border-radius: 15px;
+              margin-bottom: 30px;
+            "
+          >
+            <h4>
+              <i class="fas fa-microchip"></i> AI Tạo sinh (Generative AI) là
+              gì?
+            </h4>
+            <p style="margin-top: 10px; color: #cbd5e1">
+              Các công cụ như ChatGPT, Gemini dựa trên
+              <strong>Mô hình Ngôn ngữ Lớn (LLM)</strong>. Chúng không
+              "copy-paste" mà thực hiện các phép tính xác suất cực kỳ phức tạp
+              để dự đoán từ tiếp theo hợp lý nhất.
+            </p>
+
+            <!-- ANIMATION MÔ PHỎNG LLM -->
+            <div class="llm-sim-container">
+              <p
+                style="
+                  color: var(--text-gray);
+                  font-size: 0.9rem;
+                  margin-bottom: 10px;
+                "
+              >
+                // MÔ PHỎNG: CƠ CHẾ DỰ ĐOÁN TỪ TIẾP THEO
+              </p>
+              <div class="llm-sim-text" id="llmText">
+                Hôm nay trời đẹp, chúng ta hãy đi...
+              </div>
+              <div id="tokenOptions">
+                <button class="token-btn" onclick="addToken('chơi')">
+                  chơi (80%)
+                </button>
+                <button class="token-btn" onclick="addToken('học')">
+                  học (15%)
+                </button>
+                <button class="token-btn" onclick="addToken('ngủ')">
+                  ngủ (5%)
+                </button>
+              </div>
+              <button
+                onclick="resetLLM()"
+                style="
+                  margin-top: 20px;
+                  background: transparent;
+                  border: 1px solid #555;
+                  color: #aaa;
+                  padding: 5px 10px;
+                  cursor: pointer;
+                "
+              >
+                Reset
+              </button>
+            </div>
+          </div>
+
+          <!-- SO SÁNH GOOGLE VS AI -->
+          <div class="comparison-wrapper">
+            <div class="comparison-col google" data-aos="flip-left">
+              <i
+                class="fab fa-google"
+                style="
+                  font-size: 3rem;
+                  color: var(--warning);
+                  margin-bottom: 20px;
+                "
+              ></i>
+              <h3>GOOGLE (Tìm kiếm)</h3>
+              <p style="margin: 15px 0; font-weight: bold">
+                Nhiệm vụ: Truy xuất (Retrieval)
+              </p>
+              <p>"Cô thủ thư" tìm thông tin có sẵn.</p>
+              <div
+                style="
+                  margin-top: 15px;
+                  padding: 10px;
+                  background: rgba(0, 0, 0, 0.3);
+                  border-radius: 8px;
+                "
+              >
+                <i class="fas fa-copy"></i> Tư duy: Sao chép & Hiển thị
+              </div>
+            </div>
+            <div class="comparison-col ai" data-aos="flip-right">
+              <i
+                class="fas fa-robot"
+                style="
+                  font-size: 3rem;
+                  color: var(--accent);
+                  margin-bottom: 20px;
+                "
+              ></i>
+              <h3>AI (Tạo sinh)</h3>
+              <p style="margin: 15px 0; font-weight: bold">
+                Nhiệm vụ: Tạo mới (Creation)
+              </p>
+              <p>"Siêu đầu bếp" chế biến món mới.</p>
+              <div
+                style="
+                  margin-top: 15px;
+                  padding: 10px;
+                  background: rgba(0, 0, 0, 0.3);
+                  border-radius: 8px;
+                "
+              >
+                <i class="fas fa-magic"></i> Tư duy: Dự đoán & Tổng hợp
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- III. 3 NGUYÊN TẮC VÀNG -->
+        <article style="margin-bottom: 60px">
+          <h3
+            style="
+              margin-bottom: 30px;
+              color: var(--primary);
+              text-align: center;
+              font-size: 2rem;
+            "
+          >
+            III. 3 NGUYÊN TẮC VÀNG
+          </h3>
+
+          <!-- 1. XÚC XẮC -->
+          <div
+            style="
+              background: var(--bg-card);
+              padding: 30px;
+              border-radius: 20px;
+              margin-bottom: 40px;
+              border: 1px solid rgba(255, 255, 255, 0.05);
+            "
+            data-aos="fade-up"
+          >
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                margin-bottom: 20px;
+              "
+            >
+              <span style="font-size: 2rem">🎲</span>
+              <h4 style="font-size: 1.5rem">1. Nguyên tắc "XÚC XẮC"</h4>
+            </div>
+            <p>
+              AI không tính toán cố định (1+1=2). Mỗi câu trả lời là một lần
+              "gieo xúc xắc" xác suất. Kết quả có thể khác nhau mỗi lần.
+            </p>
+
+            <div class="dice-sim">
+              <button class="dice-btn" onclick="rollDiceAI()">
+                GIEO XÚC XẮC AI
+              </button>
+              <div class="dice-result" id="diceResult">
+                <span style="color: #64748b"
+                  >Nhấn nút để xem AI trả lời cùng một câu hỏi: "Định nghĩa Tình
+                  yêu?"</span
+                >
+              </div>
+            </div>
+
+            <div
+              style="
+                background: rgba(239, 68, 68, 0.1);
+                border-left: 4px solid var(--danger);
+                padding: 15px;
+                margin-top: 20px;
+              "
+            >
+              <strong>⚠️ Cảnh báo Hallucination (Ảo giác):</strong> AI có thể
+              bịa đặt thông tin rất tự tin. <br /><button
+                onclick="
+                  alert(
+                    'Luôn kiểm chứng thông tin (Double-check) với nguồn chính thống!',
+                  )
+                "
+                style="
+                  margin-top: 10px;
+                  padding: 5px 15px;
+                  cursor: pointer;
+                  background: var(--danger);
+                  color: white;
+                  border: none;
+                  border-radius: 4px;
+                "
+              >
+                Kiểm chứng lại
+              </button>
+            </div>
+          </div>
+
+          <!-- 2. HỘI THOẠI -->
+          <div
+            style="
+              background: var(--bg-card);
+              padding: 30px;
+              border-radius: 20px;
+              margin-bottom: 40px;
+              border: 1px solid rgba(255, 255, 255, 0.05);
+            "
+            data-aos="fade-up"
+          >
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                margin-bottom: 20px;
+              "
+            >
+              <span style="font-size: 2rem">💬</span>
+              <h4 style="font-size: 1.5rem">2. Nguyên tắc "HỘI THOẠI"</h4>
+            </div>
+            <p>
+              AI có "trí nhớ ngắn hạn". Đừng dừng lại ở câu đầu tiên. Hãy chat
+              liên tục để tinh chỉnh.
+            </p>
+
+            <!-- Chat Simulator -->
+            <div
+              style="
+                background: #0f172a;
+                border-radius: 10px;
+                padding: 20px;
+                margin-top: 20px;
+                border: 1px solid #334155;
+              "
+            >
+              <div style="margin-bottom: 10px; text-align: right">
+                <span
+                  style="
+                    background: var(--primary);
+                    padding: 8px 12px;
+                    border-radius: 12px 12px 0 12px;
+                    display: inline-block;
+                  "
+                  >User: Viết status bán trứng gà.</span
+                >
+              </div>
+              <div style="margin-bottom: 10px">
+                <span
+                  style="
+                    background: #334155;
+                    padding: 8px 12px;
+                    border-radius: 12px 12px 12px 0;
+                    display: inline-block;
+                    color: #cbd5e1;
+                  "
+                  >AI: Trứng gà ngon lắm, mọi người mua đi ạ. Giá rẻ bất
+                  ngờ.</span
+                >
+              </div>
+              <div
+                style="
+                  margin-top: 20px;
+                  border-top: 1px solid #333;
+                  padding-top: 10px;
+                "
+              >
+                <p
+                  style="
+                    font-size: 0.9rem;
+                    color: var(--accent);
+                    margin-bottom: 5px;
+                  "
+                >
+                  Thử tinh chỉnh:
+                </p>
+                <button
+                  onclick="improveChat()"
+                  style="
+                    background: transparent;
+                    border: 1px solid var(--accent);
+                    color: var(--accent);
+                    padding: 5px 10px;
+                    border-radius: 20px;
+                    cursor: pointer;
+                  "
+                >
+                  "Thêm thơ lục bát cho ấn tượng"
+                </button>
+              </div>
+              <div
+                id="improvedChatResponse"
+                style="margin-top: 15px; display: none"
+              >
+                <span
+                  style="
+                    background: #334155;
+                    padding: 8px 12px;
+                    border-radius: 12px 12px 12px 0;
+                    display: inline-block;
+                    color: #cbd5e1;
+                    border-left: 3px solid var(--success);
+                  "
+                >
+                  AI: <br />
+                  "Trứng gà vỏ trắng vỏ nâu<br />
+                  Bên trong lòng đỏ vàng màu nắng quê..."<br />
+                  🥚 Trứng gà ta xịn 100%, mời cả nhà chốt đơn!
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. PHI CÔNG & TRỢ LÝ -->
+          <div
+            style="
+              background: var(--bg-card);
+              padding: 30px;
+              border-radius: 20px;
+              margin-bottom: 40px;
+              border: 1px solid rgba(255, 255, 255, 0.05);
+            "
+            data-aos="fade-up"
+          >
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                margin-bottom: 20px;
+              "
+            >
+              <span style="font-size: 2rem">✈️</span>
+              <h4 style="font-size: 1.5rem">
+                3. Nguyên tắc "PHI CÔNG & TRỢ LÝ"
+              </h4>
+            </div>
+
+            <div
+              style="
+                display: flex;
+                justify-content: space-around;
+                text-align: center;
+                margin-bottom: 20px;
+              "
+            >
+              <div>
+                <i
+                  class="fas fa-user-tie"
+                  style="font-size: 3rem; color: var(--success)"
+                ></i>
+                <p style="font-weight: bold; margin-top: 10px">
+                  BẠN (Phi công)
+                </p>
+                <p style="font-size: 0.8rem; color: #94a3b8">
+                  Ra quyết định, chịu trách nhiệm
+                </p>
+              </div>
+              <div>
+                <i
+                  class="fas fa-robot"
+                  style="font-size: 3rem; color: var(--primary)"
+                ></i>
+                <p style="font-weight: bold; margin-top: 10px">AI (Trợ lý)</p>
+                <p style="font-size: 0.8rem; color: #94a3b8">
+                  Gợi ý, tìm dữ liệu, hỗ trợ
+                </p>
+              </div>
+            </div>
+
+            <div class="slider-container">
+              <label
+                style="
+                  display: block;
+                  margin-bottom: 10px;
+                  color: var(--text-light);
+                "
+                >Mức độ phụ thuộc vào AI:</label
+              >
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value="30"
+                class="range-slider"
+                id="dependencySlider"
+                oninput="updateSliderText(this.value)"
+              />
+              <div class="slider-labels">
+                <span style="color: var(--success)">Tự làm 100%</span>
+                <span id="sliderStatus" style="color: var(--warning)"
+                  >Hợp tác lý tưởng (30-50%)</span
+                >
+                <span style="color: var(--danger)">Phó mặc 100%</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- V. QUY TẮC ĐẠO ĐỨC -->
+        <article style="margin-bottom: 60px">
+          <h3 style="color: var(--primary); margin-bottom: 20px">
+            <i class="fas fa-shield-halved"></i> V. QUY TRÌNH AN TOÀN & ĐẠO ĐỨC
+          </h3>
+          <p style="margin-bottom: 20px">
+            Hãy check vào các mục dưới đây để cam kết trở thành công dân số văn
+            minh:
+          </p>
+
+          <div class="checklist-item" onclick="toggleCheck(this)">
+            <i class="far fa-square"></i>
+            <div>
+              <strong>KHÔNG gian lận</strong>
+              <div style="font-size: 0.85rem; color: #cbd5e1">
+                Không dùng AI làm hộ bài kiểm tra, làm thui chột tư duy.
+              </div>
+            </div>
+          </div>
+          <div class="checklist-item" onclick="toggleCheck(this)">
+            <i class="far fa-square"></i>
+            <div>
+              <strong>KHÔNG tạo Fake News</strong>
+              <div style="font-size: 0.85rem; color: #cbd5e1">
+                Không bịa đặt thông tin gây hoang mang.
+              </div>
+            </div>
+          </div>
+          <div class="checklist-item" onclick="toggleCheck(this)">
+            <i class="far fa-square"></i>
+            <div>
+              <strong>KHÔNG bôi nhọ/bắt nạt</strong>
+              <div style="font-size: 0.85rem; color: #cbd5e1">
+                Không tạo nội dung xúc phạm người khác.
+              </div>
+            </div>
+          </div>
+          <div class="checklist-item" onclick="toggleCheck(this)">
+            <i class="far fa-square"></i>
+            <div>
+              <strong>KHÔNG vi phạm bản quyền</strong>
+              <div style="font-size: 0.85rem; color: #cbd5e1">
+                Tôn trọng tác giả gốc.
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- VII. BÀI TẬP -->
+        <article>
+          <h3 style="color: var(--primary); margin-bottom: 20px">
+            <i class="fas fa-pencil-alt"></i> VII. BÀI TẬP THỰC HÀNH
+          </h3>
+
+          <div class="accordion">
+            <div class="accordion-item">
+              <div class="accordion-header" onclick="toggleAccordion(this)">
+                1. Nhận biết: Sự khác biệt cốt lõi Google vs AI?
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="accordion-body">
+                <p>
+                  <strong>Gợi ý:</strong> Nhớ lại hình tượng "Cô thủ thư"
+                  (Google - Tìm kiếm có sẵn) và "Siêu đầu bếp" (AI - Tạo món
+                  mới). AI dùng LLM để dự đoán từ tiếp theo.
+                </p>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <div class="accordion-header" onclick="toggleAccordion(this)">
+                2. Thông hiểu: Tại sao phải Double-check?
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="accordion-body">
+                <p>
+                  Vì AI mắc lỗi "Ảo giác" (Hallucination). Nó có thể bịa đặt
+                  thông tin sai lệch với giọng văn rất tự tin. Chúng ta là "Phi
+                  công" chịu trách nhiệm cuối cùng.
+                </p>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <div class="accordion-header" onclick="toggleAccordion(this)">
+                3. Vận dụng: Thử thách kiểm chứng
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="accordion-body">
+                <p>
+                  Hãy hỏi AI về một sự kiện lịch sử địa phương bạn. Sau đó dùng
+                  Google Search để kiểm tra xem AI có nói đúng ngày tháng và số
+                  liệu không.
+                </p>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <hr
+        style="
+          border: 0;
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          margin: 60px 0;
+        "
+      />
+
+      <!-- ====================== BÀI 2 ====================== -->
+      <section id="lesson2">
+        <h2 class="section-title" data-aos="fade-up">
+          BÀI 2: CÔNG CỤ & KỸ THUẬT PROMPT "THẦN THÁNH"
+        </h2>
+
+        <!-- I. MỤC TIÊU -->
+        <div style="margin-bottom: 40px">
+          <p class="highlight" style="font-size: 1.2rem; margin-bottom: 10px">
+            I. Mục tiêu học tập
+          </p>
+          <ul style="list-style-position: inside; color: #cbd5e1">
+            <li>Nhận diện hệ sinh thái AI (ChatGPT, Gemini, Suno...).</li>
+            <li>
+              Làm chủ công thức Prompt 3 yếu tố: Bối cảnh - Vai trò - Nhiệm vụ.
+            </li>
+            <li>
+              Ứng dụng vào đời sống (dịch thuốc, bán hàng, sửa cây trồng).
+            </li>
+          </ul>
+        </div>
+
+        <!-- II. KIẾN THỨC NỀN -->
+        <article style="margin-bottom: 50px">
+          <h3 style="color: var(--primary); margin-bottom: 20px">
+            II. AI ĐA PHƯƠNG THỨC (MULTIMODAL)
+          </h3>
+          <p>AI không chỉ đọc chữ. Nó có thể "Nghe - Nhìn - Nói - Code".</p>
+          <div
+            style="
+              display: flex;
+              gap: 20px;
+              justify-content: center;
+              margin-top: 30px;
+              font-size: 2.5rem;
+            "
+          >
+            <i
+              class="fas fa-file-alt floating"
+              style="color: #60a5fa"
+              title="Văn bản"
+            ></i>
+            <i
+              class="fas fa-image floating"
+              style="color: #f472b6; animation-delay: 0.5s"
+              title="Hình ảnh"
+            ></i>
+            <i
+              class="fas fa-music floating"
+              style="color: #a78bfa; animation-delay: 1s"
+              title="Âm thanh"
+            ></i>
+            <i
+              class="fas fa-video floating"
+              style="color: #34d399; animation-delay: 1.5s"
+              title="Video"
+            ></i>
+            <i
+              class="fas fa-code floating"
+              style="color: #fbbf24; animation-delay: 2s"
+              title="Code"
+            ></i>
+          </div>
+        </article>
+
+        <!-- III. KIẾN THỨC CHI TIẾT -->
+        <article style="margin-bottom: 60px">
+          <h3 style="color: var(--primary); margin-bottom: 20px">
+            III. HỆ SINH THÁI & KỸ THUẬT PROMPT
+          </h3>
+
+          <!-- 1. Hệ sinh thái -->
+          <h4 style="margin-bottom: 15px">
+            1. Hệ sinh thái AI (Chọn để xem chi tiết)
+          </h4>
+          <div class="ai-ecosystem">
+            <div class="ai-tool-chip" onclick="selectTool('chatgpt')">
+              ChatGPT
+            </div>
+            <div class="ai-tool-chip" onclick="selectTool('gemini')">
+              Gemini
+            </div>
+            <div class="ai-tool-chip" onclick="selectTool('notebooklm')">
+              NotebookLM
+            </div>
+            <div class="ai-tool-chip" onclick="selectTool('suno')">Suno AI</div>
+            <div class="ai-tool-chip" onclick="selectTool('grok')">Grok</div>
+          </div>
+          <div
+            id="toolDetail"
+            style="
+              margin-top: 20px;
+              padding: 20px;
+              background: rgba(255, 255, 255, 0.05);
+              border-radius: 10px;
+              min-height: 80px;
+            "
+          >
+            <p style="font-style: italic; color: var(--text-gray)">
+              Chọn một công cụ ở trên để xem chức năng.
+            </p>
+          </div>
+
+          <!-- 2. PROMPT BUILDER LAB -->
+          <div class="prompt-lab" data-aos="zoom-in-up">
+            <h3
+              style="
+                text-align: center;
+                margin-bottom: 20px;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+              "
+            >
+              🧪 Phòng thí nghiệm Prompt
+            </h3>
+            <p style="text-align: center; margin-bottom: 30px; color: #94a3b8">
+              Áp dụng công thức 3 Yếu Tố:
+              <strong>Bối cảnh + Vai trò + Nhiệm vụ</strong>
+            </p>
+
+            <div class="lab-grid">
+              <div class="input-group">
+                <label><i class="fas fa-map"></i> 1. BỐI CẢNH (Context)</label>
+                <select id="pContext">
+                  <option value="">-- Chọn bối cảnh --</option>
+                  <option
+                    value="Mẹ tôi muốn bán 50 quả trứng gà quê trên Facebook."
+                  >
+                    Bán trứng gà quê
+                  </option>
+                  <option value="Cây ổi nhà tôi bị rệp trắng và héo lá.">
+                    Cây trồng bị bệnh
+                  </option>
+                  <option
+                    value="Tôi cần dịch hướng dẫn sử dụng thuốc tiếng Nhật."
+                  >
+                    Dịch thuốc ngoại
+                  </option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label><i class="fas fa-user-tag"></i> 2. VAI TRÒ (Role)</label>
+                <select id="pRole">
+                  <option value="">-- Chọn vai trò --</option>
+                  <option
+                    value="Bạn là một chuyên gia Copywriter hài hước, bắt trend."
+                  >
+                    Chuyên gia Marketing hài hước
+                  </option>
+                  <option
+                    value="Bạn là một kỹ sư nông nghiệp chuyên về hữu cơ."
+                  >
+                    Kỹ sư nông nghiệp
+                  </option>
+                  <option value="Bạn là một dược sĩ tận tâm, kỹ tính.">
+                    Dược sĩ chuyên nghiệp
+                  </option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label><i class="fas fa-tasks"></i> 3. NHIỆM VỤ (Task)</label>
+                <select id="pTask">
+                  <option value="">-- Chọn nhiệm vụ --</option>
+                  <option
+                    value="Viết status ngắn gọn, dùng nhiều icon và thêm thơ lục bát."
+                  >
+                    Viết Status + Thơ
+                  </option>
+                  <option
+                    value="Đưa ra phác đồ điều trị an toàn, không hóa chất độc hại."
+                  >
+                    Phác đồ điều trị
+                  </option>
+                  <option
+                    value="Tóm tắt công dụng và liều dùng, cảnh báo tác dụng phụ."
+                  >
+                    Dịch & Tóm tắt
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <button class="btn-generate" onclick="generatePromptSim()">
+              <i class="fas fa-magic"></i> KÍCH HOẠT AI (MÔ PHỎNG)
+            </button>
+
+            <div class="prompt-result" id="simOutput">
+              <span style="color: #64748b"
+                >// Kết quả từ AI sẽ hiển thị tại đây...</span
+              >
+            </div>
+          </div>
+
+          <div style="margin-top: 20px; font-size: 0.9rem">
+            <strong>Bí quyết nâng cao:</strong> Thêm cảm xúc ("giọng văn vui
+            tươi"), ánh sáng (cho ảnh), và quy tắc cấm ("không được bịa đặt").
+          </div>
+        </article>
+
+        <!-- IV. ỨNG DỤNG THỰC TẾ -->
+        <article style="margin-bottom: 60px">
+          <h3 style="color: var(--primary); margin-bottom: 20px">
+            IV. THƯ VIỆN ỨNG DỤNG
+          </h3>
+          <div class="gallery-grid">
+            <div class="gallery-item">
+              <i class="fas fa-carrot gallery-icon" style="color: #fca5a5"></i>
+              <img
+                src="https://images.unsplash.com/photo-1595855709940-5776ee4b2952?auto=format&fit=crop&q=80"
+                alt="Bán hàng"
+              />
+              <div class="gallery-caption">
+                Giúp mẹ viết status bán rau/trứng
+              </div>
+            </div>
+            <div class="gallery-item">
+              <i class="fas fa-pills gallery-icon" style="color: #93c5fd"></i>
+              <img
+                src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80"
+                alt="Dịch thuốc"
+              />
+              <div class="gallery-caption">Dịch hướng dẫn sử dụng thuốc</div>
+            </div>
+            <div class="gallery-item">
+              <i class="fas fa-leaf gallery-icon" style="color: #86efac"></i>
+              <img
+                src="https://images.unsplash.com/photo-1591857177580-dc82b9ac4e10?auto=format&fit=crop&q=80"
+                alt="Cây trồng"
+              />
+              <div class="gallery-caption">
+                Bác sĩ cây trồng (Chẩn đoán bệnh)
+              </div>
+            </div>
+            <div class="gallery-item">
+              <i
+                class="fas fa-utensils gallery-icon"
+                style="color: #fcd34d"
+              ></i>
+              <img
+                src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&q=80"
+                alt="Thực đơn"
+              />
+              <div class="gallery-caption">Lên thực đơn/Tạo ảnh món ăn</div>
+            </div>
+          </div>
+        </article>
+
+        <!-- V. QUY TRÌNH PERSONA -->
+        <article>
+          <h3 style="color: var(--primary)">V. QUY TRÌNH PERSONA</h3>
+          <p>4 Bước làm việc với nhân vật ảo:</p>
+
+          <div class="flowchart">
+            <div class="flow-line"></div>
+            <div class="flow-step" data-aos="zoom-in" data-aos-delay="0">
+              <i
+                class="fas fa-theater-masks"
+                style="font-size: 1.5rem; color: var(--accent)"
+              ></i>
+              <h4>1. ROLE</h4>
+              <span style="font-size: 0.7rem">Gán vai trò</span>
+            </div>
+            <div class="flow-step" data-aos="zoom-in" data-aos-delay="200">
+              <i
+                class="fas fa-palette"
+                style="font-size: 1.5rem; color: var(--warning)"
+              ></i>
+              <h4>2. STYLE</h4>
+              <span style="font-size: 0.7rem">Mô tả phong cách</span>
+            </div>
+            <div class="flow-step" data-aos="zoom-in" data-aos-delay="400">
+              <i
+                class="fas fa-database"
+                style="font-size: 1.5rem; color: var(--success)"
+              ></i>
+              <h4>3. DATA</h4>
+              <span style="font-size: 0.7rem">Cung cấp dữ liệu</span>
+            </div>
+            <div class="flow-step" data-aos="zoom-in" data-aos-delay="600">
+              <i
+                class="fas fa-paper-plane"
+                style="font-size: 1.5rem; color: var(--primary)"
+              ></i>
+              <h4>4. OUTPUT</h4>
+              <span style="font-size: 0.7rem">Nhận kết quả</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- GHI CHÚ LỖI SAI -->
+        <div
+          style="
+            margin-top: 40px;
+            padding: 20px;
+            border: 1px dashed var(--warning);
+            border-radius: 10px;
+            color: #cbd5e1;
+          "
+        >
+          <h4 style="color: var(--warning); margin-bottom: 10px">
+            <i class="fas fa-exclamation-triangle"></i> Lỗi thường gặp
+          </h4>
+          <ul>
+            <li>
+              <strong>Mô tả mơ hồ:</strong> "Viết gì đó đi" -> AI trả lời hời
+              hợt.
+            </li>
+            <li>
+              <strong>Quên tiêu chuẩn:</strong> Không yêu cầu tỷ lệ ảnh, AI sẽ
+              tạo ảnh vuông.
+            </li>
+            <li>
+              <strong>Tiết lộ thông tin:</strong> Không nhập tên thật, CCCD, mật
+              khẩu ngân hàng.
+            </li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER - DO NOT EDIT -->
+    <footer>
+      <div class="footer-waves"></div>
+      <div class="footer-grid">
+        <div class="footer-brand" data-aos="fade-right">
+          <h2>EDUMATTER</h2>
+          <p style="color: #94a3b8; line-height: 1.8">
+            Kiến tạo môi trường học tập cảm xúc, nơi tri thức được số hóa và
+            truyền tải đầy cảm hứng.
+          </p>
+          <div style="display: flex; gap: 15px; margin-top: 30px">
+            <a href="https://www.facebook.com/ducnt214" class="icon-btn"
+              ><i class="fab fa-facebook" alt="facebook"></i
+            ></a>
+            <a href="https://github.com/ducnt2104" class="icon-btn" alt="github"
+              ><i class="fab fa-github"></i
+            ></a>
+            <a
+              href="https://www.tiktok.com/@ktbtcthm210"
+              class="icon-btn"
+              alt="tiktok"
+              ><i class="fab fa-tiktok"></i
+            ></a>
+          </div>
+        </div>
+        <div class="footer-links" data-aos="fade-up">
+          <h3>Liên hệ nhanh</h3>
+          <div class="contact-item">
+            <i class="fas fa-envelope"></i>
+            <span>ducnt21042010@gmail.com</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-phone"></i>
+            <span>034 226 6204</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-location-dot"></i>
+            <span>THPT Tôn Đức Thắng, Đồng Nai</span>
+          </div>
+        </div>
+        <div class="footer-links" data-aos="fade-left">
+          <h4>Đội ngũ DNT</h4>
+          <p style="color: #94a3b8">
+            "Sáng tạo không ngừng - Vươn tầm tri thức"
+          </p>
+          <div
+            style="
+              margin-top: 20px;
+              padding: 15px;
+              background: rgba(255, 255, 255, 0.05);
+              border-radius: 15px;
+            "
+          >
+            <p style="font-size: 0.8rem; color: #fff">
+              Dự án được phát triển bởi các thành viên đam mê công nghệ tại Việt
+              Nam.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="copyright">
+        <p>
+          © 2024 EDUMATTER Educational Ecosystem. Designed with
+          <i class="fas fa-heart" style="color: #ef4444"></i> by DNT Team.
+        </p>
+      </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      // Initialize AOS
+      AOS.init({
+        duration: 1000,
+        once: true,
+      });
+
+      // --- LLM SIMULATION LOGIC ---
+      let currentSentence = "Hôm nay trời đẹp, chúng ta hãy đi";
+      function addToken(word) {
+        currentSentence += " " + word;
+        document.getElementById("llmText").innerText = currentSentence;
+
+        // Cập nhật gợi ý mới (giả lập)
+        const btnContainer = document.getElementById("tokenOptions");
+        if (word === "chơi") {
+          btnContainer.innerHTML = `
+                <button class="token-btn" onclick="addToken('nhé')">nhé (90%)</button>
+                <button class="token-btn" onclick="addToken('ngay')">ngay (10%)</button>
+            `;
+        } else if (word === "học") {
+          btnContainer.innerHTML = `
+                <button class="token-btn" onclick="addToken('bài')">bài (95%)</button>
+                <button class="token-btn" onclick="addToken('thôi')">thôi (5%)</button>
+            `;
+        } else {
+          btnContainer.innerHTML = `<span style='color: var(--success)'>[Kết thúc câu]</span>`;
+        }
+      }
+      function resetLLM() {
+        currentSentence = "Hôm nay trời đẹp, chúng ta hãy đi";
+        document.getElementById("llmText").innerText = currentSentence;
+        document.getElementById("tokenOptions").innerHTML = `
+            <button class="token-btn" onclick="addToken('chơi')">chơi (80%)</button>
+            <button class="token-btn" onclick="addToken('học')">học (15%)</button>
+            <button class="token-btn" onclick="addToken('ngủ')">ngủ (5%)</button>
+        `;
+      }
+
+      // --- DICE SIMULATION LOGIC ---
+      const diceResponses = [
+        "Tình yêu là sự rung động của con tim.",
+        "Tình yêu là phản ứng hóa học trong não bộ.",
+        "Tình yêu là khi bạn đặt hạnh phúc người khác lên trên mình.",
+        "Theo định nghĩa sinh học, tình yêu là bản năng duy trì nòi giống.",
+        "Tình yêu? Một khái niệm trừu tượng khó giải thích!",
+        "Tình yêu là sự kết nối sâu sắc giữa hai tâm hồn.",
+        "Tình yêu là sự pha trộn của cảm xúc và lý trí.",
+        "Tình yêu là một hành trình khám phá và trưởng thành cùng nhau.",
+        "Tình yêu là ngôn ngữ chung của nhân loại.",
+        "Tình yêu là sự hy sinh và thấu hiểu lẫn nhau.",
+        "Tình yêu là khi bạn cảm thấy hoàn thiện bên người kia.",
+        "Tình yêu là sự hòa quyện giữa hai con người khác biệt.",
+        "Tình yêu là một loại năng lượng tích cực lan tỏa trong cuộc sống.",
+        "Tình yêu là sự chấp nhận và tôn trọng lẫn nhau.",
+        "Tình yêu là khi bạn không thể tưởng tượng cuộc sống thiếu người ấy.",
+        "Tình yêu là sự kết nối vượt qua mọi rào cản và khoảng cách.",
+        "Tình yêu là một món quà quý giá cần được trân trọng và bảo vệ.",
+        "Tình yêu là sự đồng hành trên con đường đời đầy thử thách.",
+        "Tình yêu là khi bạn tìm thấy người bạn đồng hành lý tưởng.",
+        "Tình yêu là sự kết nối tâm hồn vượt thời gian và không gian.",
+      ];
+      function rollDiceAI() {
+        const randomIndex = Math.floor(Math.random() * diceResponses.length);
+        const resultDiv = document.getElementById("diceResult");
+        resultDiv.style.opacity = 0;
+        setTimeout(() => {
+          resultDiv.innerHTML = `<strong>AI trả lời:</strong> "${diceResponses[randomIndex]}"`;
+          resultDiv.style.opacity = 1;
+        }, 200);
+      }
+
+      // --- CHAT SIMULATION ---
+      function improveChat() {
+        document.getElementById("improvedChatResponse").style.display = "block";
+      }
+
+      // --- SLIDER LOGIC ---
+      function updateSliderText(val) {
+        const status = document.getElementById("sliderStatus");
+        const slider = document.getElementById("dependencySlider");
+
+        if (val < 20) {
+          status.innerText = "Tự làm là chính (" + val + "%) - Tốt nhưng chậm";
+          status.style.color = "var(--success)";
+        } else if (val >= 20 && val <= 60) {
+          status.innerText = "Hợp tác lý tưởng (" + val + "%) - Hiệu quả cao";
+          status.style.color = "var(--warning)";
+        } else {
+          status.innerText = "Cẩn thận! Bạn đang phó mặc (" + val + "%)";
+          status.style.color = "var(--danger)";
+        }
+      }
+
+      // --- CHECKLIST LOGIC ---
+      function toggleCheck(el) {
+        el.classList.toggle("checked");
+        const icon = el.querySelector("i");
+        if (el.classList.contains("checked")) {
+          icon.classList.remove("fa-square");
+          icon.classList.add("fa-check-square");
+        } else {
+          icon.classList.remove("fa-check-square");
+          icon.classList.add("fa-square");
+        }
+      }
+
+      // --- ACCORDION LOGIC ---
+      function toggleAccordion(header) {
+        const body = header.nextElementSibling;
+        const icon = header.querySelector("i");
+
+        if (body.classList.contains("active")) {
+          body.classList.remove("active");
+          icon.style.transform = "rotate(0deg)";
+        } else {
+          // Close others
+          document
+            .querySelectorAll(".accordion-body")
+            .forEach((b) => b.classList.remove("active"));
+          document
+            .querySelectorAll(".accordion-header i")
+            .forEach((i) => (i.style.transform = "rotate(0deg)"));
+
+          body.classList.add("active");
+          icon.style.transform = "rotate(180deg)";
+        }
+      }
+
+      // --- LESSON 2: TOOL SELECTOR ---
+      const toolsInfo = {
+        chatgpt:
+          "<strong>ChatGPT:</strong> Trợ lý ngôn ngữ, viết lách, code, và Vision (nhìn ảnh).",
+        gemini:
+          "<strong>Gemini:</strong> Tích hợp Google Search, Maps, Youtube. Giỏi kiểm chứng thông tin thực tế.",
+        notebooklm:
+          '<strong>NotebookLM:</strong> "Gia sư riêng", đọc PDF dài, tóm tắt và tạo Podcast.',
+        suno: "<strong>Suno AI:</strong> Nhạc sĩ ảo, tạo bài hát có lời và giai điệu từ văn bản.",
+        grok: "<strong>Grok:</strong> Vui tính, tạo ảnh/video mockup nhanh chóng.",
+      };
+
+      function selectTool(toolKey) {
+        // Remove active class
+        document
+          .querySelectorAll(".ai-tool-chip")
+          .forEach((el) => el.classList.remove("active"));
+        // Add active to clicked (visually handled by matching text or adding ID, simplification here for demo)
+        event.target.classList.add("active");
+
+        document.getElementById("toolDetail").innerHTML = toolsInfo[toolKey];
+      }
+
+      // --- PROMPT SIMULATOR ---
+      function generatePromptSim() {
+        const context = document.getElementById("pContext").value;
+        const role = document.getElementById("pRole").value;
+        const task = document.getElementById("pTask").value;
+        const output = document.getElementById("simOutput");
+
+        if (!context || !role || !task) {
+          output.innerHTML =
+            "<span style='color: var(--danger)'>⚠️ Vui lòng chọn đủ 3 yếu tố: Bối cảnh, Vai trò và Nhiệm vụ!</span>";
+          return;
+        }
+
+        output.innerHTML = "<span class='blink'>AI đang suy nghĩ...</span>";
+
+        setTimeout(() => {
+          let resultText = "";
+
+          if (context.includes("trứng gà")) {
+            resultText = `
+                  <strong>[Facebook Post]</strong><br><br>
+                  🥚 <strong>TRỨNG GÀ QUÊ - VỎ NÂU LÒNG ĐỎ - CHẤT LỪ!</strong> 🥚<br><br>
+                  "Trứng gà vỏ trắng vỏ nâu<br>
+                  Bên trong lòng đỏ vàng màu nắng quê"<br><br>
+                  Mẹ em mới gửi lên 50 quả trứng gà ta xịn, gà chạy bộ vườn nhà, ăn thóc 100%.<br>
+                  ✅ Lòng đỏ to, béo ngậy.<br>
+                  ✅ Làm bánh, ốp la hay luộc đều "đỉnh của chóp".<br><br>
+                  👉 Inbox em chốt đơn ngay kẻo hết!
+                  `;
+          } else if (context.includes("Cây ổi")) {
+            resultText = `
+                  <strong>[Phác đồ điều trị rệp sáp hại ổi - Hữu cơ]</strong><br><br>
+                  Chào bạn, với tư cách là kỹ sư nông nghiệp, tôi nhận thấy cây ổi của bạn đang bị rệp sáp tấn công.<br><br>
+                  <strong>Xử lý bước 1:</strong> Cắt bỏ ngay các cành/lá bị bệnh nặng và tiêu hủy.<br>
+                  <strong>Bước 2 (Pha thuốc):</strong> Pha hỗn hợp: 10ml nước rửa chén sinh học + 1 thìa dầu ăn + 1 lít nước.<br>
+                  <strong>Bước 3:</strong> Phun ướt đẫm vào ổ rệp lúc trời mát. Lặp lại sau 3 ngày.<br><br>
+                  ⚠️ Tuyệt đối không dùng thuốc trừ sâu hóa học nếu đang nuôi quả sắp thu hoạch.
+                  `;
+          } else {
+            resultText = `
+                  <strong>[Bản dịch tóm tắt]</strong><br><br>
+                  💊 <strong>Sản phẩm:</strong> Thuốc tiêu hóa Seirogan (Nhật Bản)<br><br>
+                  ✅ <strong>Công dụng:</strong> Trị đau bụng, rối loạn tiêu hóa, ngộ độc thực phẩm nhẹ.<br>
+                  📝 <strong>Liều dùng:</strong> Người lớn (trên 15 tuổi): 3 viên/lần, ngày 3 lần sau ăn.<br>
+                  ⚠️ <strong>Lưu ý:</strong> Không dùng cho trẻ dưới 5 tuổi. Nếu sốt cao hoặc đi ngoài ra máu, cần đi bác sĩ ngay.<br><br>
+                  <i>(Dịch bởi Dược sĩ AI - Chỉ mang tính tham khảo)</i>
+                  `;
+          }
+
+          output.innerHTML = resultText;
+        }, 1500);
+      }
+    </script>
+  </body>
+</html>
