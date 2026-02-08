@@ -1,1740 +1,1842 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ChemStudy Teen - Đại Cương Hóa Học Hữu Cơ</title>
-    <link rel="icon" href="../../../favicon/educhem.svg" type="image/svg+xml" />
-    <!-- Tailwind CSS -->
+    <title>Đại Cương Hóa Học Hữu Cơ – ChemStudy Expert</title>
+    <link rel="icon" href="../../../favicon/educhem.avg" type="image/x-icon" />
+
+    <!-- External Libraries (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <!-- Google Fonts -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap"
       rel="stylesheet"
     />
-    <!-- Chart.js cho Phổ IR -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Three.js cho 3D Molecule -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
+    <!-- Tailwind Configuration -->
     <script>
       tailwind.config = {
         darkMode: "class",
         theme: {
           extend: {
             fontFamily: {
-              sans: ["Nunito", "sans-serif"],
+              sans: ['"Be Vietnam Pro"', "sans-serif"],
+              display: ['"Space Grotesk"', "sans-serif"],
             },
             colors: {
-              primary: "#6366f1", // Indigo 500
-              secondary: "#ec4899", // Pink 500
-              accent: "#eab308", // Yellow 500
-              darkBg: "#0f172a",
-              darkCard: "#1e293b",
+              chem: {
+                blue: "#3b82f6",
+                purple: "#8b5cf6",
+                pink: "#ec4899",
+                dark: "#0f172a",
+                light: "#f8fafc",
+                glass: "rgba(255, 255, 255, 0.1)",
+                glassDark: "rgba(15, 23, 42, 0.6)",
+              },
             },
             animation: {
-              "spin-slow": "spin 8s linear infinite",
-              "bounce-slow": "bounce 3s infinite",
+              blob: "blob 7s infinite",
               float: "float 6s ease-in-out infinite",
+              "spin-slow": "spin 12s linear infinite",
+              "pulse-glow":
+                "pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
             },
             keyframes: {
+              blob: {
+                "0%": { transform: "translate(0px, 0px) scale(1)" },
+                "33%": { transform: "translate(30px, -50px) scale(1.1)" },
+                "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
+                "100%": { transform: "translate(0px, 0px) scale(1)" },
+              },
               float: {
                 "0%, 100%": { transform: "translateY(0)" },
                 "50%": { transform: "translateY(-20px)" },
+              },
+              "pulse-glow": {
+                "0%, 100%": {
+                  opacity: 1,
+                  boxShadow: "0 0 20px rgba(59, 130, 246, 0.5)",
+                },
+                "50%": {
+                  opacity: 0.5,
+                  boxShadow: "0 0 10px rgba(59, 130, 246, 0.2)",
+                },
               },
             },
           },
         },
       };
     </script>
+
+    <!-- Custom CSS -->
     <style>
+      /* Base Variables */
+      :root {
+        --footer-bg: #0f172a;
+        --footer-text: #e2e8f0;
+        --p-primary: #3b82f6;
+      }
+      html.dark :root {
+        --footer-bg: #020617;
+      }
+
+      /* Glassmorphism Classes */
+      .glass-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .dark .glass-card {
+        background: rgba(30, 41, 59, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .glass-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.15);
+        border-color: rgba(59, 130, 246, 0.5);
+      }
+
+      /* Text Gradients */
+      .text-gradient {
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-image: linear-gradient(to right, #3b82f6, #8b5cf6, #ec4899);
+      }
+
       /* Custom Scrollbar */
       ::-webkit-scrollbar {
-        width: 8px;
+        width: 10px;
       }
       ::-webkit-scrollbar-track {
-        background: transparent;
+        background: #f1f1f1;
+      }
+      .dark ::-webkit-scrollbar-track {
+        background: #1e293b;
       }
       ::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 4px;
+        background: #3b82f6;
+        border-radius: 5px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8;
-      }
-      .dark ::-webkit-scrollbar-thumb {
-        background: #475569;
+        background: #2563eb;
       }
 
-      /* Hide scrollbar for tabs */
-      .no-scrollbar::-webkit-scrollbar {
-        display: none;
+      /* Simulation Specific Styles */
+      .beaker-container {
+        position: relative;
+        width: 200px;
+        height: 250px;
+        margin: 0 auto;
       }
-      .no-scrollbar {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
+      .beaker {
+        width: 100%;
+        height: 100%;
+        border-left: 4px solid rgba(200, 200, 200, 0.5);
+        border-right: 4px solid rgba(200, 200, 200, 0.5);
+        border-bottom: 4px solid rgba(200, 200, 200, 0.5);
+        border-radius: 0 0 20px 20px;
+        position: relative;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.05);
       }
-
-      /* Laboratory Animations CSS */
-      @keyframes bubble-rise {
+      .liquid {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 50%; /* Dynamic */
+        background: linear-gradient(
+          to top,
+          rgba(59, 130, 246, 0.4),
+          rgba(59, 130, 246, 0.2)
+        );
+        transition:
+          height 0.5s,
+          background 0.5s;
+      }
+      .bubbles {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+      .bubble-particle {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 50%;
+        bottom: 0;
+        animation: rise 2s infinite ease-in;
+      }
+      @keyframes rise {
         0% {
-          transform: translateY(0) scale(0.5);
+          bottom: 0;
           opacity: 0;
+          transform: translateX(0);
         }
         50% {
           opacity: 1;
         }
         100% {
-          transform: translateY(-100px) scale(1.2);
+          bottom: 100%;
           opacity: 0;
+          transform: translateX(10px);
         }
       }
-      .bubble {
+
+      /* Footer Styles (Preserved) */
+      footer {
+        background: var(--footer-bg);
+        color: var(--footer-text);
+        padding: 100px 5% 40px;
+        position: relative;
+        overflow: hidden;
+        transition:
+          background-color 0.8s ease,
+          color 0.8s ease;
+      }
+      .footer-waves {
         position: absolute;
-        background: rgba(255, 255, 255, 0.6);
-        border-radius: 50%;
-        animation: bubble-rise 2s infinite ease-in;
-      }
-
-      .liquid-layer {
-        transition: height 1s ease-in-out, background-color 0.5s;
-      }
-
-      .crystal {
-        clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-        animation: grow 2s forwards;
-      }
-      @keyframes grow {
-        from {
-          transform: scale(0);
-          opacity: 0;
-        }
-        to {
-          transform: scale(1);
-          opacity: 1;
-        }
-      }
-
-      /* Clip path for funnel */
-      .clip-path-funnel {
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        background: var(--footer-bg);
         clip-path: polygon(
-          0% 0%,
-          100% 0%,
-          100% 65%,
-          60% 85%,
-          60% 100%,
-          40% 100%,
-          40% 85%,
-          0% 65%
+          0% 45%,
+          16% 44%,
+          33% 50%,
+          54% 60%,
+          70% 61%,
+          84% 59%,
+          100% 52%,
+          100% 100%,
+          0% 100%
         );
+        transition: background-color 0.8s;
+      }
+      .footer-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 60px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .footer-brand h2 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 2rem;
+        margin-bottom: 20px;
+      }
+      .icon-btn {
+        color: #94a3b8;
+        font-size: 1.2rem;
+        transition: 0.3s;
+      }
+      .icon-btn:hover {
+        color: white;
+        transform: scale(1.1);
+      }
+      .footer-links h4,
+      .footer-links h3 {
+        margin-bottom: 25px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--p-primary);
+      }
+      .contact-item {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        color: #94a3b8;
+        transition: 0.3s;
+      }
+      .contact-item i {
+        color: var(--p-primary);
+      }
+      .contact-item:hover {
+        color: white;
+        transform: translateX(5px);
+      }
+      .copyright {
+        margin-top: 80px;
+        text-align: center;
+        padding-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        color: #475569;
+        font-size: 0.9rem;
+      }
+
+      /* Utility for Ranges */
+      input[type="range"] {
+        -webkit-appearance: none;
+        width: 100%;
+        background: transparent;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        background: #3b82f6;
+        cursor: pointer;
+        margin-top: -8px;
+        box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+      }
+      input[type="range"]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+        background: rgba(148, 163, 184, 0.3);
+        border-radius: 2px;
       }
     </style>
   </head>
+
   <body
-    class="bg-gray-50 text-gray-800 dark:bg-darkBg dark:text-gray-100 transition-colors duration-300 min-h-screen flex flex-col"
+    class="bg-chem-light dark:bg-chem-dark text-slate-800 dark:text-slate-100 transition-colors duration-500 font-sans"
   >
-    <!-- Header Navigation -->
-    <header
-      class="sticky top-0 z-50 bg-white/80 dark:bg-darkCard/90 backdrop-blur-md shadow-sm border-b border-gray-200 dark:border-gray-700"
-    >
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
-          <!-- Left: Logo -->
-          <div class="flex items-center gap-3">
-            <a
-              href="../chemstudyteen.html"
-              class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition group"
-              title="Quay về"
-            >
-              <i
-                class="fa-solid fa-arrow-left text-xl text-gray-600 dark:text-gray-300 group-hover:text-primary"
-              ></i>
-            </a>
-            <div class="flex items-center gap-2">
-              <div
-                class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold"
-              >
-                <i class="fa-solid fa-flask"></i>
-              </div>
-              <span
-                class="font-extrabold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary"
-              >
-                ChemStudy Teen
-              </span>
-            </div>
-          </div>
-
-          <!-- Center: Navigation Tabs (Desktop) -->
-          <nav class="hidden md:flex space-x-1" id="desktop-tabs">
-            <!-- JS Injected -->
-          </nav>
-
-          <!-- Right: Dark Mode -->
-          <div class="flex items-center">
-            <button
-              id="theme-toggle"
-              class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-yellow-400 hover:bg-gray-200 dark:hover:bg-gray-600 transition focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              <i class="fa-solid fa-sun text-lg dark:hidden"></i>
-              <i class="fa-solid fa-moon text-lg hidden dark:block"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-      <!-- Mobile Tab Scroll -->
+    <!-- Background Decorative Blobs -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden -z-10">
       <div
-        class="md:hidden overflow-x-auto no-scrollbar border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-darkCard"
-      >
-        <nav class="flex px-4 py-3 space-x-3 min-w-max" id="mobile-tabs">
-          <!-- JS Injected -->
+        class="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"
+      ></div>
+      <div
+        class="absolute top-0 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"
+      ></div>
+      <div
+        class="absolute -bottom-32 left-1/3 w-96 h-96 bg-pink-500/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-4000"
+      ></div>
+    </div>
+
+    <!-- ================= HEADER ================= -->
+    <header
+      class="fixed top-0 w-full z-50 glass-card border-b-0 rounded-none px-6 py-3"
+    >
+      <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <!-- Logo -->
+        <div
+          class="flex items-center gap-3 cursor-pointer group"
+          onclick="window.scrollTo(0, 0)"
+        >
+          <div
+            class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-green-500 flex items-center justify-center text-white font-bold text-xl group-hover:scale-110 transition-transform"
+          >
+            <i class="fas fa-atom text-xl group-hover:animate-spin"></i>
+          </div>
+          <span
+            class="font-display font-bold text-xl md:text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-green-500 dark:from-blue-400 dark:to-green-400"
+          >
+            ChemStudy Expert
+          </span>
+        </div>
+
+        <!-- Nav (Desktop) -->
+        <nav
+          class="hidden md:flex gap-6 text-sm font-medium text-slate-600 dark:text-slate-300"
+        >
+          <a href="#section-1" class="hover:text-blue-500 transition-colors"
+            >Hợp chất HC</a
+          >
+          <a href="#section-2" class="hover:text-blue-500 transition-colors"
+            >Phân loại & IR</a
+          >
+          <a href="#section-3" class="hover:text-blue-500 transition-colors"
+            >Tách biệt</a
+          >
+          <a href="#section-4" class="hover:text-blue-500 transition-colors"
+            >CTPT</a
+          >
+          <a href="#section-5" class="hover:text-blue-500 transition-colors"
+            >Cấu tạo</a
+          >
+          <a href="#section-6" class="hover:text-blue-500 transition-colors"
+            >Game</a
+          >
         </nav>
+
+        <!-- Controls -->
+        <div class="flex items-center gap-4">
+          <button
+            id="theme-toggle"
+            class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors text-slate-800 dark:text-yellow-400"
+          >
+            <i class="fas fa-moon dark:hidden"></i>
+            <i class="fas fa-sun hidden dark:block"></i>
+          </button>
+        </div>
       </div>
     </header>
 
-    <!-- Main Content Area -->
-    <main class="flex-grow container mx-auto px-4 py-6 max-w-7xl">
-      <!-- SECTION 1: KHÁI NIỆM & ĐẠI CƯƠNG -->
-      <section id="tab-content-1" class="tab-content animate-float">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <!-- Theory Card 1 -->
-          <div
-            class="bg-white dark:bg-darkCard rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 h-full"
+    <!-- ================= HERO SECTION ================= -->
+    <section class="pt-32 pb-20 px-6 text-center">
+      <div class="max-w-4xl mx-auto" data-aos="fade-up">
+        <span
+          class="inline-block py-1 px-3 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-sm font-semibold mb-6"
+        >
+          CHƯƠNG 3: HÓA HỌC 11
+        </span>
+        <h1
+          class="font-display text-5xl md:text-7xl font-bold mb-6 text-slate-800 dark:text-white leading-tight"
+        >
+          Đại Cương <br />
+          <span class="text-gradient">Hóa Học Hữu Cơ</span>
+        </h1>
+        <p
+          class="text-lg md:text-xl text-slate-600 dark:text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed"
+        >
+          Khám phá thế giới của Carbon - nơi sự sống bắt đầu. Từ cấu trúc phân
+          tử đến phản ứng hóa học, trải nghiệm kiến thức qua mô phỏng tương tác
+          đỉnh cao.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="#section-1"
+            class="px-8 py-4 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg shadow-blue-500/30 transition-all hover:-translate-y-1 flex items-center justify-center gap-2"
           >
-            <div class="flex items-center gap-3 mb-4">
-              <div
-                class="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg text-primary"
-              >
-                <i class="fa-solid fa-book-open text-xl"></i>
-              </div>
-              <h2 class="text-xl font-bold text-gray-800 dark:text-white">
-                1. Hợp chất hữu cơ & Hóa học hữu cơ
-              </h2>
-            </div>
-
-            <div
-              class="space-y-4 text-sm md:text-base text-gray-600 dark:text-gray-300 leading-relaxed"
-            >
-              <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl">
-                <h3 class="font-bold text-primary mb-2">
-                  Hợp chất hữu cơ là gì?
-                </h3>
-                <ul class="list-disc pl-5 space-y-1">
-                  <li>
-                    Chủ yếu chứa <strong>Carbon (C)</strong>, thường kèm H, O,
-                    N, S, halogen...
-                  </li>
-                  <li>Liên kết đặc trưng: Cộng hoá trị (C–C, C–H).</li>
-                  <li>Dễ biến đổi, rất đa dạng → hàng chục triệu chất.</li>
-                </ul>
-              </div>
-
-              <div>
-                <h3 class="font-bold text-secondary mb-2">Đặc điểm chung</h3>
-                <ul class="space-y-2">
-                  <li class="flex items-start gap-2">
-                    <i
-                      class="fa-solid fa-temperature-low mt-1 text-blue-500"
-                    ></i>
-                    Nhiệt độ nóng chảy/sôi thấp hơn vô cơ.
-                  </li>
-                  <li class="flex items-start gap-2">
-                    <i class="fa-solid fa-fire mt-1 text-red-500"></i> Dễ cháy,
-                    tạo CO₂ và H₂O.
-                  </li>
-                  <li class="flex items-start gap-2">
-                    <i class="fa-solid fa-box-open mt-1 text-yellow-500"></i>
-                    Ứng dụng: Thuốc, nhựa, thực phẩm...
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <!-- Simulation 1: Sorter Game -->
-          <div class="flex flex-col gap-6 h-full">
-            <div
-              class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-lg p-6 text-white relative overflow-hidden flex-1"
-            >
-              <div class="absolute top-0 right-0 p-4 opacity-10">
-                <i class="fa-solid fa-gamepad text-8xl"></i>
-              </div>
-              <h3
-                class="text-xl font-bold mb-4 relative z-10 flex items-center gap-2"
-              >
-                <i class="fa-solid fa-play-circle"></i> Trò chơi: Phân loại chất
-              </h3>
-              <div
-                class="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 h-full flex flex-col justify-center items-center"
-              >
-                <div
-                  id="current-compound"
-                  class="text-5xl font-extrabold mb-8 tracking-wider animate-bounce-slow font-mono"
-                >
-                  CH₄
-                </div>
-                <div class="grid grid-cols-2 gap-4 w-full max-w-sm">
-                  <button
-                    onclick="checkCompound('organic')"
-                    class="py-4 bg-green-500 hover:bg-green-400 rounded-xl font-bold text-lg shadow-lg hover:shadow-green-500/30 transition transform hover:-translate-y-1"
-                  >
-                    Hữu Cơ
-                  </button>
-                  <button
-                    onclick="checkCompound('inorganic')"
-                    class="py-4 bg-gray-500 hover:bg-gray-400 rounded-xl font-bold text-lg shadow-lg hover:shadow-gray-500/30 transition transform hover:-translate-y-1"
-                  >
-                    Vô Cơ
-                  </button>
-                </div>
-                <p
-                  id="game-feedback"
-                  class="mt-4 font-bold h-6 text-yellow-300"
-                ></p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Simulation 2: 3D Molecule (Three.js) -->
-          <div
-            class="lg:col-span-2 bg-gray-900 rounded-2xl shadow-2xl overflow-hidden relative min-h-[500px] flex flex-col"
+            <i class="fas fa-play-circle"></i> Vào bài học
+          </a>
+          <a
+            href="#section-6"
+            class="px-8 py-4 rounded-full glass-card hover:bg-slate-100 dark:hover:bg-slate-800 font-bold transition-all hover:-translate-y-1 flex items-center justify-center gap-2"
           >
-            <div
-              class="absolute top-0 left-0 right-0 p-4 bg-gradient-to-b from-black/80 to-transparent z-10 flex justify-between items-start pointer-events-none"
-            >
-              <div>
-                <h3 class="text-white font-bold text-lg">
-                  <i class="fa-solid fa-cube text-primary mr-2"></i>Mô phỏng 3D:
-                  Phân tử Methane (CH₄)
-                </h3>
-                <p class="text-gray-400 text-xs mt-1">
-                  Sử dụng chuột trái để xoay, chuột phải để di chuyển, lăn chuột
-                  để phóng to.
-                </p>
-              </div>
-              <div class="pointer-events-auto">
-                <button
-                  onclick="resetCamera()"
-                  class="px-3 py-1 bg-white/10 hover:bg-white/20 text-white text-xs rounded border border-white/20"
-                >
-                  Reset Camera
-                </button>
-              </div>
-            </div>
-
-            <!-- Canvas Container -->
-            <div
-              id="canvas-container"
-              class="w-full h-full flex-grow bg-gray-900 cursor-move"
-            ></div>
-          </div>
+            <i class="fas fa-gamepad text-purple-500"></i> Bài tập Game
+          </a>
         </div>
-      </section>
+      </div>
 
-      <!-- SECTION 2: NHÓM CHỨC & PHỔ HỒNG NGOẠI (IR) -->
-      <section id="tab-content-2" class="tab-content hidden">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <!-- Functional Group List (Left Column) -->
-          <div class="lg:col-span-3 space-y-4">
-            <div
-              class="bg-white dark:bg-darkCard rounded-2xl shadow-md p-5 border border-gray-100 dark:border-gray-700"
-            >
+      <!-- Animated Scroll Indicator -->
+      <div class="mt-16 animate-bounce">
+        <i class="fas fa-chevron-down text-2xl text-slate-400"></i>
+      </div>
+    </section>
+
+    <main class="max-w-7xl mx-auto px-4 md:px-6 pb-20 space-y-32">
+      <!-- ================= SECTION 1: KHÁI NIỆM & HỢP CHẤT HỮU CƠ ================= -->
+      <section id="section-1" class="scroll-mt-28">
+        <div class="flex items-center gap-4 mb-8">
+          <div
+            class="w-12 h-12 rounded-2xl bg-blue-500 flex items-center justify-center text-white text-xl shadow-lg shadow-blue-500/40"
+          >
+            I
+          </div>
+          <h2 class="text-3xl md:text-4xl font-display font-bold">
+            Hợp chất Hữu cơ & Hóa học Hữu cơ
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- A. Lý thuyết -->
+          <div class="space-y-6">
+            <div class="glass-card p-6 rounded-3xl border-l-4 border-blue-500">
               <h3
-                class="font-bold text-gray-800 dark:text-white mb-3 flex items-center gap-2"
+                class="text-xl font-bold mb-4 flex items-center gap-2 text-blue-500"
               >
-                <i class="fa-solid fa-list-ul text-primary"></i> Nhóm chức
+                <i class="fas fa-book-open"></i> Lý thuyết trọng tâm
               </h3>
-              <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">
-                Chọn để xem cấu trúc và phổ IR đặc trưng.
-              </p>
-              <div
-                class="space-y-2 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar"
-              >
-                <!-- Buttons generated by JS -->
-                <div id="func-group-list" class="space-y-2"></div>
-              </div>
-            </div>
-
-            <!-- Quick Reference Card -->
-            <div
-              class="bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-4 border border-yellow-200 dark:border-yellow-700/50"
-            >
-              <h4
-                class="font-bold text-yellow-800 dark:text-yellow-500 text-sm mb-2"
-              >
-                <i class="fa-solid fa-lightbulb"></i> Đỉnh IR cần nhớ:
-              </h4>
               <ul
-                class="text-xs space-y-1 text-gray-700 dark:text-gray-300 font-mono"
+                class="space-y-3 text-slate-700 dark:text-slate-300 list-disc pl-5"
               >
                 <li>
-                  <span class="font-bold text-red-500">O-H (ancol):</span>
-                  3200-3500 (Rộng)
+                  <strong class="text-blue-500">Định nghĩa:</strong> Hợp chất
+                  của carbon (trừ CO, CO₂, CO₃²⁻, CN⁻, carbide...).
                 </li>
                 <li>
-                  <span class="font-bold text-red-500">C=O:</span> ~1700 (Sắc,
-                  mạnh)
+                  <strong class="text-blue-500">Thành phần:</strong> Bắt buộc có
+                  Carbon. Thường có H, O, N, S, P...
                 </li>
                 <li>
-                  <span class="font-bold text-red-500">N-H:</span> 3300-3500
+                  <strong class="text-blue-500">Liên kết:</strong> Chủ yếu là
+                  Cộng hóa trị.
                 </li>
                 <li>
-                  <span class="font-bold text-red-500">C≡C/C≡N:</span> 2100-2260
+                  <strong class="text-blue-500">Tính chất:</strong> t°nc, t°s
+                  thấp, dễ bay hơi, kém bền nhiệt, dễ cháy. Phản ứng chậm, theo
+                  nhiều hướng.
                 </li>
               </ul>
             </div>
+
+            <div class="glass-card p-6 rounded-3xl">
+              <h3
+                class="text-xl font-bold mb-4 flex items-center gap-2 text-purple-500"
+              >
+                <i class="fas fa-flask"></i> Thí nghiệm ảo: Nhận biết C và H
+              </h3>
+              <p class="text-sm mb-4">
+                Đốt cháy Saccharose (C₁₂H₂₂O₁₁) qua CuO nung nóng.
+              </p>
+              <div
+                class="bg-slate-900 rounded-xl p-4 relative h-64 overflow-hidden flex items-center justify-center"
+              >
+                <!-- Simplified Animation representation -->
+                <div class="relative">
+                  <div
+                    class="w-32 h-8 bg-slate-700 rounded-b-xl border-t-2 border-white/20 relative mx-auto mb-2 flex justify-center items-center text-xs text-white"
+                  >
+                    Đường + CuO
+                  </div>
+                  <div class="flex justify-center gap-8">
+                    <div class="text-center">
+                      <div
+                        id="sim-1-cuso4"
+                        class="w-16 h-16 rounded-lg bg-white border-2 border-slate-500 flex items-center justify-center transition-colors duration-1000"
+                      >
+                        CuSO₄
+                      </div>
+                      <span class="text-xs mt-1 block">Bông CuSO₄</span>
+                    </div>
+                    <div class="text-center">
+                      <div
+                        id="sim-1-caoh2"
+                        class="w-16 h-16 rounded-full bg-blue-100/30 border-2 border-slate-500 flex items-center justify-center transition-all duration-1000"
+                      >
+                        Nước vôi
+                      </div>
+                      <span class="text-xs mt-1 block">Ca(OH)₂</span>
+                    </div>
+                  </div>
+                  <button
+                    onclick="runExperiment1()"
+                    class="mt-6 px-6 py-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-full font-bold shadow-lg shadow-red-500/30"
+                  >
+                    <i class="fas fa-fire"></i> Đốt nóng
+                  </button>
+                </div>
+              </div>
+              <div
+                id="sim-1-result"
+                class="mt-4 text-sm text-green-500 font-semibold h-6 opacity-0 transition-opacity"
+              ></div>
+            </div>
           </div>
 
-          <!-- Main Display Area (Right Column) -->
-          <div class="lg:col-span-9 space-y-6">
-            <!-- Info & Structure -->
-            <div
-              class="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl shadow-lg p-6 text-white relative overflow-hidden"
-            >
-              <div
-                class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
-              >
-                <div>
-                  <h2 id="fg-name" class="text-3xl font-bold mb-1">
-                    Alcohol (Ancol)
-                  </h2>
-                  <p id="fg-desc" class="text-blue-100 text-sm max-w-lg">
-                    Nhóm hydroxyl (-OH) liên kết trực tiếp với nguyên tử carbon
-                    no.
-                  </p>
-                </div>
-                <div
-                  class="bg-white/10 backdrop-blur-md px-6 py-3 rounded-xl border border-white/20"
+          <!-- B. Mô phỏng & Tương tác -->
+          <div class="space-y-6">
+            <!-- Interactive 1: Methane Model -->
+            <div class="glass-card p-6 rounded-3xl">
+              <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-green-500">
+                  <i class="fas fa-cube"></i> Mô hình phân tử CH₄
+                </h3>
+                <span
+                  class="text-xs bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-300 px-2 py-1 rounded"
+                  >Interactive 3D</span
                 >
-                  <span class="text-xs text-blue-200 block mb-1"
-                    >Công thức chung</span
-                  >
-                  <span
-                    id="fg-formula"
-                    class="text-2xl font-mono font-bold tracking-widest"
-                    >R-OH</span
-                  >
+              </div>
+              <div
+                class="bg-slate-100 dark:bg-slate-800 rounded-2xl h-64 flex flex-col items-center justify-center relative overflow-hidden group cursor-move"
+                id="methane-container"
+              >
+                <svg
+                  width="200"
+                  height="200"
+                  viewBox="0 0 200 200"
+                  id="methane-svg"
+                  class="transition-transform duration-100"
+                >
+                  <!-- Carbon -->
+                  <circle cx="100" cy="100" r="20" fill="#333" />
+                  <!-- Bonds and Hydrogens (Simplified 2D projection of tetrahedron) -->
+                  <line
+                    x1="100"
+                    y1="100"
+                    x2="100"
+                    y2="40"
+                    stroke="#999"
+                    stroke-width="4"
+                  />
+                  <circle cx="100" cy="40" r="10" fill="#fff" stroke="#ccc" />
+                  <!-- H Top -->
+
+                  <line
+                    x1="100"
+                    y1="100"
+                    x2="40"
+                    y2="150"
+                    stroke="#999"
+                    stroke-width="4"
+                  />
+                  <circle cx="40" cy="150" r="10" fill="#fff" stroke="#ccc" />
+                  <!-- H Left -->
+
+                  <line
+                    x1="100"
+                    y1="100"
+                    x2="160"
+                    y2="150"
+                    stroke="#999"
+                    stroke-width="4"
+                  />
+                  <circle cx="160" cy="150" r="10" fill="#fff" stroke="#ccc" />
+                  <!-- H Right -->
+
+                  <line
+                    x1="100"
+                    y1="100"
+                    x2="130"
+                    y2="80"
+                    stroke="#999"
+                    stroke-width="4"
+                    opacity="0.5"
+                    stroke-dasharray="4"
+                  />
+                  <circle
+                    cx="130"
+                    cy="80"
+                    r="8"
+                    fill="#eee"
+                    stroke="#ccc"
+                    opacity="0.5"
+                  />
+                  <!-- H Back -->
+                </svg>
+                <div
+                  class="absolute bottom-2 left-0 w-full text-center text-xs text-slate-400"
+                >
+                  Di chuyển chuột để xoay (Giả lập)
                 </div>
+              </div>
+              <div class="mt-4 flex gap-2">
+                <input
+                  type="range"
+                  min="0"
+                  max="360"
+                  value="0"
+                  class="w-full"
+                  oninput="rotateMethane(this.value)"
+                />
               </div>
             </div>
 
-            <!-- Interactive IR Chart -->
+            <!-- Interactive 2: Classification Game -->
             <div
-              class="bg-white dark:bg-darkCard rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700"
+              class="glass-card p-6 rounded-3xl border-t-4 border-yellow-500"
             >
-              <div class="flex justify-between items-center mb-4">
-                <div>
-                  <h3
-                    class="text-lg font-bold text-gray-800 dark:text-white flex items-center gap-2"
+              <h3 class="text-xl font-bold mb-4 text-yellow-500">
+                <i class="fas fa-sort"></i> Phân loại Hữu cơ / Vô cơ
+              </h3>
+              <p class="text-sm mb-4 text-slate-500">
+                Click vào chất để đưa nó vào đúng giỏ.
+              </p>
+
+              <div class="flex justify-between gap-4 mb-4">
+                <div
+                  class="w-1/2 p-4 border-2 border-dashed border-green-500 rounded-xl bg-green-500/10 min-h-[100px] flex flex-col items-center justify-center relative"
+                  id="organic-bin"
+                >
+                  <span class="font-bold text-green-600">HỮU CƠ</span>
+                  <div
+                    id="organic-count"
+                    class="absolute top-1 right-2 text-xs font-bold"
                   >
-                    <i class="fa-solid fa-wave-square text-secondary"></i> Phổ
-                    Hồng Ngoại (IR Spectrum)
-                  </h3>
-                  <p class="text-xs text-gray-500">
-                    Biểu đồ mô phỏng dựa trên các đỉnh hấp thụ đặc trưng.
-                  </p>
+                    0
+                  </div>
                 </div>
-                <div class="flex items-center gap-2">
-                  <span class="w-3 h-3 rounded-full bg-red-500"></span>
-                  <span class="text-xs text-gray-500">Đỉnh đặc trưng</span>
+                <div
+                  class="w-1/2 p-4 border-2 border-dashed border-slate-500 rounded-xl bg-slate-500/10 min-h-[100px] flex flex-col items-center justify-center relative"
+                  id="inorganic-bin"
+                >
+                  <span class="font-bold text-slate-600">VÔ CƠ</span>
+                  <div
+                    id="inorganic-count"
+                    class="absolute top-1 right-2 text-xs font-bold"
+                  >
+                    0
+                  </div>
                 </div>
               </div>
 
-              <div class="relative h-[350px] w-full">
-                <canvas id="irChart"></canvas>
+              <div
+                class="flex flex-wrap gap-2 justify-center"
+                id="chemical-pool"
+              >
+                <!-- Items generated by JS -->
               </div>
-              <div class="flex justify-between mt-2 text-xs text-gray-400">
-                <span>4000 cm⁻¹</span>
-                <span>500 cm⁻¹</span>
-              </div>
+              <div
+                id="sort-feedback"
+                class="h-6 text-center text-sm font-bold mt-2"
+              ></div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- SECTION 3: PHƯƠNG PHÁP TÁCH & TINH CHẾ -->
-      <section id="tab-content-3" class="tab-content hidden">
-        <div
-          class="bg-white dark:bg-darkCard rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700"
-        >
-          <!-- Lab Controls -->
+      <!-- ================= SECTION 2: PHÂN LOẠI & NHÓM CHỨC (IR) ================= -->
+      <section id="section-2" class="scroll-mt-28">
+        <div class="flex items-center gap-4 mb-8">
           <div
-            class="grid grid-cols-2 md:grid-cols-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50"
+            class="w-12 h-12 rounded-2xl bg-purple-500 flex items-center justify-center text-white text-xl shadow-lg shadow-purple-500/40"
           >
-            <button
-              onclick="switchLab('distillation')"
-              class="lab-tab active-lab p-4 text-sm md:text-base font-bold transition hover:bg-white dark:hover:bg-darkCard flex flex-col items-center gap-1"
-            >
-              <i class="fa-solid fa-temperature-arrow-up text-xl mb-1"></i>
-              Chưng cất
-            </button>
-            <button
-              onclick="switchLab('extraction')"
-              class="lab-tab p-4 text-sm md:text-base font-bold transition hover:bg-white dark:hover:bg-darkCard flex flex-col items-center gap-1"
-            >
-              <i class="fa-solid fa-filter text-xl mb-1"></i> Chiết
-            </button>
-            <button
-              onclick="switchLab('crystallization')"
-              class="lab-tab p-4 text-sm md:text-base font-bold transition hover:bg-white dark:hover:bg-darkCard flex flex-col items-center gap-1"
-            >
-              <i class="fa-solid fa-snowflake text-xl mb-1"></i> Kết tinh
-            </button>
-            <button
-              onclick="switchLab('chromatography')"
-              class="lab-tab p-4 text-sm md:text-base font-bold transition hover:bg-white dark:hover:bg-darkCard flex flex-col items-center gap-1"
-            >
-              <i class="fa-solid fa-layer-group text-xl mb-1"></i> Sắc ký
-            </button>
+            II
           </div>
+          <h2 class="text-3xl md:text-4xl font-display font-bold">
+            Phân loại & Nhóm chức (Phổ IR)
+          </h2>
+        </div>
 
-          <!-- Lab Content Area -->
-          <div
-            class="p-6 md:p-8 min-h-[550px] relative bg-white dark:bg-darkCard"
-            id="lab-container"
-          >
-            <!-- 1. Distillation -->
+        <!-- IR Simulator -->
+        <div class="glass-card p-1 rounded-3xl overflow-hidden mb-8">
+          <div class="bg-slate-900 p-6 md:p-8">
             <div
-              id="sim-distillation"
-              class="lab-view grid md:grid-cols-2 gap-10 h-full"
+              class="flex flex-col md:flex-row justify-between items-start mb-6"
+            >
+              <div>
+                <h3 class="text-2xl font-bold text-white mb-2">
+                  <i class="fas fa-wave-square text-pink-500"></i> Phòng thí
+                  nghiệm Phổ hồng ngoại (IR)
+                </h3>
+                <p class="text-slate-400 text-sm">
+                  Chọn hợp chất để xem phổ IR và xác định nhóm chức đặc trưng.
+                </p>
+              </div>
+              <div class="flex gap-2 mt-4 md:mt-0">
+                <button
+                  onclick="loadIR('ethanol')"
+                  class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-white text-sm transition"
+                >
+                  Ethanol (Alcohol)
+                </button>
+                <button
+                  onclick="loadIR('butanal')"
+                  class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-white text-sm transition"
+                >
+                  Butanal (Aldehyde)
+                </button>
+                <button
+                  onclick="loadIR('acid')"
+                  class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-white text-sm transition"
+                >
+                  Acetic Acid
+                </button>
+              </div>
+            </div>
+
+            <!-- Canvas/SVG Graph -->
+            <div
+              class="relative w-full h-64 bg-slate-800 rounded-xl border border-slate-700 overflow-hidden"
+            >
+              <!-- Grid Lines -->
+              <div
+                class="absolute inset-0 grid grid-cols-6 grid-rows-4 opacity-20"
+              >
+                <div class="border-r border-b border-white"></div>
+                <div class="border-r border-b border-white"></div>
+                <div class="border-r border-b border-white"></div>
+                <div class="border-r border-b border-white"></div>
+                <div class="border-r border-b border-white"></div>
+                <div class="border-b border-white"></div>
+                <div class="border-r border-b border-white"></div>
+                <div class="border-r border-b border-white"></div>
+                <div class="border-r border-b border-white"></div>
+                <div class="border-r border-b border-white"></div>
+                <div class="border-r border-b border-white"></div>
+                <div class="border-b border-white"></div>
+                <div class="border-r border-b border-white"></div>
+                <div class="border-r border-b border-white"></div>
+                <div class="border-r border-b border-white"></div>
+                <div class="border-r border-b border-white"></div>
+                <div class="border-r border-b border-white"></div>
+                <div class="border-b border-white"></div>
+                <div class="border-r border-white"></div>
+                <div class="border-r border-white"></div>
+                <div class="border-r border-white"></div>
+                <div class="border-r border-white"></div>
+                <div class="border-r border-white"></div>
+                <div></div>
+              </div>
+
+              <!-- Axis Labels -->
+              <div class="absolute bottom-2 left-2 text-xs text-slate-500">
+                4000
+              </div>
+              <div class="absolute bottom-2 right-2 text-xs text-slate-500">
+                400 cm⁻¹
+              </div>
+              <div class="absolute top-2 left-2 text-xs text-slate-500">%T</div>
+
+              <!-- Dynamic Path -->
+              <svg
+                class="absolute inset-0 w-full h-full p-4"
+                viewBox="0 0 1000 400"
+                preserveAspectRatio="none"
+              >
+                <path
+                  id="ir-path"
+                  d="M0 50 L1000 50"
+                  fill="none"
+                  stroke="#ec4899"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="transition-all duration-700 ease-in-out"
+                />
+              </svg>
+
+              <!-- Highlight Box (Hidden by default) -->
+              <div
+                id="ir-highlight"
+                class="absolute top-10 w-20 h-40 bg-yellow-500/20 border border-yellow-500 hidden animate-pulse"
+              >
+                <span
+                  class="absolute -top-6 left-0 text-xs text-yellow-400 font-bold whitespace-nowrap bg-slate-900 px-1 rounded"
+                  id="ir-label"
+                  >O-H Stretch</span
+                >
+              </div>
+            </div>
+
+            <div
+              id="ir-explanation"
+              class="mt-4 p-4 bg-slate-800 rounded-lg text-slate-300 text-sm border-l-4 border-pink-500"
+            >
+              Chọn một chất để bắt đầu phân tích.
+            </div>
+          </div>
+        </div>
+
+        <!-- Theory Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="glass-card p-6 rounded-2xl">
+            <h4 class="font-bold text-blue-500 mb-2">Hydrocarbon</h4>
+            <p class="text-sm text-slate-600 dark:text-slate-400">
+              Chỉ chứa C và H.
+            </p>
+            <ul class="mt-2 text-sm space-y-1 list-disc pl-4">
+              <li>Alkane (No)</li>
+              <li>Alkene/Alkyne (Không no)</li>
+              <li>Arene (Thơm)</li>
+            </ul>
+          </div>
+          <div class="glass-card p-6 rounded-2xl">
+            <h4 class="font-bold text-red-500 mb-2">Dẫn xuất Oxygen</h4>
+            <p class="text-sm text-slate-600 dark:text-slate-400">
+              Chứa C, H, O.
+            </p>
+            <ul class="mt-2 text-sm space-y-1 list-disc pl-4">
+              <li>Alcohol (-OH)</li>
+              <li>Aldehyde (-CHO)</li>
+              <li>Carboxylic Acid (-COOH)</li>
+            </ul>
+          </div>
+          <div class="glass-card p-6 rounded-2xl">
+            <h4 class="font-bold text-purple-500 mb-2">Ứng dụng Phổ IR</h4>
+            <p class="text-sm text-slate-600 dark:text-slate-400">
+              Xác định nhóm chức.
+            </p>
+            <ul class="mt-2 text-sm space-y-1 list-disc pl-4">
+              <li>C=O: 1750 - 1680 cm⁻¹ (Mạnh)</li>
+              <li>O-H (alcohol): 3650 - 3200 cm⁻¹ (Rộng)</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SECTION 3: TÁCH BIỆT & TINH CHẾ ================= -->
+      <section id="section-3" class="scroll-mt-28">
+        <div class="flex items-center gap-4 mb-8">
+          <div
+            class="w-12 h-12 rounded-2xl bg-orange-500 flex items-center justify-center text-white text-xl shadow-lg shadow-orange-500/40"
+          >
+            III
+          </div>
+          <h2 class="text-3xl md:text-4xl font-display font-bold">
+            Tách biệt & Tinh chế
+          </h2>
+        </div>
+
+        <!-- Distillation Simulation -->
+        <div class="glass-card p-1 rounded-3xl overflow-hidden shadow-2xl">
+          <div
+            class="bg-gradient-to-b from-slate-800 to-slate-900 p-8 relative"
+          >
+            <div class="flex justify-between items-center mb-6 z-10 relative">
+              <h3 class="text-2xl font-bold text-white">
+                <i class="fas fa-temperature-high text-orange-500"></i> Mô phỏng
+                Chưng cất (Distillation)
+              </h3>
+              <div class="text-right">
+                <div
+                  class="text-4xl font-mono text-orange-400 font-bold"
+                  id="temp-display"
+                >
+                  25°C
+                </div>
+                <div class="text-xs text-slate-400">Nhiệt độ dung dịch</div>
+              </div>
+            </div>
+
+            <div
+              class="flex flex-col md:flex-row gap-8 items-center justify-center"
             >
               <!-- Apparatus Visual -->
-              <div
-                class="border border-gray-200 dark:border-gray-600 rounded-2xl relative bg-blue-50/50 dark:bg-slate-900 overflow-hidden flex items-end justify-center pb-8 min-h-[400px]"
-              >
+              <div class="relative w-64 h-80">
+                <!-- Flask -->
                 <div
-                  class="relative w-full h-full flex flex-col items-center justify-end"
-                >
-                  <!-- Thermometer -->
-                  <div
-                    class="absolute top-[20%] right-[35%] w-1.5 h-20 bg-gray-300 rounded-full border border-gray-400 z-20"
-                  >
-                    <div
-                      id="thermometer-liquid"
-                      class="w-full bg-red-500 rounded-b-full absolute bottom-0 transition-all duration-1000 h-[20%]"
-                    ></div>
-                  </div>
-
-                  <!-- Flask -->
-                  <div
-                    class="w-32 h-32 rounded-full border-4 border-gray-400 bg-white/20 backdrop-blur-sm relative overflow-hidden mb-2 z-10 shadow-inner"
-                  >
-                    <div
-                      id="distill-liquid"
-                      class="absolute bottom-0 w-full h-3/4 bg-amber-400/80 transition-all duration-[5s] border-t border-amber-500/50"
-                    ></div>
-                    <div id="bubbles-container" class="absolute inset-0"></div>
-                  </div>
-
-                  <!-- Heater -->
-                  <div
-                    class="w-40 h-8 bg-red-600 rounded-lg relative z-10 mb-4 shadow-lg flex items-center justify-center"
-                  >
-                    <span
-                      class="text-[10px] text-white font-bold uppercase tracking-widest"
-                      >Bếp Đun</span
-                    >
-                    <div
-                      id="heat-waves"
-                      class="absolute -top-4 w-full flex justify-center gap-2 opacity-0 transition-opacity"
-                    >
-                      <i
-                        class="fa-solid fa-water text-red-500 animate-bounce"
-                      ></i>
-                      <i
-                        class="fa-solid fa-water text-red-500 animate-bounce"
-                        style="animation-delay: 0.1s"
-                      ></i>
-                      <i
-                        class="fa-solid fa-water text-red-500 animate-bounce"
-                        style="animation-delay: 0.2s"
-                      ></i>
-                    </div>
-                  </div>
-
-                  <!-- Condenser & Collection -->
-                  <div
-                    class="absolute top-[30%] right-[15%] w-32 h-4 bg-gray-300 rotate-12 origin-left border border-gray-400 rounded"
-                  ></div>
-                  <div
-                    class="absolute top-[35%] right-[5%] w-12 h-20 border-2 border-gray-400 border-t-0 bg-transparent flex items-end justify-center rounded-b-xl overflow-hidden"
-                  >
-                    <div
-                      id="collected-liquid"
-                      class="w-full bg-amber-400/80 h-0 transition-all duration-[5s]"
-                    ></div>
-                  </div>
-
-                  <!-- Labels -->
-                  <span class="absolute bottom-2 left-4 text-xs text-gray-500"
-                    >Hỗn hợp</span
-                  >
-                  <span class="absolute bottom-2 right-4 text-xs text-gray-500"
-                    >Sản phẩm</span
-                  >
-                </div>
-              </div>
-
-              <!-- Controls & Explanation -->
-              <div class="flex flex-col justify-center space-y-4">
-                <div>
-                  <h3 class="text-2xl font-bold text-primary mb-2">
-                    Chưng cất thường
-                  </h3>
-                  <p class="text-gray-600 dark:text-gray-300 text-sm">
-                    Phương pháp dùng để tách các chất lỏng có nhiệt độ sôi khác
-                    nhau (thường chênh lệch ≥ 25°C).
-                  </p>
-                </div>
-
-                <div
-                  class="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-xl border-l-4 border-yellow-400"
-                >
-                  <p
-                    class="font-bold text-yellow-800 dark:text-yellow-400 text-sm mb-1"
-                  >
-                    Nguyên tắc:
-                  </p>
-                  <p class="text-xs md:text-sm dark:text-gray-300 italic">
-                    Đun nóng hỗn hợp → Chất có nhiệt độ sôi thấp hơn sẽ bay hơi
-                    trước → Hơi đi qua ống sinh hàn ngưng tụ lại thành lỏng.
-                  </p>
-                </div>
-
-                <div class="space-y-2">
-                  <div
-                    class="flex justify-between text-xs font-bold text-gray-500 uppercase"
-                  >
-                    <span
-                      >Trạng thái:
-                      <span
-                        id="distill-status"
-                        class="text-gray-800 dark:text-white"
-                        >Sẵn sàng</span
-                      ></span
-                    >
-                  </div>
-                  <button
-                    onclick="startDistillation()"
-                    class="w-full py-3 bg-primary text-white rounded-xl font-bold shadow-lg hover:bg-indigo-600 transition flex items-center justify-center gap-2 group"
-                  >
-                    <i
-                      class="fa-solid fa-power-off group-hover:scale-110 transition"
-                    ></i>
-                    Bật Bếp & Bắt đầu
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- 2. Extraction -->
-            <div
-              id="sim-extraction"
-              class="lab-view hidden grid md:grid-cols-2 gap-10 h-full"
-            >
-              <div
-                class="border border-gray-200 dark:border-gray-600 rounded-2xl relative bg-white dark:bg-slate-900 flex items-center justify-center min-h-[400px]"
-              >
-                <!-- Funnel Shape -->
-                <div class="relative w-48 h-80 flex flex-col items-center">
-                  <!-- Funnel Body -->
-                  <div class="w-full h-48 relative z-10">
-                    <div
-                      class="absolute inset-0 clip-path-funnel bg-white/20 backdrop-blur-sm border-2 border-gray-400 overflow-hidden flex flex-col"
-                    >
-                      <div
-                        id="ext-layer-oil"
-                        class="w-full h-1/2 bg-yellow-300/80 flex items-center justify-center text-xs font-bold text-yellow-900 border-b border-white/50 transition-all duration-1000"
-                      >
-                        Dầu (d < 1)
-                      </div>
-                      <div
-                        id="ext-layer-water"
-                        class="w-full h-1/2 bg-blue-500/80 flex items-center justify-center text-xs font-bold text-white transition-all duration-1000"
-                      >
-                        Nước (d = 1)
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Tap -->
-                  <div class="w-2 h-8 bg-gray-500 relative z-10 -mt-2"></div>
-                  <div
-                    id="ext-tap-handle"
-                    class="w-8 h-2 bg-gray-700 absolute top-[195px] transition-transform duration-300 z-20 rounded"
-                  ></div>
-
-                  <!-- Stream -->
-                  <div
-                    id="ext-stream"
-                    class="w-1 h-0 bg-blue-500/80 absolute top-[210px] transition-all duration-100"
-                  ></div>
-
-                  <!-- Beaker -->
-                  <div
-                    class="w-24 h-20 border-2 border-gray-400 border-t-0 bg-transparent flex items-end mt-4 rounded-b-lg overflow-hidden relative"
-                  >
-                    <div
-                      id="ext-beaker"
-                      class="w-full bg-blue-500/80 h-0 transition-all duration-1000"
-                    ></div>
-                    <!-- Graduation lines -->
-                    <div
-                      class="absolute bottom-4 left-0 w-2 h-[1px] bg-gray-400"
-                    ></div>
-                    <div
-                      class="absolute bottom-8 left-0 w-2 h-[1px] bg-gray-400"
-                    ></div>
-                    <div
-                      class="absolute bottom-12 left-0 w-2 h-[1px] bg-gray-400"
-                    ></div>
-                  </div>
-                </div>
-              </div>
-              <div class="flex flex-col justify-center space-y-4">
-                <div>
-                  <h3 class="text-2xl font-bold text-secondary mb-2">
-                    Phương pháp Chiết
-                  </h3>
-                  <p class="text-gray-600 dark:text-gray-300 text-sm">
-                    Tách chất dựa vào sự khác nhau về độ tan trong các dung môi
-                    không hòa tan lẫn nhau.
-                  </p>
-                </div>
-
-                <div
-                  class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border-l-4 border-blue-400"
-                >
-                  <p
-                    class="font-bold text-blue-800 dark:text-blue-400 text-sm mb-1"
-                  >
-                    Quy tắc:
-                  </p>
-                  <p class="text-xs md:text-sm dark:text-gray-300 italic">
-                    "Like dissolves like". Dung môi phân cực hòa tan chất phân
-                    cực. Dung môi không phân cực hòa tan chất không phân cực.
-                  </p>
-                </div>
-
-                <div class="flex gap-3">
-                  <button
-                    onclick="startExtraction()"
-                    class="flex-1 py-3 bg-secondary text-white rounded-xl font-bold shadow-lg hover:bg-pink-600 transition"
-                  >
-                    <i class="fa-solid fa-faucet-drip mr-2"></i> Mở khóa
-                  </button>
-                  <button
-                    onclick="resetExtraction()"
-                    class="px-4 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-white rounded-xl font-bold hover:bg-gray-300 dark:hover:bg-gray-600 transition"
-                  >
-                    <i class="fa-solid fa-rotate-right"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- 3. Crystallization -->
-            <div
-              id="sim-crystallization"
-              class="lab-view hidden grid md:grid-cols-2 gap-10 h-full"
-            >
-              <div
-                class="border border-gray-200 dark:border-gray-600 rounded-2xl relative bg-slate-50 dark:bg-slate-900 flex items-center justify-center min-h-[400px]"
-              >
-                <!-- Beaker -->
-                <div
-                  class="w-48 h-56 bg-white/10 border-2 border-gray-300 border-t-0 rounded-b-xl relative overflow-hidden flex items-end"
+                  class="absolute bottom-10 left-10 w-24 h-24 rounded-full bg-slate-700/50 border-2 border-white/30 overflow-hidden"
                 >
                   <!-- Liquid -->
                   <div
-                    class="w-full h-3/4 bg-teal-100 dark:bg-teal-900/30 relative"
-                    id="crystal-container"
+                    id="distill-liquid"
+                    class="absolute bottom-0 w-full h-3/4 bg-blue-500/60 transition-all duration-300"
                   >
+                    <!-- Particles -->
                     <div
-                      class="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-1000 z-10"
-                      id="hot-solution"
-                    >
-                      <span class="text-red-500 font-bold animate-pulse text-sm"
-                        >Dung dịch quá bão hòa (Nóng)</span
-                      >
-                    </div>
+                      class="absolute w-2 h-2 bg-red-400 rounded-full top-4 left-4 animate-bounce"
+                      title="Ethanol"
+                    ></div>
+                    <div
+                      class="absolute w-2 h-2 bg-blue-300 rounded-full top-8 left-8 animate-bounce"
+                      style="animation-delay: 0.5s"
+                      title="Water"
+                    ></div>
+                    <div
+                      class="absolute w-2 h-2 bg-red-400 rounded-full top-6 left-12 animate-bounce"
+                      style="animation-delay: 0.2s"
+                    ></div>
+                  </div>
+                </div>
+                <!-- Neck -->
+                <div
+                  class="absolute bottom-32 left-[78px] w-6 h-20 bg-slate-700/50 border-x-2 border-white/30"
+                ></div>
+                <!-- Condenser (Simple Visual) -->
+                <div
+                  class="absolute bottom-[200px] left-[78px] w-40 h-6 bg-slate-700/50 border-2 border-white/30 transform rotate-12 origin-left"
+                >
+                  <div
+                    id="condenser-flow"
+                    class="w-2 h-2 bg-red-400 rounded-full absolute left-0 top-1 opacity-0"
+                  ></div>
+                </div>
+                <!-- Collection Flask -->
+                <div
+                  class="absolute bottom-20 right-0 w-16 h-20 border-2 border-white/30 rounded-lg bg-slate-700/30 overflow-hidden flex items-end justify-center"
+                >
+                  <div
+                    id="collected-liquid"
+                    class="w-full bg-red-400/80 transition-all duration-500 h-0"
+                  ></div>
+                </div>
+
+                <!-- Heater -->
+                <div
+                  class="absolute bottom-0 left-6 w-32 h-8 bg-slate-600 rounded-t-lg flex justify-center items-center"
+                >
+                  <div
+                    id="heater-glow"
+                    class="w-20 h-4 bg-orange-600 rounded-full blur-md opacity-0 transition-opacity duration-300"
+                  ></div>
+                </div>
+              </div>
+
+              <!-- Controls -->
+              <div class="w-full md:w-1/2 space-y-6">
+                <div>
+                  <label class="block text-white mb-2 text-sm font-bold"
+                    >Điều chỉnh nhiệt độ</label
+                  >
+                  <input
+                    type="range"
+                    id="heat-slider"
+                    min="25"
+                    max="120"
+                    value="25"
+                    class="w-full accent-orange-500"
+                    oninput="updateDistillation(this.value)"
+                  />
+                  <div class="flex justify-between text-xs text-slate-400 mt-2">
+                    <span>25°C</span>
+                    <span>78°C (Ethanol sôi)</span>
+                    <span>100°C (Nước sôi)</span>
                   </div>
                 </div>
 
-                <!-- Thermometer Overlay -->
                 <div
-                  class="absolute top-4 right-4 bg-white dark:bg-gray-800 p-3 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700"
+                  class="p-4 bg-slate-800/50 rounded-xl border border-slate-700"
                 >
-                  <span class="text-xs text-gray-500 block">Nhiệt độ</span>
-                  <span
-                    id="temp-display"
-                    class="font-mono text-2xl font-bold text-red-500"
-                    >80°C</span
-                  >
+                  <h4 class="text-orange-400 font-bold text-sm mb-2">
+                    Trạng thái:
+                  </h4>
+                  <p id="distill-status" class="text-slate-300 text-sm">
+                    Đang ở nhiệt độ phòng. Chưa có hiện tượng.
+                  </p>
                 </div>
               </div>
-              <div class="flex flex-col justify-center space-y-4">
-                <div>
-                  <h3 class="text-2xl font-bold text-teal-600 mb-2">
-                    Phương pháp Kết tinh
-                  </h3>
-                  <p class="text-gray-600 dark:text-gray-300 text-sm">
-                    Dùng để tinh chế chất rắn. Chất rắn hòa tan tốt khi nóng
-                    nhưng kém tan khi lạnh.
-                  </p>
-                </div>
+            </div>
+          </div>
+        </div>
 
-                <div
-                  class="bg-teal-50 dark:bg-teal-900/20 p-4 rounded-xl border-l-4 border-teal-400"
-                >
-                  <p
-                    class="font-bold text-teal-800 dark:text-teal-400 text-sm mb-1"
+        <!-- Separation Methods Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+          <div
+            class="glass-card p-4 rounded-xl text-center hover:bg-blue-50 dark:hover:bg-slate-800 cursor-pointer group"
+            onclick="
+              alert(
+                'Phương pháp dùng để tách chất lỏng có nhiệt độ sôi khác nhau!',
+              )
+            "
+          >
+            <div
+              class="w-12 h-12 mx-auto bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mb-3 group-hover:scale-110 transition"
+            >
+              <i class="fas fa-fill-drip"></i>
+            </div>
+            <h4 class="font-bold">Chưng cất</h4>
+            <span class="text-xs text-slate-500">Khác nhau về t° sôi</span>
+          </div>
+          <div
+            class="glass-card p-4 rounded-xl text-center hover:bg-green-50 dark:hover:bg-slate-800 cursor-pointer group"
+          >
+            <div
+              class="w-12 h-12 mx-auto bg-green-100 rounded-full flex items-center justify-center text-green-600 mb-3 group-hover:scale-110 transition"
+            >
+              <i class="fas fa-layer-group"></i>
+            </div>
+            <h4 class="font-bold">Chiết</h4>
+            <span class="text-xs text-slate-500">Độ tan khác nhau</span>
+          </div>
+          <div
+            class="glass-card p-4 rounded-xl text-center hover:bg-purple-50 dark:hover:bg-slate-800 cursor-pointer group"
+          >
+            <div
+              class="w-12 h-12 mx-auto bg-purple-100 rounded-full flex items-center justify-center text-purple-600 mb-3 group-hover:scale-110 transition"
+            >
+              <i class="fas fa-snowflake"></i>
+            </div>
+            <h4 class="font-bold">Kết tinh</h4>
+            <span class="text-xs text-slate-500">Độ tan theo nhiệt độ</span>
+          </div>
+          <div
+            class="glass-card p-4 rounded-xl text-center hover:bg-pink-50 dark:hover:bg-slate-800 cursor-pointer group"
+          >
+            <div
+              class="w-12 h-12 mx-auto bg-pink-100 rounded-full flex items-center justify-center text-pink-600 mb-3 group-hover:scale-110 transition"
+            >
+              <i class="fas fa-rainbow"></i>
+            </div>
+            <h4 class="font-bold">Sắc ký</h4>
+            <span class="text-xs text-slate-500">Khả năng hấp phụ</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SECTION 4: CÔNG THỨC PHÂN TỬ ================= -->
+      <section id="section-4" class="scroll-mt-28">
+        <div class="flex items-center gap-4 mb-8">
+          <div
+            class="w-12 h-12 rounded-2xl bg-teal-500 flex items-center justify-center text-white text-xl shadow-lg shadow-teal-500/40"
+          >
+            IV
+          </div>
+          <h2 class="text-3xl md:text-4xl font-display font-bold">
+            Công thức Phân tử
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Theory -->
+          <div class="space-y-4">
+            <div class="glass-card p-6 rounded-2xl border-l-4 border-teal-500">
+              <h3 class="font-bold text-lg mb-2">Các loại công thức</h3>
+              <ul class="space-y-3 text-sm">
+                <li class="flex items-start gap-2">
+                  <span
+                    class="bg-teal-100 text-teal-800 px-2 py-0.5 rounded text-xs font-bold mt-1"
+                    >CTĐGN</span
                   >
-                    Cơ chế:
-                  </p>
-                  <p class="text-xs md:text-sm dark:text-gray-300 italic">
-                    Làm lạnh dung dịch bão hòa nóng → Chất tan tách ra dưới dạng
-                    tinh thể tinh khiết → Lọc lấy tinh thể.
-                  </p>
-                </div>
+                  <span>Tỉ lệ tối giản số nguyên tử (VD: CH₂O)</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span
+                    class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-xs font-bold mt-1"
+                    >CTPT</span
+                  >
+                  <span>Số lượng nguyên tử thực tế (VD: C₆H₁₂O₆)</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span
+                    class="bg-purple-100 text-purple-800 px-2 py-0.5 rounded text-xs font-bold mt-1"
+                    >Phổ MS</span
+                  >
+                  <span>Peak [M⁺] lớn nhất = Phân tử khối (M)</span>
+                </li>
+              </ul>
+            </div>
 
-                <button
-                  onclick="startCrystallization()"
-                  class="w-full py-3 bg-teal-500 text-white rounded-xl font-bold shadow-lg hover:bg-teal-600 transition flex items-center justify-center gap-2"
-                >
-                  <i class="fa-solid fa-snowflake"></i> Làm lạnh & Kết tinh
-                </button>
+            <div class="glass-card p-6 rounded-2xl">
+              <h3 class="font-bold text-lg mb-2">Công thức tính nhanh</h3>
+              <div
+                class="bg-slate-100 dark:bg-slate-800 p-4 rounded-xl font-mono text-sm"
+              >
+                x : y : z = %C/12 : %H/1 : %O/16
+              </div>
+            </div>
+          </div>
+
+          <!-- Calculator Tool -->
+          <div class="glass-card p-6 rounded-3xl border-2 border-teal-500/20">
+            <h3 class="text-xl font-bold text-teal-600 mb-4">
+              <i class="fas fa-calculator"></i> Tìm công thức đơn giản nhất
+            </h3>
+
+            <div class="grid grid-cols-3 gap-4 mb-4">
+              <div>
+                <label class="block text-xs font-bold mb-1">%C</label>
+                <input
+                  type="number"
+                  id="calc-c"
+                  class="w-full p-2 rounded-lg border dark:bg-slate-800 dark:border-slate-600"
+                  placeholder="e.g 40"
+                />
+              </div>
+              <div>
+                <label class="block text-xs font-bold mb-1">%H</label>
+                <input
+                  type="number"
+                  id="calc-h"
+                  class="w-full p-2 rounded-lg border dark:bg-slate-800 dark:border-slate-600"
+                  placeholder="e.g 6.67"
+                />
+              </div>
+              <div>
+                <label class="block text-xs font-bold mb-1">%O</label>
+                <input
+                  type="number"
+                  id="calc-o"
+                  class="w-full p-2 rounded-lg border dark:bg-slate-800 dark:border-slate-600"
+                  placeholder="e.g 53.33"
+                />
               </div>
             </div>
 
-            <!-- 4. Chromatography -->
-            <div
-              id="sim-chromatography"
-              class="lab-view hidden grid md:grid-cols-2 gap-10 h-full"
+            <button
+              onclick="calculateEmpirical()"
+              class="w-full py-3 rounded-xl bg-teal-500 hover:bg-teal-600 text-white font-bold shadow-lg shadow-teal-500/30 transition"
             >
+              Tính toán
+            </button>
+
+            <div
+              id="calc-result"
+              class="mt-4 p-4 bg-teal-50 dark:bg-teal-900/30 rounded-xl text-center hidden"
+            >
+              <span class="text-sm text-slate-500">Kết quả:</span>
               <div
-                class="border border-gray-200 dark:border-gray-600 rounded-2xl relative bg-white dark:bg-slate-900 flex items-center justify-center min-h-[400px]"
+                class="text-2xl font-bold text-teal-600 dark:text-teal-400"
+                id="result-text"
               >
-                <!-- Column -->
-                <div
-                  class="w-16 h-80 border-2 border-gray-400 bg-gray-50 relative overflow-hidden rounded-sm shadow-md"
-                >
-                  <!-- Silica Gel -->
-                  <div
-                    class="absolute inset-0 bg-white opacity-80 z-0 bg-[url('https://www.transparenttextures.com/patterns/white-diamond.png')]"
-                  ></div>
-                  <div
-                    class="absolute top-0 w-full h-full bg-gradient-to-b from-transparent to-gray-200 opacity-20 pointer-events-none"
-                  ></div>
-
-                  <!-- Spots -->
-                  <div
-                    id="chroma-spot-mix"
-                    class="absolute top-4 left-2 w-12 h-2 bg-purple-800 rounded-full blur-[1px] z-10 transition-opacity"
-                  ></div>
-
-                  <div
-                    id="chroma-spot-red"
-                    class="absolute top-4 left-2 w-12 h-3 bg-red-500 rounded-full blur-[2px] opacity-0 z-10 mix-blend-multiply"
-                  ></div>
-                  <div
-                    id="chroma-spot-blue"
-                    class="absolute top-4 left-2 w-12 h-3 bg-blue-500 rounded-full blur-[2px] opacity-0 z-10 mix-blend-multiply"
-                  ></div>
-                  <div
-                    id="chroma-spot-yellow"
-                    class="absolute top-4 left-2 w-12 h-3 bg-yellow-400 rounded-full blur-[2px] opacity-0 z-10 mix-blend-multiply"
-                  ></div>
-                </div>
-
-                <!-- Tap -->
-                <div class="absolute bottom-[48px] w-2 h-6 bg-gray-500"></div>
-              </div>
-              <div class="flex flex-col justify-center space-y-4">
-                <div>
-                  <h3 class="text-2xl font-bold text-purple-600 mb-2">
-                    Sắc ký cột (Column Chromatography)
-                  </h3>
-                  <p class="text-gray-600 dark:text-gray-300 text-sm">
-                    Tách hỗn hợp chất phức tạp dựa trên khả năng hấp phụ khác
-                    nhau của các chất lên pha tĩnh (thường là silica gel).
-                  </p>
-                </div>
-
-                <div
-                  class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-xl border-l-4 border-purple-400"
-                >
-                  <p
-                    class="font-bold text-purple-800 dark:text-purple-400 text-sm mb-1"
-                  >
-                    Hiện tượng:
-                  </p>
-                  <p class="text-xs md:text-sm dark:text-gray-300 italic">
-                    Chất hấp phụ yếu di chuyển nhanh (ra trước). Chất hấp phụ
-                    mạnh di chuyển chậm (ra sau).
-                  </p>
-                </div>
-
-                <button
-                  onclick="startChromatography()"
-                  class="w-full py-3 bg-purple-600 text-white rounded-xl font-bold shadow-lg hover:bg-purple-700 transition"
-                >
-                  <i class="fa-solid fa-droplet mr-2"></i> Thêm dung môi & Chạy
-                </button>
+                CH₂O
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- SECTION 4: CẤU TẠO HÓA HỌC & CÔNG THỨC -->
-      <section id="tab-content-4" class="tab-content hidden">
-        <div class="grid lg:grid-cols-2 gap-8">
-          <!-- Theory: Structure Theory -->
+      <!-- ================= SECTION 5: CẤU TẠO HÓA HỌC ================= -->
+      <section id="section-5" class="scroll-mt-28">
+        <div class="flex items-center gap-4 mb-8">
           <div
-            class="bg-white dark:bg-darkCard rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700"
+            class="w-12 h-12 rounded-2xl bg-indigo-500 flex items-center justify-center text-white text-xl shadow-lg shadow-indigo-500/40"
           >
-            <div class="flex items-center gap-3 mb-4">
-              <div
-                class="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg text-green-600"
-              >
-                <i class="fa-solid fa-network-wired text-xl"></i>
-              </div>
-              <h2 class="text-xl font-bold text-gray-800 dark:text-white">
-                Thuyết cấu tạo hóa học (Butlerov)
-              </h2>
-            </div>
-            <ul class="space-y-3 text-gray-600 dark:text-gray-300 text-sm">
-              <li class="flex gap-3">
-                <span class="font-bold text-green-500">1.</span>
-                <span
-                  >Các nguyên tử liên kết theo
-                  <strong>trật tự xác định</strong>. Thay đổi trật tự → chất
-                  mới.</span
-                >
-              </li>
-              <li class="flex gap-3">
-                <span class="font-bold text-green-500">2.</span>
-                <span
-                  >Tính chất phụ thuộc vào <strong>thành phần</strong> và
-                  <strong>cấu tạo</strong>.</span
-                >
-              </li>
-              <li class="flex gap-3">
-                <span class="font-bold text-green-500">3.</span>
-                <span
-                  >Nguyên tử Carbon có hóa trị IV, thường tạo mạch (thẳng,
-                  nhánh, vòng).</span
-                >
-              </li>
-            </ul>
-
-            <div
-              class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700"
-            >
-              <h3 class="font-bold text-gray-800 dark:text-white mb-2">
-                Đồng phân & Đồng đẳng
-              </h3>
-              <div class="grid grid-cols-2 gap-3">
-                <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <strong class="text-blue-500 block mb-1">Đồng đẳng</strong>
-                  <p class="text-xs text-gray-500">
-                    Cùng CTPT chung, tính chất tương tự, hơn kém nhóm CH₂.
-                  </p>
-                </div>
-                <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <strong class="text-red-500 block mb-1">Đồng phân</strong>
-                  <p class="text-xs text-gray-500">
-                    Cùng CTPT, khác cấu tạo → Tính chất khác nhau.
-                  </p>
-                </div>
-              </div>
-            </div>
+            V
           </div>
+          <h2 class="text-3xl md:text-4xl font-display font-bold">
+            Cấu tạo Hóa học & Đồng phân
+          </h2>
+        </div>
 
-          <!-- Simulation: Empirical Calculator -->
-          <div
-            class="bg-white dark:bg-darkCard rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700"
-          >
-            <h3
-              class="text-xl font-bold text-primary mb-4 flex items-center gap-2"
-            >
-              <i class="fa-solid fa-calculator"></i> Xác định Công thức Phân tử
-            </h3>
+        <div class="glass-card p-6 rounded-3xl">
+          <h3 class="text-xl font-bold mb-6 text-indigo-500">
+            <i class="fas fa-project-diagram"></i> Thuyết cấu tạo & Đồng phân
+          </h3>
 
-            <div
-              class="bg-blue-50 dark:bg-slate-800 p-4 rounded-xl mb-4 text-xs text-gray-600 dark:text-gray-400"
-            >
-              <p class="mb-1"><strong>Quy trình chuẩn:</strong></p>
-              <ol class="list-decimal pl-4 space-y-1">
-                <li>Từ % khối lượng → Công thức đơn giản nhất (CTĐGN).</li>
-                <li>Dựa vào Phân tử khối (M) → Nhân bội số → CTPT.</li>
-              </ol>
+          <div class="flex flex-col md:flex-row gap-8">
+            <div class="w-full md:w-1/3 space-y-4">
+              <button
+                onclick="showIsomer('butane')"
+                class="w-full text-left p-4 rounded-xl bg-indigo-50 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-slate-700 transition border border-transparent hover:border-indigo-300"
+              >
+                <span class="font-bold block">Butane (C₄H₁₀)</span>
+                <span class="text-xs text-slate-500">Mạch thẳng</span>
+              </button>
+              <button
+                onclick="showIsomer('isobutane')"
+                class="w-full text-left p-4 rounded-xl bg-indigo-50 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-slate-700 transition border border-transparent hover:border-indigo-300"
+              >
+                <span class="font-bold block">Isobutane (C₄H₁₀)</span>
+                <span class="text-xs text-slate-500">Mạch nhánh</span>
+              </button>
+              <button
+                onclick="showIsomer('ethanol')"
+                class="w-full text-left p-4 rounded-xl bg-indigo-50 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-slate-700 transition border border-transparent hover:border-indigo-300"
+              >
+                <span class="font-bold block">Ethanol (C₂H₆O)</span>
+                <span class="text-xs text-slate-500">Nhóm -OH (Alcohol)</span>
+              </button>
+              <button
+                onclick="showIsomer('dimethylether')"
+                class="w-full text-left p-4 rounded-xl bg-indigo-50 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-slate-700 transition border border-transparent hover:border-indigo-300"
+              >
+                <span class="font-bold block">Dimethyl Ether (C₂H₆O)</span>
+                <span class="text-xs text-slate-500">Nhóm -O- (Ether)</span>
+              </button>
             </div>
 
-            <div class="space-y-4">
-              <div class="grid grid-cols-3 gap-3">
-                <div>
-                  <label class="text-xs font-bold text-gray-500 mb-1 block"
-                    >% C</label
-                  >
-                  <input
-                    type="number"
-                    id="inp-c"
-                    class="w-full p-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary outline-none transition"
-                    placeholder="VD: 40"
-                  />
-                </div>
-                <div>
-                  <label class="text-xs font-bold text-gray-500 mb-1 block"
-                    >% H</label
-                  >
-                  <input
-                    type="number"
-                    id="inp-h"
-                    class="w-full p-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary outline-none transition"
-                    placeholder="VD: 6.67"
-                  />
-                </div>
-                <div>
-                  <label class="text-xs font-bold text-gray-500 mb-1 block"
-                    >% O</label
-                  >
-                  <input
-                    type="number"
-                    id="inp-o"
-                    class="w-full p-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary outline-none transition"
-                    placeholder="VD: 53.33"
-                  />
-                </div>
-              </div>
-              <div>
-                <label class="text-xs font-bold text-gray-500 mb-1 block"
-                  >Phân tử khối (M)
-                  <span class="font-normal italic">(Tùy chọn)</span></label
-                >
-                <input
-                  type="number"
-                  id="inp-m"
-                  class="w-full p-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary outline-none transition"
-                  placeholder="VD: 60, 180..."
-                />
-              </div>
-              <button
-                onclick="calculateFormula()"
-                class="w-full py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold rounded-xl shadow-lg hover:from-orange-600 hover:to-red-600 transition transform active:scale-95"
-              >
-                XÁC ĐỊNH CÔNG THỨC
-              </button>
-
-              <!-- Result Box -->
-              <div
-                id="calc-result"
-                class="hidden animate-float mt-4 p-4 bg-gray-800 text-white rounded-xl border border-gray-700 text-center relative overflow-hidden"
-              >
-                <div
-                  class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-400 to-blue-500"
-                ></div>
-                <div class="grid grid-cols-2 gap-4 divide-x divide-gray-600">
-                  <div>
-                    <span
-                      class="block text-xs text-gray-400 uppercase tracking-wider"
-                      >CT Đơn Giản</span
-                    >
-                    <span
-                      id="res-empirical"
-                      class="block text-xl font-mono font-bold text-green-400 mt-1"
-                    ></span>
-                  </div>
-                  <div>
-                    <span
-                      class="block text-xs text-gray-400 uppercase tracking-wider"
-                      >CT Phân Tử</span
-                    >
-                    <span
-                      id="res-molecular"
-                      class="block text-xl font-mono font-bold text-yellow-400 mt-1"
-                    ></span>
-                  </div>
+            <div
+              class="w-full md:w-2/3 bg-slate-100 dark:bg-slate-900 rounded-2xl border-2 border-dashed border-indigo-200 dark:border-slate-700 flex items-center justify-center min-h-[300px] relative p-4"
+            >
+              <div id="isomer-display" class="text-center w-full">
+                <div class="text-slate-400">
+                  Chọn một chất bên trái để xem cấu trúc
                 </div>
               </div>
             </div>
           </div>
         </div>
+      </section>
+
+      <!-- ================= SECTION 6: GAME QUIZ ================= -->
+      <section id="section-6" class="scroll-mt-28">
+        <div
+          class="glass-card p-1 rounded-[2rem] bg-gradient-to-br from-indigo-500 to-purple-600 text-white overflow-hidden"
+        >
+          <div
+            class="bg-slate-900/90 backdrop-blur-md p-8 md:p-12 h-full rounded-[1.9rem]"
+          >
+            <div class="text-center mb-10">
+              <span
+                class="bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4 inline-block"
+                >Challenge</span
+              >
+              <h2 class="text-4xl font-display font-bold mb-4">
+                Bài tập Củng cố Game hóa
+              </h2>
+              <p class="text-slate-300">
+                Trả lời đúng để nạp năng lượng cho lò phản ứng!
+              </p>
+            </div>
+
+            <!-- Progress Bar -->
+            <div
+              class="w-full h-4 bg-slate-700 rounded-full mb-8 overflow-hidden"
+            >
+              <div
+                id="quiz-progress"
+                class="h-full bg-gradient-to-r from-blue-400 to-purple-500 w-0 transition-all duration-500"
+              ></div>
+            </div>
+
+            <!-- Question Container -->
+            <div id="quiz-container" class="max-w-2xl mx-auto">
+              <!-- Questions injected via JS -->
+            </div>
+
+            <!-- Results Screen (Hidden initially) -->
+            <div id="quiz-result" class="hidden text-center animate-bounce-in">
+              <div class="text-6xl mb-4">🎉</div>
+              <h3 class="text-2xl font-bold mb-2">Hoàn thành xuất sắc!</h3>
+              <p class="text-slate-300 mb-6">
+                Bạn đã nắm vững kiến thức chương này.
+              </p>
+              <button
+                onclick="resetQuiz()"
+                class="px-8 py-3 bg-white text-indigo-900 rounded-full font-bold hover:scale-105 transition"
+              >
+                Làm lại
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= NAVIGATION BUTTONS ================= -->
+      <section
+        class="text-center space-x-4 mb-20 flex flex-col md:flex-row gap-4 md:gap-0 items-center justify-center"
+      >
+        <button
+          onclick="
+            document
+              .getElementById('section-6')
+              .scrollIntoView({ behavior: 'smooth' })
+          "
+          style="
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.35);
+            transition: 0.3s ease;
+          "
+          onmouseover="
+            this.style.transform = 'translateY(-3px) scale(1.03)';
+            this.style.boxShadow = '0 18px 45px rgba(99,102,241,.55)';
+          "
+          onmouseout="
+            this.style.transform = 'translateY(0) scale(1)';
+            this.style.boxShadow = '0 10px 30px rgba(59,130,246,.35)';
+          "
+        >
+          <i class="fas fa-pen-to-square"></i>
+          Bài tập củng cố
+        </button>
+
+        <button
+          onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+          style="
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.35);
+            transition: 0.3s ease;
+          "
+          onmouseover="
+            this.style.transform = 'translateY(-3px)';
+            this.style.boxShadow = '0 18px 45px rgba(22,163,74,.55)';
+          "
+          onmouseout="
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 10px 30px rgba(34,197,94,.35)';
+          "
+        >
+          <i class="fas fa-arrow-up"></i>
+          Về đầu trang
+        </button>
       </section>
     </main>
 
-    <!-- Spacer -->
-    <div class="h-10"></div>
+    <!-- ================= FOOTER ================= -->
+    <footer>
+      <div class="footer-waves"></div>
+      <div class="footer-grid">
+        <div class="footer-brand" data-aos="fade-right">
+          <h2>EDUMATTER</h2>
+          <p style="color: #94a3b8; line-height: 1.8">
+            Kiến tạo môi trường học tập cảm xúc, nơi tri thức được số hóa và
+            truyền tải đầy cảm hứng.
+          </p>
+          <div style="display: flex; gap: 15px; margin-top: 30px">
+            <a href="https://www.facebook.com/ducnt214" class="icon-btn"
+              ><i class="fab fa-facebook" alt="facebook"></i
+            ></a>
+            <a href="https://github.com/ducnt2104" class="icon-btn" alt="github"
+              ><i class="fab fa-github"></i
+            ></a>
+            <a
+              href="https://www.tiktok.com/@ktbtcthm210"
+              class="icon-btn"
+              alt="tiktok"
+              ><i class="fab fa-tiktok"></i
+            ></a>
+          </div>
+        </div>
+        <div class="footer-links" data-aos="fade-up">
+          <h3>Liên hệ nhanh</h3>
+          <div class="contact-item">
+            <i class="fas fa-envelope"></i>
+            <span>ducnt21042010@gmail.com</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-phone"></i>
+            <span>034 226 6204</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-location-dot"></i>
+            <span>THPT Tôn Đức Thắng, Đồng Nai</span>
+          </div>
+        </div>
+        <div class="footer-links" data-aos="fade-left">
+          <h4>Đội ngũ DNT</h4>
+          <p style="color: #94a3b8">
+            "Sáng tạo không ngừng - Vươn tầm tri thức"
+          </p>
+          <div
+            style="
+              margin-top: 20px;
+              padding: 15px;
+              background: rgba(255, 255, 255, 0.05);
+              border-radius: 15px;
+            "
+          >
+            <p style="font-size: 0.8rem; color: #fff">
+              Dự án được phát triển bởi các thành viên đam mê công nghệ tại Việt
+              Nam.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="copyright">
+        <p>
+          © 2024 EDUMATTER Educational Ecosystem. Designed with
+          <i class="fas fa-heart" style="color: #ef4444"></i> by DNT Team.
+        </p>
+      </div>
+    </footer>
 
-    <!-- Scripts -->
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
     <script>
-      // --- Tab Logic ---
-      const tabs = [
-        { id: "tab-content-1", label: "1. Khái Niệm", icon: "fa-book-open" },
-        { id: "tab-content-2", label: "2. Nhóm Chức & IR", icon: "fa-flask" },
-        { id: "tab-content-3", label: "3. Tách Chất", icon: "fa-filter" },
-        { id: "tab-content-4", label: "4. Cấu Tạo", icon: "fa-atom" },
-      ];
-
-      function renderTabs() {
-        const deskNav = document.getElementById("desktop-tabs");
-        const mobileNav = document.getElementById("mobile-tabs");
-
-        deskNav.innerHTML = "";
-        mobileNav.innerHTML = "";
-
-        tabs.forEach((tab, index) => {
-          const isActive = index === 0;
-
-          // Desktop
-          const deskBtn = document.createElement("button");
-          deskBtn.className = `px-4 py-2 rounded-lg text-sm font-bold transition flex items-center gap-2 ${
-            isActive
-              ? "bg-primary text-white shadow-lg shadow-indigo-500/30"
-              : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-          }`;
-          deskBtn.innerHTML = `<i class="fa-solid ${tab.icon}"></i> ${tab.label}`;
-          deskBtn.onclick = () => switchTab(tab.id, deskBtn);
-          deskNav.appendChild(deskBtn);
-
-          // Mobile
-          const mobBtn = document.createElement("button");
-          mobBtn.className = `whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold border transition ${
-            isActive
-              ? "bg-primary text-white border-primary"
-              : "bg-white dark:bg-darkCard text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600"
-          }`;
-          mobBtn.innerText = tab.label;
-          mobBtn.onclick = () => switchTab(tab.id, mobBtn);
-          mobileNav.appendChild(mobBtn);
-        });
-      }
-
-      function switchTab(targetId, btnElement) {
-        document
-          .querySelectorAll(".tab-content")
-          .forEach((el) => el.classList.add("hidden"));
-        const target = document.getElementById(targetId);
-        target.classList.remove("hidden");
-        target.classList.add("animate-float");
-        setTimeout(() => target.classList.remove("animate-float"), 500);
-
-        // Update visuals
-        const allBtns = document.querySelectorAll("nav button");
-        allBtns.forEach((b) => {
-          b.className = b.className.replace(
-            "bg-primary text-white shadow-lg shadow-indigo-500/30",
-            "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-          );
-          if (b.classList.contains("rounded-full")) {
-            b.className = b.className.replace(
-              "bg-primary text-white border-primary",
-              "bg-white dark:bg-darkCard text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600"
-            );
-          }
-        });
-
-        if (btnElement.classList.contains("rounded-full")) {
-          btnElement.className = btnElement.className.replace(
-            "bg-white dark:bg-darkCard text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600",
-            "bg-primary text-white border-primary"
-          );
-        } else {
-          btnElement.className = btnElement.className.replace(
-            "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700",
-            "bg-primary text-white shadow-lg shadow-indigo-500/30"
-          );
-        }
-
-        // Resize 3D canvas if visible
-        if (targetId === "tab-content-1" && camera && renderer) {
-          setTimeout(() => {
-            const container = document.getElementById("canvas-container");
-            camera.aspect = container.clientWidth / container.clientHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(container.clientWidth, container.clientHeight);
-          }, 100);
-        }
-      }
-
-      // --- Dark Mode ---
+      // ================= THEME TOGGLE =================
       const themeToggle = document.getElementById("theme-toggle");
       const html = document.documentElement;
+
+      // Check local storage or system preference
       if (
         localStorage.theme === "dark" ||
         (!("theme" in localStorage) &&
           window.matchMedia("(prefers-color-scheme: dark)").matches)
       ) {
         html.classList.add("dark");
+      } else {
+        html.classList.remove("dark");
       }
+
       themeToggle.addEventListener("click", () => {
         html.classList.toggle("dark");
         localStorage.theme = html.classList.contains("dark") ? "dark" : "light";
       });
 
-      // --- THREE.JS Methane Simulation ---
-      let scene, camera, renderer, controls;
-      let methaneGroup;
+      // ================= SIMULATION 1: EXPERIMENT (Đường + CuO) =================
+      function runExperiment1() {
+        const resultEl = document.getElementById("sim-1-result");
+        const cuso4 = document.getElementById("sim-1-cuso4");
+        const caoh2 = document.getElementById("sim-1-caoh2");
 
-      function initThreeJS() {
-        const container = document.getElementById("canvas-container");
-        if (!container) return;
+        // Reset
+        cuso4.className =
+          "w-16 h-16 rounded-lg bg-white border-2 border-slate-500 flex items-center justify-center transition-colors duration-1000";
+        caoh2.className =
+          "w-16 h-16 rounded-full bg-blue-100/30 border-2 border-slate-500 flex items-center justify-center transition-all duration-1000";
 
-        scene = new THREE.Scene();
+        resultEl.style.opacity = 0;
 
-        camera = new THREE.PerspectiveCamera(
-          50,
-          container.clientWidth / container.clientHeight,
-          0.1,
-          1000
-        );
-        camera.position.z = 5;
+        setTimeout(() => {
+          // Change CuSO4 to Blue (Hydrated)
+          cuso4.className =
+            "w-16 h-16 rounded-lg bg-blue-500 text-white border-2 border-blue-600 flex items-center justify-center transition-colors duration-1000";
+          cuso4.innerHTML = "CuSO₄<br>.5H₂O";
 
-        renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        renderer.setSize(container.clientWidth, container.clientHeight);
-        container.appendChild(renderer.domElement);
+          // Change Ca(OH)2 to Milky (Precipitate)
+          caoh2.className =
+            "w-16 h-16 rounded-full bg-white border-4 border-slate-300 flex items-center justify-center transition-all duration-1000";
+          caoh2.innerHTML = "CaCO₃↓";
 
-        controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
-
-        // Lights
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-        scene.add(ambientLight);
-
-        const pointLight = new THREE.PointLight(0xffffff, 1);
-        pointLight.position.set(5, 5, 5);
-        scene.add(pointLight);
-
-        // Molecule Group
-        methaneGroup = new THREE.Group();
-        scene.add(methaneGroup);
-
-        // Materials
-        const carbonMat = new THREE.MeshPhongMaterial({
-          color: 0x333333,
-          shininess: 100,
-        });
-        const hydrogenMat = new THREE.MeshPhongMaterial({
-          color: 0xffffff,
-          shininess: 100,
-        });
-        const bondMat = new THREE.MeshPhongMaterial({ color: 0xcccccc });
-
-        // Geometry
-        const atomGeo = new THREE.SphereGeometry(0.5, 32, 32);
-        const hGeo = new THREE.SphereGeometry(0.3, 32, 32);
-
-        // Carbon (Center)
-        const carbon = new THREE.Mesh(atomGeo, carbonMat);
-        methaneGroup.add(carbon);
-
-        // Hydrogens (Tetrahedral arrangement)
-        // Bond length approx 1.2 units
-        const positions = [
-          new THREE.Vector3(0.94, 0.94, 0.94),
-          new THREE.Vector3(-0.94, -0.94, 0.94),
-          new THREE.Vector3(-0.94, 0.94, -0.94),
-          new THREE.Vector3(0.94, -0.94, -0.94),
-        ];
-
-        positions.forEach((pos) => {
-          const h = new THREE.Mesh(hGeo, hydrogenMat);
-          h.position.copy(pos);
-          methaneGroup.add(h);
-
-          // Bond
-          const distance = pos.length();
-          const cylinderGeo = new THREE.CylinderGeometry(
-            0.08,
-            0.08,
-            distance,
-            12
-          );
-          const bond = new THREE.Mesh(cylinderGeo, bondMat);
-
-          // Align cylinder to vector
-          bond.position.copy(pos).multiplyScalar(0.5);
-          bond.quaternion.setFromUnitVectors(
-            new THREE.Vector3(0, 1, 0),
-            pos.clone().normalize()
-          );
-          methaneGroup.add(bond);
-        });
-
-        animate();
+          // Show Result Text
+          resultEl.innerText =
+            "Kết luận: Có H₂O (Hóa xanh CuSO₄) và CO₂ (Kết tủa trắng)";
+          resultEl.style.opacity = 1;
+        }, 1000);
       }
 
-      function animate() {
-        requestAnimationFrame(animate);
-        if (methaneGroup) {
-          methaneGroup.rotation.y += 0.005;
-          methaneGroup.rotation.x += 0.002;
-        }
-        if (controls) controls.update();
-        if (renderer && scene && camera) renderer.render(scene, camera);
+      // ================= SIMULATION 2: METHANE ROTATION =================
+      function rotateMethane(deg) {
+        const svg = document.getElementById("methane-svg");
+        svg.style.transform = `rotate(${deg}deg)`;
       }
 
-      function resetCamera() {
-        if (camera && controls) {
-          camera.position.set(0, 0, 5);
-          camera.lookAt(0, 0, 0);
-          controls.reset();
-        }
+      // ================= SIMULATION 3: SORTING GAME =================
+      const items = [
+        { name: "C₆H₁₂O₆", type: "organic", label: "Glucose" },
+        { name: "CaCO₃", type: "inorganic", label: "Đá vôi" },
+        { name: "C₂H₅OH", type: "organic", label: "Cồn" },
+        { name: "CO₂", type: "inorganic", label: "Khí CO2" },
+        { name: "CH₃COOH", type: "organic", label: "Giấm" },
+        { name: "NaCl", type: "inorganic", label: "Muối ăn" },
+      ];
+
+      const pool = document.getElementById("chemical-pool");
+      const feedback = document.getElementById("sort-feedback");
+      let orgCount = 0;
+      let inorgCount = 0;
+
+      function initSortingGame() {
+        pool.innerHTML = "";
+        orgCount = 0;
+        inorgCount = 0;
+        document.getElementById("organic-count").innerText = 0;
+        document.getElementById("inorganic-count").innerText = 0;
+        feedback.innerText = "";
+
+        items.forEach((item) => {
+          const el = document.createElement("div");
+          el.className =
+            "px-3 py-2 bg-white dark:bg-slate-700 rounded-lg shadow cursor-pointer border hover:border-blue-500 transition select-none text-sm font-bold";
+          el.innerHTML = `${item.name} <br> <span class="text-[10px] font-normal text-slate-500">${item.label}</span>`;
+
+          el.onclick = () => {
+            // Simple logic: Left click -> Organic, Right click (or shift click) -> Inorganic?
+            // Better: Show modal or use simple Confirm
+            // Let's use a two-step click for mobile friendliness
+
+            if (
+              confirm(
+                `Bạn muốn đưa ${item.name} vào giỏ nào?\nOK = Hữu Cơ (Xanh)\nCancel = Vô Cơ (Xám)`,
+              )
+            ) {
+              checkSort(item, "organic", el);
+            } else {
+              checkSort(item, "inorganic", el);
+            }
+          };
+          pool.appendChild(el);
+        });
       }
 
-      window.addEventListener("resize", () => {
-        if (camera && renderer) {
-          const container = document.getElementById("canvas-container");
-          if (container) {
-            camera.aspect = container.clientWidth / container.clientHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(container.clientWidth, container.clientHeight);
+      function checkSort(item, selectedType, element) {
+        if (item.type === selectedType) {
+          element.style.display = "none";
+          if (selectedType === "organic") {
+            orgCount++;
+            document.getElementById("organic-count").innerText = orgCount;
+            animateBin("organic-bin", "border-green-600");
+          } else {
+            inorgCount++;
+            document.getElementById("inorganic-count").innerText = inorgCount;
+            animateBin("inorganic-bin", "border-slate-600");
           }
-        }
-      });
+          feedback.innerText = "Chính xác!";
+          feedback.className = "text-green-500 font-bold mt-2 h-6";
 
-      // --- IR Data & Logic ---
+          if (orgCount + inorgCount === items.length) {
+            feedback.innerText = "Hoàn thành xuất sắc!";
+          }
+        } else {
+          feedback.innerText = "Sai rồi! Thử lại xem.";
+          feedback.className = "text-red-500 font-bold mt-2 h-6";
+          element.classList.add("animate-shake");
+          setTimeout(() => element.classList.remove("animate-shake"), 500);
+        }
+      }
+
+      function animateBin(id, colorClass) {
+        const bin = document.getElementById(id);
+        bin.classList.add("scale-110", "bg-opacity-20");
+        setTimeout(
+          () => bin.classList.remove("scale-110", "bg-opacity-20"),
+          200,
+        );
+      }
+
+      initSortingGame();
+
+      // ================= SIMULATION 4: IR SPECTRUM =================
       const irData = {
-        alcohol: {
-          name: "Alcohol (-OH)",
-          desc: "Ancol. Đỉnh O-H rất đặc trưng, rộng và tù.",
-          formula: "R-OH",
-          peaks: [
-            { x: 3350, y: 10, w: 300, label: "O-H (Rộng)" }, // 3200-3500
-            { x: 2950, y: 30, w: 50, label: "C-H" },
-            { x: 1050, y: 20, w: 60, label: "C-O" },
-          ],
-          color: "#6366f1",
+        ethanol: {
+          label: "O-H (Alcohol)",
+          path: "M0 350 L50 350 L100 350 C120 100, 150 100, 180 350 L300 350 L500 350 L600 200 L610 350 L1000 350",
+          highlight: { left: "10%", top: "20px", width: "10%", height: "80%" },
+          text: "Ethanol (C₂H₅OH): Peak O-H rất rộng và tù ở vùng 3300 cm⁻¹ do liên kết hydro.",
         },
-        aldehyde: {
-          name: "Aldehyde (-CHO)",
-          desc: "Có nhóm carbonyl C=O và C-H aldehyde đặc trưng.",
-          formula: "R-CHO",
-          peaks: [
-            { x: 2850, y: 40, w: 30, label: "C-H (Fermi 1)" },
-            { x: 2750, y: 40, w: 30, label: "C-H (Fermi 2)" },
-            { x: 1725, y: 5, w: 20, label: "C=O (Sắc)" },
-          ],
-          color: "#ec4899",
-        },
-        ketone: {
-          name: "Ketone (>C=O)",
-          desc: "Chỉ có đỉnh C=O mạnh, không có C-H aldehyde.",
-          formula: "R-CO-R'",
-          peaks: [
-            { x: 2950, y: 30, w: 50, label: "C-H" },
-            { x: 1715, y: 5, w: 20, label: "C=O (Sắc)" },
-          ],
-          color: "#8b5cf6",
+        butanal: {
+          label: "C=O (Aldehyde)",
+          path: "M0 350 L400 350 L500 350 L550 50 L560 350 L600 350 L1000 350",
+          highlight: { left: "53%", top: "20px", width: "5%", height: "80%" },
+          text: "Butanal: Peak C=O nhọn, mạnh ở 1720-1740 cm⁻¹. Ngoài ra có peak C-H của aldehyde ở 2700-2800.",
         },
         acid: {
-          name: "Carboxylic Acid (-COOH)",
-          desc: "Đỉnh O-H rất rộng (do liên kết hydro) chồng lên C-H, và đỉnh C=O.",
-          formula: "R-COOH",
-          peaks: [
-            { x: 3000, y: 20, w: 500, label: "O-H (Rất rộng)" },
-            { x: 1710, y: 5, w: 20, label: "C=O" },
-            { x: 1250, y: 30, w: 80, label: "C-O" },
-          ],
-          color: "#f59e0b",
-        },
-        amine: {
-          name: "Amine (-NH₂)",
-          desc: "Đỉnh N-H trung bình, thường có 2 gai (bậc 1) hoặc 1 gai (bậc 2).",
-          formula: "R-NH₂",
-          peaks: [
-            { x: 3400, y: 40, w: 20, label: "N-H" },
-            { x: 3330, y: 40, w: 20, label: "N-H" },
-            { x: 1600, y: 50, w: 40, label: "N-H bend" },
-          ],
-          color: "#10b981",
-        },
-        ester: {
-          name: "Ester (-COO-)",
-          desc: "Đỉnh C=O mạnh và C-O mạnh, không có O-H.",
-          formula: "R-COO-R'",
-          peaks: [
-            { x: 2950, y: 30, w: 50, label: "C-H" },
-            { x: 1740, y: 5, w: 20, label: "C=O" },
-            { x: 1240, y: 15, w: 30, label: "C-O" },
-          ],
-          color: "#06b6d4",
-        },
-        alkyne: {
-          name: "Alkyne (-C≡C-)",
-          desc: "Đỉnh C≡C yếu ở vùng 2100-2260.",
-          formula: "R-C≡C-R",
-          peaks: [
-            { x: 3300, y: 20, w: 20, label: "≡C-H (nếu có)" },
-            { x: 2150, y: 60, w: 15, label: "C≡C" },
-          ],
-          color: "#ef4444",
+          label: "O-H (Acid) & C=O",
+          path: "M0 350 L50 350 C100 150, 200 250, 300 350 L550 50 L560 350 L1000 350",
+          highlight: { left: "10%", top: "20px", width: "25%", height: "80%" },
+          text: "Acetic Acid: Peak O-H rất rộng (do dimer hóa) trùm lên cả vùng C-H, kèm peak C=O mạnh ở 1710.",
         },
       };
 
-      let irChart = null;
+      function loadIR(type) {
+        const data = irData[type];
+        const path = document.getElementById("ir-path");
+        const highlight = document.getElementById("ir-highlight");
+        const label = document.getElementById("ir-label");
+        const explanation = document.getElementById("ir-explanation");
 
-      function initIR() {
-        const list = document.getElementById("func-group-list");
-        Object.keys(irData).forEach((key) => {
-          const btn = document.createElement("button");
-          btn.className =
-            "w-full text-left p-3 rounded-xl bg-gray-50 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-slate-700 hover:border-primary border border-transparent transition flex justify-between items-center group";
-          btn.innerHTML = `<span class="font-bold text-sm text-gray-700 dark:text-gray-200 group-hover:text-primary transition">${irData[key].name}</span>`;
-          btn.onclick = () => loadSpectrum(key);
-          list.appendChild(btn);
-        });
-        loadSpectrum("alcohol");
+        path.setAttribute("d", data.path);
+
+        highlight.style.display = "block";
+        highlight.style.left = data.highlight.left;
+        highlight.style.width = data.highlight.width;
+
+        label.innerText = data.label;
+        explanation.innerText = data.text;
       }
 
-      function loadSpectrum(key) {
-        const data = irData[key];
-        document.getElementById("fg-name").innerText = data.name;
-        document.getElementById("fg-desc").innerText = data.desc;
-        document.getElementById("fg-formula").innerText = data.formula;
+      // ================= SIMULATION 5: DISTILLATION =================
+      function updateDistillation(temp) {
+        const display = document.getElementById("temp-display");
+        const liquid = document.getElementById("distill-liquid");
+        const status = document.getElementById("distill-status");
+        const collected = document.getElementById("collected-liquid");
+        const condenserFlow = document.getElementById("condenser-flow");
+        const heaterGlow = document.getElementById("heater-glow");
 
-        // Generate Curve
-        const ctx = document.getElementById("irChart").getContext("2d");
-        const xLabels = Array.from({ length: 80 }, (_, i) => 4000 - i * 44); // Approx mapping
+        display.innerText = temp + "°C";
 
-        // Map 4000 -> 500 to array index
-        const getIndex = (wn) => Math.floor((4000 - wn) / 44);
+        // Heater visual
+        heaterGlow.style.opacity = (temp - 25) / 100;
 
-        let yData = Array(80)
-          .fill(98)
-          .map((v) => v + Math.random() * 2); // Baseline noise
+        if (temp < 78) {
+          status.innerText = "Nhiệt độ chưa đủ để Ethanol sôi.";
+          liquid.className =
+            "absolute bottom-0 w-full h-3/4 bg-blue-500/60 transition-all duration-300";
+          condenserFlow.style.opacity = 0;
+          condenserFlow.style.animation = "none";
+        } else if (temp >= 78 && temp < 100) {
+          status.innerText =
+            "Ethanol (78.3°C) đang sôi và bay hơi! Nước vẫn ở lại.";
+          liquid.className =
+            "absolute bottom-0 w-full h-3/4 bg-blue-500/60 animate-pulse transition-all duration-300"; // Boiling effect
+          liquid.style.height = "60%"; // Level drops slightly
 
-        data.peaks.forEach((p) => {
-          const centerIdx = getIndex(p.x);
-          const widthIdx = Math.ceil(p.w / 44);
-
-          for (let i = centerIdx - widthIdx; i <= centerIdx + widthIdx; i++) {
-            if (i >= 0 && i < 80) {
-              const dist = Math.abs(i - centerIdx);
-              const depth = (1 - dist / widthIdx) * (100 - p.y);
-              if (depth > 0) yData[i] -= depth;
-            }
-          }
-        });
-
-        // Smooth curve a bit
-        // (Skipping complex smoothing for performance, just raw calc is okay for sim)
-
-        if (irChart) irChart.destroy();
-
-        irChart = new Chart(ctx, {
-          type: "line",
-          data: {
-            labels: xLabels,
-            datasets: [
-              {
-                label: "Độ truyền qua (%)",
-                data: yData,
-                borderColor: data.color,
-                borderWidth: 2,
-                tension: 0.4,
-                pointRadius: 0,
-                fill: false,
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              y: {
-                min: 0,
-                max: 105,
-                reverse: false,
-                grid: { color: "#e2e8f0" },
-              },
-              x: { grid: { display: false }, ticks: { maxTicksLimit: 10 } },
-            },
-            plugins: { legend: { display: false } },
-            animation: { duration: 800 },
-          },
-        });
-      }
-
-      // --- Lab Simulation Functions ---
-      function switchLab(labName) {
-        document.querySelectorAll(".lab-tab").forEach((b) => {
-          b.classList.remove(
-            "active-lab",
-            "bg-white",
-            "dark:bg-darkCard",
-            "text-primary",
-            "shadow-sm"
-          );
-          b.classList.add("bg-gray-50", "dark:bg-gray-900/50", "text-gray-500");
-        });
-        event.currentTarget.classList.add(
-          "active-lab",
-          "bg-white",
-          "dark:bg-darkCard",
-          "text-primary",
-          "shadow-sm"
-        );
-        event.currentTarget.classList.remove(
-          "bg-gray-50",
-          "dark:bg-gray-900/50",
-          "text-gray-500"
-        );
-
-        document
-          .querySelectorAll(".lab-view")
-          .forEach((v) => v.classList.add("hidden"));
-        document.getElementById(`sim-${labName}`).classList.remove("hidden");
-        document.getElementById(`sim-${labName}`).classList.add("grid");
-      }
-
-      // 1. Distillation
-      function startDistillation() {
-        const btn = event.currentTarget;
-        btn.disabled = true;
-        btn.innerHTML =
-          '<i class="fa-solid fa-fire animate-pulse"></i> Đang đun nóng...';
-        document.getElementById("distill-status").innerText = "Đang chạy";
-
-        // Heat Waves
-        document.getElementById("heat-waves").style.opacity = 1;
-
-        // Temp rise
-        document.getElementById("thermometer-liquid").style.height = "80%";
-
-        // Boiling
-        const bubbleContainer = document.getElementById("bubbles-container");
-        const boilInterval = setInterval(() => {
-          const b = document.createElement("div");
-          b.className = "bubble w-2 h-2";
-          b.style.left = Math.random() * 80 + 10 + "%";
-          b.style.bottom = "10px";
-          bubbleContainer.appendChild(b);
-          setTimeout(() => b.remove(), 1500);
-        }, 200);
-
-        // Levels change
-        setTimeout(() => {
-          document.getElementById("distill-liquid").style.height = "30%";
-          document.getElementById("collected-liquid").style.height = "50%";
-        }, 1000);
-
-        // Finish
-        setTimeout(() => {
-          clearInterval(boilInterval);
-          document.getElementById("heat-waves").style.opacity = 0;
-          document.getElementById("distill-status").innerText = "Hoàn tất";
-          btn.disabled = false;
-          btn.innerHTML = '<i class="fa-solid fa-rotate-right"></i> Làm lại';
-          btn.onclick = () => {
-            document.getElementById("distill-liquid").style.height = "75%";
-            document.getElementById("collected-liquid").style.height = "0%";
-            document.getElementById("thermometer-liquid").style.height = "20%";
-            document.getElementById("distill-status").innerText = "Sẵn sàng";
-            btn.onclick = startDistillation;
-            btn.innerHTML =
-              '<i class="fa-solid fa-power-off"></i> Bật Bếp & Bắt đầu';
-          };
-        }, 6000);
-      }
-
-      // 2. Extraction
-      function startExtraction() {
-        document.getElementById("ext-tap-handle").style.transform =
-          "rotate(90deg)";
-        document.getElementById("ext-stream").style.height = "100px"; // Flow down
-
-        // Lower water level
-        document.getElementById("ext-layer-water").style.height = "0%";
-
-        // Fill beaker
-        setTimeout(() => {
-          document.getElementById("ext-beaker").style.height = "60%";
-        }, 500);
-
-        // Stop when water gone
-        setTimeout(() => {
-          document.getElementById("ext-tap-handle").style.transform =
-            "rotate(0deg)";
-          document.getElementById("ext-stream").style.height = "0";
-          document.getElementById("ext-stream").style.transition = "none";
-          document.getElementById("ext-stream").style.top = "210px"; // Reset pos visual
-        }, 2000);
-      }
-      function resetExtraction() {
-        document.getElementById("ext-layer-water").style.height = "50%";
-        document.getElementById("ext-beaker").style.height = "0%";
-        document.getElementById("ext-tap-handle").style.transform =
-          "rotate(0deg)";
-      }
-
-      // 3. Crystallization
-      function startCrystallization() {
-        const tempDisplay = document.getElementById("temp-display");
-        const solution = document.getElementById("hot-solution");
-        const container = document.getElementById("crystal-container");
-
-        let temp = 80;
-        const interval = setInterval(() => {
-          temp -= 2;
-          tempDisplay.innerText = temp + "°C";
-          if (temp <= 25) {
-            clearInterval(interval);
-            tempDisplay.className =
-              "font-mono text-2xl font-bold text-blue-500";
-            // Spawn crystals
-            for (let i = 0; i < 8; i++) {
-              const c = document.createElement("div");
-              c.className =
-                "crystal absolute bg-white/90 shadow-sm border border-blue-200 w-6 h-6 z-20";
-              c.style.bottom = Math.random() * 20 + "px";
-              c.style.left = Math.random() * 80 + 10 + "%";
-              container.appendChild(c);
-            }
-            solution.innerHTML =
-              "<span class='text-blue-600 font-bold bg-white/80 px-2 rounded'>Tinh thể đã tách ra</span>";
-            solution.style.opacity = 1;
-          }
-        }, 100);
-
-        // Cleanup old
-        document.querySelectorAll(".crystal").forEach((e) => e.remove());
-        solution.style.opacity = 0;
-        tempDisplay.className = "font-mono text-2xl font-bold text-red-500";
-      }
-
-      // 4. Chromatography
-      function startChromatography() {
-        const mix = document.getElementById("chroma-spot-mix");
-        const red = document.getElementById("chroma-spot-red");
-        const blue = document.getElementById("chroma-spot-blue");
-        const yellow = document.getElementById("chroma-spot-yellow");
-
-        mix.style.opacity = 0;
-        red.style.opacity = 0.8;
-        blue.style.opacity = 0.8;
-        yellow.style.opacity = 0.8;
-        red.style.top = "4px";
-        blue.style.top = "4px";
-        yellow.style.top = "4px";
-
-        // Animate
-        setTimeout(() => {
-          red.style.transition = "top 4s ease-out";
-          blue.style.transition = "top 6s ease-out";
-          yellow.style.transition = "top 8s ease-out"; // Yellow slowest (most polar)
-
-          red.style.top = "280px";
-          blue.style.top = "200px";
-          yellow.style.top = "120px";
-        }, 100);
-
-        // Reset
-        setTimeout(() => {
-          mix.style.opacity = 1;
-          red.style.opacity = 0;
-          blue.style.opacity = 0;
-          yellow.style.opacity = 0;
-          red.style.transition = "none";
-          blue.style.transition = "none";
-          yellow.style.transition = "none";
-        }, 9000);
-      }
-
-      // --- Sorter Game ---
-      const compounds = [
-        { f: "CH₄", type: "organic" },
-        { f: "NaCl", type: "inorganic" },
-        { f: "C₂H₅OH", type: "organic" },
-        { f: "H₂SO₄", type: "inorganic" },
-        { f: "CH₃COOH", type: "organic" },
-        { f: "CaCO₃", type: "inorganic" },
-        { f: "C₆H₁₂O₆", type: "organic" },
-        { f: "CO", type: "inorganic" },
-      ];
-      let currentCmpIndex = 0;
-
-      function checkCompound(choice) {
-        const current = compounds[currentCmpIndex];
-        const feedback = document.getElementById("game-feedback");
-
-        if (current.type === choice) {
-          feedback.innerText = "CHÍNH XÁC! 🎉";
-          feedback.className =
-            "mt-4 font-bold h-6 text-green-300 animate-bounce";
+          // Flow animation
+          condenserFlow.style.opacity = 1;
+          condenserFlow.style.animation =
+            "ping 1s cubic-bezier(0, 0, 0.2, 1) infinite";
+          collected.style.height = "20px";
+          collected.style.backgroundColor = "rgba(248, 113, 113, 0.8)"; // Reddish for ethanol model
         } else {
-          feedback.innerText = "SAI RỒI! 😅";
-          feedback.className = "mt-4 font-bold h-6 text-red-300 animate-shake";
+          status.innerText =
+            "Nhiệt độ quá cao! Cả nước (100°C) cũng đang sôi -> Không tinh khiết.";
+          liquid.style.height = "20%"; // Level drops a lot
+          condenserFlow.style.opacity = 1;
+          condenserFlow.style.animation =
+            "ping 0.2s cubic-bezier(0, 0, 0.2, 1) infinite"; // Fast flow
+          collected.style.height = "60px";
+          collected.style.backgroundColor = "rgba(100, 116, 139, 0.8)"; // Mixed color
         }
-
-        setTimeout(() => {
-          currentCmpIndex = (currentCmpIndex + 1) % compounds.length;
-          document.getElementById("current-compound").innerHTML =
-            compounds[currentCmpIndex].f;
-          feedback.innerText = "";
-        }, 1000);
       }
 
-      // --- Calc Formula ---
-      function calculateFormula() {
-        const c = parseFloat(document.getElementById("inp-c").value) || 0;
-        const h = parseFloat(document.getElementById("inp-h").value) || 0;
-        const o = parseFloat(document.getElementById("inp-o").value) || 0;
-        const m = parseFloat(document.getElementById("inp-m").value) || 0;
+      // ================= CALCULATOR =================
+      function calculateEmpirical() {
+        const c = parseFloat(document.getElementById("calc-c").value) || 0;
+        const h = parseFloat(document.getElementById("calc-h").value) || 0;
+        const o = parseFloat(document.getElementById("calc-o").value) || 0;
 
-        if (c === 0 || h === 0) {
-          alert("Vui lòng nhập tối thiểu %C và %H");
+        if (c === 0) {
+          alert("Vui lòng nhập %C");
           return;
         }
 
-        const molC = c / 12;
-        const molH = h / 1;
-        const molO = o / 16;
+        // Simple logic: divide by atomic mass
+        let molC = c / 12;
+        let molH = h / 1;
+        let molO = o / 16;
 
+        // Find smallest
         let minMol = molC;
-        if (o > 0 && molO < minMol) minMol = molO;
-        if (molH < minMol) minMol = molH;
+        if (molO > 0 && molO < minMol) minMol = molO;
+        // (Assuming only C,H,O for simplicity in this demo)
 
-        const ratioC = Math.round(molC / minMol);
-        const ratioH = Math.round(molH / minMol);
-        const ratioO = o > 0 ? Math.round(molO / minMol) : 0;
+        let ratioC = Math.round(molC / minMol);
+        let ratioH = Math.round(molH / minMol);
+        let ratioO = molO > 0 ? Math.round(molO / minMol) : 0;
 
-        let empForm = `C${ratioC}H${ratioH}`;
-        if (ratioO > 0) empForm += `O${ratioO}`;
+        let formula = `C${ratioC > 1 ? ratioC : ""}H${ratioH > 1 ? ratioH : ""}`;
+        if (ratioO > 0) formula += `O${ratioO > 1 ? ratioO : ""}`;
 
-        let molForm = "---";
-        if (m > 0) {
-          const empMass = ratioC * 12 + ratioH * 1 + ratioO * 16;
-          const factor = Math.round(m / empMass);
-          molForm = `C${ratioC * factor}H${ratioH * factor}`;
-          if (ratioO > 0) molForm += `O${ratioO * factor}`;
-        }
-
-        document.getElementById("res-empirical").innerText = empForm.replace(
-          /(\d+)/g,
-          "<sub>$1</sub>"
-        );
-        document.getElementById("res-molecular").innerHTML = molForm.replace(
-          /(\d+)/g,
-          "<sub>$1</sub>"
-        );
         document.getElementById("calc-result").classList.remove("hidden");
+        document.getElementById("result-text").innerText = formula;
       }
 
-      // --- Init ---
-      renderTabs();
-      initThreeJS();
-      initIR();
+      // ================= ISOMER VISUALIZER =================
+      function showIsomer(type) {
+        const display = document.getElementById("isomer-display");
+        let content = "";
 
-      // Initial Tab
-      switchTab("tab-content-1", document.querySelector("nav button"));
+        switch (type) {
+          case "butane":
+            content = `
+                        <div class="flex items-center justify-center gap-1 animate-float">
+                            <div class="w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center border-2 border-white">C</div>
+                            <div class="h-1 w-8 bg-slate-400"></div>
+                            <div class="w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center border-2 border-white">C</div>
+                            <div class="h-1 w-8 bg-slate-400"></div>
+                            <div class="w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center border-2 border-white">C</div>
+                            <div class="h-1 w-8 bg-slate-400"></div>
+                            <div class="w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center border-2 border-white">C</div>
+                        </div>
+                        <p class="mt-4 font-bold text-slate-700 dark:text-slate-300">n-Butane (Mạch thẳng)</p>
+                    `;
+            break;
+          case "isobutane":
+            content = `
+                        <div class="relative w-40 h-40 mx-auto animate-float">
+                            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center border-2 border-white">C</div>
+                            <div class="absolute top-10 left-1/2 -translate-x-1/2 h-8 w-1 bg-slate-400"></div>
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center border-2 border-white">C</div>
+                            
+                            <div class="absolute top-1/2 left-4 h-1 w-10 bg-slate-400"></div>
+                            <div class="absolute top-1/2 left-0 w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center border-2 border-white">C</div>
+                            
+                            <div class="absolute top-1/2 right-4 h-1 w-10 bg-slate-400"></div>
+                            <div class="absolute top-1/2 right-0 w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center border-2 border-white">C</div>
+                        </div>
+                        <p class="mt-4 font-bold text-slate-700 dark:text-slate-300">Isobutane (Mạch nhánh)</p>
+                    `;
+            break;
+          case "ethanol":
+            content = `
+                        <div class="flex items-center justify-center gap-1 animate-float">
+                            <div class="w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center border-2 border-white">C</div>
+                            <div class="h-1 w-8 bg-slate-400"></div>
+                            <div class="w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center border-2 border-white">C</div>
+                            <div class="h-1 w-8 bg-slate-400"></div>
+                            <div class="w-10 h-10 rounded-full bg-red-500 text-white flex items-center justify-center border-2 border-white shadow-lg shadow-red-500/50">O</div>
+                            <div class="h-1 w-4 bg-slate-400"></div>
+                            <div class="w-6 h-6 rounded-full bg-white text-black text-xs flex items-center justify-center border border-slate-300">H</div>
+                        </div>
+                        <p class="mt-4 font-bold text-slate-700 dark:text-slate-300">Ethanol (Chất lỏng, tan vô hạn trong nước)</p>
+                    `;
+            break;
+          case "dimethylether":
+            content = `
+                        <div class="flex items-center justify-center gap-1 animate-float">
+                            <div class="w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center border-2 border-white">C</div>
+                            <div class="h-1 w-8 bg-slate-400"></div>
+                            <div class="w-10 h-10 rounded-full bg-red-500 text-white flex items-center justify-center border-2 border-white shadow-lg shadow-red-500/50">O</div>
+                            <div class="h-1 w-8 bg-slate-400"></div>
+                            <div class="w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center border-2 border-white">C</div>
+                        </div>
+                        <p class="mt-4 font-bold text-slate-700 dark:text-slate-300">Dimethyl Ether (Chất khí, ít tan)</p>
+                    `;
+            break;
+        }
+        display.innerHTML = content;
+      }
+
+      // ================= QUIZ SYSTEM =================
+      const questions = [
+        {
+          q: "Chất nào sau đây là chất HỮU CƠ?",
+          options: ["CO₂", "CaCO₃", "C₂H₅OH", "NaCN"],
+          correct: 2,
+          explain:
+            "CO₂, CaCO₃, NaCN là hợp chất vô cơ của Carbon. C₂H₅OH (Ethanol) là hữu cơ.",
+        },
+        {
+          q: "Nhóm chức đặc trưng của Alcohol là gì?",
+          options: ["-COOH", "-OH", "-CHO", "-NH₂"],
+          correct: 1,
+          explain: "-OH liên kết với C no là nhóm chức Alcohol.",
+        },
+        {
+          q: "Phương pháp nào dùng để tách các chất lỏng có nhiệt độ sôi khác nhau?",
+          options: ["Chưng cất", "Chiết", "Kết tinh", "Sắc ký"],
+          correct: 0,
+          explain: "Chưng cất dựa vào sự khác biệt về nhiệt độ sôi.",
+        },
+        {
+          q: "Trên phổ IR, peak ở vùng 1700-1750 cm⁻¹ thường đặc trưng cho liên kết nào?",
+          options: ["O-H", "C-H", "C=O", "N-H"],
+          correct: 2,
+          explain: "Liên kết đôi C=O hấp thụ mạnh ở vùng 1700 cm⁻¹.",
+        },
+        {
+          q: "Công thức đơn giản nhất của Glucose (C₆H₁₂O₆) là?",
+          options: ["CH₂O", "C₆H₁₂O₆", "C₂H₄O₂", "CHO"],
+          correct: 0,
+          explain: "Tỉ lệ C:H:O = 6:12:6 = 1:2:1 => CH₂O.",
+        },
+      ];
+
+      let currentQ = 0;
+      let score = 0;
+
+      function renderQuiz() {
+        const container = document.getElementById("quiz-container");
+        const progress = document.getElementById("quiz-progress");
+
+        // Update Progress
+        progress.style.width = `${(currentQ / questions.length) * 100}%`;
+
+        if (currentQ >= questions.length) {
+          container.style.display = "none";
+          document.getElementById("quiz-result").classList.remove("hidden");
+          return;
+        }
+
+        const q = questions[currentQ];
+
+        let html = `
+                <div class="glass-card bg-white/10 p-6 rounded-2xl animate-fade-in">
+                    <h3 class="text-xl font-bold mb-6">${currentQ + 1}. ${q.q}</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            `;
+
+        q.options.forEach((opt, idx) => {
+          html += `
+                    <button onclick="checkAnswer(${idx})" class="p-4 rounded-xl bg-slate-800/50 hover:bg-slate-700 border border-slate-600 transition text-left">
+                        ${opt}
+                    </button>
+                `;
+        });
+
+        html += `</div>
+                <div id="quiz-feedback-${currentQ}" class="mt-4 hidden p-4 rounded-xl text-sm"></div>
+            </div>`;
+
+        container.innerHTML = html;
+      }
+
+      function checkAnswer(selectedIdx) {
+        const q = questions[currentQ];
+        const feedback = document.getElementById(`quiz-feedback-${currentQ}`);
+        const buttons = document.querySelectorAll("#quiz-container button");
+
+        // Disable buttons
+        buttons.forEach((btn) => (btn.disabled = true));
+
+        if (selectedIdx === q.correct) {
+          score++;
+          feedback.className =
+            "mt-4 p-4 rounded-xl text-sm bg-green-500/20 border border-green-500 text-green-200 block";
+          feedback.innerHTML = `<i class="fas fa-check-circle"></i> <strong>Chính xác!</strong> ${q.explain}`;
+        } else {
+          buttons[selectedIdx].classList.add("bg-red-500/50");
+          feedback.className =
+            "mt-4 p-4 rounded-xl text-sm bg-red-500/20 border border-red-500 text-red-200 block";
+          feedback.innerHTML = `<i class="fas fa-times-circle"></i> <strong>Sai rồi!</strong> ${q.explain}`;
+        }
+
+        // Highlight correct
+        buttons[q.correct].classList.add("bg-green-500/50", "border-green-400");
+
+        // Next question timeout
+        setTimeout(() => {
+          currentQ++;
+          renderQuiz();
+        }, 2500);
+      }
+
+      function resetQuiz() {
+        currentQ = 0;
+        score = 0;
+        document.getElementById("quiz-result").classList.add("hidden");
+        document.getElementById("quiz-container").style.display = "block";
+        renderQuiz();
+      }
+
+      // Initialize
+      renderQuiz();
     </script>
   </body>
 </html>

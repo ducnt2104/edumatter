@@ -1,1046 +1,1825 @@
-<!DOCTYPE html>
-<html lang="vi" class="light">
+<!doctype html>
+<html lang="vi" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ChemStudy Teen - Cân Bằng Hóa Học</title>
-    <link rel="icon" href="../../../favicon/educhem.svg" type="image/svg+xml" />
+    <title>Cân Bằng Hoá Học & Sự Điện Li – ChemStudy Expert</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../../../favicon/educhem.avg" />
 
-    <!-- Tailwind CSS -->
+    <!-- TailwindCSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Chart.js (Optional helper for graphs, but implementing via Raw Canvas as requested for dependency-free experience usually, strictly following "No external libraries" except Tailwind/FA. Using pure JS for Charts to adhere to constraints) -->
+
     <script>
       tailwind.config = {
         darkMode: "class",
         theme: {
           extend: {
+            fontFamily: {
+              sans: ['"Be Vietnam Pro"', "sans-serif"],
+              display: ['"Space Grotesk"', "sans-serif"],
+            },
             colors: {
               chem: {
-                100: "#e0f2fe",
-                500: "#0ea5e9",
-                600: "#0284c7",
-                900: "#0c4a6e",
+                primary: "#3b82f6",
+                secondary: "#10b981",
+                accent: "#8b5cf6",
+                dark: "#0f172a",
+                light: "#f8fafc",
               },
-              acid: "#ef4444",
-              base: "#3b82f6",
-              neutral: "#22c55e",
             },
             animation: {
-              blob: "blob 7s infinite",
-              float: "float 3s ease-in-out infinite",
-            },
-            keyframes: {
-              blob: {
-                "0%": { transform: "translate(0px, 0px) scale(1)" },
-                "33%": { transform: "translate(30px, -50px) scale(1.1)" },
-                "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
-                "100%": { transform: "translate(0px, 0px) scale(1)" },
-              },
-              float: {
-                "0%, 100%": { transform: "translateY(0)" },
-                "50%": { transform: "translateY(-10px)" },
-              },
+              float: "floating 3s ease-in-out infinite",
+              "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+              "spin-slow": "spin 8s linear infinite",
             },
           },
         },
       };
     </script>
 
-    <!-- React & ReactDOM -->
-    <script
-      crossorigin
-      src="https://unpkg.com/react@18/umd/react.production.min.js"
-    ></script>
-    <script
-      crossorigin
-      src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
-    ></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-    <!-- Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap");
+      /* * GLOBAL STYLES & GLASSMORPHISM 
+         */
+      :root {
+        --footer-bg: #0f172a;
+        --footer-text: #e2e8f0;
+        --p-primary: #3b82f6;
+      }
+
+      html.dark :root {
+        --footer-bg: #020617;
+      }
 
       body {
-        font-family: "Be Vietnam Pro", sans-serif;
-        transition: background-color 0.3s, color 0.3s;
+        background-color: #f0f9ff;
+        background-image:
+          radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+          radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
+          radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+        transition: background-color 0.5s ease;
+      }
+
+      .dark body {
+        background-color: #0f172a;
+        background-image:
+          radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+          radial-gradient(
+            at 50% 100%,
+            hsla(225, 39%, 20%, 1) 0,
+            transparent 50%
+          );
+      }
+
+      /* Glassmorphism Classes */
+      .glass-card {
+        background: rgba(255, 255, 255, 0.7);
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        -webkit-transition: all 0.3s ease;
+        -o-transition: all 0.3s ease;
+        transition: all 0.3s ease;
+      }
+
+      .dark .glass-card {
+        background: rgba(30, 41, 59, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .glass-card:hover {
+        -webkit-transform: translateY(-5px);
+        -ms-transform: translateY(-5px);
+        transform: translateY(-5px);
+        -webkit-box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+      }
+
+      .text-gradient {
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-image: linear-gradient(to right, #3b82f6, #8b5cf6, #ec4899);
+      }
+
+      /* Footer Specifics (Preserved from Prompt) */
+      footer {
+        background: var(--footer-bg);
+        color: var(--footer-text);
+        padding: 100px 5% 40px;
+        position: relative;
+        overflow: hidden;
+        transition:
+          background-color 0.8s ease,
+          color 0.8s ease;
+      }
+
+      .footer-waves {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        background: var(--footer-bg);
+        clip-path: polygon(
+          0% 45%,
+          16% 44%,
+          33% 50%,
+          54% 60%,
+          70% 61%,
+          84% 59%,
+          100% 52%,
+          100% 100%,
+          0% 100%
+        );
+        transition: background-color 0.8s;
+      }
+
+      .footer-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 60px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .icon-btn {
+        color: #94a3b8;
+        font-size: 1.2rem;
+        transition: 0.3s;
+      }
+
+      .icon-btn:hover {
+        color: white;
+        transform: scale(1.1);
+      }
+
+      .contact-item {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        color: #94a3b8;
+        transition: 0.3s;
+      }
+
+      .contact-item i {
+        color: var(--p-primary);
+      }
+      .contact-item:hover {
+        color: white;
+        transform: translateX(5px);
+      }
+
+      .copyright {
+        margin-top: 80px;
+        text-align: center;
+        padding-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        color: #475569;
+        font-size: 0.9rem;
+      }
+
+      .footer-brand h2 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 2rem;
+        margin-bottom: 20px;
+      }
+
+      .footer-links h4,
+      h3 {
+        margin-bottom: 25px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--p-primary);
+      }
+
+      /* Animation Keyframes */
+      @keyframes floating {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-15px);
+        }
+      }
+
+      .floating {
+        animation: floating 3s ease-in-out infinite;
       }
 
       /* Custom Scrollbar */
       ::-webkit-scrollbar {
-        width: 8px;
+        width: 10px;
       }
       ::-webkit-scrollbar-track {
-        background: transparent;
+        background: #1e293b;
       }
       ::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 4px;
-      }
-      .dark ::-webkit-scrollbar-thumb {
         background: #475569;
+        border-radius: 5px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #3b82f6;
       }
 
-      /* 3D Molecule Styles */
-      .molecule-container {
-        perspective: 1000px;
-      }
-      .atom {
-        transform-style: preserve-3d;
-        box-shadow: inset -5px -5px 10px rgba(0, 0, 0, 0.2),
-          5px 5px 10px rgba(255, 255, 255, 0.3);
-      }
-
-      /* Glassmorphism */
-      .glass {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.5);
-      }
-      .dark .glass {
-        background: rgba(15, 23, 42, 0.7);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+      /* Simulation Containers */
+      .sim-container {
+        position: relative;
+        overflow: hidden;
+        border-radius: 1rem;
+        background: linear-gradient(to bottom right, #1e293b, #0f172a);
+        box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.3);
       }
 
-      /* Particle Animation for Reaction */
-      .particle {
-        transition: all 0.5s linear;
+      .molecule {
+        transition: all 0.5s ease;
       }
     </style>
   </head>
   <body
-    class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100"
+    class="text-slate-800 dark:text-slate-200 antialiased selection:bg-blue-500 selection:text-white"
   >
-    <div id="root"></div>
+    <!-- 
+      HEADER SECTION 
+      Fixed position, Glassmorphism
+    -->
+    <header
+      class="fixed top-0 w-full z-50 transition-all duration-300 glass-card border-b-0 rounded-none px-6 py-3"
+    >
+      <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <!-- Logo Block -->
+        <div
+          class="flex items-center gap-3 cursor-pointer group"
+          onclick="window.scrollTo(0, 0)"
+        >
+          <div
+            class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-green-500 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-500/30"
+          >
+            <i class="fas fa-atom text-xl group-hover:animate-spin"></i>
+          </div>
+          <span
+            class="font-display font-bold text-xl md:text-2xl tracking-tight text-slate-800 dark:text-white"
+          >
+            ChemStudy Expert
+          </span>
+        </div>
 
-    <script type="text/babel">
-      const { useState, useEffect, useRef, useMemo } = React;
+        <!-- Navigation & Controls -->
+        <div class="flex items-center gap-4">
+          <nav class="hidden md:flex gap-6 text-sm font-semibold">
+            <a href="#equilibrium" class="hover:text-blue-500 transition-colors"
+              >Cân Bằng</a
+            >
+            <a href="#lechatelier" class="hover:text-blue-500 transition-colors"
+              >Le Chatelier</a
+            >
+            <a
+              href="#electrolysis"
+              class="hover:text-blue-500 transition-colors"
+              >Sự Điện Li</a
+            >
+            <a href="#titration" class="hover:text-blue-500 transition-colors"
+              >Chuẩn Độ</a
+            >
+          </nav>
 
-      // --- ICON COMPONENT ---
-      const Icon = ({ name, size = 24, className = "" }) => {
-        useEffect(() => {
-          lucide.createIcons();
-        }, [name]);
-        return (
-          <i
-            data-lucide={name}
-            width={size}
-            height={size}
-            className={className}
-          ></i>
-        );
-      };
+          <!-- Dark Mode Toggle -->
+          <button
+            id="theme-toggle"
+            class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+          >
+            <i class="fas fa-moon dark:hidden text-slate-600"></i>
+            <i class="fas fa-sun hidden dark:block text-yellow-400"></i>
+          </button>
+        </div>
+      </div>
+    </header>
 
-      // --- SIMULATION 1: REVERSIBLE REACTION (Particle Box) ---
-      const ReversibleSim = () => {
-        const [particles, setParticles] = useState([]);
-        const [equilibrium, setEquilibrium] = useState(0.5); // 0 = All A, 1 = All B
-        const canvasRef = useRef(null);
+    <!-- 
+      HERO SECTION
+    -->
+    <section
+      class="relative pt-32 pb-20 px-6 min-h-[80vh] flex items-center justify-center overflow-hidden"
+    >
+      <!-- Background Elements -->
+      <div
+        class="absolute top-20 left-10 w-20 h-20 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float"
+      ></div>
+      <div
+        class="absolute top-40 right-10 w-32 h-32 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float"
+        style="animation-delay: 1s"
+      ></div>
+      <div
+        class="absolute bottom-20 left-1/3 w-24 h-24 bg-green-400 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float"
+        style="animation-delay: 2s"
+      ></div>
 
-        // Init particles
-        useEffect(() => {
-          const initParticles = Array.from({ length: 40 }).map(() => ({
-            x: Math.random() * 300,
-            y: Math.random() * 180,
-            vx: (Math.random() - 0.5) * 2,
-            vy: (Math.random() - 0.5) * 2,
-            type: Math.random() > 0.5 ? "A" : "B",
-          }));
-          setParticles(initParticles);
-        }, []);
+      <div class="max-w-4xl mx-auto text-center relative z-10">
+        <span
+          class="inline-block py-1 px-3 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 text-sm font-semibold mb-6 border border-blue-200 dark:border-blue-800"
+        >
+          Chuyên đề Hóa học 11
+        </span>
+        <h1
+          class="text-5xl md:text-7xl font-display font-bold mb-6 tracking-tight leading-tight"
+        >
+          Cân Bằng Hoá Học & <br />
+          <span class="text-gradient">Sự Điện Li</span>
+        </h1>
+        <p
+          class="text-xl text-slate-600 dark:text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed"
+        >
+          Khám phá bản chất động của phản ứng thuận nghịch và thế giới vi mô của
+          các ion thông qua
+          <strong class="text-blue-500">mô phỏng tương tác</strong> và
+          <strong class="text-green-500">thí nghiệm ảo</strong>.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <button
+            onclick="document.getElementById('equilibrium').scrollIntoView()"
+            class="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full font-bold shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2"
+          >
+            <i class="fas fa-play-circle"></i> Vào bài học
+          </button>
+          <button
+            onclick="document.getElementById('exercises').scrollIntoView()"
+            class="px-8 py-4 glass-card text-slate-700 dark:text-white rounded-full font-bold hover:bg-white/50 dark:hover:bg-slate-700/50 transition-all duration-300 flex items-center justify-center gap-2"
+          >
+            <i class="fas fa-gamepad"></i> Luyện tập ngay
+          </button>
+        </div>
+      </div>
+    </section>
 
-        // Animation Loop
-        useEffect(() => {
-          const canvas = canvasRef.current;
-          const ctx = canvas.getContext("2d");
-          let animationFrameId;
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-6xl mx-auto px-6 space-y-24 pb-20">
+      <!-- ============================================
+             CHỦ ĐỀ 1: CÂN BẰNG HOÁ HỌC
+             ============================================ -->
+      <section id="equilibrium" class="scroll-mt-28">
+        <div class="flex items-center gap-4 mb-8">
+          <div
+            class="w-12 h-12 rounded-xl bg-blue-500 flex items-center justify-center text-white text-2xl shadow-lg"
+          >
+            <i class="fas fa-balance-scale"></i>
+          </div>
+          <h2
+            class="text-3xl md:text-4xl font-display font-bold text-slate-800 dark:text-white"
+          >
+            I. Phản Ứng Thuận Nghịch & Cân Bằng
+          </h2>
+        </div>
 
-          const render = () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        <!-- A. LÝ THUYẾT & B. MÔ PHỎNG (Kết hợp) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- Theory Column -->
+          <div class="space-y-6">
+            <div class="glass-card p-6 rounded-2xl">
+              <h3
+                class="text-xl font-bold text-blue-500 mb-4 flex items-center gap-2"
+              >
+                <i class="fas fa-book-open"></i> Lý thuyết trọng tâm
+              </h3>
+              <ul class="space-y-3 text-slate-600 dark:text-slate-300">
+                <li class="flex gap-3">
+                  <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                  <span
+                    ><strong>Phản ứng một chiều:</strong> Xảy ra 1 chiều (→),
+                    chất đầu → sản phẩm.</span
+                  >
+                </li>
+                <li class="flex gap-3">
+                  <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                  <span
+                    ><strong>Phản ứng thuận nghịch:</strong> Xảy ra 2 chiều (⇌)
+                    trong cùng điều kiện.</span
+                  >
+                </li>
+                <li class="flex gap-3">
+                  <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                  <span
+                    ><strong>Cân bằng hoá học:</strong> Trạng thái tốc độ phản
+                    ứng thuận = tốc độ phản ứng nghịch ($v_t = v_n$). Nồng độ
+                    các chất không đổi.</span
+                  >
+                </li>
+                <li class="flex gap-3">
+                  <i
+                    class="fas fa-exclamation-triangle text-orange-500 mt-1"
+                  ></i>
+                  <span
+                    ><strong>Bản chất:</strong> Là cân bằng ĐỘNG. Phản ứng vẫn
+                    xảy ra ở cấp độ vi mô.</span
+                  >
+                </li>
+              </ul>
+            </div>
 
-            const newParticles = particles.map((p) => {
-              let nx = p.x + p.vx;
-              let ny = p.y + p.vy;
+            <div class="glass-card p-6 rounded-2xl">
+              <h3 class="text-xl font-bold text-purple-500 mb-4">
+                <i class="fas fa-calculator"></i> Hằng số cân bằng ($K_c$)
+              </h3>
+              <div
+                class="p-4 bg-slate-100 dark:bg-slate-800 rounded-lg font-mono text-center text-lg mb-2"
+              >
+                $$ aA + bB \rightleftharpoons cC + dD $$
+                <br />
+                $$ K_c = \frac{[C]^c.[D]^d}{[A]^a.[B]^b} $$
+              </div>
+              <p class="text-sm text-slate-500 italic">
+                *Chất rắn không xuất hiện trong biểu thức $K_c$.
+              </p>
+            </div>
+          </div>
 
-              // Bounce walls
-              if (nx < 0 || nx > canvas.width) p.vx *= -1;
-              if (ny < 0 || ny > canvas.height) p.vy *= -1;
-
-              // Random conversion based on equilibrium setting
-              // If equilibrium is high (favors B), A turns to B easily, B turns to A hard
-              if (p.type === "A" && Math.random() < equilibrium * 0.05)
-                p.type = "B";
-              if (p.type === "B" && Math.random() < (1 - equilibrium) * 0.05)
-                p.type = "A";
-
-              // Draw
-              ctx.beginPath();
-              ctx.arc(nx, ny, 6, 0, Math.PI * 2);
-              ctx.fillStyle = p.type === "A" ? "#3b82f6" : "#ef4444"; // Blue for A, Red for B
-              ctx.fill();
-              ctx.strokeStyle = "white";
-              ctx.stroke();
-
-              return { ...p, x: nx, y: ny };
-            });
-
-            // Note: In a real react app, we avoid setting state in render loop like this for perf,
-            // but for this scale it's fine for smooth visual.
-            // However, to avoid re-renders, we just mutate refs or draw directly.
-            // Here we just draw.
-
-            animationFrameId = requestAnimationFrame(render);
-          };
-          render();
-          return () => cancelAnimationFrame(animationFrameId);
-        }, [particles, equilibrium]);
-
-        return (
-          <div className="glass p-4 rounded-xl shadow-lg my-4">
-            <h3 className="font-bold text-lg mb-2 flex items-center gap-2 text-chem-600 dark:text-chem-400">
-              <Icon name="flask-conical" size={20} /> Mô phỏng 1: Cân bằng động
-              (Vi mô)
-            </h3>
-            <div className="flex flex-col md:flex-row gap-4">
-              <canvas
-                ref={canvasRef}
-                width={320}
-                height={200}
-                className="bg-slate-100 dark:bg-slate-800 rounded-lg shadow-inner w-full md:w-2/3"
-              ></canvas>
-              <div className="flex-1 space-y-4">
-                <div className="flex justify-between text-sm font-medium">
-                  <span className="text-blue-500">Chất A (Xanh)</span>
-                  <span className="text-red-500">Chất B (Đỏ)</span>
+          <!-- Simulation Column: Graph & Particles -->
+          <div class="space-y-6">
+            <!-- SIMULATION 1: RATE GRAPH -->
+            <div class="glass-card p-1 rounded-2xl overflow-hidden shadow-2xl">
+              <div
+                class="bg-slate-900 p-4 border-b border-slate-700 flex justify-between items-center"
+              >
+                <h4 class="text-white font-bold">
+                  <i class="fas fa-chart-line text-blue-400"></i> Mô phỏng Tốc
+                  độ phản ứng
+                </h4>
+                <button
+                  onclick="resetRateSim()"
+                  class="text-xs bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded"
+                >
+                  Reset
+                </button>
+              </div>
+              <div
+                class="relative h-64 bg-slate-900 w-full flex items-center justify-center"
+              >
+                <canvas
+                  id="rateCanvas"
+                  width="500"
+                  height="250"
+                  class="w-full h-full"
+                ></canvas>
+                <div
+                  id="equilibriumLabel"
+                  class="absolute right-10 top-1/2 text-green-400 font-bold hidden bg-black/50 px-2 rounded border border-green-500"
+                >
+                  ĐẠT CÂN BẰNG ($v_t = v_n$)
                 </div>
+              </div>
+              <div class="p-4 bg-slate-800 text-slate-300 text-sm">
+                <p>
+                  Quan sát đường
+                  <span class="text-blue-400">Xanh (Thuận)</span> giảm dần và
+                  đường <span class="text-red-400">Đỏ (Nghịch)</span> tăng dần
+                  cho đến khi gặp nhau.
+                </p>
+              </div>
+            </div>
+
+            <!-- SIMULATION 2: DYNAMIC PARTICLES -->
+            <div class="glass-card p-1 rounded-2xl overflow-hidden shadow-2xl">
+              <div class="bg-slate-900 p-4 border-b border-slate-700">
+                <h4 class="text-white font-bold">
+                  <i class="fas fa-project-diagram text-green-400"></i> Bản chất
+                  Cân bằng Động
+                </h4>
+              </div>
+              <div
+                class="relative h-48 bg-slate-900 w-full overflow-hidden"
+                id="particleContainer"
+              >
+                <!-- Particles generated by JS -->
+                <div
+                  class="absolute inset-0 flex items-center justify-center text-white/20 pointer-events-none"
+                >
+                  Hệ kín: Hạt va chạm liên tục
+                </div>
+              </div>
+              <div
+                class="p-4 bg-slate-800 flex justify-between items-center text-sm text-slate-300"
+              >
+                <div>
+                  <span
+                    class="inline-block w-3 h-3 rounded-full bg-blue-500"
+                  ></span>
+                  Chất A
+                  <span
+                    class="inline-block w-3 h-3 rounded-full bg-red-500 ml-2"
+                  ></span>
+                  Chất B
+                </div>
+                <div id="particleCount">A: 10 | B: 10</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+             CHỦ ĐỀ 2: NGUYÊN LÍ LE CHATELIER
+             ============================================ -->
+      <section id="lechatelier" class="scroll-mt-28">
+        <div class="flex items-center gap-4 mb-8">
+          <div
+            class="w-12 h-12 rounded-xl bg-purple-500 flex items-center justify-center text-white text-2xl shadow-lg"
+          >
+            <i class="fas fa-arrows-alt-h"></i>
+          </div>
+          <h2
+            class="text-3xl md:text-4xl font-display font-bold text-slate-800 dark:text-white"
+          >
+            II. Chuyển Dịch Cân Bằng (Le Chatelier)
+          </h2>
+        </div>
+
+        <!-- Theory Block -->
+        <div
+          class="glass-card p-6 rounded-2xl mb-8 border-l-4 border-purple-500"
+        >
+          <h3 class="text-lg font-bold mb-2">Nguyên lí Le Chatelier</h3>
+          <p class="text-slate-600 dark:text-slate-300 italic">
+            "Một phản ứng thuận nghịch đang ở trạng thái cân bằng, khi chịu một
+            tác động từ bên ngoài (nồng độ, nhiệt độ, áp suất) thì cân bằng sẽ
+            chuyển dịch theo chiều <strong>làm giảm tác động đó</strong>."
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- SIMULATION 3: TEMPERATURE (NO2/N2O4) -->
+          <div class="glass-card rounded-2xl overflow-hidden">
+            <div
+              class="p-4 bg-gradient-to-r from-orange-100 to-red-100 dark:from-slate-800 dark:to-slate-700 border-b border-slate-200 dark:border-slate-600"
+            >
+              <h4 class="font-bold text-slate-800 dark:text-white mb-1">
+                1. Ảnh hưởng của Nhiệt độ
+              </h4>
+              <p class="text-xs text-slate-500">
+                Thí nghiệm $2NO_2$ (Nâu đỏ) $\rightleftharpoons N_2O_4$ (Không
+                màu, $\Delta H < 0$)
+              </p>
+            </div>
+            <div
+              class="p-6 flex flex-col items-center gap-6 bg-white dark:bg-slate-900"
+            >
+              <!-- Visual representation -->
+              <div class="flex gap-4 items-end">
+                <!-- Flask -->
+                <div
+                  id="flask"
+                  class="w-24 h-32 rounded-b-xl border-2 border-slate-400 relative transition-colors duration-1000 flex items-center justify-center shadow-inner"
+                  style="background-color: rgba(165, 42, 42, 0.5)"
+                >
+                  <span
+                    id="flaskText"
+                    class="font-bold text-white drop-shadow-md"
+                    >Hỗn hợp</span
+                  >
+                </div>
+                <!-- Thermometer -->
+                <div
+                  class="h-32 w-4 bg-slate-200 rounded-full relative overflow-hidden border border-slate-300"
+                >
+                  <div
+                    id="thermoFluid"
+                    class="absolute bottom-0 w-full bg-red-500 transition-all duration-500"
+                    style="height: 50%"
+                  ></div>
+                </div>
+              </div>
+
+              <!-- Control -->
+              <div class="w-full">
+                <label
+                  class="flex justify-between text-sm font-semibold mb-2 text-slate-700 dark:text-slate-300"
+                >
+                  <span>Lạnh (Nước đá)</span>
+                  <span id="tempValue">25°C</span>
+                  <span>Nóng (Nước sôi)</span>
+                </label>
                 <input
                   type="range"
-                  min="0.1"
-                  max="0.9"
-                  step="0.1"
-                  value={equilibrium}
-                  onChange={(e) => setEquilibrium(parseFloat(e.target.value))}
-                  className="w-full accent-chem-500"
+                  min="0"
+                  max="100"
+                  value="25"
+                  class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-red-500"
+                  oninput="updateTempSim(this.value)"
                 />
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Kéo thanh trượt để thay đổi hằng số cân bằng (K). Quan sát tốc
-                  độ chuyển đổi giữa các hạt.
-                  <br />
-                  {equilibrium < 0.5
-                    ? "Cân bằng nghịch (Ưu tiên A)"
-                    : "Cân bằng thuận (Ưu tiên B)"}
+                <div
+                  class="mt-3 text-xs text-center p-2 bg-slate-100 dark:bg-slate-800 rounded text-slate-600 dark:text-slate-400"
+                  id="tempExplanation"
+                >
+                  Ở 25°C: Cân bằng màu nâu nhạt.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SIMULATION 4: PRESSURE -->
+          <div class="glass-card rounded-2xl overflow-hidden">
+            <div
+              class="p-4 bg-gradient-to-r from-blue-100 to-cyan-100 dark:from-slate-800 dark:to-slate-700 border-b border-slate-200 dark:border-slate-600"
+            >
+              <h4 class="font-bold text-slate-800 dark:text-white mb-1">
+                2. Ảnh hưởng của Áp suất
+              </h4>
+              <p class="text-xs text-slate-500">
+                Hệ có số mol khí thay đổi: $N_2(k) + 3H_2(k) \rightleftharpoons
+                2NH_3(k)$
+              </p>
+            </div>
+            <div
+              class="p-6 flex flex-col items-center gap-6 bg-white dark:bg-slate-900"
+            >
+              <!-- Piston Visual -->
+              <div
+                class="relative w-32 h-40 border-l-4 border-r-4 border-b-4 border-slate-400 bg-slate-50 dark:bg-slate-800/50"
+              >
+                <!-- Piston Head -->
+                <div
+                  id="pistonHead"
+                  class="absolute top-0 left-0 w-full h-4 bg-slate-600 transition-all duration-500 border-b-2 border-black"
+                ></div>
+                <!-- Particles -->
+                <div
+                  id="pressureParticles"
+                  class="absolute bottom-0 w-full h-full p-2 grid grid-cols-4 gap-1 transition-all"
+                >
+                  <!-- Dots generated by JS -->
+                </div>
+              </div>
+
+              <!-- Control -->
+              <div class="flex gap-4">
+                <button
+                  onclick="changePressure('increase')"
+                  class="px-4 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 rounded font-bold transition"
+                >
+                  <i class="fas fa-compress-arrows-alt"></i> Tăng P
+                </button>
+                <button
+                  onclick="changePressure('decrease')"
+                  class="px-4 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 rounded font-bold transition"
+                >
+                  <i class="fas fa-expand-arrows-alt"></i> Giảm P
+                </button>
+              </div>
+              <div id="pressureText" class="text-xs text-center text-slate-500">
+                Tăng áp suất $\to$ Cân bằng chuyển dịch theo chiều giảm số mol
+                khí (Tạo $NH_3$).
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Application: Haber Process -->
+        <div class="mt-8 glass-card p-6 rounded-2xl">
+          <h4 class="font-bold text-lg mb-4 text-green-600">
+            <i class="fas fa-industry"></i> Ứng dụng: Sản xuất Amoniac (Quy
+            trình Haber)
+          </h4>
+          <div class="flex flex-col md:flex-row gap-4 items-center">
+            <div
+              class="flex-1 text-sm space-y-2 text-slate-700 dark:text-slate-300"
+            >
+              <p>
+                Phương trình: $N_2 + 3H_2 \rightleftharpoons 2NH_3$ ($\Delta H =
+                -92kJ$)
+              </p>
+              <ul class="list-disc pl-5">
+                <li>
+                  <strong>Tăng Áp suất:</strong> Dịch chuyển chiều thuận (giảm
+                  mol khí 4 -> 2).
+                </li>
+                <li>
+                  <strong>Giảm Nhiệt độ:</strong> Dịch chuyển chiều thuận (toả
+                  nhiệt). *Thực tế dùng 450°C để tốc độ không quá chậm.
+                </li>
+                <li>
+                  <strong>Xúc tác (Fe):</strong> Tăng tốc độ đạt cân bằng.
+                </li>
+              </ul>
+            </div>
+            <div
+              class="w-full md:w-1/3 bg-slate-100 dark:bg-slate-800 p-4 rounded-xl text-center"
+            >
+              <i class="fas fa-flask text-4xl text-yellow-500 mb-2"></i>
+              <p class="font-bold">Hiệu suất tối ưu</p>
+              <div
+                class="w-full bg-gray-300 rounded-full h-2.5 mt-2 dark:bg-gray-700"
+              >
+                <div
+                  class="bg-green-500 h-2.5 rounded-full"
+                  style="width: 45%"
+                ></div>
+              </div>
+              <p class="text-xs mt-1">~20-25% (Tuần hoàn khí)</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================
+             CHỦ ĐỀ 3: SỰ ĐIỆN LI
+             ============================================ -->
+      <section id="electrolysis" class="scroll-mt-28">
+        <div class="flex items-center gap-4 mb-8">
+          <div
+            class="w-12 h-12 rounded-xl bg-green-500 flex items-center justify-center text-white text-2xl shadow-lg"
+          >
+            <i class="fas fa-bolt"></i>
+          </div>
+          <h2
+            class="text-3xl md:text-4xl font-display font-bold text-slate-800 dark:text-white"
+          >
+            III. Sự Điện Li Trong Dung Dịch
+          </h2>
+        </div>
+
+        <!-- SIMULATION 5: CONDUCTIVITY TESTER -->
+        <div class="glass-card p-0 rounded-2xl overflow-hidden mb-8 shadow-xl">
+          <div
+            class="bg-slate-900 text-white p-4 flex justify-between items-center"
+          >
+            <h3 class="font-bold">
+              <i class="fas fa-lightbulb text-yellow-400"></i> Thí nghiệm: Tính
+              dẫn điện của dung dịch
+            </h3>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2">
+            <!-- Virtual Lab View -->
+            <div
+              class="bg-slate-800 relative h-64 flex justify-center items-end p-4 border-r border-slate-700"
+            >
+              <!-- Circuit -->
+              <div
+                class="absolute top-4 left-1/2 -translate-x-1/2 flex flex-col items-center"
+              >
+                <!-- Bulb -->
+                <div
+                  id="bulb"
+                  class="w-12 h-12 bg-gray-600 rounded-full mb-2 transition-all duration-300 shadow-none border-2 border-gray-500"
+                ></div>
+                <div class="w-1 h-8 bg-gray-400"></div>
+                <div class="w-32 h-1 bg-gray-400 relative">
+                  <!-- Electrodes -->
+                  <div class="absolute left-0 top-0 w-1 h-32 bg-gray-300"></div>
+                  <div
+                    class="absolute right-0 top-0 w-1 h-32 bg-gray-300"
+                  ></div>
+                </div>
+              </div>
+
+              <!-- Beaker -->
+              <div
+                class="w-40 h-32 border-l-2 border-r-2 border-b-2 border-white/30 rounded-b-xl relative overflow-hidden bg-white/5 backdrop-blur-sm z-10"
+              >
+                <!-- Liquid -->
+                <div
+                  class="absolute bottom-0 w-full h-24 bg-blue-400/30 transition-colors"
+                  id="solutionLiquid"
+                ></div>
+                <!-- Ions Animation (SVG overlay) -->
+                <div
+                  id="ionsContainer"
+                  class="absolute inset-0 flex flex-wrap justify-center content-end p-2 gap-2 opacity-0 transition-opacity"
+                >
+                  <!-- Injected via JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Controls & Theory -->
+            <div
+              class="p-6 bg-white dark:bg-slate-900 flex flex-col justify-center gap-4"
+            >
+              <label
+                class="block text-sm font-medium text-slate-700 dark:text-slate-300"
+                >Chọn dung dịch thử nghiệm:</label
+              >
+              <select
+                id="solutionSelect"
+                class="w-full p-3 rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                onchange="runConductivityTest(this.value)"
+              >
+                <option value="water">Nước cất ($H_2O$)</option>
+                <option value="salt">Dung dịch Muối ăn (NaCl)</option>
+                <option value="sugar">
+                  Dung dịch Đường ($C_{12}H_{22}O_{11}$)
+                </option>
+                <option value="weak_acid">Giấm ăn ($CH_3COOH$)</option>
+                <option value="strong_acid">Acid mạnh ($HCl$)</option>
+              </select>
+
+              <div
+                id="conductivityResult"
+                class="p-4 rounded-lg bg-slate-100 dark:bg-slate-800 min-h-[100px]"
+              >
+                <p class="font-bold text-slate-800 dark:text-white">
+                  Hiện tượng:
+                </p>
+                <p
+                  class="text-sm text-slate-600 dark:text-slate-400 mt-1"
+                  id="resultText"
+                >
+                  Chọn dung dịch để bắt đầu...
                 </p>
               </div>
             </div>
           </div>
-        );
-      };
+        </div>
 
-      // --- SIMULATION 2: LE CHATELIER (NO2/N2O4) ---
-      const LeChatelierSim = () => {
-        const [temp, setTemp] = useState(25); // Celsius
-        const [pressure, setPressure] = useState(1); // atm
+        <!-- Theory Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="glass-card p-5 rounded-xl border-t-4 border-green-500">
+            <h4 class="font-bold mb-2">Chất điện li mạnh</h4>
+            <p class="text-sm text-slate-600 dark:text-slate-300">
+              Phân li hoàn toàn ra ion.
+            </p>
+            <div
+              class="mt-2 text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 p-2 rounded"
+            >
+              VD: NaCl, HCl, NaOH
+              <br />
+              $\alpha = 1$
+            </div>
+          </div>
+          <div class="glass-card p-5 rounded-xl border-t-4 border-yellow-500">
+            <h4 class="font-bold mb-2">Chất điện li yếu</h4>
+            <p class="text-sm text-slate-600 dark:text-slate-300">
+              Phân li một phần.
+            </p>
+            <div
+              class="mt-2 text-xs bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 p-2 rounded"
+            >
+              VD: $CH_3COOH$, $H_2O$
+              <br />
+              $0 < \alpha < 1$
+            </div>
+          </div>
+          <div class="glass-card p-5 rounded-xl border-t-4 border-red-500">
+            <h4 class="font-bold mb-2">Không điện li</h4>
+            <p class="text-sm text-slate-600 dark:text-slate-300">
+              Không tạo ion.
+            </p>
+            <div
+              class="mt-2 text-xs bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 p-2 rounded"
+            >
+              VD: Đường, Ethanol
+              <br />
+              $\alpha = 0$
+            </div>
+          </div>
+        </div>
 
-        // 2NO2 (Nâu đỏ) <=> N2O4 (Không màu) + Nhiệt
-        // Tăng nhiệt -> Dịch sang NO2 (Nâu đậm)
-        // Tăng áp suất -> Dịch sang N2O4 (Nhạt)
-
-        const opacity = Math.min(
-          1,
-          Math.max(0.1, temp / 100 - pressure / 10 + 0.3)
-        );
-
-        return (
-          <div className="glass p-6 rounded-xl shadow-lg border-l-4 border-yellow-400">
-            <h3 className="font-bold text-lg mb-4 text-yellow-600 dark:text-yellow-400">
-              Mô phỏng 2: Nguyên lý Le Chatelier
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-              <div className="relative h-48 w-32 mx-auto bg-slate-200 dark:bg-slate-700 rounded-full border-4 border-slate-300 overflow-hidden shadow-inner flex items-end justify-center">
+        <!-- SIMULATION 6: DISSOLUTION MECHANISM -->
+        <div class="mt-8 glass-card p-6 rounded-2xl">
+          <h3 class="font-bold text-lg mb-4 text-blue-600">
+            Cơ chế điện li NaCl trong nước
+          </h3>
+          <div
+            class="relative h-48 bg-blue-50 dark:bg-blue-900/20 rounded-xl overflow-hidden flex items-center justify-center"
+          >
+            <!-- Interactive Elements -->
+            <div class="absolute animate-pulse-slow">
+              <div class="flex gap-1 items-center justify-center">
                 <div
-                  className="w-full transition-all duration-1000 ease-in-out"
-                  style={{
-                    height: `${100 / pressure}%`,
-                    backgroundColor: `rgba(139, 69, 19, ${opacity})`, // Brown color
-                  }}
-                ></div>
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-bold text-white drop-shadow-md">
-                  {opacity > 0.6 ? "NO₂ (Nâu)" : "N₂O₄ (Nhạt)"}
+                  class="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-white text-xs font-bold ring-4 ring-blue-300 shadow-lg"
+                >
+                  Na+
                 </div>
-              </div>
-              <div className="space-y-6">
-                <div>
-                  <label className="flex justify-between text-sm font-semibold mb-1">
-                    <span>Nhiệt độ: {temp}°C</span>
-                    <Icon name="thermometer" size={16} />
-                  </label>
-                  <input
-                    type="range"
-                    min="0"
-                    max="100"
-                    value={temp}
-                    onChange={(e) => setTemp(parseInt(e.target.value))}
-                    className="w-full accent-red-500"
-                  />
-                  <p className="text-xs mt-1 text-slate-500">
-                    Tăng nhiệt → Cân bằng dịch chuyển theo chiều thu nhiệt (tạo
-                    NO₂).
-                  </p>
-                </div>
-                <div>
-                  <label className="flex justify-between text-sm font-semibold mb-1">
-                    <span>Áp suất: {pressure} atm</span>
-                    <Icon name="arrow-down-to-line" size={16} />
-                  </label>
-                  <input
-                    type="range"
-                    min="1"
-                    max="5"
-                    step="0.5"
-                    value={pressure}
-                    onChange={(e) => setPressure(parseFloat(e.target.value))}
-                    className="w-full accent-blue-500"
-                  />
-                  <p className="text-xs mt-1 text-slate-500">
-                    Tăng áp suất → Cân bằng dịch chuyển theo chiều giảm số mol
-                    khí (tạo N₂O₄).
-                  </p>
+                <div
+                  class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-bold ring-4 ring-blue-300 shadow-lg"
+                >
+                  Cl-
                 </div>
               </div>
             </div>
-          </div>
-        );
-      };
-
-      // --- SIMULATION 3: ELECTROLYTE ZOOM ---
-      const ElectrolyteSim = () => {
-        const [substance, setSubstance] = useState("NaCl"); // NaCl, HF, Glucose
-
-        // Render particles
-        const renderParticles = () => {
-          const items = [];
-          for (let i = 0; i < 15; i++) {
-            const x = Math.random() * 90;
-            const y = Math.random() * 90;
-
-            if (substance === "NaCl") {
-              // Strong: Completely separated
-              items.push(
-                <div
-                  key={`na${i}`}
-                  className="absolute w-4 h-4 rounded-full bg-purple-500 text-[8px] flex items-center justify-center text-white animate-float"
-                  style={{
-                    left: `${x}%`,
-                    top: `${y}%`,
-                    animationDelay: `${Math.random()}s`,
-                  }}
-                >
-                  Na<sup>+</sup>
-                </div>
-              );
-              items.push(
-                <div
-                  key={`cl${i}`}
-                  className="absolute w-5 h-5 rounded-full bg-green-500 text-[8px] flex items-center justify-center text-white animate-float"
-                  style={{
-                    left: `${x + 5}%`,
-                    top: `${y + 5}%`,
-                    animationDelay: `${Math.random()}s`,
-                  }}
-                >
-                  Cl<sup>-</sup>
-                </div>
-              );
-            } else if (substance === "HF") {
-              // Weak: Mostly combined
-              if (i < 12) {
-                items.push(
-                  <div
-                    key={`hf${i}`}
-                    className="absolute w-8 h-5 rounded-full bg-gray-400 text-[10px] flex items-center justify-center text-white animate-float"
-                    style={{ left: `${x}%`, top: `${y}%` }}
-                  >
-                    HF
-                  </div>
-                );
-              } else {
-                items.push(
-                  <div
-                    key={`h${i}`}
-                    className="absolute w-3 h-3 rounded-full bg-red-400 text-[6px] flex items-center justify-center text-white"
-                    style={{ left: `${x}%`, top: `${y}%` }}
-                  >
-                    H<sup>+</sup>
-                  </div>
-                );
-                items.push(
-                  <div
-                    key={`f${i}`}
-                    className="absolute w-4 h-4 rounded-full bg-green-400 text-[8px] flex items-center justify-center text-white"
-                    style={{ left: `${x + 5}%`, top: `${y}%` }}
-                  >
-                    F<sup>-</sup>
-                  </div>
-                );
-              }
-            } else {
-              // Non: All molecules
-              items.push(
-                <div
-                  key={`glu${i}`}
-                  className="absolute w-10 h-8 rounded-full border-2 border-slate-400 bg-white/50 text-[8px] flex items-center justify-center text-slate-800 animate-float"
-                  style={{ left: `${x}%`, top: `${y}%` }}
-                >
-                  C<sub>6</sub>H<sub>12</sub>O<sub>6</sub>
-                </div>
-              );
-            }
-          }
-          return items;
-        };
-
-        const bulbBrightness =
-          substance === "NaCl"
-            ? "bg-yellow-400 shadow-[0_0_30px_rgba(250,204,21,1)]"
-            : substance === "HF"
-            ? "bg-yellow-200 shadow-[0_0_10px_rgba(250,204,21,0.5)]"
-            : "bg-slate-400";
-
-        return (
-          <div className="glass p-6 rounded-xl shadow-lg mt-6">
-            <h3 className="font-bold text-lg mb-4 flex gap-2">
-              <Icon name="zap" /> Mô phỏng 3: Độ dẫn điện & Sự điện li
-            </h3>
-            <div className="flex flex-col md:flex-row gap-8">
-              <div className="flex-1 relative h-48 bg-blue-100 dark:bg-blue-900/30 rounded-xl overflow-hidden border-2 border-blue-200">
-                {renderParticles()}
-                <div className="absolute bottom-2 right-2 text-xs text-slate-500 bg-white/80 px-2 py-1 rounded">
-                  Zoom 1000x
-                </div>
-              </div>
-              <div className="w-full md:w-1/3 flex flex-col items-center justify-center gap-4">
-                <div
-                  className={`w-16 h-16 rounded-full border-4 border-slate-600 transition-all duration-500 ${bulbBrightness} relative`}
-                >
-                  <div className="absolute bottom-[-20px] left-1/2 -translate-x-1/2 w-8 h-6 bg-slate-600"></div>
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setSubstance("NaCl")}
-                    className={`px-3 py-1 rounded text-sm ${
-                      substance === "NaCl"
-                        ? "bg-blue-600 text-white"
-                        : "bg-slate-200 dark:bg-slate-700"
-                    }`}
-                  >
-                    Mạnh (NaCl)
-                  </button>
-                  <button
-                    onClick={() => setSubstance("HF")}
-                    className={`px-3 py-1 rounded text-sm ${
-                      substance === "HF"
-                        ? "bg-blue-600 text-white"
-                        : "bg-slate-200 dark:bg-slate-700"
-                    }`}
-                  >
-                    Yếu (HF)
-                  </button>
-                  <button
-                    onClick={() => setSubstance("Glucose")}
-                    className={`px-3 py-1 rounded text-sm ${
-                      substance === "Glucose"
-                        ? "bg-blue-600 text-white"
-                        : "bg-slate-200 dark:bg-slate-700"
-                    }`}
-                  >
-                    K.Đ.Li (Đường)
-                  </button>
-                </div>
-              </div>
+            <!-- Water molecules surrounding (Static representation for layout, dynamic behavior implied via CSS animation) -->
+            <div
+              class="absolute top-10 left-1/4 animate-float text-blue-400 opacity-50"
+            >
+              <i class="fas fa-tint text-2xl"></i>
+            </div>
+            <div
+              class="absolute bottom-10 right-1/4 animate-float text-blue-400 opacity-50"
+              style="animation-delay: 1s"
+            >
+              <i class="fas fa-tint text-2xl"></i>
             </div>
           </div>
-        );
-      };
+          <p class="mt-3 text-sm text-center text-slate-500">
+            Các phân tử nước phân cực ($H^{\delta+}, O^{\delta-}$) bao quanh và
+            tách các ion ra khỏi tinh thể.
+          </p>
+        </div>
+      </section>
 
-      // --- SIMULATION 4: PH SCALE ---
-      const PHSim = () => {
-        const [ph, setPh] = useState(7);
+      <!-- ============================================
+             CHỦ ĐỀ 4: CHUẨN ĐỘ & pH
+             ============================================ -->
+      <section id="titration" class="scroll-mt-28">
+        <div class="flex items-center gap-4 mb-8">
+          <div
+            class="w-12 h-12 rounded-xl bg-pink-500 flex items-center justify-center text-white text-2xl shadow-lg"
+          >
+            <i class="fas fa-vial"></i>
+          </div>
+          <h2
+            class="text-3xl md:text-4xl font-display font-bold text-slate-800 dark:text-white"
+          >
+            IV. Chuẩn Độ & Thang pH
+          </h2>
+        </div>
 
-        const getColor = (v) => {
-          const colors = [
-            "#ef4444",
-            "#f97316",
-            "#fbbf24",
-            "#a3e635",
-            "#4ade80",
-            "#22c55e",
-            "#14b8a6",
-            "#06b6d4",
-            "#0ea5e9",
-            "#3b82f6",
-            "#6366f1",
-            "#8b5cf6",
-            "#a855f7",
-            "#d946ef",
-            "#ec4899",
-          ];
-          return colors[Math.round(v)];
-        };
-
-        const getExample = (v) => {
-          if (v < 1) return "Pin axit";
-          if (v < 3) return "Dịch vị dạ dày, Chanh";
-          if (v < 5) return "Cà chua, Nước mưa";
-          if (v < 7) return "Sữa, Nước tiểu";
-          if (v == 7) return "Nước tinh khiết";
-          if (v < 9) return "Trứng, Nước biển";
-          if (v < 11) return "Xà phòng, Sữa Magie";
-          if (v < 13) return "Thuốc tẩy";
-          return "Dung dịch thông cống (NaOH)";
-        };
-
-        return (
-          <div className="glass p-6 rounded-xl shadow-lg my-6">
-            <h3 className="font-bold text-lg mb-4 flex gap-2">
-              <Icon name="droplets" /> Mô phỏng 4: Thang đo pH
-            </h3>
-            <div className="flex flex-col items-center">
-              <div
-                className="w-32 h-32 rounded-full flex items-center justify-center text-3xl font-bold text-white shadow-xl transition-colors duration-300 border-4 border-white mb-4"
-                style={{ backgroundColor: getColor(ph) }}
-              >
-                {ph}
-              </div>
-              <p className="text-xl font-semibold mb-2">{getExample(ph)}</p>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- SIMULATION 7: pH SLIDER -->
+          <div class="glass-card p-6 rounded-2xl">
+            <h3 class="font-bold mb-4">Thang pH và Màu Chỉ Thị</h3>
+            <div class="mb-6">
               <input
                 type="range"
                 min="0"
                 max="14"
-                step="0.5"
-                value={ph}
-                onChange={(e) => setPh(parseFloat(e.target.value))}
-                className="w-full max-w-md accent-chem-600 h-2 bg-gradient-to-r from-red-500 via-green-500 to-purple-500 rounded-lg appearance-none cursor-pointer"
+                step="1"
+                value="7"
+                id="phSlider"
+                class="w-full h-4 rounded-lg appearance-none cursor-pointer"
+                style="
+                  background: linear-gradient(
+                    to right,
+                    #ef4444,
+                    #eab308,
+                    #22c55e,
+                    #3b82f6,
+                    #6366f1
+                  );
+                "
+                oninput="updatePH(this.value)"
               />
-              <div className="flex justify-between w-full max-w-md mt-2 text-xs font-bold text-slate-500">
-                <span className="text-red-500">Axit (0)</span>
-                <span className="text-green-500">Trung tính (7)</span>
-                <span className="text-purple-500">Kiềm (14)</span>
+              <div class="flex justify-between text-xs mt-2 font-mono">
+                <span>0 (Acid)</span>
+                <span>7 (Trung tính)</span>
+                <span>14 (Base)</span>
               </div>
             </div>
-          </div>
-        );
-      };
 
-      // --- SIMULATION 5: TITRATION (Chuẩn độ) ---
-      const TitrationSim = () => {
-        const [volume, setVolume] = useState(0); // mL NaOH added
-        const [isDripping, setIsDripping] = useState(false);
-
-        // Simulating HCl titrated by NaOH with Phenolphthalein
-        // Equivalence point at 25ml
-        const phCurve = (v) => {
-          if (v < 25) return 1 + (v / 25) * 3; // Slow rise
-          if (v >= 25 && v < 25.5) return 7 + (v - 25) * 10; // Sharp jump
-          return 12 + (v - 25) * 0.1; // Slow rise base
-        };
-
-        const currentPH = phCurve(volume).toFixed(1);
-        const color =
-          parseFloat(currentPH) >= 8.2
-            ? "rgba(236, 72, 153, 0.6)"
-            : "rgba(224, 242, 254, 0.5)"; // Pink if pH > 8.2
-
-        useEffect(() => {
-          let interval;
-          if (isDripping && volume < 50) {
-            interval = setInterval(() => {
-              setVolume((v) => Math.min(v + 0.5, 50));
-            }, 100);
-          } else {
-            setIsDripping(false);
-          }
-          return () => clearInterval(interval);
-        }, [isDripping, volume]);
-
-        return (
-          <div className="glass p-6 rounded-xl shadow-lg my-6">
-            <h3 className="font-bold text-lg mb-4 flex gap-2">
-              <Icon name="flask-round" /> Mô phỏng 5: Chuẩn độ Acid - Base
-            </h3>
-            <div className="flex flex-col md:flex-row gap-8 items-center justify-center">
-              <div className="relative w-40 h-64 flex flex-col items-center">
-                {/* Burette */}
-                <div className="w-4 h-32 bg-slate-200 border border-slate-400 relative rounded-b mb-1 z-10">
-                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0.5 h-2 bg-slate-400"></div>
-                  {isDripping && (
-                    <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce"></div>
-                  )}
-                </div>
-                {/* Flask */}
-                <div className="w-24 h-28 border-2 border-slate-400 border-t-0 rounded-b-2xl relative overflow-hidden bg-white/30 backdrop-blur-sm">
-                  <div
-                    className="absolute bottom-0 w-full transition-all duration-300 ease-out"
-                    style={{
-                      height: `${30 + volume}%`,
-                      backgroundColor: color,
-                    }}
-                  ></div>
-                </div>
+            <div class="flex items-center gap-6">
+              <div
+                id="phDisplay"
+                class="w-24 h-24 rounded-full flex items-center justify-center text-3xl font-bold text-white shadow-lg transition-colors duration-300 bg-green-500"
+              >
+                pH 7
               </div>
-              <div className="space-y-4 w-full md:w-1/2">
-                <div className="flex justify-between items-center bg-slate-100 dark:bg-slate-800 p-4 rounded-lg">
-                  <div>
-                    <div className="text-sm text-slate-500">Thể tích NaOH</div>
-                    <div className="text-2xl font-bold font-mono">
-                      {volume.toFixed(1)} mL
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-slate-500">pH Dung dịch</div>
-                    <div
-                      className={`text-2xl font-bold font-mono ${
-                        parseFloat(currentPH) > 7
-                          ? "text-pink-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      {currentPH}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onMouseDown={() => setIsDripping(true)}
-                    onMouseUp={() => setIsDripping(false)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex-1 active:scale-95 transition"
-                  >
-                    Nhấn giữ để nhỏ giọt
-                  </button>
-                  <button
-                    onClick={() => setVolume(0)}
-                    className="bg-slate-500 hover:bg-slate-600 text-white px-4 py-2 rounded-lg active:scale-95 transition"
-                  >
-                    Làm lại
-                  </button>
-                </div>
-                <p className="text-xs text-slate-500 italic">
-                  *Chỉ thị Phenolphthalein chuyển hồng khi pH &ge; 8.2. Điểm
-                  tương đương tại 25mL.
+              <div class="space-y-2 text-sm">
+                <p>
+                  <strong>Quỳ tím:</strong>
+                  <span id="litmusResult">Không đổi màu</span>
+                </p>
+                <p>
+                  <strong>Phenolphthalein:</strong>
+                  <span id="phenolResult">Không màu</span>
+                </p>
+                <p>
+                  <strong>$[H^+]$:</strong>
+                  <span id="hConcentration">$10^{-7} M$</span>
                 </p>
               </div>
             </div>
           </div>
-        );
-      };
 
-      // --- SIMULATION 6: WATER TREATMENT (Al3+) ---
-      const FlocculationSim = () => {
-        const [step, setStep] = useState(0);
-        // 0: Dirty, 1: Add Al3+, 2: Hydrolysis, 3: Flocculation, 4: Clean
-
-        const titles = [
-          "Nước đục (Chứa hạt sét)",
-          "Thêm Phèn chua (Al³⁺)",
-          "Thủy phân tạo Keo Al(OH)₃",
-          "Keo tụ chất bẩn",
-          "Nước trong",
-        ];
-
-        return (
-          <div className="glass p-6 rounded-xl shadow-lg my-6">
-            <h3 className="font-bold text-lg mb-4 flex gap-2">
-              <Icon name="glass-water" /> Mô phỏng 6: Ứng dụng Phèn chua (Al³⁺)
-            </h3>
-            <div className="relative h-48 bg-sky-100 dark:bg-sky-900/30 rounded-xl overflow-hidden border-2 border-sky-300 flex items-center justify-center transition-all duration-1000">
-              {/* Dirt particles */}
-              <div
-                className={`absolute inset-0 transition-opacity duration-1000 ${
-                  step >= 4 ? "opacity-0" : "opacity-100"
-                }`}
-              >
-                {Array.from({ length: 20 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className={`absolute w-2 h-2 bg-amber-700 rounded-full transition-all duration-[2000ms]`}
-                    style={{
-                      left: `${Math.random() * 90}%`,
-                      top: step === 3 ? "90%" : `${Math.random() * 80 + 10}%`,
-                      transform: step === 3 ? "scale(2)" : "scale(1)", // Clumping together
-                    }}
-                  ></div>
-                ))}
-              </div>
-
-              {/* Al(OH)3 Gel */}
-              <div
-                className={`absolute inset-0 pointer-events-none transition-opacity duration-1000 ${
-                  step >= 2 && step < 4 ? "opacity-50" : "opacity-0"
-                }`}
-              >
-                <div className="w-full h-full bg-white blur-md animate-pulse"></div>
-              </div>
-
-              <div className="absolute bottom-2 bg-white/80 dark:bg-black/50 px-3 py-1 rounded-full text-sm font-bold shadow">
-                {titles[step]}
-              </div>
-            </div>
-
-            <div className="flex justify-between mt-4">
+          <!-- SIMULATION 8: TITRATION LAB -->
+          <div class="glass-card p-0 rounded-2xl overflow-hidden">
+            <div
+              class="bg-slate-900 p-4 border-b border-slate-700 flex justify-between"
+            >
+              <h4 class="text-white font-bold">
+                <i class="fas fa-flask text-pink-400"></i> Thí nghiệm Chuẩn độ
+                NaOH bằng HCl
+              </h4>
               <button
-                disabled={step === 0}
-                onClick={() => setStep((s) => s - 1)}
-                className="px-4 py-2 bg-slate-200 dark:bg-slate-700 rounded-lg disabled:opacity-50"
+                onclick="resetTitration()"
+                class="text-xs bg-slate-700 text-white px-2 py-1 rounded"
               >
-                Trước
-              </button>
-              <div className="flex gap-1 items-center">
-                {[0, 1, 2, 3, 4].map((i) => (
-                  <div
-                    key={i}
-                    className={`w-2 h-2 rounded-full ${
-                      i === step ? "bg-blue-600" : "bg-slate-300"
-                    }`}
-                  ></div>
-                ))}
-              </div>
-              <button
-                disabled={step === 4}
-                onClick={() => setStep((s) => s + 1)}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50"
-              >
-                Tiếp theo
+                Làm lại
               </button>
             </div>
-            <div className="mt-2 text-sm text-center font-mono bg-slate-100 dark:bg-slate-800 p-2 rounded">
-              Al³⁺ + 3H₂O ⇌ Al(OH)₃↓ (keo) + 3H⁺
+            <div class="relative h-80 bg-slate-800 flex justify-center">
+              <!-- Burette -->
+              <div
+                class="absolute top-0 w-4 h-40 bg-white/20 border-x border-white/40 flex flex-col items-center justify-end"
+              >
+                <!-- Liquid inside burette -->
+                <div
+                  id="buretteLiquid"
+                  class="w-full bg-slate-200/50 transition-all duration-300"
+                  style="height: 100%"
+                ></div>
+                <!-- Tip -->
+                <div class="absolute -bottom-4 w-1 h-4 bg-white/40"></div>
+                <!-- Drop -->
+                <div
+                  id="drop"
+                  class="absolute -bottom-4 w-2 h-2 rounded-full bg-slate-200/50 opacity-0"
+                ></div>
+              </div>
+
+              <!-- Flask -->
+              <div class="absolute bottom-10 w-24 h-32">
+                <!-- Flask Body shape using clip-path or border radius tricks -->
+                <div
+                  class="w-full h-full bg-white/10 border-2 border-white/30 rounded-b-3xl rounded-t-lg relative overflow-hidden backdrop-blur-sm"
+                >
+                  <!-- Solution Liquid -->
+                  <div
+                    id="flaskLiquid"
+                    class="absolute bottom-0 w-full h-16 bg-pink-500/80 transition-colors duration-1000"
+                  ></div>
+                </div>
+              </div>
+
+              <!-- Tap Control -->
+              <div class="absolute top-36 right-1/4">
+                <button
+                  id="titrateBtn"
+                  onclick="addTitrant()"
+                  class="w-12 h-12 rounded-full bg-blue-600 hover:bg-blue-500 text-white shadow-lg flex items-center justify-center active:scale-95 transition"
+                >
+                  <i class="fas fa-tint"></i>
+                </button>
+                <p class="text-xs text-center text-slate-400 mt-2">Nhỏ HCl</p>
+              </div>
+            </div>
+            <div class="p-4 bg-white dark:bg-slate-900 text-sm">
+              <div class="flex justify-between mb-2">
+                <span
+                  >V(HCl) đã dùng:
+                  <strong id="volUsed" class="text-blue-600">0</strong> mL</span
+                >
+                <span id="titrationStatus" class="font-bold text-pink-500"
+                  >Chưa đạt điểm tương đương</span
+                >
+              </div>
+              <p class="text-slate-500 text-xs">
+                Mục tiêu: Làm mất màu hồng của Phenolphthalein.
+              </p>
             </div>
           </div>
-        );
-      };
+        </div>
+      </section>
 
-      // --- MAIN APP LAYOUT ---
-      const App = () => {
-        const [activeTab, setActiveTab] = useState("khai-niem");
-        const [darkMode, setDarkMode] = useState(false);
+      <!-- ============================================
+             CHỦ ĐỀ 5: BÀI TẬP CỦNG CỐ (GAMIFICATION)
+             ============================================ -->
+      <section id="exercises" class="scroll-mt-28 mb-20">
+        <div class="text-center mb-10">
+          <span
+            class="text-blue-500 font-bold tracking-widest uppercase text-sm"
+            >Review Time</span
+          >
+          <h2
+            class="text-3xl font-display font-bold mt-2 text-slate-800 dark:text-white"
+          >
+            Thử Tài Hóa Học
+          </h2>
+        </div>
 
-        useEffect(() => {
-          if (darkMode) document.documentElement.classList.add("dark");
-          else document.documentElement.classList.remove("dark");
-        }, [darkMode]);
+        <div
+          class="glass-card max-w-3xl mx-auto rounded-3xl overflow-hidden shadow-2xl relative"
+        >
+          <!-- Progress Bar -->
+          <div class="w-full h-2 bg-slate-200 dark:bg-slate-700">
+            <div
+              id="quizProgress"
+              class="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-500"
+              style="width: 0%"
+            ></div>
+          </div>
 
-        const tabs = [
-          { id: "khai-niem", label: "Khái niệm & K" },
-          { id: "le-chatelier", label: "Nguyên lý Le Chatelier" },
-          { id: "dien-li", label: "Sự điện li" },
-          { id: "ph-chuan-do", label: "pH & Chuẩn độ" },
-          { id: "ung-dung", label: "Thực tiễn" },
-        ];
+          <div class="p-8 md:p-12" id="quizContainer">
+            <!-- Question Injected Here -->
+            <div class="text-center">
+              <div
+                class="inline-block p-4 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300 mb-6 text-2xl"
+              >
+                <i class="fas fa-question"></i>
+              </div>
+              <h3
+                class="text-xl md:text-2xl font-bold mb-8 text-slate-800 dark:text-white"
+                id="questionText"
+              >
+                Sẵn sàng chưa?
+              </h3>
+              <div class="grid grid-cols-1 gap-4" id="answersContainer">
+                <button
+                  onclick="startQuiz()"
+                  class="w-full p-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg transition-transform hover:scale-105 shadow-lg shadow-blue-500/30"
+                >
+                  Bắt đầu ngay
+                </button>
+              </div>
+            </div>
+          </div>
 
-        const renderContent = () => {
-          switch (activeTab) {
-            case "khai-niem":
-              return (
-                <div className="space-y-6 animate-fade-in">
-                  <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-white shadow-xl relative overflow-hidden">
-                    <div className="relative z-10">
-                      <h1 className="text-4xl font-bold mb-2">
-                        Cân Bằng Hóa Học
-                      </h1>
-                      <p className="text-blue-100 text-lg">
-                        Khám phá trạng thái cân bằng động của các phản ứng thuận
-                        nghịch.
-                      </p>
-                    </div>
-                    <div className="absolute right-0 top-0 opacity-20 transform translate-x-10 -translate-y-10">
-                      <Icon name="atom" size={200} />
-                    </div>
-                  </div>
+          <!-- Feedback Overlay -->
+          <div
+            id="feedbackOverlay"
+            class="absolute inset-0 bg-slate-900/90 backdrop-blur-sm hidden flex-col items-center justify-center text-center p-6 z-10"
+          >
+            <div id="feedbackIcon" class="text-6xl mb-4"></div>
+            <h3
+              id="feedbackTitle"
+              class="text-2xl font-bold text-white mb-2"
+            ></h3>
+            <p id="feedbackDesc" class="text-slate-300 mb-6 max-w-md"></p>
+            <button
+              onclick="nextQuestion()"
+              class="px-6 py-3 bg-white text-slate-900 rounded-full font-bold hover:bg-slate-200 transition"
+            >
+              Câu tiếp theo <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+          </div>
+        </div>
+      </section>
 
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="glass p-6 rounded-xl">
-                      <h2 className="text-xl font-bold text-chem-600 dark:text-chem-400 mb-3">
-                        1. Phản ứng thuận nghịch
-                      </h2>
-                      <ul className="list-disc pl-5 space-y-2 text-sm md:text-base">
-                        <li>
-                          <strong className="text-green-600">
-                            Phản ứng một chiều:
-                          </strong>{" "}
-                          Chỉ xảy ra theo chiều chất tham gia tạo thành sản phẩm
-                          (→). VD: 2KClO<sub>3</sub> → 2KCl + 3O<sub>2</sub>.
-                        </li>
-                        <li>
-                          <strong className="text-blue-600">
-                            Phản ứng thuận nghịch:
-                          </strong>{" "}
-                          Xảy ra theo hai chiều ngược nhau trong cùng điều kiện
-                          (⇌).
-                        </li>
-                        <li>
-                          <strong>Cân bằng hóa học:</strong> Trạng thái của phản
-                          ứng thuận nghịch khi tốc độ phản ứng thuận bằng tốc độ
-                          phản ứng nghịch (V<sub>t</sub> = V<sub>n</sub>).
-                        </li>
-                      </ul>
-                    </div>
-                    <div className="glass p-6 rounded-xl border-l-4 border-purple-500">
-                      <h2 className="text-xl font-bold text-purple-600 dark:text-purple-400 mb-3">
-                        2. Hằng số cân bằng (K<sub>C</sub>)
-                      </h2>
-                      <p className="mb-4 text-sm">
-                        Với phản ứng: aA + bB ⇌ cC + dD
-                      </p>
-                      <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded text-center font-serif text-xl border border-slate-300 dark:border-slate-600">
-                        K<sub>C</sub> ={" "}
-                        <span className="inline-block align-middle">
-                          <span className="border-b border-current block">
-                            [C]<sup>c</sup> . [D]<sup>d</sup>
-                          </span>
-                          <span className="block">
-                            [A]<sup>a</sup> . [B]<sup>b</sup>
-                          </span>
-                        </span>
-                      </div>
-                      <p className="mt-4 text-xs italic text-slate-500">
-                        * K chỉ phụ thuộc vào nhiệt độ.
-                      </p>
-                    </div>
-                  </div>
-                  <ReversibleSim />
-                </div>
-              );
-            case "le-chatelier":
-              return (
-                <div className="space-y-6">
-                  <div className="glass p-6 rounded-xl">
-                    <h2 className="text-2xl font-bold text-amber-600 mb-4">
-                      Nguyên lý Le Chatelier
-                    </h2>
-                    <p className="text-lg italic text-slate-600 dark:text-slate-300 border-l-4 border-amber-500 pl-4 py-2 bg-amber-50 dark:bg-amber-900/20">
-                      "Một hệ đang ở trạng thái cân bằng, nếu chịu tác động của
-                      các yếu tố bên ngoài như nồng độ, nhiệt độ, áp suất thì
-                      cân bằng sẽ chuyển dịch theo chiều chống lại tác động đó."
-                    </p>
-                  </div>
-                  <LeChatelierSim />
-                  <div className="grid md:grid-cols-3 gap-4">
-                    <div className="glass p-4 rounded-lg text-center hover:scale-105 transition">
-                      <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <Icon name="beaker" />
-                      </div>
-                      <h4 className="font-bold">Nồng độ</h4>
-                      <p className="text-sm text-slate-500">
-                        Tăng nồng độ chất nào, cân bằng dịch chuyển để giảm nồng
-                        độ chất đó.
-                      </p>
-                    </div>
-                    <div className="glass p-4 rounded-lg text-center hover:scale-105 transition">
-                      <div className="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <Icon name="flame" />
-                      </div>
-                      <h4 className="font-bold">Nhiệt độ</h4>
-                      <p className="text-sm text-slate-500">
-                        Tăng T → Theo chiều thu nhiệt.
-                        <br />
-                        Giảm T → Theo chiều tỏa nhiệt.
-                      </p>
-                    </div>
-                    <div className="glass p-4 rounded-lg text-center hover:scale-105 transition">
-                      <div className="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <Icon name="minimize" />
-                      </div>
-                      <h4 className="font-bold">Áp suất</h4>
-                      <p className="text-sm text-slate-500">
-                        Tăng P → Theo chiều giảm số mol khí.
-                        <br />
-                        (Chỉ áp dụng với chất khí).
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              );
-            case "dien-li":
-              return (
-                <div className="space-y-6">
-                  <h2 className="text-2xl font-bold text-chem-600">
-                    Sự điện li trong dung dịch
-                  </h2>
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="glass p-6 rounded-xl">
-                      <h3 className="font-bold mb-2 text-lg">Chất điện li</h3>
-                      <p className="mb-2">
-                        Là chất khi tan trong nước phân li ra ion.
-                      </p>
-                      <ul className="space-y-2 text-sm">
-                        <li className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                          <strong>Mạnh:</strong> Phân li hoàn toàn (HCl, NaOH,
-                          NaCl).
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
-                          <strong>Yếu:</strong> Phân li một phần (CH<sub>3</sub>
-                          COOH, HF).
-                        </li>
-                      </ul>
-                    </div>
-                    <div className="glass p-6 rounded-xl">
-                      <h3 className="font-bold mb-2 text-lg">
-                        Thuyết Brønsted – Lowry
-                      </h3>
-                      <div className="space-y-3">
-                        <div className="bg-red-50 dark:bg-red-900/20 p-3 rounded border border-red-200">
-                          <strong className="text-red-600">Acid:</strong> Chất
-                          cho proton (H<sup>+</sup>)
-                        </div>
-                        <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded border border-blue-200">
-                          <strong className="text-blue-600">Base:</strong> Chất
-                          nhận proton (H<sup>+</sup>)
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <ElectrolyteSim />
-                </div>
-              );
-            case "ph-chuan-do":
-              return (
-                <div className="space-y-6">
-                  <h2 className="text-2xl font-bold text-pink-600">
-                    pH và Chuẩn độ Acid - Base
-                  </h2>
-                  <PHSim />
-                  <div className="glass p-6 rounded-xl">
-                    <h3 className="font-bold text-lg mb-4">Công thức pH</h3>
-                    <div className="grid grid-cols-2 gap-4 text-center">
-                      <div className="bg-slate-800 text-white p-4 rounded font-mono">
-                        pH = -log[H<sup>+</sup>]
-                      </div>
-                      <div className="bg-slate-800 text-white p-4 rounded font-mono">
-                        [H<sup>+</sup>] = 10<sup>-pH</sup>
-                      </div>
-                    </div>
-                  </div>
-                  <TitrationSim />
-                </div>
-              );
-            case "ung-dung":
-              return (
-                <div className="space-y-6">
-                  <h2 className="text-2xl font-bold text-green-600">
-                    Ý nghĩa thực tiễn
-                  </h2>
-                  <FlocculationSim />
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="glass p-6 rounded-xl">
-                      <h3 className="font-bold text-lg mb-2 text-chem-600">
-                        Xử lý nước (Phèn chua)
-                      </h3>
-                      <p className="text-sm text-slate-600 dark:text-slate-300">
-                        Phèn chua cung cấp ion Al<sup>3+</sup>. Ion này bị thủy
-                        phân trong nước tạo thành keo Al(OH)<sub>3</sub> có khả
-                        năng dính kết các hạt bụi bẩn, đất lơ lửng trong nước
-                        làm chúng lắng xuống.
-                      </p>
-                    </div>
-                    <div className="glass p-6 rounded-xl">
-                      <h3 className="font-bold text-lg mb-2 text-chem-600">
-                        Hệ đệm Carbonate
-                      </h3>
-                      <p className="text-sm text-slate-600 dark:text-slate-300">
-                        Cân bằng CO<sub>3</sub>
-                        <sup>2-</sup> + H<sub>2</sub>O ⇌ HCO<sub>3</sub>
-                        <sup>-</sup> + OH<sup>-</sup> đóng vai trò quan trọng
-                        trong việc ổn định pH của nước tự nhiên và máu, cũng như
-                        quá trình hình thành thạch nhũ trong hang động.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              );
-            default:
-              return null;
+      <!-- NAVIGATION BUTTONS (FIXED FROM PROMPT) -->
+      <section
+        class="text-center space-x-4 mb-20 flex flex-col md:flex-row justify-center gap-4 md:gap-0"
+      >
+        <button
+          onclick="document.getElementById('exercises').scrollIntoView()"
+          style="
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.35);
+            transition: 0.3s ease;
+            justify-content: center;
+          "
+          onmouseover="
+            this.style.transform = 'translateY(-3px) scale(1.03)';
+            this.style.boxShadow = '0 18px 45px rgba(99,102,241,.55)';
+          "
+          onmouseout="
+            this.style.transform = 'translateY(0) scale(1)';
+            this.style.boxShadow = '0 10px 30px rgba(59,130,246,.35)';
+          "
+        >
+          <i class="fas fa-pen-to-square"></i>
+          Bài tập củng cố
+        </button>
+
+        <button
+          onclick="window.location.reload()"
+          style="
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.35);
+            transition: 0.3s ease;
+            justify-content: center;
+          "
+          onmouseover="
+            this.style.transform = 'translateY(-3px)';
+            this.style.boxShadow = '0 18px 45px rgba(22,163,74,.55)';
+          "
+          onmouseout="
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 10px 30px rgba(34,197,94,.35)';
+          "
+        >
+          <i class="fas fa-sync"></i>
+          Tải lại trang
+        </button>
+      </section>
+    </main>
+
+    <!-- FOOTER (EXACT STRUCTURE FROM PROMPT) -->
+    <footer>
+      <div class="footer-waves"></div>
+      <div class="footer-grid">
+        <div class="footer-brand" data-aos="fade-right">
+          <h2>EDUMATTER</h2>
+          <p style="color: #94a3b8; line-height: 1.8">
+            Kiến tạo môi trường học tập cảm xúc, nơi tri thức được số hóa và
+            truyền tải đầy cảm hứng.
+          </p>
+          <div style="display: flex; gap: 15px; margin-top: 30px">
+            <a href="https://www.facebook.com/ducnt214" class="icon-btn"
+              ><i class="fab fa-facebook" alt="facebook"></i
+            ></a>
+            <a href="https://github.com/ducnt2104" class="icon-btn" alt="github"
+              ><i class="fab fa-github"></i
+            ></a>
+            <a
+              href="https://www.tiktok.com/@ktbtcthm210"
+              class="icon-btn"
+              alt="tiktok"
+              ><i class="fab fa-tiktok"></i
+            ></a>
+          </div>
+        </div>
+        <div class="footer-links" data-aos="fade-up">
+          <h3>Liên hệ nhanh</h3>
+          <div class="contact-item">
+            <i class="fas fa-envelope"></i>
+            <span>ducnt21042010@gmail.com</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-phone"></i>
+            <span>034 226 6204</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-location-dot"></i>
+            <span>THPT Tôn Đức Thắng, Đồng Nai</span>
+          </div>
+        </div>
+        <div class="footer-links" data-aos="fade-left">
+          <h4>Đội ngũ DNT</h4>
+          <p style="color: #94a3b8">
+            "Sáng tạo không ngừng - Vươn tầm tri thức"
+          </p>
+          <div
+            style="
+              margin-top: 20px;
+              padding: 15px;
+              background: rgba(255, 255, 255, 0.05);
+              border-radius: 15px;
+            "
+          >
+            <p style="font-size: 0.8rem; color: #fff">
+              Dự án được phát triển bởi các thành viên đam mê công nghệ tại Việt
+              Nam.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="copyright">
+        <p>
+          © 2024 EDUMATTER Educational Ecosystem. Designed with
+          <i class="fas fa-heart" style="color: #ef4444"></i> by DNT Team.
+        </p>
+      </div>
+    </footer>
+
+    <!-- 
+      JAVASCRIPT LOGIC
+      Modular, Clean, Commented
+    -->
+    <script>
+      // --- 1. THEME TOGGLE ---
+      const themeToggle = document.getElementById("theme-toggle");
+      const html = document.documentElement;
+
+      // Check local storage or system preference
+      if (
+        localStorage.theme === "dark" ||
+        (!("theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        html.classList.add("dark");
+      } else {
+        html.classList.remove("dark");
+      }
+
+      themeToggle.addEventListener("click", () => {
+        html.classList.toggle("dark");
+        localStorage.theme = html.classList.contains("dark") ? "dark" : "light";
+      });
+
+      // --- 2. SIMULATION: RATE OF REACTION (CANVAS) ---
+      const canvas = document.getElementById("rateCanvas");
+      const ctx = canvas.getContext("2d");
+      let animationId;
+      let time = 0;
+      let rateSimRunning = true;
+
+      function drawRateGraph() {
+        if (!rateSimRunning) return;
+
+        // Clear Canvas
+        ctx.fillStyle = "#0f172a"; // Dark bg
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Draw Axes
+        ctx.strokeStyle = "#94a3b8";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(40, 20);
+        ctx.lineTo(40, 220); // Y axis (Rate)
+        ctx.lineTo(480, 220); // X axis (Time)
+        ctx.stroke();
+
+        // Labels
+        ctx.fillStyle = "#94a3b8";
+        ctx.font = "12px Arial";
+        ctx.fillText("Tốc độ (v)", 10, 20);
+        ctx.fillText("Thời gian (t)", 440, 240);
+
+        // Calculate curves (Exponential decay/growth)
+        // v_thuan (Starts high, decreases)
+        // v_nghich (Starts 0, increases)
+
+        const maxTime = 100; // arbitrary unit to reach equilibrium
+        const currentT = Math.min(time, maxTime);
+
+        // Draw Forward Rate (Green/Blue)
+        ctx.beginPath();
+        ctx.strokeStyle = "#3b82f6";
+        ctx.lineWidth = 3;
+        for (let t = 0; t <= currentT; t++) {
+          let x = 40 + t * 4; // Scale x
+          let y = 220 - (180 * Math.exp(-0.05 * t) + 20); // Equation
+          if (t === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+
+        // Draw Reverse Rate (Red)
+        ctx.beginPath();
+        ctx.strokeStyle = "#ef4444";
+        for (let t = 0; t <= currentT; t++) {
+          let x = 40 + t * 4;
+          let y = 220 - 100 * (1 - Math.exp(-0.05 * t));
+          if (t === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+
+        time += 0.5;
+
+        // Check equilibrium visual
+        if (time > 70) {
+          document
+            .getElementById("equilibriumLabel")
+            .classList.remove("hidden");
+        } else {
+          document.getElementById("equilibriumLabel").classList.add("hidden");
+        }
+
+        if (time < 110) {
+          animationId = requestAnimationFrame(drawRateGraph);
+        }
+      }
+
+      function resetRateSim() {
+        time = 0;
+        cancelAnimationFrame(animationId);
+        document.getElementById("equilibriumLabel").classList.add("hidden");
+        drawRateGraph();
+      }
+
+      // Start Sim 1
+      drawRateGraph();
+
+      // --- 3. SIMULATION: PARTICLES (DOM) ---
+      const particleContainer = document.getElementById("particleContainer");
+      const pCountDisplay = document.getElementById("particleCount");
+      const particles = [];
+
+      class Particle {
+        constructor(type) {
+          this.el = document.createElement("div");
+          this.type = type; // 'A' or 'B'
+          this.x = Math.random() * 100;
+          this.y = Math.random() * 100;
+          this.vx = (Math.random() - 0.5) * 1.5;
+          this.vy = (Math.random() - 0.5) * 1.5;
+
+          this.el.style.position = "absolute";
+          this.el.style.width = "8px";
+          this.el.style.height = "8px";
+          this.el.style.borderRadius = "50%";
+          this.updateColor();
+          particleContainer.appendChild(this.el);
+        }
+
+        updateColor() {
+          this.el.style.backgroundColor =
+            this.type === "A" ? "#3b82f6" : "#ef4444";
+          this.el.style.boxShadow =
+            this.type === "A" ? "0 0 5px #3b82f6" : "0 0 5px #ef4444";
+        }
+
+        move() {
+          this.x += this.vx;
+          this.y += this.vy;
+
+          // Bounce walls
+          if (this.x <= 0 || this.x >= 98) this.vx *= -1;
+          if (this.y <= 0 || this.y >= 95) this.vy *= -1;
+
+          this.el.style.left = this.x + "%";
+          this.el.style.top = this.y + "%";
+
+          // Random conversion (simulating collision reaction)
+          if (Math.random() < 0.005) {
+            this.type = this.type === "A" ? "B" : "A";
+            this.updateColor();
+            updateCounts();
           }
-        };
+        }
+      }
 
-        return (
-          <div className="min-h-screen pb-10">
-            {/* Navigation */}
-            <nav className="sticky top-0 z-50 glass shadow-sm px-4 py-3 mb-6">
-              <div className="max-w-6xl mx-auto flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <div className="bg-chem-600 text-white p-2 rounded-lg">
-                    <Icon name="flask-conical" className="text-white" />
-                  </div>
-                  <span className="font-bold text-xl hidden md:block tracking-tight text-chem-900 dark:text-white">
-                    ChemStudy Teen
-                  </span>
-                </div>
+      function initParticles() {
+        for (let i = 0; i < 20; i++)
+          particles.push(new Particle(i < 10 ? "A" : "B"));
+        animateParticles();
+      }
 
-                {/* Desktop Menu */}
-                <div className="hidden md:flex gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
-                  {tabs.map((tab) => (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                        activeTab === tab.id
-                          ? "bg-white dark:bg-slate-600 text-chem-600 dark:text-white shadow-sm"
-                          : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
-                      }`}
-                    >
-                      {tab.label}
-                    </button>
-                  ))}
-                </div>
+      function updateCounts() {
+        const countA = particles.filter((p) => p.type === "A").length;
+        const countB = particles.length - countA;
+        pCountDisplay.innerText = `Chất đầu: ${countA} | Sản phẩm: ${countB}`;
+      }
 
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => setDarkMode(!darkMode)}
-                    className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition"
-                  >
-                    <Icon name={darkMode ? "sun" : "moon"} size={20} />
-                  </button>
-                  <a
-                    href="../chemstudyteen.html"
-                    className="flex items-center gap-2 bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-700 transition"
-                  >
-                    <Icon name="arrow-left" size={16} /> Quay về
-                  </a>
-                </div>
-              </div>
-              {/* Mobile Menu (Scrollable) */}
-              <div className="md:hidden mt-3 flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-                {tabs.map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                      activeTab === tab.id
-                        ? "bg-chem-600 text-white"
-                        : "bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300"
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-            </nav>
+      function animateParticles() {
+        particles.forEach((p) => p.move());
+        requestAnimationFrame(animateParticles);
+      }
 
-            {/* Main Content */}
-            <main className="max-w-5xl mx-auto px-4">{renderContent()}</main>
+      initParticles();
 
-            {/* No Footer as requested */}
-          </div>
-        );
-      };
+      // --- 4. SIMULATION: LE CHATELIER (TEMP) ---
+      function updateTempSim(val) {
+        const tempVal = document.getElementById("tempValue");
+        const flask = document.getElementById("flask");
+        const explanation = document.getElementById("tempExplanation");
+        const fluid = document.getElementById("thermoFluid");
 
-      const root = ReactDOM.createRoot(document.getElementById("root"));
-      root.render(<App />);
+        tempVal.innerText = val + "°C";
+        fluid.style.height = val + "%";
+
+        // Color Logic:
+        // Low Temp -> N2O4 (Colorless) dominates -> Lighter Brown
+        // High Temp -> NO2 (Brown) dominates -> Darker Brown
+
+        // Opacity maps from 0.1 to 0.9 based on 0-100 val
+        const opacity = 0.1 + (val / 100) * 0.8;
+        flask.style.backgroundColor = `rgba(165, 42, 42, ${opacity})`;
+
+        if (val < 20) {
+          explanation.innerText =
+            "Lạnh: Cân bằng dịch chuyển chiều thuận (Toả nhiệt) -> Tạo N2O4 không màu.";
+        } else if (val > 60) {
+          explanation.innerText =
+            "Nóng: Cân bằng dịch chuyển chiều nghịch (Thu nhiệt) -> Tạo NO2 màu nâu.";
+        } else {
+          explanation.innerText =
+            "Nhiệt độ thường: Hỗn hợp cân bằng màu nâu nhạt.";
+        }
+      }
+
+      // --- 5. SIMULATION: LE CHATELIER (PRESSURE) ---
+      const pressureContainer = document.getElementById("pressureParticles");
+      const pistonHead = document.getElementById("pistonHead");
+      let currentPressureHeight = 0; // 0 = normal, -40 = high pressure
+
+      // Create Dots for pressure sim
+      for (let i = 0; i < 12; i++) {
+        const dot = document.createElement("div");
+        dot.className = "w-2 h-2 rounded-full bg-slate-400 m-auto";
+        pressureContainer.appendChild(dot);
+      }
+
+      function changePressure(action) {
+        const text = document.getElementById("pressureText");
+
+        if (action === "increase") {
+          pistonHead.style.top = "40%"; // Push down
+          text.innerHTML =
+            "Áp suất CAO: Thể tích giảm -> Nồng độ tăng -> Cân bằng tạo NH3 (ít mol khí hơn).";
+          // Visualize clustering
+          pressureContainer.classList.add("scale-75", "origin-bottom");
+        } else {
+          pistonHead.style.top = "0%"; // Pull up
+          text.innerHTML =
+            "Áp suất THẤP: Thể tích tăng -> Cân bằng tạo N2, H2 (nhiều mol khí hơn).";
+          pressureContainer.classList.remove("scale-75", "origin-bottom");
+        }
+      }
+
+      // --- 6. SIMULATION: CONDUCTIVITY ---
+      function runConductivityTest(type) {
+        const bulb = document.getElementById("bulb");
+        const result = document.getElementById("resultText");
+        const ions = document.getElementById("ionsContainer");
+        const liquid = document.getElementById("solutionLiquid");
+
+        // Reset styles
+        bulb.className =
+          "w-12 h-12 rounded-full mb-2 transition-all duration-300 shadow-none border-2 border-gray-500 bg-gray-600";
+        ions.innerHTML = "";
+        ions.style.opacity = "0";
+
+        setTimeout(() => {
+          ions.style.opacity = "1";
+
+          switch (type) {
+            case "water":
+              result.innerHTML =
+                "Đèn không sáng. Nước cất là chất điện li cực yếu (coi như không điện li).";
+              liquid.className =
+                "absolute bottom-0 w-full h-24 bg-blue-200/30 transition-colors";
+              break;
+            case "salt":
+              bulb.classList.add(
+                "bg-yellow-400",
+                "shadow-[0_0_30px_rgba(250,204,21,1)]",
+                "border-yellow-200",
+              );
+              result.innerHTML =
+                "Đèn sáng mạnh! NaCl điện li hoàn toàn ra nhiều ion Na+, Cl-";
+              liquid.className =
+                "absolute bottom-0 w-full h-24 bg-blue-400/30 transition-colors";
+              // Add Ions
+              ions.innerHTML =
+                '<span class="text-xs font-bold text-purple-600 p-1">Na+</span><span class="text-xs font-bold text-green-600 p-1">Cl-</span>'.repeat(
+                  8,
+                );
+              break;
+            case "sugar":
+              result.innerHTML =
+                "Đèn không sáng. Đường tan nhưng tồn tại dạng phân tử, không tạo ion.";
+              liquid.className =
+                "absolute bottom-0 w-full h-24 bg-yellow-100/30 transition-colors";
+              ions.innerHTML =
+                '<span class="text-[10px] bg-white/50 rounded p-1">C12H22O11</span>'.repeat(
+                  4,
+                );
+              break;
+            case "weak_acid":
+              bulb.classList.add(
+                "bg-yellow-600",
+                "shadow-[0_0_10px_rgba(202,138,4,0.5)]",
+              ); // Dim light
+              bulb.classList.remove("bg-gray-600");
+              result.innerHTML =
+                "Đèn sáng yếu. CH3COOH là chất điện li yếu (ít ion).";
+              liquid.className =
+                "absolute bottom-0 w-full h-24 bg-transparent transition-colors";
+              ions.innerHTML =
+                '<span class="text-[10px]">CH3COOH</span>'.repeat(5) +
+                '<span class="text-xs text-red-500 font-bold">H+</span>';
+              break;
+            case "strong_acid":
+              bulb.classList.add(
+                "bg-yellow-400",
+                "shadow-[0_0_30px_rgba(250,204,21,1)]",
+              );
+              result.innerHTML = "Đèn sáng mạnh! HCl là acid mạnh.";
+              ions.innerHTML =
+                '<span class="text-xs font-bold text-red-600 p-1">H+</span><span class="text-xs font-bold text-green-600 p-1">Cl-</span>'.repeat(
+                  8,
+                );
+              break;
+          }
+        }, 100);
+      }
+
+      // --- 7. SIMULATION: pH SLIDER ---
+      function updatePH(val) {
+        const display = document.getElementById("phDisplay");
+        const litmus = document.getElementById("litmusResult");
+        const phenol = document.getElementById("phenolResult");
+        const hConc = document.getElementById("hConcentration");
+
+        // Color logic for display circle
+        let color = "";
+        if (val < 7)
+          color = "#ef4444"; // Red
+        else if (val == 7)
+          color = "#22c55e"; // Green
+        else color = "#3b82f6"; // Blue
+
+        display.style.backgroundColor = color;
+        display.innerText = `pH ${val}`;
+
+        // Calc H+
+        hConc.innerHTML = `10<sup>-${val}</sup> M`;
+
+        // Indicators
+        if (val <= 6) {
+          litmus.innerText = "Hoá Đỏ (Acid)";
+          litmus.className = "text-red-500 font-bold";
+          phenol.innerText = "Không màu";
+        } else if (val >= 8) {
+          litmus.innerText = "Hoá Xanh (Base)";
+          litmus.className = "text-blue-500 font-bold";
+          phenol.innerText = "Hoá Hồng";
+          phenol.className = "text-pink-500 font-bold";
+        } else {
+          litmus.innerText = "Không đổi màu (Trung tính)";
+          litmus.className = "text-slate-500";
+          phenol.innerText = "Không màu";
+          phenol.className = "text-slate-500";
+        }
+      }
+
+      // --- 8. SIMULATION: TITRATION ---
+      let titrantVolume = 0;
+      const equivalencePoint = 10; // mL
+
+      function addTitrant() {
+        if (titrantVolume >= 20) return; // Max limit
+
+        titrantVolume += 1;
+        document.getElementById("volUsed").innerText = titrantVolume;
+
+        // Animate Drop
+        const drop = document.getElementById("drop");
+        drop.style.opacity = "1";
+        drop.style.transition = "top 0.5s ease-in, opacity 0.1s";
+        drop.style.top = "150px"; // Fall distance
+
+        setTimeout(() => {
+          // Reset drop
+          drop.style.transition = "none";
+          drop.style.opacity = "0";
+          drop.style.top = "-16px";
+
+          // Check Color Change
+          const flaskLiq = document.getElementById("flaskLiquid");
+          const status = document.getElementById("titrationStatus");
+
+          // Logic: NaOH in flask (Pink with Phenol). Add HCl (Acid).
+          // At equivalence, Neutral -> Colorless.
+
+          if (titrantVolume >= equivalencePoint) {
+            flaskLiq.className =
+              "absolute bottom-0 w-full h-16 bg-transparent transition-colors duration-1000"; // Clear
+            status.innerText = "Đã đạt điểm tương đương! (Dung dịch mất màu)";
+            status.className = "font-bold text-green-500";
+          } else {
+            // Flash clear then back to pink (simulation of mixing)
+            flaskLiq.classList.add("opacity-50");
+            setTimeout(() => flaskLiq.classList.remove("opacity-50"), 200);
+          }
+        }, 500);
+      }
+
+      function resetTitration() {
+        titrantVolume = 0;
+        document.getElementById("volUsed").innerText = "0";
+        document.getElementById("titrationStatus").innerText =
+          "Chưa đạt điểm tương đương";
+        document.getElementById("titrationStatus").className =
+          "font-bold text-pink-500";
+        document.getElementById("flaskLiquid").className =
+          "absolute bottom-0 w-full h-16 bg-pink-500/80 transition-colors duration-1000";
+      }
+
+      // --- 9. QUIZ SYSTEM (DATA FROM PROMPT) ---
+      const quizData = [
+        {
+          q: "Phản ứng thuận nghịch là phản ứng xảy ra theo...",
+          a: [
+            "Một chiều duy nhất",
+            "Hai chiều ngược nhau",
+            "Chiều thuận khi đun nóng",
+            "Chiều nghịch khi làm lạnh",
+          ],
+          correct: 1,
+          expl: "Phản ứng thuận nghịch xảy ra theo hai chiều ngược nhau trong cùng điều kiện.",
+        },
+        {
+          q: "Khi cân bằng hoá học được thiết lập thì...",
+          a: [
+            "Phản ứng dừng lại",
+            "Nồng độ chất sản phẩm lớn hơn chất đầu",
+            "Tốc độ phản ứng thuận bằng tốc độ phản ứng nghịch",
+            "Nồng độ các chất bằng nhau",
+          ],
+          correct: 2,
+          expl: "Cân bằng hoá học là cân bằng động, vt = vn.",
+        },
+        {
+          q: "Yếu tố nào KHÔNG làm chuyển dịch cân bằng?",
+          a: ["Nhiệt độ", "Áp suất", "Nồng độ", "Chất xúc tác"],
+          correct: 3,
+          expl: "Chất xúc tác chỉ làm tăng tốc độ phản ứng (cả thuận và nghịch) giúp nhanh đạt cân bằng chứ không làm chuyển dịch.",
+        },
+        {
+          q: "Dung dịch nào sau đây dẫn điện tốt nhất?",
+          a: ["Nước cất", "Dung dịch NaCl", "Dung dịch Đường", "Rượu Ethanol"],
+          correct: 1,
+          expl: "NaCl là chất điện li mạnh, phân li hoàn toàn thành ion dẫn điện.",
+        },
+        {
+          q: "pH của dung dịch acid mạnh (như HCl 0.1M) khoảng bao nhiêu?",
+          a: ["pH > 7", "pH = 7", "pH < 7", "pH = 14"],
+          correct: 2,
+          expl: "Môi trường Acid có pH < 7.",
+        },
+      ];
+
+      let currentQuestion = 0;
+      let score = 0;
+
+      function startQuiz() {
+        currentQuestion = 0;
+        score = 0;
+        document.getElementById("quizProgress").style.width = "0%";
+        loadQuestion();
+      }
+
+      function loadQuestion() {
+        if (currentQuestion >= quizData.length) {
+          // End Quiz
+          document.getElementById("questionText").innerHTML =
+            `Hoàn thành! <br> Điểm của bạn: ${score}/${quizData.length}`;
+          document.getElementById("answersContainer").innerHTML = `
+                    <button onclick="startQuiz()" class="px-6 py-3 bg-blue-600 text-white rounded-full mx-auto block">Làm lại</button>
+                `;
+          return;
+        }
+
+        const data = quizData[currentQuestion];
+        document.getElementById("questionText").innerText = data.q;
+
+        const container = document.getElementById("answersContainer");
+        container.innerHTML = ""; // Clear prev answers
+
+        data.a.forEach((ans, index) => {
+          const btn = document.createElement("button");
+          btn.className =
+            "w-full p-4 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold border border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700 text-left transition relative overflow-hidden group";
+          btn.innerHTML = `<span class="inline-block w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-600 text-center leading-8 mr-3 text-sm">${String.fromCharCode(65 + index)}</span> ${ans}`;
+          btn.onclick = () => checkAnswer(index);
+          container.appendChild(btn);
+        });
+
+        // Update bar
+        const pct = (currentQuestion / quizData.length) * 100;
+        document.getElementById("quizProgress").style.width = pct + "%";
+      }
+
+      function checkAnswer(index) {
+        const data = quizData[currentQuestion];
+        const overlay = document.getElementById("feedbackOverlay");
+        const icon = document.getElementById("feedbackIcon");
+        const title = document.getElementById("feedbackTitle");
+        const desc = document.getElementById("feedbackDesc");
+
+        overlay.classList.remove("hidden");
+        overlay.classList.add("flex"); // Show overlay
+
+        if (index === data.correct) {
+          score++;
+          icon.innerHTML = "🎉";
+          title.innerText = "Chính xác!";
+          title.className = "text-2xl font-bold text-green-400 mb-2";
+        } else {
+          icon.innerHTML = "🤔";
+          title.innerText = "Tiếc quá!";
+          title.className = "text-2xl font-bold text-red-400 mb-2";
+        }
+        desc.innerText = data.expl;
+      }
+
+      function nextQuestion() {
+        document.getElementById("feedbackOverlay").classList.add("hidden");
+        document.getElementById("feedbackOverlay").classList.remove("flex");
+        currentQuestion++;
+        loadQuestion();
+      }
+
+      // Initialize simulations on load
+      window.addEventListener("load", () => {
+        initParticles();
+        runConductivityTest(""); // Init state
+      });
     </script>
   </body>
 </html>

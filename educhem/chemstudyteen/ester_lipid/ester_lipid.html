@@ -1,68 +1,66 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ChemStudy Teen - Chương 1: Ester & Lipid</title>
-    <link rel="icon" href="../../../favicon/educhem.svg" type="image/svg+xml" />
+    <meta
+      name="description"
+      content="Hệ thống học tập tương tác chủ đề Ester - Lipid - Xà phòng dành cho học sinh THPT."
+    />
+    <meta name="author" content="ChemStudy Expert - DNT Team" />
+    <title>CHƯƠNG 1: ESTER – LIPID – XÀ PHÒNG | ChemStudy Expert</title>
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../../../favicon/educhem.avg" />
 
-    <!-- Three.js for 3D Simulations -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-
-    <!-- Google Fonts -->
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
 
-    <!-- MathJax (Optional fallback, but avoiding $ as requested) -->
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
 
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         darkMode: "class",
         theme: {
           extend: {
             fontFamily: {
-              sans: ["Be Vietnam Pro", "sans-serif"],
+              sans: ["Inter", "sans-serif"],
+              display: ["Space Grotesk", "sans-serif"],
             },
             colors: {
-              chem: {
-                ester: "#f59e0b", // Amber 500
-                lipid: "#eab308", // Yellow 500
-                soap: "#0ea5e9", // Sky 500
-                dark: "#0f172a", // Slate 900
-                light: "#f8fafc", // Slate 50
-                accent: "#ec4899", // Pink 500
-              },
+              primary: "#3b82f6",
+              secondary: "#10b981",
+              accent: "#8b5cf6",
+              dark: "#0f172a",
+              light: "#f8fafc",
             },
             animation: {
               float: "float 6s ease-in-out infinite",
-              bubble: "bubble 2s infinite",
-              wiggle: "wiggle 1s ease-in-out infinite",
-              "spin-slow": "spin 10s linear infinite",
+              "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+              "spin-slow": "spin 12s linear infinite",
+              blob: "blob 7s infinite",
             },
             keyframes: {
               float: {
                 "0%, 100%": { transform: "translateY(0)" },
                 "50%": { transform: "translateY(-20px)" },
               },
-              bubble: {
-                "0%": { transform: "translateY(100%) scale(0)", opacity: "0" },
-                "50%": { opacity: "1" },
-                "100%": {
-                  transform: "translateY(-20px) scale(1.5)",
-                  opacity: "0",
-                },
-              },
-              wiggle: {
-                "0%, 100%": { transform: "rotate(-3deg)" },
-                "50%": { transform: "rotate(3deg)" },
+              blob: {
+                "0%": { transform: "translate(0px, 0px) scale(1)" },
+                "33%": { transform: "translate(30px, -50px) scale(1.1)" },
+                "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
+                "100%": { transform: "translate(0px, 0px) scale(1)" },
               },
             },
           },
@@ -71,1325 +69,2054 @@
     </script>
 
     <style>
+      /* Custom CSS Variables & Utils */
+      :root {
+        --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+        --glass-bg: rgba(255, 255, 255, 0.7);
+        --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        --neon-blue: #00f3ff;
+        --neon-purple: #bc13fe;
+      }
+
+      .dark {
+        --glass-bg: rgba(15, 23, 42, 0.6);
+        --glass-border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
       body {
-        font-family: "Be Vietnam Pro", sans-serif;
+        font-family: "Inter", sans-serif;
+        overflow-x: hidden;
       }
 
-      /* Glassmorphism */
-      .glass {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-      }
-      .dark .glass {
-        background: rgba(15, 23, 42, 0.7);
-        border: 1px solid rgba(255, 255, 255, 0.05);
+      h1,
+      h2,
+      h3,
+      h4,
+      .font-display {
+        font-family: "Space Grotesk", sans-serif;
       }
 
-      /* 3D Canvas Container */
-      .canvas-3d {
+      /* Glassmorphism Classes */
+      .glass-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: var(--glass-border);
+        box-shadow: var(--glass-shadow);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .glass-card:hover {
+        transform: translateY(-5px) scale(1.01);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        border-color: rgba(59, 130, 246, 0.4);
+      }
+
+      .glass-nav {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .dark .glass-nav {
+        background: rgba(15, 23, 42, 0.8);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      /* Text Gradients */
+      .text-gradient {
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .text-gradient-green {
+        background: linear-gradient(135deg, #10b981, #3b82f6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      /* Simulation Specific Styles */
+      .molecule {
+        transition: all 0.5s ease;
+      }
+
+      .bond {
+        stroke-dasharray: 100;
+        stroke-dashoffset: 100;
+        animation: drawBond 2s forwards;
+      }
+
+      @keyframes drawBond {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+
+      .drop-zone {
+        border: 2px dashed #cbd5e1;
+        transition: all 0.3s;
+      }
+
+      .drop-zone.active {
+        border-color: #3b82f6;
+        background: rgba(59, 130, 246, 0.1);
+      }
+
+      /* Background Blobs */
+      .blob-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
         width: 100%;
-        height: 300px;
-        border-radius: 1rem;
-        cursor: move;
-        position: relative;
+        height: 100%;
+        z-index: -1;
         overflow: hidden;
+        pointer-events: none;
+      }
+
+      .blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.6;
       }
 
       /* Custom Scrollbar */
       ::-webkit-scrollbar {
-        width: 6px;
+        width: 10px;
       }
       ::-webkit-scrollbar-track {
         background: transparent;
       }
       ::-webkit-scrollbar-thumb {
         background: #cbd5e1;
-        border-radius: 10px;
+        border-radius: 5px;
       }
       .dark ::-webkit-scrollbar-thumb {
-        background: #475569;
+        background: #334155;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
       }
 
-      /* Micelle Game Styles */
-      .micelle-canvas {
-        background: #e0f2fe;
-        border-radius: 1rem;
+      /* Footer Waves and Specifics (Preserving requested CSS) */
+      :root {
+        --footer-bg: #0f172a;
+        --footer-text: #e2e8f0;
+        --p-primary: #3b82f6;
+      }
+      html.dark :root {
+        --footer-bg: #020617;
+      }
+      footer {
+        background: var(--footer-bg);
+        color: var(--footer-text);
+        padding: 100px 5% 40px;
+        position: relative;
+        overflow: hidden;
+        transition:
+          background-color 0.8s ease,
+          color 0.8s ease;
+      }
+      .footer-waves {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
-        height: 400px;
-        cursor: crosshair;
+        height: 60px;
+        background: var(--footer-bg);
+        clip-path: polygon(
+          0% 45%,
+          16% 44%,
+          33% 50%,
+          54% 60%,
+          70% 61%,
+          84% 59%,
+          100% 52%,
+          100% 100%,
+          0% 100%
+        );
+        transition: background-color 0.8s;
       }
-      .dark .micelle-canvas {
-        background: #0c4a6e;
+      .footer-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 60px;
+        max-width: 1200px;
+        margin: 0 auto;
       }
-
-      .hidden-content {
-        display: none;
+      .icon-btn {
+        color: #94a3b8;
+        font-size: 1.2rem;
+        transition: 0.3s;
       }
-      .active-content {
-        display: block;
-        animation: fadeIn 0.5s ease;
+      .icon-btn:hover {
+        color: white;
+        transform: scale(1.1);
       }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
+      .contact-item {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        color: #94a3b8;
+        transition: 0.3s;
       }
-
-      /* Range Input Styling */
-      input[type="range"] {
-        -webkit-appearance: none;
-        background: transparent;
+      .contact-item i {
+        color: var(--p-primary);
       }
-      input[type="range"]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        height: 20px;
-        width: 20px;
-        border-radius: 50%;
-        background: #f59e0b;
-        cursor: pointer;
-        margin-top: -8px;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+      .contact-item:hover {
+        color: white;
+        transform: translateX(5px);
       }
-      input[type="range"]::-webkit-slider-runnable-track {
-        width: 100%;
-        height: 4px;
-        cursor: pointer;
-        background: #cbd5e1;
-        border-radius: 2px;
+      .footer-brand h2 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 2rem;
+        margin-bottom: 20px;
+      }
+      .footer-links h4,
+      h3 {
+        margin-bottom: 25px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--p-primary);
+      }
+      .copyright {
+        margin-top: 80px;
+        text-align: center;
+        padding-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        color: #475569;
+        font-size: 0.9rem;
       }
     </style>
   </head>
+
   <body
-    class="bg-chem-light text-slate-800 dark:bg-chem-dark dark:text-slate-100 transition-colors duration-300 min-h-screen flex flex-col"
+    class="bg-light dark:bg-dark text-slate-800 dark:text-slate-200 transition-colors duration-300"
   >
-    <!-- NAVIGATION BAR -->
-    <nav
-      class="fixed top-0 w-full z-50 glass shadow-sm transition-all duration-300"
+    <!-- Background Animation -->
+    <div class="blob-bg">
+      <div class="blob bg-blue-400 w-96 h-96 top-0 left-0 animate-blob"></div>
+      <div
+        class="blob bg-purple-400 w-96 h-96 bottom-0 right-0 animate-blob animation-delay-2000"
+      ></div>
+      <div
+        class="blob bg-green-400 w-80 h-80 top-1/2 left-1/2 animate-blob animation-delay-4000"
+      ></div>
+    </div>
+
+    <!-- HEADER -->
+    <header
+      class="fixed w-full top-0 z-50 glass-nav transition-all duration-300"
+      id="main-header"
     >
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
-          <!-- Left: Back & Logo -->
-          <div class="flex items-center gap-4">
-            <button
-              onclick="window.location.href='../chemstudyteen.html'"
-              class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition text-chem-ester group"
-              title="Quay về trang chủ"
-            >
-              <i
-                data-lucide="arrow-left"
-                class="w-6 h-6 group-hover:-translate-x-1 transition-transform"
-              ></i>
-            </button>
-            <div class="flex items-center gap-2">
-              <div class="relative">
-                <i
-                  data-lucide="flask-conical"
-                  class="w-8 h-8 text-chem-ester"
-                ></i>
-                <div
-                  class="absolute -top-1 -right-1 w-3 h-3 bg-chem-accent rounded-full animate-ping"
-                ></div>
-              </div>
-              <span
-                class="font-bold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-chem-ester to-chem-accent"
-              >
-                ChemStudy Teen
-              </span>
-            </div>
-          </div>
-
-          <!-- Center: Tabs -->
-          <div
-            class="hidden md:flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl"
-          >
-            <button
-              onclick="switchTab('tab-ester')"
-              class="nav-tab px-4 py-2 rounded-lg text-sm font-bold transition-all bg-white dark:bg-slate-700 shadow-sm text-chem-ester"
-            >
-              I. Ester
-            </button>
-            <button
-              onclick="switchTab('tab-lipid')"
-              class="nav-tab px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white"
-            >
-              II. Lipid
-            </button>
-            <button
-              onclick="switchTab('tab-soap')"
-              class="nav-tab px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white"
-            >
-              III. Xà phòng
-            </button>
-          </div>
-
-          <!-- Right: Tools -->
-          <div class="flex items-center gap-3">
-            <button
-              id="theme-toggle"
-              class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition text-yellow-500"
-            >
-              <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
-              <i
-                data-lucide="moon"
-                class="w-5 h-5 block dark:hidden text-slate-600"
-              ></i>
-            </button>
-          </div>
-        </div>
-      </div>
-      <!-- Progress Bar -->
-      <div class="h-1 bg-slate-200 dark:bg-slate-800 w-full">
-        <div
-          id="scroll-progress"
-          class="h-full bg-gradient-to-r from-chem-ester via-chem-lipid to-chem-soap w-0 transition-all duration-100"
-        ></div>
-      </div>
-    </nav>
-
-    <!-- MAIN CONTENT -->
-    <main class="pt-24 pb-10 max-w-7xl mx-auto px-4 w-full flex-grow space-y-8">
-      <!-- INTRO BANNER -->
-      <header
-        class="relative rounded-3xl overflow-hidden shadow-2xl h-64 md:h-80 flex items-center justify-center bg-gradient-to-br from-orange-600 to-yellow-500"
+      <div
+        class="container mx-auto px-4 h-20 flex justify-between items-center"
       >
-        <div class="absolute inset-0">
-          <div
-            class="absolute top-10 left-10 w-32 h-32 bg-white/20 rounded-full blur-3xl animate-float"
-          ></div>
-          <div
-            class="absolute bottom-10 right-10 w-40 h-40 bg-pink-500/30 rounded-full blur-3xl animate-float"
-            style="animation-delay: 2s"
-          ></div>
-        </div>
-        <div class="relative z-10 text-center text-white px-4">
-          <h1 class="text-3xl md:text-6xl font-black mb-4 drop-shadow-lg">
-            ESTER & LIPID
-          </h1>
-          <p class="text-lg md:text-2xl font-light opacity-95">
-            Hương thơm trái cây, Dinh dưỡng & Công nghệ làm sạch
-          </p>
-          <div class="mt-6 flex justify-center gap-2 md:gap-4 flex-wrap">
-            <span
-              class="px-3 py-1 bg-white/20 backdrop-blur rounded-full text-xs md:text-sm font-mono border border-white/30"
-              >R-COO-R'</span
-            >
-            <span
-              class="px-3 py-1 bg-white/20 backdrop-blur rounded-full text-xs md:text-sm font-mono border border-white/30"
-              >Triglyceride</span
-            >
-            <span
-              class="px-3 py-1 bg-white/20 backdrop-blur rounded-full text-xs md:text-sm font-mono border border-white/30"
-              >Micelle</span
-            >
-          </div>
-        </div>
-      </header>
-
-      <!-- === SECTION 1: ESTER === -->
-      <section id="tab-ester" class="active-content space-y-8">
-        <!-- 1.1 Khái niệm & 3D -->
-        <div class="grid md:grid-cols-2 gap-8">
-          <div
-            class="glass p-6 rounded-2xl shadow-lg border-t-4 border-chem-ester"
-          >
-            <h2
-              class="text-2xl font-bold text-chem-ester mb-4 flex items-center gap-2"
-            >
-              <i data-lucide="atom" class="w-6 h-6"></i> 1. Khái niệm & Cấu trúc
-            </h2>
-            <ul class="space-y-3 text-slate-700 dark:text-slate-300">
-              <li>
-                <strong>Định nghĩa:</strong> Khi thay nhóm -OH ở nhóm carboxyl
-                (-COOH) của acid bằng nhóm -OR' của alcohol, ta được Ester.
-              </li>
-              <li>
-                <strong>Công thức chung:</strong>
-                <span
-                  class="font-mono bg-orange-100 dark:bg-orange-900 px-2 py-1 rounded text-orange-600 dark:text-orange-300"
-                  >R-COO-R'</span
-                >
-              </li>
-              <li>
-                <strong>Đặc điểm:</strong> Ít tan trong nước, nhiệt độ sôi thấp
-                hơn acid/alcohol cùng C (do không có liên kết Hidro liên phân
-                tử).
-              </li>
-            </ul>
-            <!-- Sim 1: Reaction Builder -->
-            <div
-              class="mt-6 bg-slate-50 dark:bg-slate-800 p-4 rounded-xl border border-dashed border-chem-ester"
-            >
-              <h3 class="font-bold text-sm mb-2 text-slate-500">
-                Mô phỏng 1: Phản ứng Ester hóa
-              </h3>
-              <div
-                class="flex items-center justify-center gap-2 text-lg font-mono flex-wrap"
-              >
-                <div
-                  class="bg-red-100 dark:bg-red-900 p-2 rounded text-red-600"
-                >
-                  R-COOH
-                </div>
-                <span>+</span>
-                <div
-                  class="bg-blue-100 dark:bg-blue-900 p-2 rounded text-blue-600"
-                >
-                  HO-R'
-                </div>
-                <span class="text-sm text-slate-400">⇌ H₂SO₄, t°</span>
-                <div
-                  class="bg-chem-ester/20 p-2 rounded text-chem-ester font-bold animate-pulse"
-                >
-                  R-COO-R'
-                </div>
-                <span>+</span>
-                <div
-                  class="bg-cyan-100 dark:bg-cyan-900 p-2 rounded text-cyan-600"
-                >
-                  H₂O
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Sim 2: 3D Molecule -->
-          <div class="glass p-4 rounded-2xl shadow-lg relative bg-slate-900">
-            <div
-              class="absolute top-4 left-4 z-10 bg-black/60 text-white text-xs px-2 py-1 rounded backdrop-blur"
-            >
-              Mô phỏng 2: Ethyl Acetate (CH₃COOC₂H₅) - 3D
-            </div>
-            <div id="sim-ester-3d" class="canvas-3d"></div>
-            <div
-              class="absolute bottom-4 left-0 right-0 text-center text-slate-400 text-xs"
-            >
-              Kéo thả để xoay • Cuộn để zoom
-            </div>
-          </div>
-        </div>
-
-        <!-- 1.2 Danh pháp & Mùi hương -->
-        <div class="glass p-6 rounded-2xl shadow-lg">
-          <h2
-            class="text-2xl font-bold text-chem-ester mb-6 flex items-center gap-2"
-          >
-            <i data-lucide="flower" class="w-6 h-6"></i> 2. Mùi hương & Danh
-            pháp
-          </h2>
-
-          <!-- Sim 3: Fragrance Lab -->
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div
-              class="cursor-pointer group relative overflow-hidden rounded-xl h-40 bg-yellow-100 dark:bg-yellow-900/30 border-2 border-transparent hover:border-yellow-400 transition"
-              onclick="playSmell('banana')"
-            >
-              <img
-                src="https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=300&q=80"
-                class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-110 transition duration-500"
-              />
-              <div
-                class="absolute inset-0 flex flex-col items-center justify-center bg-black/30 text-white p-2 text-center"
-              >
-                <i data-lucide="banana" class="w-8 h-8 mb-1"></i>
-                <span class="font-bold">Isoamyl Acetate</span>
-                <span
-                  class="text-xs opacity-0 group-hover:opacity-100 transition"
-                  >Mùi Chuối Chín</span
-                >
-              </div>
-            </div>
-            <div
-              class="cursor-pointer group relative overflow-hidden rounded-xl h-40 bg-pink-100 dark:bg-pink-900/30 border-2 border-transparent hover:border-pink-400 transition"
-              onclick="playSmell('rose')"
-            >
-              <div
-                class="absolute inset-0 bg-gradient-to-br from-pink-300 to-purple-400 opacity-60 group-hover:scale-110 transition duration-500"
-              ></div>
-              <div
-                class="absolute inset-0 flex flex-col items-center justify-center bg-black/20 text-white p-2 text-center"
-              >
-                <i data-lucide="flower-2" class="w-8 h-8 mb-1"></i>
-                <span class="font-bold">Geranyl Acetate</span>
-                <span
-                  class="text-xs opacity-0 group-hover:opacity-100 transition"
-                  >Mùi Hoa Hồng</span
-                >
-              </div>
-            </div>
-            <div
-              class="cursor-pointer group relative overflow-hidden rounded-xl h-40 bg-orange-100 dark:bg-orange-900/30 border-2 border-transparent hover:border-orange-400 transition"
-              onclick="playSmell('pineapple')"
-            >
-              <img
-                src="https://images.unsplash.com/photo-1550258987-190a2d41a8ba?auto=format&fit=crop&w=300&q=80"
-                class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-110 transition duration-500"
-              />
-              <div
-                class="absolute inset-0 flex flex-col items-center justify-center bg-black/30 text-white p-2 text-center"
-              >
-                <i data-lucide="citrus" class="w-8 h-8 mb-1"></i>
-                <span class="font-bold">Ethyl Butyrate</span>
-                <span
-                  class="text-xs opacity-0 group-hover:opacity-100 transition"
-                  >Mùi Dứa</span
-                >
-              </div>
-            </div>
-            <div
-              class="cursor-pointer group relative overflow-hidden rounded-xl h-40 bg-purple-100 dark:bg-purple-900/30 border-2 border-transparent hover:border-purple-400 transition"
-              onclick="playSmell('jasmine')"
-            >
-              <div
-                class="absolute inset-0 bg-gradient-to-br from-indigo-300 to-purple-500 opacity-60 group-hover:scale-110 transition duration-500"
-              ></div>
-              <div
-                class="absolute inset-0 flex flex-col items-center justify-center bg-black/20 text-white p-2 text-center"
-              >
-                <i data-lucide="star" class="w-8 h-8 mb-1"></i>
-                <span class="font-bold">Benzyl Acetate</span>
-                <span
-                  class="text-xs opacity-0 group-hover:opacity-100 transition"
-                  >Mùi Hoa Nhài</span
-                >
-              </div>
-            </div>
-          </div>
-          <div
-            id="smell-feedback"
-            class="mt-4 text-center font-bold text-chem-ester min-h-[1.5rem] animate-bounce"
-          ></div>
-        </div>
-
-        <!-- 1.3 Tính chất hóa học (Thủy phân) -->
-        <div class="glass p-6 rounded-2xl shadow-lg border-l-4 border-blue-500">
-          <h2
-            class="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-6 flex items-center gap-2"
-          >
-            <i data-lucide="flask-conical-off" class="w-6 h-6"></i> 3. Tính chất
-            hóa học
-          </h2>
-
-          <!-- Sim 4 & 5: Hydrolysis Lab -->
-          <div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-inner">
-            <h3 class="font-bold mb-4">Mô phỏng 4: Thí nghiệm Thủy phân</h3>
-            <div
-              class="flex flex-col md:flex-row gap-8 items-center justify-center"
-            >
-              <!-- Acid Beaker -->
-              <div class="flex flex-col items-center">
-                <div
-                  class="relative w-24 h-32 border-b-4 border-l-2 border-r-2 border-slate-300 rounded-b-xl overflow-hidden bg-white/10"
-                >
-                  <div
-                    id="layer-acid-top"
-                    class="absolute top-[20%] w-full h-[20%] bg-yellow-200/80 transition-all duration-1000 border-b border-white/50"
-                  ></div>
-                  <div
-                    id="layer-acid-bot"
-                    class="absolute bottom-0 w-full h-[60%] bg-blue-100/50 transition-all"
-                  ></div>
-                  <div
-                    class="absolute bottom-2 w-full text-center text-xs font-bold text-slate-400"
-                  >
-                    H₂SO₄
-                  </div>
-                </div>
-                <button
-                  onclick="runHydrolysis('acid')"
-                  class="mt-3 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-full text-sm font-bold shadow transition"
-                >
-                  + H⁺ (Acid)
-                </button>
-                <p class="text-xs mt-2 text-center max-w-[150px]">
-                  Phản ứng thuận nghịch, còn lớp Ester
-                </p>
-              </div>
-
-              <!-- Heat Icon -->
-              <i
-                data-lucide="flame"
-                class="w-8 h-8 text-orange-500 animate-pulse"
-              ></i>
-
-              <!-- Base Beaker -->
-              <div class="flex flex-col items-center">
-                <div
-                  class="relative w-24 h-32 border-b-4 border-l-2 border-r-2 border-slate-300 rounded-b-xl overflow-hidden bg-white/10"
-                >
-                  <div
-                    id="layer-base-top"
-                    class="absolute top-[20%] w-full h-[20%] bg-yellow-200/80 transition-all duration-1000 border-b border-white/50"
-                  ></div>
-                  <div
-                    id="layer-base-bot"
-                    class="absolute bottom-0 w-full h-[60%] bg-blue-100/50 transition-all"
-                  ></div>
-                  <div
-                    class="absolute bottom-2 w-full text-center text-xs font-bold text-slate-400"
-                  >
-                    NaOH
-                  </div>
-                </div>
-                <button
-                  onclick="runHydrolysis('base')"
-                  class="mt-3 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full text-sm font-bold shadow transition"
-                >
-                  + NaOH (Base)
-                </button>
-                <p class="text-xs mt-2 text-center max-w-[150px]">
-                  Phản ứng 1 chiều, hết lớp Ester (Đồng nhất)
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- === SECTION 2: LIPID === -->
-      <section id="tab-lipid" class="hidden-content space-y-8">
-        <!-- 2.1 Cấu trúc & Phân loại -->
+        <!-- Logo -->
         <div
-          class="glass p-6 rounded-2xl shadow-lg border-t-4 border-chem-lipid"
+          class="flex items-center gap-3 cursor-pointer group"
+          onclick="window.scrollTo(0, 0)"
         >
-          <h2
-            class="text-2xl font-bold text-chem-lipid mb-4 flex items-center gap-2"
-          >
-            <i data-lucide="layers" class="w-6 h-6"></i> 1. Lipid (Chất béo)
-          </h2>
-          <div class="grid md:grid-cols-2 gap-8 items-center">
-            <div>
-              <p class="mb-4 text-slate-700 dark:text-slate-300">
-                Là triester của <strong>Glycerol</strong> và các
-                <strong>Acid béo</strong> (Acid đơn chức, mạch C dài, không phân
-                nhánh).
-              </p>
-              <!-- Sim 6: Structure Builder -->
-              <div
-                class="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-xl border border-yellow-200"
-              >
-                <h4
-                  class="font-bold text-sm text-yellow-800 dark:text-yellow-200 mb-2"
-                >
-                  Mô phỏng 5: Công thức cấu tạo (R-COO)₃C₃H₅
-                </h4>
-                <div class="font-mono text-center space-y-1">
-                  <div
-                    class="bg-white dark:bg-slate-800 p-1 border rounded inline-block w-40"
-                  >
-                    CH₂ - OOC - R₁
-                  </div>
-                  <br />
-                  <div
-                    class="bg-white dark:bg-slate-800 p-1 border rounded inline-block w-40"
-                  >
-                    |
-                  </div>
-                  <br />
-                  <div
-                    class="bg-white dark:bg-slate-800 p-1 border rounded inline-block w-40"
-                  >
-                    CH - OOC - R₂
-                  </div>
-                  <br />
-                  <div
-                    class="bg-white dark:bg-slate-800 p-1 border rounded inline-block w-40"
-                  >
-                    |
-                  </div>
-                  <br />
-                  <div
-                    class="bg-white dark:bg-slate-800 p-1 border rounded inline-block w-40"
-                  >
-                    CH₂ - OOC - R₃
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Sim 7: Classification Drag Drop (Simplified Visual) -->
-            <div class="space-y-4">
-              <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow">
-                <div class="flex justify-between items-center mb-2">
-                  <span class="font-bold text-green-600">DẦU (Lỏng)</span>
-                  <span
-                    class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded"
-                    >Gốc Acid Không No</span
-                  >
-                </div>
-                <div class="flex gap-2 text-xs">
-                  <span class="bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded"
-                    >Dầu lạc</span
-                  >
-                  <span class="bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded"
-                    >Dầu vừng</span
-                  >
-                  <span class="bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded"
-                    >Triolein</span
-                  >
-                </div>
-              </div>
-              <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow">
-                <div class="flex justify-between items-center mb-2">
-                  <span class="font-bold text-orange-600">MỠ (Rắn)</span>
-                  <span
-                    class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded"
-                    >Gốc Acid No</span
-                  >
-                </div>
-                <div class="flex gap-2 text-xs">
-                  <span class="bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded"
-                    >Mỡ lợn</span
-                  >
-                  <span class="bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded"
-                    >Tristearin</span
-                  >
-                  <span class="bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded"
-                    >Bơ</span
-                  >
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 2.2 Tính chất hóa học -->
-        <div class="grid md:grid-cols-2 gap-8">
-          <!-- Sim 8: Hydrogenation -->
-          <div class="glass p-6 rounded-2xl shadow-lg relative overflow-hidden">
-            <h3 class="font-bold text-lg mb-4">
-              Mô phỏng 6: Phản ứng Hydro hóa (Lỏng → Rắn)
-            </h3>
-            <p class="text-sm mb-4 text-slate-600">
-              Biến đổi dầu (không no) thành mỡ/bơ nhân tạo (no) bằng cách cộng
-              H₂.
-            </p>
-
-            <div
-              class="relative h-48 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-300 dark:border-slate-700 flex items-center justify-center"
-            >
-              <!-- Liquid Oil -->
-              <div
-                id="oil-state"
-                class="absolute w-20 h-20 bg-yellow-400 rounded-full opacity-80 blur-sm animate-wiggle transition-all duration-1000 flex items-center justify-center"
-              >
-                <span class="text-xs font-bold text-yellow-900">Dầu Lỏng</span>
-              </div>
-              <!-- Solid Fat (Hidden initially) -->
-              <div
-                id="fat-state"
-                class="absolute w-24 h-16 bg-yellow-200 border-2 border-yellow-400 rounded-lg shadow-xl opacity-0 scale-50 transition-all duration-1000 flex items-center justify-center"
-              >
-                <span class="text-xs font-bold text-yellow-800">Bơ Rắn</span>
-              </div>
-              <!-- H2 Particles -->
-              <div
-                id="h2-particles"
-                class="absolute inset-0 pointer-events-none"
-              ></div>
-            </div>
-
-            <button
-              onclick="runHydrogenation()"
-              class="mt-4 w-full py-2 bg-chem-lipid text-white font-bold rounded-lg hover:bg-yellow-600 transition shadow"
-            >
-              <i data-lucide="wind" class="inline w-4 h-4 mr-2"></i> Bơm H₂ (Ni,
-              t°)
-            </button>
-          </div>
-
-          <!-- Sim 9: Oxidation (Rancidity) -->
-          <div class="glass p-6 rounded-2xl shadow-lg">
-            <h3 class="font-bold text-lg mb-4">
-              Mô phỏng 7: Sự Ôi thiu (Oxi hóa)
-            </h3>
-            <p class="text-sm mb-4 text-slate-600">
-              Liên kết đôi C=C bị oxi hóa chậm bởi O₂ không khí tạo Peroxit →
-              mùi khó chịu.
-            </p>
-
-            <div
-              class="bg-white dark:bg-slate-900 p-4 rounded-xl border flex flex-col items-center"
-            >
-              <input
-                type="range"
-                id="time-slider"
-                min="0"
-                max="100"
-                value="0"
-                class="w-full mb-4"
-                oninput="updateRancidity(this.value)"
-              />
-              <div
-                class="w-32 h-32 rounded-full border-4 transition-colors duration-500 relative flex items-center justify-center overflow-hidden"
-                id="oil-sample"
-              >
-                <div
-                  class="absolute inset-0 bg-yellow-300 transition-colors duration-500"
-                  id="oil-color"
-                ></div>
-                <!-- Flies/Smell lines -->
-                <div
-                  id="smell-lines"
-                  class="absolute -top-4 opacity-0 transition-opacity text-2xl"
-                >
-                  ♨️ 🤢
-                </div>
-              </div>
-              <p id="oil-status" class="mt-2 font-bold text-green-600">
-                Tươi mới
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- === SECTION 3: SOAP === -->
-      <section id="tab-soap" class="hidden-content space-y-8">
-        <div
-          class="glass p-6 rounded-2xl shadow-lg border-t-4 border-chem-soap"
-        >
-          <h2
-            class="text-2xl font-bold text-chem-soap mb-4 flex items-center gap-2"
-          >
-            <i data-lucide="droplet" class="w-6 h-6"></i> 1. Xà phòng & Chất
-            giặt rửa
-          </h2>
-          <div class="grid md:grid-cols-2 gap-8">
-            <div>
-              <ul class="space-y-3 text-slate-700 dark:text-slate-300 text-sm">
-                <li>
-                  <strong>Xà phòng:</strong> Muối Na/K của acid béo (R-COONa).
-                  <span class="text-red-500"
-                    >(Mất tác dụng trong nước cứng)</span
-                  >
-                </li>
-                <li>
-                  <strong>Chất giặt rửa TH:</strong> Muối Sunfat/Sunfonat.
-                  <span class="text-green-500"
-                    >(Dùng được trong nước cứng)</span
-                  >
-                </li>
-                <li><strong>Cấu tạo chung:</strong> Gồm 2 phần.</li>
-              </ul>
-              <!-- Sim 10: Molecule Builder -->
-              <div
-                class="mt-4 flex items-center justify-center bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm"
-              >
-                <div class="flex items-center">
-                  <div
-                    class="w-32 h-4 bg-slate-400 rounded-l-full relative group cursor-help"
-                  >
-                    <div
-                      class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] opacity-0 group-hover:opacity-100 transition whitespace-nowrap bg-black text-white px-2 rounded"
-                    >
-                      Đuôi Kị Nước (Hydrocarbon)
-                    </div>
-                  </div>
-                  <div
-                    class="w-8 h-8 bg-blue-500 rounded-full border-2 border-white relative group cursor-help -ml-2 z-10"
-                  >
-                    <div
-                      class="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[10px] opacity-0 group-hover:opacity-100 transition whitespace-nowrap bg-blue-600 text-white px-2 rounded"
-                    >
-                      Đầu Ưa Nước (Ion)
-                    </div>
-                    <span
-                      class="absolute inset-0 flex items-center justify-center text-white text-[8px] font-bold"
-                      >Na+</span
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- Sim 11: Hard Water Test -->
-            <div
-              class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-200 text-center"
-            >
-              <h4 class="font-bold text-sm mb-4">
-                Mô phỏng 8: Nước cứng (Ca²⁺)
-              </h4>
-              <div class="flex justify-around">
-                <div
-                  class="relative w-16 h-24 bg-blue-100 border-2 border-slate-300 rounded-b-lg overflow-hidden cursor-pointer hover:scale-105 transition"
-                  onclick="testHardWater('soap', this)"
-                >
-                  <div
-                    class="absolute bottom-0 w-full h-3/4 bg-blue-200 transition-all"
-                  ></div>
-                  <div class="absolute top-2 w-full text-[10px] font-bold">
-                    Xà phòng
-                  </div>
-                  <div
-                    class="precipitate absolute bottom-0 w-full h-full bg-white opacity-0 transition-opacity duration-1000 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIi8+Cjwvc3ZnPg==')]"
-                  ></div>
-                </div>
-                <div
-                  class="relative w-16 h-24 bg-blue-100 border-2 border-slate-300 rounded-b-lg overflow-hidden cursor-pointer hover:scale-105 transition"
-                  onclick="testHardWater('det', this)"
-                >
-                  <div
-                    class="absolute bottom-0 w-full h-3/4 bg-blue-200 transition-all"
-                  ></div>
-                  <div class="absolute top-2 w-full text-[10px] font-bold">
-                    Chất tẩy TH
-                  </div>
-                  <div
-                    class="foam absolute top-[25%] w-full h-4 bg-white opacity-0 transition-opacity duration-1000 rounded-full blur-sm"
-                  ></div>
-                </div>
-              </div>
-              <p id="hard-water-res" class="text-xs mt-2 h-4 text-slate-500">
-                Nhấn vào ống nghiệm để thử
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sim 12: MICELLE GAME -->
-        <div class="glass p-6 rounded-2xl shadow-lg">
-          <div class="flex justify-between items-center mb-4">
-            <h2
-              class="text-2xl font-bold text-chem-soap flex items-center gap-2"
-            >
-              <i data-lucide="crosshair" class="w-6 h-6"></i> 2. Cơ chế giặt rửa
-              (Micelle)
-            </h2>
-            <button
-              onclick="resetMicelleGame()"
-              class="px-4 py-1 bg-slate-200 dark:bg-slate-700 text-xs rounded hover:bg-slate-300 transition"
-            >
-              Reset
-            </button>
-          </div>
-          <p class="text-sm mb-4 text-slate-600">
-            Di chuột (hoặc chạm) để thả các phân tử xà phòng tấn công vết dầu
-            mỡ!
-          </p>
-
           <div
-            class="relative w-full h-[400px] bg-blue-50 dark:bg-slate-900 rounded-xl overflow-hidden border border-blue-200 cursor-pointer"
-            id="micelle-container"
-            onclick="addSoap(event)"
+            class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-green-500 flex items-center justify-center text-white font-bold text-xl shadow-lg group-hover:shadow-blue-500/50 transition-all"
           >
-            <!-- Grease Stain -->
-            <div
-              id="grease"
-              class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-yellow-600 rounded-full blur-sm transition-all duration-1000 flex items-center justify-center text-white text-xs font-bold shadow-lg"
+            <i class="fas fa-atom text-2xl group-hover:animate-spin-slow"></i>
+          </div>
+          <div class="flex flex-col">
+            <span
+              class="font-display font-bold text-2xl tracking-tight text-slate-800 dark:text-white"
+              >ChemStudy<span class="text-blue-500">Expert</span></span
             >
-              Vết bẩn
-            </div>
-            <div id="soap-particles"></div>
-            <div
-              id="clean-message"
-              class="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-black/80 z-20 hidden backdrop-blur"
+            <span class="text-xs text-slate-500 dark:text-slate-400 font-medium"
+              >Interactive Learning Platform</span
             >
-              <div class="text-center animate-bounce">
-                <h3 class="text-4xl font-bold text-chem-soap mb-2">
-                  Sạch Bong! ✨
-                </h3>
-                <button
-                  onclick="resetMicelleGame()"
-                  class="px-6 py-2 bg-chem-soap text-white rounded-full font-bold shadow hover:bg-blue-600"
-                >
-                  Giặt lại
-                </button>
-              </div>
-            </div>
           </div>
         </div>
-      </section>
 
-      <!-- EXTRA: QUIZ & TOOLS -->
-      <section
-        class="grid md:grid-cols-2 gap-8 pt-8 border-t border-slate-200 dark:border-slate-700"
-      >
-        <!-- Sim 13: Quiz -->
-        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg">
-          <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
-            <i data-lucide="help-circle" class="w-5 h-5 text-purple-500"></i>
-            Luyện Tập Nhanh
-          </h3>
-          <div id="quiz-box">
-            <p class="mb-4 font-medium" id="quiz-question">Đang tải...</p>
-            <div class="grid grid-cols-2 gap-2" id="quiz-options"></div>
-            <p
-              id="quiz-feedback"
-              class="mt-4 text-sm font-bold min-h-[1.5rem]"
-            ></p>
-          </div>
-          <button
-            onclick="nextQuestion()"
-            class="mt-4 text-xs text-slate-400 hover:text-purple-500 underline"
+        <!-- Navigation -->
+        <nav class="hidden md:flex gap-8">
+          <a
+            href="#ester"
+            class="font-medium hover:text-blue-500 transition-colors relative group"
           >
-            Câu tiếp theo
-          </button>
-        </div>
+            Ester
+            <span
+              class="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-500 transition-all group-hover:w-full"
+            ></span>
+          </a>
+          <a
+            href="#lipid"
+            class="font-medium hover:text-green-500 transition-colors relative group"
+          >
+            Lipid
+            <span
+              class="absolute -bottom-1 left-0 w-0 h-0.5 bg-green-500 transition-all group-hover:w-full"
+            ></span>
+          </a>
+          <a
+            href="#soap"
+            class="font-medium hover:text-purple-500 transition-colors relative group"
+          >
+            Xà phòng
+            <span
+              class="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-500 transition-all group-hover:w-full"
+            ></span>
+          </a>
+          <a
+            href="#practice"
+            class="font-medium hover:text-pink-500 transition-colors relative group"
+          >
+            Luyện tập
+            <span
+              class="absolute -bottom-1 left-0 w-0 h-0.5 bg-pink-500 transition-all group-hover:w-full"
+            ></span>
+          </a>
+        </nav>
 
         <!-- Tools -->
-        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg">
-          <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
-            <i data-lucide="calculator" class="w-5 h-5 text-green-500"></i> Công
-            cụ bổ trợ
-          </h3>
-          <div class="grid grid-cols-2 gap-4">
+        <div class="flex items-center gap-4">
+          <button
+            onclick="toggleTheme()"
+            class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center hover:scale-110 transition-transform focus:outline-none"
+          >
+            <i
+              class="fas fa-moon text-slate-700 dark:text-yellow-400 transition-colors"
+              id="theme-icon"
+            ></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section
+      class="min-h-screen flex items-center justify-center pt-20 relative overflow-hidden"
+    >
+      <div
+        class="container mx-auto px-4 z-10 grid md:grid-cols-2 gap-12 items-center"
+      >
+        <div class="space-y-6" data-aos="fade-right">
+          <div
+            class="inline-block px-4 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 font-bold text-sm mb-2 border border-blue-200 dark:border-blue-700"
+          >
+            <i class="fas fa-flask mr-2"></i>Chương 1 - Hóa Học 12
+          </div>
+          <h1 class="text-5xl md:text-7xl font-bold leading-tight">
+            Khám phá <br />
+            <span class="text-gradient">Ester & Lipid</span>
+          </h1>
+          <p
+            class="text-lg text-slate-600 dark:text-slate-300 max-w-lg leading-relaxed"
+          >
+            Bước vào thế giới của hương thơm hoa quả, chất béo và chất giặt rửa.
+            Trải nghiệm học tập đa giác quan: Xem cấu trúc 3D, thực hiện phản
+            ứng ảo và thấu hiểu bản chất phân tử.
+          </p>
+          <div class="flex flex-wrap gap-4 pt-4">
             <button
-              class="p-3 bg-slate-50 dark:bg-slate-700 rounded-lg text-sm hover:bg-slate-100 transition text-left"
-              onclick="alert('M(RCOOR\') = R + 44 + R\'')"
+              onclick="
+                document
+                  .getElementById('ester')
+                  .scrollIntoView({ behavior: 'smooth' })
+              "
+              class="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-bold shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all transform hover:-translate-y-1"
             >
-              ⚖️ Tính M (Ester)
+              Vào bài học ngay <i class="fas fa-arrow-right ml-2"></i>
             </button>
             <button
-              class="p-3 bg-slate-50 dark:bg-slate-700 rounded-lg text-sm hover:bg-slate-100 transition text-left"
-              onclick="alert('C15H31 (Palmitic): 256\nC17H35 (Stearic): 284\nC17H33 (Oleic): 282')"
+              class="px-8 py-4 glass-card text-slate-800 dark:text-white rounded-full font-bold hover:bg-white/20 transition-all"
             >
-              📝 M Acid béo
-            </button>
-            <button
-              class="p-3 bg-slate-50 dark:bg-slate-700 rounded-lg text-sm hover:bg-slate-100 transition text-left"
-              onclick="window.scrollTo({top:0, behavior:'smooth'})"
-            >
-              ⬆️ Lên đầu trang
+              <i class="fas fa-play-circle mr-2"></i> Xem Demo
             </button>
           </div>
         </div>
+
+        <!-- Hero Interactive Graphic -->
+        <div
+          class="relative h-[400px] md:h-[500px] flex items-center justify-center"
+        >
+          <!-- Central Atom -->
+          <div
+            class="absolute w-32 h-32 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full blur-xl opacity-50 animate-pulse-slow"
+          ></div>
+          <div class="relative w-64 h-64 animate-float">
+            <!-- SVG Molecule Abstract -->
+            <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-2xl">
+              <defs>
+                <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop
+                    offset="0%"
+                    style="stop-color: #3b82f6; stop-opacity: 1"
+                  />
+                  <stop
+                    offset="100%"
+                    style="stop-color: #8b5cf6; stop-opacity: 1"
+                  />
+                </linearGradient>
+              </defs>
+              <circle cx="100" cy="100" r="40" fill="url(#grad1)" />
+              <circle
+                cx="160"
+                cy="100"
+                r="15"
+                fill="#10b981"
+                class="animate-bounce"
+                style="animation-duration: 2s"
+              />
+              <circle
+                cx="40"
+                cy="100"
+                r="15"
+                fill="#ec4899"
+                class="animate-bounce"
+                style="animation-duration: 2.5s"
+              />
+              <circle
+                cx="100"
+                cy="40"
+                r="15"
+                fill="#f59e0b"
+                class="animate-bounce"
+                style="animation-duration: 3s"
+              />
+              <line
+                x1="100"
+                y1="100"
+                x2="160"
+                y2="100"
+                stroke="white"
+                stroke-width="4"
+                stroke-opacity="0.5"
+              />
+              <line
+                x1="100"
+                y1="100"
+                x2="40"
+                y2="100"
+                stroke="white"
+                stroke-width="4"
+                stroke-opacity="0.5"
+              />
+              <line
+                x1="100"
+                y1="100"
+                x2="100"
+                y2="40"
+                stroke="white"
+                stroke-width="4"
+                stroke-opacity="0.5"
+              />
+            </svg>
+          </div>
+
+          <!-- Orbiting Cards -->
+          <div
+            class="absolute top-10 right-10 glass-card p-4 rounded-2xl animate-float"
+            style="animation-delay: 1s"
+          >
+            <div class="flex items-center gap-3">
+              <div
+                class="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center text-2xl"
+              >
+                🍌
+              </div>
+              <div>
+                <p class="text-xs font-bold text-slate-500">Mùi chuối chín</p>
+                <p class="text-sm font-bold">Isoamyl Acetate</p>
+              </div>
+            </div>
+          </div>
+          <div
+            class="absolute bottom-20 left-0 glass-card p-4 rounded-2xl animate-float"
+            style="animation-delay: 2s"
+          >
+            <div class="flex items-center gap-3">
+              <div
+                class="w-10 h-10 rounded-lg bg-pink-100 flex items-center justify-center text-2xl"
+              >
+                🌹
+              </div>
+              <div>
+                <p class="text-xs font-bold text-slate-500">Hoa hồng</p>
+                <p class="text-sm font-bold">Geranyl Acetate</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scroll Down Indicator -->
+      <div
+        class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce"
+      >
+        <i class="fas fa-chevron-down text-2xl text-slate-400"></i>
+      </div>
+    </section>
+
+    <!-- SECTION 1: ESTER -->
+    <section id="ester" class="py-20 bg-white/50 dark:bg-slate-900/50">
+      <div class="container mx-auto px-4">
+        <!-- Section Header -->
+        <div class="text-center mb-16">
+          <span class="text-blue-500 font-bold tracking-wider uppercase text-sm"
+            >Phần 01</span
+          >
+          <h2 class="text-4xl font-bold mt-2 mb-4">
+            Ester - Hương Thơm Cuộc Sống
+          </h2>
+          <div
+            class="w-20 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"
+          ></div>
+        </div>
+
+        <!-- A. Lý Thuyết -->
+        <div class="grid lg:grid-cols-3 gap-8 mb-16">
+          <div class="lg:col-span-2 space-y-8">
+            <div class="glass-card p-8 rounded-3xl">
+              <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span
+                  class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600"
+                  ><i class="fas fa-book-open"></i
+                ></span>
+                Lý thuyết trọng tâm
+              </h3>
+              <div class="space-y-6 text-slate-700 dark:text-slate-300">
+                <div>
+                  <h4 class="font-bold text-lg text-blue-500 mb-2">
+                    1. Định nghĩa & Phân loại
+                  </h4>
+                  <ul
+                    class="list-none space-y-2 pl-4 border-l-2 border-blue-200 dark:border-blue-800"
+                  >
+                    <li>
+                      <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                      <strong>Định nghĩa:</strong> Thay nhóm –OH ở nhóm carboxyl
+                      (–COOH) của carboxylic acid bằng nhóm –OR' ⇒ Ester.
+                    </li>
+                    <li>
+                      <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                      <strong>CT Chung đơn chức:</strong> R–COO–R' (R: H hoặc
+                      gốc HC; R': gốc HC).
+                    </li>
+                    <li>
+                      <i class="fas fa-info-circle text-blue-400 mr-2"></i>
+                      <em>Ví dụ:</em> HCOOCH₃ (Methyl formate), CH₃COOC₂H₅
+                      (Ethyl acetate).
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 class="font-bold text-lg text-blue-500 mb-2">
+                    2. Tính chất vật lý
+                  </h4>
+                  <p class="mb-2">
+                    Nhiệt độ sôi thấp hơn Acid/Alcohol cùng phân tử khối (do
+                    không có liên kết Hydrogen liên phân tử).
+                  </p>
+                  <div class="grid grid-cols-2 gap-4 mt-4">
+                    <div
+                      class="bg-blue-50/50 dark:bg-blue-900/20 p-3 rounded-lg text-center cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-800/40 transition"
+                    >
+                      <span class="text-2xl block mb-1">🍌</span>
+                      <span class="font-bold text-sm">Isoamyl acetate</span>
+                      <span class="text-xs block text-slate-500"
+                        >Mùi chuối chín</span
+                      >
+                    </div>
+                    <div
+                      class="bg-blue-50/50 dark:bg-blue-900/20 p-3 rounded-lg text-center cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-800/40 transition"
+                    >
+                      <span class="text-2xl block mb-1">🍍</span>
+                      <span class="font-bold text-sm">Ethyl butyrate</span>
+                      <span class="text-xs block text-slate-500">Mùi dứa</span>
+                    </div>
+                    <div
+                      class="bg-blue-50/50 dark:bg-blue-900/20 p-3 rounded-lg text-center cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-800/40 transition"
+                    >
+                      <span class="text-2xl block mb-1">🌹</span>
+                      <span class="font-bold text-sm">Geranyl acetate</span>
+                      <span class="text-xs block text-slate-500"
+                        >Mùi hoa hồng</span
+                      >
+                    </div>
+                    <div
+                      class="bg-blue-50/50 dark:bg-blue-900/20 p-3 rounded-lg text-center cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-800/40 transition"
+                    >
+                      <span class="text-2xl block mb-1">🌼</span>
+                      <span class="font-bold text-sm">Benzyl propionate</span>
+                      <span class="text-xs block text-slate-500"
+                        >Mùi hoa nhài</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- B. Mô hình tương tác: Phản ứng Ester hóa -->
+          <div class="lg:col-span-1">
+            <div
+              class="glass-card p-6 rounded-3xl h-full relative overflow-hidden group"
+            >
+              <div
+                class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-green-400"
+              ></div>
+              <h3 class="text-xl font-bold mb-4">🔬 Cơ chế Ester hóa</h3>
+              <p class="text-sm text-slate-500 mb-4">
+                Bấm nút để xem cơ chế tách nước tạo Ester.
+              </p>
+
+              <!-- Simulation Canvas -->
+              <div
+                class="bg-white dark:bg-slate-800 rounded-2xl p-4 h-64 flex flex-col items-center justify-center relative shadow-inner"
+              >
+                <div
+                  id="ester-sim-area"
+                  class="flex items-center gap-2 text-xl font-mono transition-all"
+                >
+                  <!-- Acid -->
+                  <div class="flex flex-col items-center">
+                    <div
+                      class="bg-red-100 dark:bg-red-900/30 p-2 rounded border border-red-200 text-red-600 dark:text-red-300"
+                    >
+                      R-CO<span
+                        id="oh-group"
+                        class="font-bold bg-yellow-200 dark:bg-yellow-700/50 px-1 rounded transition-all inline-block"
+                        >-OH</span
+                      >
+                    </div>
+                    <span class="text-xs mt-1">Acid</span>
+                  </div>
+                  <span class="text-slate-400">+</span>
+                  <!-- Alcohol -->
+                  <div class="flex flex-col items-center">
+                    <div
+                      class="bg-blue-100 dark:bg-blue-900/30 p-2 rounded border border-blue-200 text-blue-600 dark:text-blue-300"
+                    >
+                      <span
+                        id="h-atom"
+                        class="font-bold bg-yellow-200 dark:bg-yellow-700/50 px-1 rounded transition-all inline-block"
+                        >H</span
+                      >-OR'
+                    </div>
+                    <span class="text-xs mt-1">Alcohol</span>
+                  </div>
+                </div>
+
+                <div
+                  id="ester-product-area"
+                  class="hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex-col items-center"
+                >
+                  <div
+                    class="bg-green-100 dark:bg-green-900/30 p-3 rounded-lg border border-green-200 text-green-700 dark:text-green-300 font-bold text-2xl shadow-lg animate-blob"
+                  >
+                    R-COO-R'
+                  </div>
+                  <span class="text-xs mt-2">Ester</span>
+                  <div
+                    class="absolute -right-16 top-0 text-blue-400 text-lg animate-float"
+                  >
+                    + H₂O
+                  </div>
+                </div>
+
+                <div class="absolute bottom-4 w-full px-4">
+                  <div
+                    class="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700"
+                  >
+                    <div
+                      id="reaction-progress"
+                      class="bg-blue-600 h-1.5 rounded-full transition-all duration-[2000ms]"
+                      style="width: 0%"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-4 flex gap-2">
+                <button
+                  onclick="runEsterSim()"
+                  class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition shadow-lg shadow-blue-500/30"
+                >
+                  <i class="fas fa-play mr-2"></i> Phản ứng
+                </button>
+                <button
+                  onclick="resetEsterSim()"
+                  class="px-4 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 rounded-lg text-slate-700 dark:text-white transition"
+                >
+                  <i class="fas fa-redo"></i>
+                </button>
+              </div>
+              <div class="mt-3 text-xs text-slate-500 italic text-center">
+                Xúc tác: H₂SO₄ đặc, t°. Phản ứng thuận nghịch.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- C. Thí nghiệm ảo: Thủy phân Ester -->
+        <div class="mb-16">
+          <div class="glass-card p-1 rounded-3xl overflow-hidden">
+            <div
+              class="bg-slate-50 dark:bg-slate-800/50 p-6 border-b border-slate-200 dark:border-slate-700"
+            >
+              <h3 class="text-2xl font-bold flex items-center gap-3">
+                <span class="text-purple-500"
+                  ><i class="fas fa-flask"></i
+                ></span>
+                Thí nghiệm ảo: Thủy phân Ethyl Acetate
+              </h3>
+            </div>
+            <div class="grid md:grid-cols-2 gap-0">
+              <!-- Lab Control Panel -->
+              <div
+                class="p-8 space-y-6 border-r border-slate-200 dark:border-slate-700"
+              >
+                <div>
+                  <h4 class="font-bold mb-4 text-slate-700 dark:text-slate-300">
+                    1. Chọn môi trường:
+                  </h4>
+                  <div class="flex gap-4">
+                    <button
+                      onclick="setLabEnv('acid')"
+                      id="btn-acid"
+                      class="flex-1 p-4 rounded-xl border-2 border-slate-200 dark:border-slate-600 hover:border-red-500 dark:hover:border-red-500 transition-all group active-env"
+                    >
+                      <div class="text-center">
+                        <i class="fas fa-vial text-2xl mb-2 text-red-500"></i>
+                        <div class="font-bold">Acid (H₂SO₄)</div>
+                        <div class="text-xs text-slate-500">Thuận nghịch</div>
+                      </div>
+                    </button>
+                    <button
+                      onclick="setLabEnv('base')"
+                      id="btn-base"
+                      class="flex-1 p-4 rounded-xl border-2 border-slate-200 dark:border-slate-600 hover:border-blue-500 dark:hover:border-blue-500 transition-all group"
+                    >
+                      <div class="text-center">
+                        <i class="fas fa-vial text-2xl mb-2 text-blue-500"></i>
+                        <div class="font-bold">Kiềm (NaOH)</div>
+                        <div class="text-xs text-slate-500">Một chiều</div>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 class="font-bold mb-4 text-slate-700 dark:text-slate-300">
+                    2. Gia nhiệt (Đun cách thủy):
+                  </h4>
+                  <input
+                    type="range"
+                    id="temp-slider"
+                    min="25"
+                    max="80"
+                    value="25"
+                    class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-red-500"
+                    oninput="updateTemp(this.value)"
+                  />
+                  <div class="flex justify-between text-sm mt-2 font-mono">
+                    <span>25°C</span>
+                    <span id="temp-display" class="font-bold text-red-500"
+                      >25°C</span
+                    >
+                    <span>80°C</span>
+                  </div>
+                </div>
+
+                <button
+                  onclick="startHydrolysis()"
+                  class="w-full py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-bold shadow-lg transform active:scale-95 transition"
+                >
+                  Bắt đầu Thí nghiệm
+                </button>
+              </div>
+
+              <!-- Lab Visualizer -->
+              <div
+                class="p-8 bg-slate-100 dark:bg-slate-900 flex flex-col items-center justify-center relative min-h-[400px]"
+              >
+                <!-- Test Tube -->
+                <div
+                  class="w-24 h-64 border-l-4 border-r-4 border-b-4 border-slate-300 dark:border-slate-600 rounded-b-3xl relative bg-white/10 backdrop-blur-sm overflow-hidden"
+                >
+                  <!-- Liquid Layers -->
+                  <div
+                    id="layer-ester"
+                    class="absolute top-[40%] left-0 w-full h-[20%] bg-yellow-200/80 transition-all duration-1000 border-b border-white/50 flex items-center justify-center text-xs font-bold text-yellow-800"
+                  >
+                    Ester
+                  </div>
+                  <div
+                    id="layer-water"
+                    class="absolute bottom-0 left-0 w-full h-[40%] bg-blue-200/80 transition-all duration-1000 flex items-center justify-center text-xs font-bold text-blue-800"
+                  >
+                    dd <span id="env-label">H₂SO₄</span>
+                  </div>
+
+                  <!-- Bubbles (hidden by default) -->
+                  <div
+                    id="bubbles"
+                    class="hidden absolute bottom-0 left-0 w-full h-full"
+                  >
+                    <div
+                      class="bubble w-2 h-2 left-1/4 bottom-0 animate-float"
+                      style="animation-duration: 2s"
+                    ></div>
+                    <div
+                      class="bubble w-3 h-3 left-1/2 bottom-0 animate-float"
+                      style="animation-duration: 3s"
+                    ></div>
+                    <div
+                      class="bubble w-2 h-2 left-3/4 bottom-0 animate-float"
+                      style="animation-duration: 2.5s"
+                    ></div>
+                  </div>
+                </div>
+
+                <!-- Bunsen Burner Flame -->
+                <div
+                  id="flame"
+                  class="w-0 h-0 transition-all duration-500 mt-2 bg-orange-500 rounded-full blur-md opacity-0"
+                ></div>
+
+                <!-- Result Text -->
+                <div
+                  id="lab-result"
+                  class="absolute top-4 right-4 bg-white/90 dark:bg-black/80 p-3 rounded-lg text-sm max-w-[200px] shadow-lg hidden"
+                >
+                  <span class="font-bold text-green-500">Kết quả:</span>
+                  <span id="result-text">...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- D. Công thức & Bài tập nhanh -->
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="glass-card p-6 rounded-2xl border-l-4 border-pink-500">
+            <h3 class="text-xl font-bold mb-4">📝 Công thức quan trọng</h3>
+            <div
+              class="space-y-4 font-mono text-sm bg-slate-50 dark:bg-slate-800 p-4 rounded-xl"
+            >
+              <div
+                class="flex justify-between items-center border-b border-slate-200 pb-2"
+              >
+                <span>Ester no, đơn, hở:</span>
+                <span class="text-pink-600 font-bold">CₙH₂ₙO₂ (n ≥ 2)</span>
+              </div>
+              <div
+                class="flex justify-between items-center border-b border-slate-200 pb-2"
+              >
+                <span>Số đồng phân:</span>
+                <span class="text-pink-600 font-bold">2ⁿ⁻² (n < 5)</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span>Đốt cháy:</span>
+                <span class="text-pink-600 font-bold">nCO₂ = nH₂O</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card p-6 rounded-2xl">
+            <h3 class="text-xl font-bold mb-4">⚡ Quiz Nhanh</h3>
+            <div id="quiz-ester-container">
+              <p class="mb-4 font-medium">
+                Thủy phân CH₃COOC₂H₅ trong NaOH thu được?
+              </p>
+              <div class="grid grid-cols-1 gap-2">
+                <button
+                  onclick="checkQuizEster(this, false)"
+                  class="quiz-option p-3 rounded-lg border border-slate-300 hover:bg-slate-100 dark:border-slate-600 dark:hover:bg-slate-700 text-left transition"
+                >
+                  A. CH₃COOH + C₂H₅OH
+                </button>
+                <button
+                  onclick="checkQuizEster(this, true)"
+                  class="quiz-option p-3 rounded-lg border border-slate-300 hover:bg-slate-100 dark:border-slate-600 dark:hover:bg-slate-700 text-left transition"
+                >
+                  B. CH₃COONa + C₂H₅OH
+                </button>
+                <button
+                  onclick="checkQuizEster(this, false)"
+                  class="quiz-option p-3 rounded-lg border border-slate-300 hover:bg-slate-100 dark:border-slate-600 dark:hover:bg-slate-700 text-left transition"
+                >
+                  C. HCOONa + C₂H₅OH
+                </button>
+              </div>
+              <div
+                id="quiz-ester-feedback"
+                class="mt-3 text-sm font-bold hidden"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: LIPID -->
+    <section id="lipid" class="py-20 relative overflow-hidden">
+      <!-- Decoration -->
+      <div
+        class="absolute top-0 right-0 w-64 h-64 bg-green-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"
+      ></div>
+      <div
+        class="absolute bottom-0 left-0 w-64 h-64 bg-yellow-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"
+      ></div>
+
+      <div class="container mx-auto px-4 relative z-10">
+        <!-- Section Header -->
+        <div class="text-center mb-16">
+          <span
+            class="text-green-500 font-bold tracking-wider uppercase text-sm"
+            >Phần 02</span
+          >
+          <h2 class="text-4xl font-bold mt-2 mb-4">Lipid & Chất Béo</h2>
+          <div
+            class="w-20 h-1 bg-gradient-to-r from-green-500 to-yellow-500 mx-auto rounded-full"
+          ></div>
+        </div>
+
+        <!-- B. Mô hình tương tác: Xây dựng chất béo -->
+        <div
+          class="glass-card p-8 rounded-3xl mb-16 border-t-4 border-green-500"
+        >
+          <h3 class="text-2xl font-bold mb-6 text-center">
+            🧩 Xếp hình phân tử Triglyceride
+          </h3>
+          <p class="text-center text-slate-500 mb-8 max-w-2xl mx-auto">
+            Chất béo là triester của Glycerol và Acid béo. Hãy kéo thả 3 gốc
+            Acid béo vào khung Glycerol để tạo thành chất béo hoàn chỉnh.
+          </p>
+
+          <div class="grid md:grid-cols-2 gap-12 items-center">
+            <!-- Drop Zone -->
+            <div class="flex justify-center">
+              <div
+                class="relative bg-white dark:bg-slate-800 p-8 rounded-xl shadow-inner border-2 border-dashed border-slate-300 dark:border-slate-600 w-full max-w-sm min-h-[300px] flex flex-col items-center justify-center gap-4 transition-all"
+                id="lipid-drop-zone"
+              >
+                <!-- Glycerol Backbone -->
+                <div
+                  class="bg-blue-200 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-4 py-8 rounded-l-xl absolute left-4 h-48 flex items-center justify-center font-bold writing-mode-vertical rotate-180 border border-blue-300"
+                >
+                  Glycerol (C₃H₅)
+                </div>
+
+                <!-- Placeholders for Fatty Acids -->
+                <div class="w-full pl-16 space-y-4">
+                  <div
+                    class="h-12 border-2 border-dashed border-green-300 rounded bg-green-50/50 flex items-center justify-center text-xs text-green-400 lipid-slot"
+                    data-slot="1"
+                  >
+                    Kéo Acid béo vào đây
+                  </div>
+                  <div
+                    class="h-12 border-2 border-dashed border-green-300 rounded bg-green-50/50 flex items-center justify-center text-xs text-green-400 lipid-slot"
+                    data-slot="2"
+                  >
+                    Kéo Acid béo vào đây
+                  </div>
+                  <div
+                    class="h-12 border-2 border-dashed border-green-300 rounded bg-green-50/50 flex items-center justify-center text-xs text-green-400 lipid-slot"
+                    data-slot="3"
+                  >
+                    Kéo Acid béo vào đây
+                  </div>
+                </div>
+
+                <!-- Success Message -->
+                <div
+                  id="lipid-success"
+                  class="absolute inset-0 bg-green-100/90 dark:bg-green-900/90 backdrop-blur flex items-center justify-center rounded-xl flex-col hidden z-20"
+                >
+                  <i
+                    class="fas fa-check-circle text-5xl text-green-600 mb-2"
+                  ></i>
+                  <span class="font-bold text-green-800 dark:text-green-200"
+                    >Hoàn thành!</span
+                  >
+                  <span class="text-sm">Đã tạo thành Triglyceride</span>
+                  <button
+                    onclick="resetLipidSim()"
+                    class="mt-4 px-4 py-2 bg-white text-green-600 rounded-lg shadow font-bold text-sm"
+                  >
+                    Làm lại
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Draggable Items -->
+            <div class="space-y-4">
+              <p class="font-bold text-slate-700 dark:text-slate-300 mb-2">
+                Kho nguyên liệu Acid béo:
+              </p>
+
+              <div
+                class="draggable-item cursor-grab active:cursor-grabbing bg-white dark:bg-slate-700 p-4 rounded-lg shadow-md border border-slate-200 dark:border-slate-600 hover:border-green-500 transition-all flex items-center gap-3"
+                draggable="true"
+                ondragstart="drag(event)"
+                id="acid-palmitic"
+              >
+                <div
+                  class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold"
+                >
+                  P
+                </div>
+                <div>
+                  <div class="font-bold">Palmitic Acid</div>
+                  <div class="text-xs text-slate-500 font-mono">
+                    C₁₅H₃₁COOH (No)
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="draggable-item cursor-grab active:cursor-grabbing bg-white dark:bg-slate-700 p-4 rounded-lg shadow-md border border-slate-200 dark:border-slate-600 hover:border-green-500 transition-all flex items-center gap-3"
+                draggable="true"
+                ondragstart="drag(event)"
+                id="acid-stearic"
+              >
+                <div
+                  class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold"
+                >
+                  S
+                </div>
+                <div>
+                  <div class="font-bold">Stearic Acid</div>
+                  <div class="text-xs text-slate-500 font-mono">
+                    C₁₇H₃₅COOH (No)
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="draggable-item cursor-grab active:cursor-grabbing bg-white dark:bg-slate-700 p-4 rounded-lg shadow-md border border-slate-200 dark:border-slate-600 hover:border-yellow-500 transition-all flex items-center gap-3"
+                draggable="true"
+                ondragstart="drag(event)"
+                id="acid-oleic"
+              >
+                <div
+                  class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600 font-bold"
+                >
+                  O
+                </div>
+                <div>
+                  <div class="font-bold">Oleic Acid</div>
+                  <div class="text-xs text-slate-500 font-mono">
+                    C₁₇H₃₃COOH (Không no)
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- So sánh chất béo No/Không no -->
+        <div class="grid md:grid-cols-2 gap-8 mb-16">
+          <!-- Theory Card -->
+          <div class="glass-card p-6 rounded-2xl">
+            <h3 class="text-xl font-bold mb-4 text-green-600">
+              📚 Lý thuyết cần nhớ
+            </h3>
+            <div class="space-y-4">
+              <div class="bg-white/50 dark:bg-slate-800/50 p-4 rounded-lg">
+                <h4 class="font-bold text-sm uppercase tracking-wide mb-2">
+                  Chất béo rắn (Mỡ)
+                </h4>
+                <p class="text-sm mb-2">
+                  Chủ yếu chứa gốc acid béo <strong>NO</strong>.
+                </p>
+                <p
+                  class="text-xs font-mono bg-slate-200 dark:bg-slate-900 p-1 rounded inline-block"
+                >
+                  Stearic, Palmitic
+                </p>
+              </div>
+              <div class="bg-white/50 dark:bg-slate-800/50 p-4 rounded-lg">
+                <h4 class="font-bold text-sm uppercase tracking-wide mb-2">
+                  Chất béo lỏng (Dầu)
+                </h4>
+                <p class="text-sm mb-2">
+                  Chủ yếu chứa gốc acid béo <strong>KHÔNG NO</strong>.
+                </p>
+                <p
+                  class="text-xs font-mono bg-slate-200 dark:bg-slate-900 p-1 rounded inline-block"
+                >
+                  Oleic, Linoleic
+                </p>
+              </div>
+              <div
+                class="mt-4 p-3 border-l-4 border-yellow-400 bg-yellow-50 dark:bg-yellow-900/20"
+              >
+                <p class="text-sm italic">
+                  <strong>Lưu ý:</strong> Dầu mỡ để lâu bị hôi do liên kết đôi
+                  C=C bị oxi hóa (Sự ôi mỡ).
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive State Vis -->
+          <div class="glass-card p-6 rounded-2xl">
+            <h3 class="text-xl font-bold mb-4 text-green-600">
+              👁️ Trực quan hóa Trạng thái
+            </h3>
+            <div class="flex justify-center gap-4 mb-6">
+              <button
+                onclick="setFatState('saturated')"
+                id="btn-sat"
+                class="px-4 py-2 rounded-full border border-green-500 bg-green-500 text-white text-sm font-bold transition"
+              >
+                Chất béo No
+              </button>
+              <button
+                onclick="setFatState('unsaturated')"
+                id="btn-unsat"
+                class="px-4 py-2 rounded-full border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-white text-sm font-bold transition"
+              >
+                Chất béo Không no
+              </button>
+            </div>
+
+            <div
+              class="h-48 bg-slate-100 dark:bg-slate-900 rounded-xl relative overflow-hidden flex flex-col items-center justify-center p-4"
+            >
+              <div
+                id="fat-molecules-container"
+                class="w-full h-full flex flex-wrap justify-center items-center gap-2 content-center transition-all duration-1000"
+              >
+                <!-- JS will populate this -->
+              </div>
+              <div
+                id="fat-state-label"
+                class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded"
+              >
+                Rắn (Mỡ)
+              </div>
+            </div>
+            <p
+              id="fat-desc"
+              class="mt-4 text-sm text-center text-slate-600 dark:text-slate-400"
+            >
+              Các phân tử xếp khít nhau, trật tự => Trạng thái Rắn.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: SOAP & DETERGENTS -->
+    <section id="soap" class="py-20 bg-slate-50 dark:bg-slate-900">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+          <span
+            class="text-purple-500 font-bold tracking-wider uppercase text-sm"
+            >Phần 03</span
+          >
+          <h2 class="text-4xl font-bold mt-2 mb-4">Xà Phòng & Chất Giặt Rửa</h2>
+          <div
+            class="w-20 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full"
+          ></div>
+        </div>
+
+        <!-- E. Ứng dụng & Mô phỏng: Cơ chế giặt rửa -->
+        <div
+          class="glass-card p-0 rounded-3xl overflow-hidden shadow-2xl mb-16"
+        >
+          <div
+            class="bg-gradient-to-r from-purple-600 to-indigo-600 p-8 text-white text-center"
+          >
+            <h3 class="text-3xl font-bold mb-2">
+              🛁 Tại sao xà phòng giặt sạch vết bẩn?
+            </h3>
+            <p class="opacity-90">Mô phỏng cơ chế Micelle</p>
+          </div>
+
+          <div class="grid lg:grid-cols-2">
+            <div class="p-8 bg-white dark:bg-slate-800">
+              <h4 class="font-bold text-xl mb-4 text-purple-600">
+                Cấu tạo phân tử Xà phòng
+              </h4>
+              <div
+                class="flex items-center gap-4 mb-6 p-4 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700"
+              >
+                <div class="flex items-center">
+                  <div class="w-40 h-2 bg-slate-400 rounded-l-full relative">
+                    <span
+                      class="absolute -top-6 left-0 text-xs text-slate-500 w-full text-center"
+                      >Đuôi Kị Nước (Hydrocarbon)</span
+                    >
+                    <span
+                      class="absolute -bottom-6 left-0 text-xs text-slate-500 w-full text-center"
+                      >Ưa dầu mỡ</span
+                    >
+                  </div>
+                  <div
+                    class="w-8 h-8 rounded-full bg-purple-500 border-4 border-white dark:border-slate-800 shadow-lg z-10 relative flex items-center justify-center text-white text-xs font-bold"
+                  >
+                    <span
+                      class="absolute -top-7 text-purple-500 whitespace-nowrap"
+                      >Đầu Ưa Nước</span
+                    >
+                    Na+
+                  </div>
+                </div>
+              </div>
+              <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                <li>
+                  <i class="fas fa-arrow-right text-purple-500 mr-2"></i>
+                  <strong>Đuôi dài:</strong> Cắm vào vết dầu bẩn.
+                </li>
+                <li>
+                  <i class="fas fa-arrow-right text-purple-500 mr-2"></i>
+                  <strong>Đầu phân cực:</strong> Hướng ra ngoài nước.
+                </li>
+                <li>
+                  <i class="fas fa-arrow-right text-purple-500 mr-2"></i>
+                  <strong>Kết quả:</strong> Vết bẩn bị kéo khỏi vải, phân tán
+                  vào nước tạo thành hạt Micelle.
+                </li>
+              </ul>
+              <div class="mt-6">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="font-bold">So sánh:</span>
+                </div>
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                  <div
+                    class="p-3 bg-green-50 dark:bg-green-900/20 rounded border border-green-200"
+                  >
+                    <div class="font-bold text-green-700">Xà phòng</div>
+                    <div class="text-xs">
+                      Muối của Acid béo. Mất tác dụng trong nước cứng (tạo tủa).
+                    </div>
+                  </div>
+                  <div
+                    class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200"
+                  >
+                    <div class="font-bold text-blue-700">Chất giặt rửa TH</div>
+                    <div class="text-xs">
+                      Gốc dầu mỏ. Dùng được trong nước cứng.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="relative bg-blue-50 dark:bg-slate-900 p-4 h-[400px] overflow-hidden flex items-center justify-center"
+            >
+              <div
+                class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"
+              ></div>
+
+              <!-- Cloth Surface -->
+              <div
+                class="absolute bottom-10 w-3/4 h-2 bg-slate-300 rounded-full"
+              ></div>
+              <div class="absolute bottom-4 text-xs text-slate-400">
+                Bề mặt vải sợi
+              </div>
+
+              <!-- Grease Stain -->
+              <div
+                id="grease-stain"
+                class="w-16 h-16 bg-yellow-600 rounded-full absolute bottom-12 transition-all duration-1000 z-10 flex items-center justify-center shadow-lg cursor-pointer"
+                onclick="activateMicelle()"
+              >
+                <span
+                  class="text-[10px] text-white font-bold opacity-80 select-none"
+                  >VẾT BẨN</span
+                >
+              </div>
+
+              <!-- Soap Molecules (Hidden initially) -->
+              <div
+                id="soap-container"
+                class="absolute inset-0 pointer-events-none"
+              >
+                <!-- JS Generates these -->
+              </div>
+
+              <button
+                onclick="activateMicelle()"
+                id="clean-btn"
+                class="absolute top-4 right-4 px-4 py-2 bg-white text-purple-600 font-bold rounded-lg shadow-lg hover:scale-105 transition z-20"
+              >
+                <i class="fas fa-soap mr-2"></i> Giặt
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- F. BÀI TẬP CỦNG CỐ (GAME HÓA) -->
+    <section
+      id="practice"
+      class="py-20 bg-gradient-to-b from-slate-900 to-black text-white relative"
+    >
+      <div class="container mx-auto px-4 text-center max-w-3xl">
+        <h2 class="text-3xl font-bold mb-8 font-display">
+          <i class="fas fa-gamepad text-accent mr-2"></i> Thử thách kiến thức
+        </h2>
+
+        <div class="glass-card p-8 rounded-3xl bg-white/10 backdrop-blur-md">
+          <div class="flex justify-between items-center mb-6">
+            <span class="text-slate-300 text-sm"
+              >Câu hỏi: <span id="q-current">1</span>/<span id="q-total"
+                >5</span
+              ></span
+            >
+            <div class="w-32 h-2 bg-slate-700 rounded-full overflow-hidden">
+              <div
+                id="q-progress"
+                class="h-full bg-accent w-0 transition-all duration-500"
+              ></div>
+            </div>
+          </div>
+
+          <div
+            id="quiz-content"
+            class="min-h-[200px] flex flex-col justify-center"
+          >
+            <h3 id="q-text" class="text-xl font-bold mb-6">
+              Đang tải câu hỏi...
+            </h3>
+            <div id="q-options" class="grid gap-3">
+              <!-- Options injected by JS -->
+            </div>
+          </div>
+
+          <div
+            id="quiz-feedback"
+            class="mt-4 hidden p-3 rounded-lg font-bold"
+          ></div>
+
+          <button
+            id="q-next"
+            onclick="nextQuestion()"
+            class="mt-6 px-6 py-2 bg-accent hover:bg-purple-600 rounded-full font-bold transition hidden"
+          >
+            Câu tiếp theo <i class="fas fa-arrow-right ml-2"></i>
+          </button>
+          <button
+            id="q-reset"
+            onclick="resetQuiz()"
+            class="mt-6 px-6 py-2 bg-slate-600 hover:bg-slate-500 rounded-full font-bold transition hidden"
+          >
+            Làm lại <i class="fas fa-redo ml-2"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- NAVIGATION BUTTONS (FIXED FROM PROMPT) -->
+    <main class="container mx-auto px-4 py-12">
+      <section class="text-center space-x-4 mb-20">
+        <button
+          onclick="window.location.href = 'bai_tap.html'"
+          style="
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.35);
+            transition: 0.3s ease;
+          "
+          onmouseover="
+            this.style.transform = 'translateY(-3px) scale(1.03)';
+            this.style.boxShadow = '0 18px 45px rgba(99,102,241,.55)';
+          "
+          onmouseout="
+            this.style.transform = 'translateY(0) scale(1)';
+            this.style.boxShadow = '0 10px 30px rgba(59,130,246,.35)';
+          "
+        >
+          <i class="fas fa-pen-to-square"></i>
+          Bài tập củng cố
+        </button>
+
+        <button
+          onclick="window.location.href = '../chemstudyteen.html'"
+          style="
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.35);
+            transition: 0.3s ease;
+          "
+          onmouseover="
+            this.style.transform = 'translateY(-3px)';
+            this.style.boxShadow = '0 18px 45px rgba(22,163,74,.55)';
+          "
+          onmouseout="
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 10px 30px rgba(34,197,94,.35)';
+          "
+        >
+          <i class="fas fa-arrow-left"></i>
+          Quay về CS Expert
+        </button>
       </section>
     </main>
 
-    <!-- SCRIPTS -->
+    <!-- FOOTER (FIXED FROM PROMPT) -->
+    <footer>
+      <div class="footer-waves"></div>
+      <div class="footer-grid">
+        <div class="footer-brand" data-aos="fade-right">
+          <h2>EDUMATTER</h2>
+          <p style="color: #94a3b8; line-height: 1.8">
+            Kiến tạo môi trường học tập cảm xúc, nơi tri thức được số hóa và
+            truyền tải đầy cảm hứng.
+          </p>
+          <div style="display: flex; gap: 15px; margin-top: 30px">
+            <a href="https://www.facebook.com/ducnt214" class="icon-btn"
+              ><i class="fab fa-facebook" alt="facebook"></i
+            ></a>
+            <a href="https://github.com/ducnt2104" class="icon-btn" alt="github"
+              ><i class="fab fa-github"></i
+            ></a>
+            <a
+              href="https://www.tiktok.com/@ktbtcthm210"
+              class="icon-btn"
+              alt="tiktok"
+              ><i class="fab fa-tiktok"></i
+            ></a>
+          </div>
+        </div>
+        <div class="footer-links" data-aos="fade-up">
+          <h3>Liên hệ nhanh</h3>
+          <div class="contact-item">
+            <i class="fas fa-envelope"></i>
+            <span>ducnt21042010@gmail.com</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-phone"></i>
+            <span>034 226 6204</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-location-dot"></i>
+            <span>THPT Tôn Đức Thắng, Đồng Nai</span>
+          </div>
+        </div>
+        <div class="footer-links" data-aos="fade-left">
+          <h4>Đội ngũ DNT</h4>
+          <p style="color: #94a3b8">
+            "Sáng tạo không ngừng - Vươn tầm tri thức"
+          </p>
+          <div
+            style="
+              margin-top: 20px;
+              padding: 15px;
+              background: rgba(255, 255, 255, 0.05);
+              border-radius: 15px;
+            "
+          >
+            <p style="font-size: 0.8rem; color: #fff">
+              Dự án được phát triển bởi các thành viên đam mê công nghệ tại Việt
+              Nam.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="copyright">
+        <p>
+          © 2024 EDUMATTER Educational Ecosystem. Designed with
+          <i class="fas fa-heart" style="color: #ef4444"></i> by DNT Team.
+        </p>
+      </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-      // --- 1. UI & THEME ---
-      lucide.createIcons();
+      // ==========================================
+      // 1. THEME & UI LOGIC
+      // ==========================================
+      function toggleTheme() {
+        const html = document.documentElement;
+        const icon = document.getElementById("theme-icon");
 
-      const html = document.documentElement;
-      const themeBtn = document.getElementById("theme-toggle");
+        if (html.classList.contains("dark")) {
+          html.classList.remove("dark");
+          icon.classList.remove("fa-sun");
+          icon.classList.add("fa-moon");
+          localStorage.setItem("theme", "light");
+        } else {
+          html.classList.add("dark");
+          icon.classList.remove("fa-moon");
+          icon.classList.add("fa-sun");
+          localStorage.setItem("theme", "dark");
+        }
+      }
 
-      // Theme Logic
+      // Init theme
       if (
-        localStorage.theme === "dark" ||
+        localStorage.getItem("theme") === "dark" ||
         (!("theme" in localStorage) &&
           window.matchMedia("(prefers-color-scheme: dark)").matches)
       ) {
-        html.classList.add("dark");
+        document.documentElement.classList.add("dark");
+        document.getElementById("theme-icon").classList.remove("fa-moon");
+        document.getElementById("theme-icon").classList.add("fa-sun");
       }
 
-      themeBtn.addEventListener("click", () => {
-        html.classList.toggle("dark");
-        localStorage.theme = html.classList.contains("dark") ? "dark" : "light";
+      // Header Scroll Effect
+      window.addEventListener("scroll", () => {
+        const header = document.getElementById("main-header");
+        if (window.scrollY > 50) {
+          header.classList.add("shadow-md");
+          header.style.paddingTop = "0";
+          header.style.paddingBottom = "0";
+        } else {
+          header.classList.remove("shadow-md");
+        }
       });
 
-      // Tab Logic
-      function switchTab(tabId) {
-        // Hide all
-        document.querySelectorAll('section[id^="tab-"]').forEach((el) => {
-          el.classList.remove("active-content");
-          el.classList.add("hidden-content");
-        });
-        // Show target
-        const target = document.getElementById(tabId);
-        target.classList.remove("hidden-content");
-        target.classList.add("active-content");
+      // ==========================================
+      // 2. SIMULATION: ESTERIFICATION
+      // ==========================================
+      function runEsterSim() {
+        const hAtom = document.getElementById("h-atom");
+        const ohGroup = document.getElementById("oh-group");
+        const progress = document.getElementById("reaction-progress");
+        const productArea = document.getElementById("ester-product-area");
+        const reactants = document.getElementById("ester-sim-area");
 
-        // Update buttons style
-        document.querySelectorAll(".nav-tab").forEach((btn) => {
-          btn.classList.remove(
-            "bg-white",
-            "dark:bg-slate-700",
-            "shadow-sm",
-            "text-chem-ester",
-            "text-chem-lipid",
-            "text-chem-soap"
-          );
-          btn.classList.add("text-slate-500", "dark:text-slate-400");
-        });
+        // Reset UI
+        productArea.classList.add("hidden");
+        productArea.classList.remove("flex");
+        reactants.style.opacity = "1";
 
-        // Highlight active button (approximate matching)
-        const index = ["tab-ester", "tab-lipid", "tab-soap"].indexOf(tabId);
-        const activeBtn = document.querySelectorAll(".nav-tab")[index];
-        activeBtn.classList.remove("text-slate-500", "dark:text-slate-400");
-        activeBtn.classList.add("bg-white", "dark:bg-slate-700", "shadow-sm");
+        // Step 1: Highlight Reacting Groups
+        hAtom.classList.add("scale-150", "bg-red-400");
+        ohGroup.classList.add("scale-150", "bg-red-400");
 
-        if (index === 0) activeBtn.classList.add("text-chem-ester");
-        if (index === 1) activeBtn.classList.add("text-chem-lipid");
-        if (index === 2) activeBtn.classList.add("text-chem-soap");
+        setTimeout(() => {
+          // Step 2: Progress Bar
+          progress.style.width = "100%";
 
-        // Scroll Progress Color
-        const bar = document.getElementById("scroll-progress");
-        bar.className = `h-full w-0 transition-all duration-100 bg-gradient-to-r ${
-          index === 0
-            ? "from-orange-400 to-yellow-500"
-            : index === 1
-            ? "from-yellow-400 to-orange-500"
-            : "from-sky-400 to-blue-600"
-        }`;
+          // Animate removal
+          hAtom.style.transform = "translateY(50px) rotate(360deg)";
+          ohGroup.style.transform = "translateY(50px) rotate(-360deg)";
+          hAtom.style.opacity = "0";
+          ohGroup.style.opacity = "0";
+
+          setTimeout(() => {
+            // Step 3: Show Product
+            reactants.style.opacity = "0";
+            setTimeout(() => {
+              productArea.classList.remove("hidden");
+              productArea.classList.add("flex");
+            }, 500);
+          }, 1000);
+        }, 800);
       }
 
-      // Scroll Progress
-      window.onscroll = function () {
-        let winScroll =
-          document.body.scrollTop || document.documentElement.scrollTop;
-        let height =
-          document.documentElement.scrollHeight -
-          document.documentElement.clientHeight;
-        let scrolled = (winScroll / height) * 100;
-        document.getElementById("scroll-progress").style.width = scrolled + "%";
-      };
+      function resetEsterSim() {
+        document.getElementById("reaction-progress").style.width = "0%";
+        document.getElementById("ester-product-area").classList.add("hidden");
+        document.getElementById("ester-product-area").classList.remove("flex");
+        const reactants = document.getElementById("ester-sim-area");
+        reactants.style.opacity = "1";
 
-      // --- 2. THREE.JS MOLECULES ---
-      function init3D(containerId) {
-        const container = document.getElementById(containerId);
-        if (!container) return;
+        const hAtom = document.getElementById("h-atom");
+        const ohGroup = document.getElementById("oh-group");
 
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x00000000); // Transparent
+        hAtom.style.transform = "";
+        hAtom.style.opacity = "1";
+        hAtom.classList.remove("scale-150", "bg-red-400");
 
-        const camera = new THREE.PerspectiveCamera(
-          70,
-          container.clientWidth / container.clientHeight,
-          0.1,
-          100
+        ohGroup.style.transform = "";
+        ohGroup.style.opacity = "1";
+        ohGroup.classList.remove("scale-150", "bg-red-400");
+      }
+
+      // ==========================================
+      // 3. VIRTUAL LAB: HYDROLYSIS
+      // ==========================================
+      let currentEnv = "acid";
+      let currentTemp = 25;
+
+      function setLabEnv(env) {
+        currentEnv = env;
+        document
+          .getElementById("btn-acid")
+          .classList.remove(
+            "active-env",
+            "border-red-500",
+            "bg-red-50",
+            "dark:bg-red-900/20",
+          );
+        document
+          .getElementById("btn-base")
+          .classList.remove(
+            "active-env",
+            "border-blue-500",
+            "bg-blue-50",
+            "dark:bg-blue-900/20",
+          );
+
+        if (env === "acid") {
+          document
+            .getElementById("btn-acid")
+            .classList.add(
+              "active-env",
+              "border-red-500",
+              "bg-red-50",
+              "dark:bg-red-900/20",
+            );
+          document.getElementById("env-label").innerText = "H₂SO₄";
+          document.getElementById("env-label").className =
+            "text-xs font-bold text-red-800";
+        } else {
+          document
+            .getElementById("btn-base")
+            .classList.add(
+              "active-env",
+              "border-blue-500",
+              "bg-blue-50",
+              "dark:bg-blue-900/20",
+            );
+          document.getElementById("env-label").innerText = "NaOH";
+          document.getElementById("env-label").className =
+            "text-xs font-bold text-blue-800";
+        }
+      }
+
+      function updateTemp(val) {
+        currentTemp = val;
+        document.getElementById("temp-display").innerText = val + "°C";
+        const flame = document.getElementById("flame");
+
+        if (val > 40) {
+          flame.style.opacity = (val - 40) / 40;
+          flame.style.width = "40px";
+          flame.style.height = val - 30 + "px";
+        } else {
+          flame.style.opacity = 0;
+        }
+      }
+
+      function startHydrolysis() {
+        const esterLayer = document.getElementById("layer-ester");
+        const resultBox = document.getElementById("lab-result");
+        const resultText = document.getElementById("result-text");
+        const bubbles = document.getElementById("bubbles");
+
+        // Check temperature condition
+        if (currentTemp < 60) {
+          alert(
+            "Nhiệt độ chưa đủ! Hãy tăng nhiệt độ lên trên 60°C để phản ứng xảy ra nhanh.",
+          );
+          return;
+        }
+
+        // Animate boiling
+        bubbles.classList.remove("hidden");
+
+        setTimeout(() => {
+          if (currentEnv === "acid") {
+            // Reversible: Ester layer shrinks but remains
+            esterLayer.style.height = "5%";
+            esterLayer.style.top = "40%";
+            resultText.innerText = "Phân lớp (Pư thuận nghịch, còn Ester dư).";
+          } else {
+            // Irreversible: Ester layer disappears
+            esterLayer.style.height = "0%";
+            esterLayer.style.opacity = "0";
+            resultText.innerText = "Đồng nhất (Pư 1 chiều, hết Ester).";
+          }
+
+          bubbles.classList.add("hidden");
+          resultBox.classList.remove("hidden");
+
+          // Reset visual after 5s
+          setTimeout(() => {
+            esterLayer.style.height = "20%";
+            esterLayer.style.opacity = "1";
+            resultBox.classList.add("hidden");
+          }, 5000);
+        }, 3000);
+      }
+
+      // Quiz Logic for Ester Section
+      function checkQuizEster(btn, isCorrect) {
+        const feedback = document.getElementById("quiz-ester-feedback");
+        const allBtns = document.querySelectorAll(
+          "#quiz-ester-container .quiz-option",
         );
-        camera.position.z = 6;
 
-        const renderer = new THREE.WebGLRenderer({
-          alpha: true,
-          antialias: true,
-        });
-        renderer.setSize(container.clientWidth, container.clientHeight);
-        container.appendChild(renderer.domElement);
+        allBtns.forEach((b) =>
+          b.classList.remove(
+            "bg-green-100",
+            "bg-red-100",
+            "border-green-500",
+            "border-red-500",
+          ),
+        );
 
-        // Light
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-        scene.add(ambientLight);
-        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        dirLight.position.set(5, 5, 5);
-        scene.add(dirLight);
+        feedback.classList.remove("hidden", "text-green-600", "text-red-600");
 
-        // Group
-        const molecule = new THREE.Group();
-        scene.add(molecule);
+        if (isCorrect) {
+          btn.classList.add(
+            "bg-green-100",
+            "border-green-500",
+            "dark:bg-green-900",
+          );
+          feedback.innerText = "Chính xác! NaOH tạo muối (RCOONa) và Alcohol.";
+          feedback.classList.add("text-green-600");
+        } else {
+          btn.classList.add("bg-red-100", "border-red-500", "dark:bg-red-900");
+          feedback.innerText =
+            "Sai rồi. Thủy phân trong kiềm tạo muối, không phải acid.";
+          feedback.classList.add("text-red-600");
+        }
+      }
 
-        // Simple Ethyl Acetate Model (Spheres)
-        const atoms = [
-          { color: 0x333333, size: 0.7, x: -1.5, y: 0, z: 0 }, // C (Methyl)
-          { color: 0x333333, size: 0.7, x: 0, y: 0, z: 0 }, // C (Carbonyl)
-          { color: 0xff0000, size: 0.6, x: 0, y: 1.2, z: 0 }, // O (Double bond)
-          { color: 0xff0000, size: 0.6, x: 1.2, y: -0.8, z: 0 }, // O (Bridge)
-          { color: 0x333333, size: 0.7, x: 2.5, y: -0.5, z: 0 }, // C (Ethyl 1)
-          { color: 0x333333, size: 0.7, x: 3.5, y: 0.5, z: 0.5 }, // C (Ethyl 2)
-        ];
+      // ==========================================
+      // 4. SIMULATION: TRIGLYCERIDE BUILDER
+      // ==========================================
+      let lipidSlots = [false, false, false];
 
-        // Add Atoms
-        const sphereGeo = new THREE.SphereGeometry(1, 32, 32);
-        atoms.forEach((atom) => {
-          const mat = new THREE.MeshPhongMaterial({ color: atom.color });
-          const mesh = new THREE.Mesh(sphereGeo, mat);
-          mesh.position.set(atom.x - 1, atom.y, atom.z);
-          mesh.scale.set(atom.size, atom.size, atom.size);
-          molecule.add(mesh);
-        });
+      function allowDrop(ev) {
+        ev.preventDefault();
+      }
 
-        // Add Bonds (Simplified visually)
-        const bondGeo = new THREE.CylinderGeometry(0.15, 0.15, 1, 32);
-        const bondMat = new THREE.MeshPhongMaterial({ color: 0xcccccc });
+      function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+      }
 
-        function createBond(p1, p2, isDouble = false) {
-          const start = new THREE.Vector3(p1.x - 1, p1.y, p1.z);
-          const end = new THREE.Vector3(p2.x - 1, p2.y, p2.z);
-          const distance = start.distanceTo(end);
+      // Enable drop zone listeners
+      const dropZone = document.getElementById("lipid-drop-zone");
+      dropZone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropZone.classList.add("active");
+      });
 
-          const mesh = new THREE.Mesh(bondGeo, bondMat);
-          mesh.position.copy(start);
-          mesh.position.lerp(end, 0.5);
-          mesh.scale.set(1, distance, 1);
-          mesh.lookAt(end);
-          mesh.rotateX(Math.PI / 2);
+      dropZone.addEventListener("dragleave", () => {
+        dropZone.classList.remove("active");
+      });
 
-          molecule.add(mesh);
+      dropZone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropZone.classList.remove("active");
+        const data = e.dataTransfer.getData("text");
+        const draggedElement = document.getElementById(data);
 
-          if (isDouble) {
-            const mesh2 = mesh.clone();
-            mesh2.position.x += 0.2;
-            molecule.add(mesh2);
+        // Find first empty slot
+        const emptySlotIndex = lipidSlots.findIndex((slot) => slot === false);
+
+        if (emptySlotIndex !== -1) {
+          // Fill visuals
+          const slotElement = document.querySelector(
+            `.lipid-slot[data-slot="${emptySlotIndex + 1}"]`,
+          );
+
+          // Clone the item visually into the slot
+          let name = draggedElement.querySelector(".font-bold").innerText;
+          let colorClass = name.includes("Oleic")
+            ? "bg-yellow-100 text-yellow-700 border-yellow-300"
+            : "bg-green-100 text-green-700 border-green-300";
+
+          slotElement.innerHTML = `<span class="font-bold">${name}</span>`;
+          slotElement.className = `h-12 border rounded flex items-center justify-center text-sm shadow-sm animate-blob ${colorClass}`;
+
+          lipidSlots[emptySlotIndex] = true;
+
+          // Check completion
+          if (lipidSlots.every((s) => s === true)) {
+            setTimeout(() => {
+              document
+                .getElementById("lipid-success")
+                .classList.remove("hidden");
+              document.getElementById("lipid-success").classList.add("flex");
+            }, 500);
           }
         }
-
-        createBond(atoms[0], atoms[1]);
-        createBond(atoms[1], atoms[2], true);
-        createBond(atoms[1], atoms[3]);
-        createBond(atoms[3], atoms[4]);
-        createBond(atoms[4], atoms[5]);
-
-        // Animation
-        function animate() {
-          requestAnimationFrame(animate);
-          molecule.rotation.y += 0.005;
-          molecule.rotation.x += 0.002;
-          renderer.render(scene, camera);
-        }
-        animate();
-
-        // Resize
-        window.addEventListener("resize", () => {
-          renderer.setSize(container.clientWidth, container.clientHeight);
-          camera.aspect = container.clientWidth / container.clientHeight;
-          camera.updateProjectionMatrix();
-        });
-      }
-
-      // Init 3D on load
-      window.addEventListener("load", () => {
-        init3D("sim-ester-3d");
-        loadQuestion();
       });
 
-      // --- 3. SIMULATION LOGIC ---
-
-      // Sim 3: Smell
-      function playSmell(type) {
-        const feedback = document.getElementById("smell-feedback");
-        const texts = {
-          banana: "🍌 Mùi Chuối Chín (Isoamyl Acetate) lan tỏa...",
-          rose: "🌹 Mùi Hoa Hồng (Geranyl Acetate) thơm ngát...",
-          pineapple: "🍍 Mùi Dứa (Ethyl Butyrate) ngọt ngào...",
-          jasmine: "⭐ Mùi Hoa Nhài (Benzyl Acetate) nồng nàn...",
-        };
-        feedback.textContent = texts[type];
-        feedback.classList.remove("animate-bounce");
-        void feedback.offsetWidth; // trigger reflow
-        feedback.classList.add("animate-bounce");
+      function resetLipidSim() {
+        lipidSlots = [false, false, false];
+        document.querySelectorAll(".lipid-slot").forEach((slot) => {
+          slot.className =
+            "h-12 border-2 border-dashed border-green-300 rounded bg-green-50/50 flex items-center justify-center text-xs text-green-400 lipid-slot";
+          slot.innerHTML = "Kéo Acid béo vào đây";
+        });
+        document.getElementById("lipid-success").classList.add("hidden");
+        document.getElementById("lipid-success").classList.remove("flex");
       }
 
-      // Sim 4 & 5: Hydrolysis
-      function runHydrolysis(type) {
-        const acidTop = document.getElementById("layer-acid-top");
-        const baseTop = document.getElementById("layer-base-top");
+      // ==========================================
+      // 5. SIMULATION: LIPID STATES
+      // ==========================================
+      function setFatState(state) {
+        const container = document.getElementById("fat-molecules-container");
+        const label = document.getElementById("fat-state-label");
+        const desc = document.getElementById("fat-desc");
+        const btnSat = document.getElementById("btn-sat");
+        const btnUnsat = document.getElementById("btn-unsat");
 
-        if (type === "acid") {
-          // Acid: Reversible -> Layers stay separate mostly, just visual shake
-          acidTop.classList.add("animate-wiggle");
-          setTimeout(() => acidTop.classList.remove("animate-wiggle"), 1000);
+        container.innerHTML = ""; // Clear
+
+        if (state === "saturated") {
+          // Update UI Buttons
+          btnSat.classList.add("bg-green-500", "text-white");
+          btnUnsat.classList.remove("bg-yellow-500", "text-white");
+
+          label.innerText = "Rắn (Mỡ)";
+          desc.innerHTML =
+            "Các phân tử Acid béo NO có cấu trúc thẳng, xếp khít nhau tạo thành chất rắn.";
+
+          // Generate Saturated Molecules (Straight bars)
+          for (let i = 0; i < 30; i++) {
+            let div = document.createElement("div");
+            div.className =
+              "w-16 h-2 bg-green-500 rounded-full m-0.5 opacity-80";
+            container.appendChild(div);
+          }
+          container.classList.remove("gap-4");
+          container.classList.add("gap-0");
         } else {
-          // Base: Complete -> Layer disappears (Saponification)
-          baseTop.style.opacity = "0";
-          baseTop.style.height = "0";
-          setTimeout(() => {
-            alert(
-              "Phản ứng Xà phòng hóa xảy ra hoàn toàn! Lớp Ester biến mất, tạo thành dung dịch đồng nhất muối và ancol."
-            );
-          }, 1000);
+          // Update UI Buttons
+          btnSat.classList.remove("bg-green-500", "text-white");
+          btnUnsat.classList.add("bg-yellow-500", "text-white");
+
+          label.innerText = "Lỏng (Dầu)";
+          desc.innerHTML =
+            "Gốc Acid béo KHÔNG NO có liên kết đôi C=C (cis) làm mạch gấp khúc, không xếp khít => Chất lỏng.";
+
+          // Generate Unsaturated Molecules (V shape)
+          for (let i = 0; i < 15; i++) {
+            let div = document.createElement("div");
+            // Create a V shape using CSS borders or transform
+            div.className =
+              "w-16 h-8 border-b-4 border-l-4 border-yellow-500 rounded-bl-xl m-1 transform rotate-45 animate-float";
+            div.style.animationDuration = Math.random() * 2 + 2 + "s";
+            container.appendChild(div);
+          }
+          container.classList.add("gap-4");
         }
       }
+      // Initialize State Sim
+      setFatState("saturated");
 
-      // Sim 6: Hydrogenation
-      function runHydrogenation() {
-        const h2 = document.getElementById("h2-particles");
-        const oil = document.getElementById("oil-state");
-        const fat = document.getElementById("fat-state");
+      // ==========================================
+      // 6. SIMULATION: MICELLE (CLEANING ACTION)
+      // ==========================================
+      function activateMicelle() {
+        const container = document.getElementById("soap-container");
+        const grease = document.getElementById("grease-stain");
+        const btn = document.getElementById("clean-btn");
 
-        // Generate particles
-        for (let i = 0; i < 20; i++) {
-          const p = document.createElement("div");
-          p.className = "absolute w-2 h-2 bg-white rounded-full opacity-70";
-          p.style.left = Math.random() * 100 + "%";
-          p.style.bottom = "0";
-          p.style.transition = `all ${Math.random() * 2 + 1}s ease-out`;
-          h2.appendChild(p);
+        btn.disabled = true;
+        btn.innerHTML =
+          '<i class="fas fa-spinner fa-spin mr-2"></i> Đang giặt...';
 
+        container.innerHTML = ""; // Clear old
+
+        // 1. Generate Soap Molecules randomly distributed
+        const soapCount = 20;
+        for (let i = 0; i < soapCount; i++) {
+          let soap = document.createElement("div");
+          soap.className =
+            "absolute flex items-center transition-all duration-1000 ease-in-out";
+          // Random pos
+          const x = Math.random() * 300;
+          const y = Math.random() * 300;
+          soap.style.left = x + "px";
+          soap.style.top = y + "px";
+
+          // Visual of soap (Tail - Head)
+          soap.innerHTML = `
+                    <div class="w-8 h-1 bg-slate-400"></div>
+                    <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+                `;
+          container.appendChild(soap);
+
+          // 2. Animate to circle around grease
           setTimeout(() => {
-            p.style.bottom = "100%";
-            p.style.opacity = "0";
-          }, 50);
-          setTimeout(() => p.remove(), 3000);
+            const angle = (i / soapCount) * 2 * Math.PI;
+            const radius = 45; // slightly larger than grease radius (32px)
+
+            // Center of container (approx)
+            const centerX = container.offsetWidth / 2;
+            const centerY = 260; // Approximate bottom area where grease is
+
+            // Calculate position around grease
+            // We need to move them relative to the container
+            // Grease is absolute bottom-12, left-50%
+
+            // Let's use simpler logic: Add a class that transforms them
+            soap.style.left = "50%";
+            soap.style.top = "auto";
+            soap.style.bottom = "55px"; // Center of grease
+
+            // Transform to form a circle
+            const tx = Math.cos(angle) * radius;
+            const ty = Math.sin(angle) * radius;
+            const rotation = angle * (180 / Math.PI);
+
+            soap.style.transform = `translate(${tx}px, ${ty}px) rotate(${rotation}deg)`;
+          }, 500);
         }
 
-        // Transform
+        // 3. Lift the stain
         setTimeout(() => {
-          oil.style.transform = "scale(0)";
-          oil.style.opacity = "0";
-          fat.style.transform = "scale(1)";
-          fat.style.opacity = "1";
-        }, 1500);
-      }
+          grease.style.bottom = "200px"; // Float up
+          grease.style.transform = "scale(0.8)";
 
-      // Sim 7: Rancidity Slider
-      function updateRancidity(val) {
-        const color = document.getElementById("oil-color");
-        const lines = document.getElementById("smell-lines");
-        const status = document.getElementById("oil-status");
+          // Move soaps with it
+          const soaps = container.children;
+          for (let s of soaps) {
+            s.style.bottom = "200px";
+          }
 
-        // Color shift yellow -> brown
-        const r = 253 - val * 1; // Darken red slightly
-        const g = 224 - val * 1.5; // Reduce green -> brown
-        const b = 71 - val * 0.5;
-
-        color.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
-
-        if (val > 70) {
-          lines.style.opacity = 1;
-          status.innerText = "Đã bị ôi (Peroxit hóa)";
-          status.className = "mt-2 font-bold text-red-600";
-        } else {
-          lines.style.opacity = val / 100;
-          status.innerText = "Đang oxi hóa...";
-          status.className = "mt-2 font-bold text-yellow-600";
-        }
-        if (val < 10) {
-          status.innerText = "Tươi mới";
-          status.className = "mt-2 font-bold text-green-600";
-        }
-      }
-
-      // Sim 8: Hard Water
-      function testHardWater(type, el) {
-        if (type === "soap") {
-          const ppt = el.querySelector(".precipitate");
-          ppt.style.opacity = "1";
-          document.getElementById("hard-water-res").innerText =
-            "Xà phòng + Ca²⁺ → Kết tủa trắng (mất tác dụng)";
-          document.getElementById("hard-water-res").className =
-            "text-xs mt-2 h-4 text-red-500 font-bold";
-        } else {
-          const foam = el.querySelector(".foam");
-          foam.style.opacity = "1";
-          document.getElementById("hard-water-res").innerText =
-            "Chất giặt rửa TH không tạo kết tủa, vẫn tạo bọt tốt!";
-          document.getElementById("hard-water-res").className =
-            "text-xs mt-2 h-4 text-green-500 font-bold";
-        }
-      }
-
-      // Sim 12: Micelle Game Logic
-      let soapCount = 0;
-      function addSoap(e) {
-        if (soapCount > 15) return;
-
-        const container = document.getElementById("micelle-container");
-        const grease = document.getElementById("grease");
-        const rect = container.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        // Create Soap Molecule Visual
-        const soap = document.createElement("div");
-        soap.className =
-          "absolute flex items-center w-12 h-4 transition-all duration-1000";
-        soap.style.left = x + "px";
-        soap.style.top = y + "px";
-        soap.innerHTML = `
-                <div class="w-8 h-1 bg-slate-400"></div>
-                <div class="w-4 h-4 rounded-full bg-blue-500 -ml-1 z-10"></div>
-            `;
-
-        document.getElementById("soap-particles").appendChild(soap);
-        soapCount++;
-
-        // Animate towards grease center
-        setTimeout(() => {
-          const centerX = rect.width / 2;
-          const centerY = rect.height / 2;
-
-          // Calculate angle to center
-          const dx = centerX - x;
-          const dy = centerY - y;
-          const angle = Math.atan2(dy, dx);
-
-          // Position in circle around grease
-          const radius = 50;
-          const finalX = centerX - Math.cos(angle) * radius; // Head out
-          const finalY = centerY - Math.sin(angle) * radius; // Head out
-
-          // Rotation: Head (blue, right side of div logic needs adjustment)
-          // Current HTML: Tail(left)-Head(right).
-          // We want Tail IN, Head OUT.
-          // Vector points TO center.
-          const deg = (angle * 180) / Math.PI;
-
-          soap.style.left = finalX + "px";
-          soap.style.top = finalY + "px";
-          soap.style.transform = `translate(-50%, -50%) rotate(${deg}deg)`;
-        }, 100);
-
-        // Check win
-        if (soapCount >= 10) {
+          btn.innerHTML = '<i class="fas fa-check mr-2"></i> Sạch bóng!';
           setTimeout(() => {
-            grease.style.transform = "translate(-50%, -50%) scale(0)"; // Dissolved
-            document.getElementById("clean-message").classList.remove("hidden");
-          }, 1500);
-        }
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-soap mr-2"></i> Giặt lại';
+            // Reset pos handled by function start
+          }, 2000);
+        }, 2000);
       }
 
-      function resetMicelleGame() {
-        document.getElementById("soap-particles").innerHTML = "";
-        document.getElementById("grease").style.transform =
-          "translate(-50%, -50%) scale(1)";
-        document.getElementById("clean-message").classList.add("hidden");
-        soapCount = 0;
-      }
-
-      // --- 4. QUIZ LOGIC ---
-      const questions = [
+      // ==========================================
+      // 7. QUIZ SYSTEM (GAME HÓA)
+      // ==========================================
+      const quizData = [
         {
-          q: "Phản ứng thủy phân Ester trong môi trường kiềm gọi là gì?",
-          a: ["Ester hóa", "Xà phòng hóa", "Trùng ngưng"],
-          c: 1,
+          q: "Chất nào sau đây là Ester?",
+          options: ["CH₃COOH", "C₂H₅OH", "CH₃COOC₂H₅", "CH₃CHO"],
+          correct: 2,
+          exp: "Ester có dạng RCOOR'. CH₃COOC₂H₅ là Ethyl acetate.",
         },
         {
-          q: "Isoamyl acetat có mùi gì?",
-          a: ["Hoa nhài", "Chuối chín", "Dứa"],
-          c: 1,
+          q: "Thủy phân chất béo trong môi trường kiềm luôn thu được:",
+          options: ["Glycerol", "Ethylene glycol", "Glucose", "Acid béo tự do"],
+          correct: 0,
+          exp: "Chất béo là triester của Glycerol => Thủy phân luôn ra Glycerol.",
         },
         {
-          q: "Chất béo ở trạng thái lỏng chứa chủ yếu gốc acid béo nào?",
-          a: ["No", "Không no", "Thơm"],
-          c: 1,
+          q: "Isoamyl acetate có mùi gì?",
+          options: ["Dứa", "Chuối chín", "Hoa hồng", "Táo"],
+          correct: 1,
+          exp: "Isoamyl acetate là mùi đặc trưng của chuối chín.",
         },
         {
-          q: "Để chuyển hóa dầu thành mỡ rắn, ta thực hiện phản ứng nào?",
-          a: ["Cộng H₂", "Oxi hóa", "Xà phòng hóa"],
-          c: 0,
+          q: "Xà phòng mất tác dụng trong loại nước nào?",
+          options: ["Nước cất", "Nước mưa", "Nước cứng", "Nước nóng"],
+          correct: 2,
+          exp: "Nước cứng chứa Ca²⁺, Mg²⁺ tạo kết tủa với gốc acid béo.",
         },
         {
-          q: "Xà phòng mất tác dụng trong môi trường nào?",
-          a: ["Nước mềm", "Nước cứng", "Nước nóng"],
-          c: 1,
+          q: "Công thức tổng quát của Ester no, đơn chức, mạch hở là?",
+          options: [
+            "CₙH₂ₙO₂ (n≥2)",
+            "CₙH₂ₙ₊₂O (n≥1)",
+            "CₙH₂ₙ₋₂O₂ (n≥3)",
+            "CₙH₂ₙO (n≥1)",
+          ],
+          correct: 0,
+          exp: "Ester no đơn hở có k=1 (trong nhóm COO) => CₙH₂ₙO₂.",
         },
       ];
-      let qIndex = 0;
 
-      function loadQuestion() {
-        const q = questions[qIndex];
-        document.getElementById("quiz-question").innerText = `Câu ${
-          qIndex + 1
-        }: ${q.q}`;
-        const opts = document.getElementById("quiz-options");
-        opts.innerHTML = "";
-        q.a.forEach((opt, i) => {
-          opts.innerHTML += `<button onclick="checkAnswer(${i})" class="p-3 rounded-lg border hover:bg-slate-100 dark:hover:bg-slate-700 text-left transition text-sm">${opt}</button>`;
+      let currentQIndex = 0;
+
+      function loadQuiz() {
+        const q = quizData[currentQIndex];
+        document.getElementById("q-current").innerText = currentQIndex + 1;
+        document.getElementById("q-total").innerText = quizData.length;
+        document.getElementById("q-text").innerText = q.q;
+
+        const optionsDiv = document.getElementById("q-options");
+        optionsDiv.innerHTML = "";
+
+        q.options.forEach((opt, idx) => {
+          const btn = document.createElement("button");
+          btn.className =
+            "w-full p-4 text-left rounded-xl bg-white/10 border border-white/20 hover:bg-white/20 transition-all font-medium";
+          btn.innerText = opt;
+          btn.onclick = () => checkGlobalQuiz(btn, idx);
+          optionsDiv.appendChild(btn);
         });
-        document.getElementById("quiz-feedback").innerText = "";
+
+        document.getElementById("q-next").classList.add("hidden");
+        document.getElementById("quiz-feedback").classList.add("hidden");
+
+        // Update progress
+        document.getElementById("q-progress").style.width =
+          (currentQIndex / quizData.length) * 100 + "%";
       }
 
-      function checkAnswer(i) {
+      function checkGlobalQuiz(btn, idx) {
+        const q = quizData[currentQIndex];
         const feedback = document.getElementById("quiz-feedback");
-        if (i === questions[qIndex].c) {
-          feedback.innerText = "Chính xác! 🎉";
-          feedback.className = "mt-4 text-sm font-bold text-green-500";
+        const allBtns = document.getElementById("q-options").children;
+
+        // Disable all
+        for (let b of allBtns) b.disabled = true;
+
+        feedback.classList.remove("hidden");
+
+        if (idx === q.correct) {
+          btn.classList.add("bg-green-600", "border-green-400");
+          feedback.className =
+            "mt-4 p-4 rounded-lg bg-green-500/20 border border-green-500 text-green-300";
+          feedback.innerHTML = `<i class="fas fa-check mr-2"></i> Chính xác! ${q.exp}`;
         } else {
-          feedback.innerText = "Sai rồi! Thử lại nhé. 😅";
-          feedback.className = "mt-4 text-sm font-bold text-red-500";
+          btn.classList.add("bg-red-600", "border-red-400");
+          allBtns[q.correct].classList.add("bg-green-600", "border-green-400"); // Show correct
+          feedback.className =
+            "mt-4 p-4 rounded-lg bg-red-500/20 border border-red-500 text-red-300";
+          feedback.innerHTML = `<i class="fas fa-times mr-2"></i> Sai rồi. Đáp án đúng là: ${q.options[q.correct]}. <br><span class="text-sm opacity-80">${q.exp}</span>`;
+        }
+
+        if (currentQIndex < quizData.length - 1) {
+          document.getElementById("q-next").classList.remove("hidden");
+        } else {
+          document.getElementById("q-reset").classList.remove("hidden");
+          document.getElementById("q-progress").style.width = "100%";
         }
       }
 
       function nextQuestion() {
-        qIndex = (qIndex + 1) % questions.length;
-        loadQuestion();
+        currentQIndex++;
+        loadQuiz();
       }
+
+      function resetQuiz() {
+        currentQIndex = 0;
+        document.getElementById("q-reset").classList.add("hidden");
+        loadQuiz();
+      }
+
+      // Init Quiz
+      loadQuiz();
     </script>
   </body>
 </html>

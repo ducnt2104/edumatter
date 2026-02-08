@@ -1,1192 +1,1682 @@
-<!DOCTYPE html>
-<html lang="vi">
+<!doctype html>
+<html lang="vi" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hóa Học 10 - Cấu Tạo Nguyên Tử</title>
-    <link rel="icon" href="../../../favicon/educhem.svg" type="image/svg+xml" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <title>Cấu Tạo Nguyên Tử – ChemStudy Expert</title>
+    <link rel="icon" type="image/png" href="../../../favicon/educhem.svg" />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@300;400;600&display=swap"
       rel="stylesheet"
     />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
+
+    <!-- Tailwind Config for Custom Colors/Fonts -->
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              display: ["Space Grotesk", "sans-serif"],
+              body: ["Inter", "sans-serif"],
+            },
+            colors: {
+              chem: {
+                primary: "#3b82f6", // Blue 500
+                secondary: "#10b981", // Emerald 500
+                accent: "#8b5cf6", // Violet 500
+                dark: "#0f172a", // Slate 900
+                light: "#f8fafc", // Slate 50
+              },
+            },
+            animation: {
+              float: "floating 3s ease-in-out infinite",
+              "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+              "spin-slow": "spin 8s linear infinite",
+            },
+            keyframes: {
+              floating: {
+                "0%, 100%": { transform: "translateY(0)" },
+                "50%": { transform: "translateY(-10px)" },
+              },
+            },
+          },
+        },
+      };
+    </script>
+
     <style>
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #1e293b;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #3b82f6;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #2563eb;
+      }
+
+      /* Glassmorphism Classes */
+      .glass {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+      .dark .glass {
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .glass-card {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+      .dark .glass-card {
+        background: rgba(30, 41, 59, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+      }
+      .glass-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.3);
+      }
+
+      /* Text Gradients */
+      .text-gradient {
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-image: linear-gradient(to right, #3b82f6, #8b5cf6, #10b981);
+      }
+
+      /* Atom Animation for Hero */
+      .atom-container {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .electron-orbit {
+        position: absolute;
+        border: 1px solid rgba(59, 130, 246, 0.5);
+        border-radius: 50%;
+        animation: spin-slow linear infinite;
+      }
+      .orbit-1 {
+        width: 100%;
+        height: 40%;
+        transform: rotate(0deg);
+        animation-duration: 4s;
+      }
+      .orbit-2 {
+        width: 100%;
+        height: 40%;
+        transform: rotate(60deg);
+        animation-duration: 5s;
+      }
+      .orbit-3 {
+        width: 100%;
+        height: 40%;
+        transform: rotate(-60deg);
+        animation-duration: 6s;
+      }
+      .electron {
+        width: 8px;
+        height: 8px;
+        background: #10b981;
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        left: 0;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 0 10px #10b981;
+      }
+      .nucleus {
+        width: 20px;
+        height: 20px;
+        background: #ef4444;
+        border-radius: 50%;
+        box-shadow: 0 0 15px #ef4444;
+        z-index: 10;
+      }
+
+      /* Canvas Reset */
+      canvas {
+        width: 100%;
+        height: auto;
+        border-radius: 0.5rem;
+        cursor: crosshair;
+      }
+
+      /* Range Input Styling */
+      input[type="range"] {
+        -webkit-appearance: none;
+        background: transparent;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        background: #3b82f6;
+        cursor: pointer;
+        margin-top: -6px;
+        box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+      }
+      input[type="range"]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+        background: rgba(148, 163, 184, 0.3);
+        border-radius: 2px;
+      }
+
+      /* Footer Paste Styles */
       :root {
-        --primary: #4361ee;
-        --primary-dark: #3a0ca3;
-        --secondary: #7209b7;
-        --accent: #f72585;
-        --success: #4cc9f0;
-        --bg: #f8f9fa;
-        --card-bg: #ffffff;
-        --text: #2b2d42;
-        --text-light: #6c757d;
-        --border: #e9ecef;
-        --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        --radius: 12px;
+        --footer-bg: #0f172a;
+        --footer-text: #e2e8f0;
+        --p-primary: #3b82f6;
       }
-
-      [data-theme="dark"] {
-        --primary: #4cc9f0;
-        --primary-dark: #4895ef;
-        --secondary: #7209b7;
-        --accent: #f72585;
-        --bg: #121212;
-        --card-bg: #1e1e1e;
-        --text: #e0e0e0;
-        --text-light: #adb5bd;
-        --border: #333;
-        --shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+      html.dark :root {
+        --footer-bg: #020617;
       }
-
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        transition: background 0.3s, color 0.3s, border-color 0.3s;
+      footer {
+        background: var(--footer-bg);
+        color: var(--footer-text);
+        padding: 100px 5% 40px;
+        position: relative;
+        overflow: hidden;
+        transition:
+          background-color 0.8s ease,
+          color 0.8s ease;
       }
-
-      html {
-        scroll-behavior: smooth;
-      }
-
-      body {
-        font-family: "Nunito", sans-serif;
-        background-color: var(--bg);
-        color: var(--text);
-        line-height: 1.6;
-        padding-top: 120px; /* Space for fixed header */
-      }
-
-      /* --- HEADER & NAV --- */
-      .main-header {
-        position: fixed;
+      .footer-waves {
+        position: absolute;
         top: 0;
         left: 0;
         width: 100%;
-        background: var(--card-bg);
-        box-shadow: var(--shadow);
-        z-index: 1000;
-        padding: 10px 0;
+        height: 60px;
+        background: var(--footer-bg);
+        clip-path: polygon(
+          0% 45%,
+          16% 44%,
+          33% 50%,
+          54% 60%,
+          70% 61%,
+          84% 59%,
+          100% 52%,
+          100% 100%,
+          0% 100%
+        );
+        transition: background-color 0.8s;
       }
-
-      .header-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 20px 10px;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .header-left {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-      }
-
-      .logo-area {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-weight: 800;
-        font-size: 1.2rem;
-        color: var(--primary);
-      }
-
-      .nav-bar {
-        display: flex;
-        justify-content: center;
-        padding: 10px 0 0;
-        gap: 20px;
-        overflow-x: auto;
-      }
-
-      .nav-link {
-        text-decoration: none;
-        color: var(--text-light);
-        font-weight: 700;
-        padding: 5px 15px;
-        border-radius: 20px;
-        white-space: nowrap;
-        font-size: 0.9rem;
-      }
-
-      .nav-link:hover,
-      .nav-link.active {
-        background: var(--primary);
-        color: white;
-      }
-
-      /* Style chung cho nút Back và Toggle Theme */
-      .icon-btn {
-        background: var(--bg);
-        border: 1px solid var(--border);
-        color: var(--text);
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.1rem;
-        text-decoration: none; /* Cho thẻ a */
-        transition: all 0.3s ease;
-      }
-
-      .icon-btn:hover {
-        background: var(--primary);
-        color: white;
-        border-color: var(--primary);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      }
-
-      /* --- CONTENT LAYOUT --- */
-      .container {
-        max-width: 1000px;
+      .footer-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 60px;
+        max-width: 1200px;
         margin: 0 auto;
-        padding: 20px;
       }
-
-      .section-block {
-        scroll-margin-top: 140px;
-        margin-bottom: 60px;
+      .icon-btn {
+        color: #94a3b8;
+        font-size: 1.2rem;
+        transition: 0.3s;
       }
-
-      .section-title {
-        font-size: 2rem;
-        color: var(--primary);
-        text-transform: uppercase;
-        border-left: 5px solid var(--accent);
-        padding-left: 15px;
-        margin-bottom: 30px;
-        font-weight: 800;
-      }
-
-      .card {
-        background: var(--card-bg);
-        border-radius: var(--radius);
-        padding: 25px;
-        margin-bottom: 25px;
-        box-shadow: var(--shadow);
-        border: 1px solid var(--border);
-      }
-
-      h3 {
-        color: var(--secondary);
-        margin-bottom: 15px;
-        font-size: 1.3rem;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-
-      h3 i {
-        color: var(--accent);
-      }
-
-      ul {
-        list-style-position: inside;
-        padding-left: 10px;
-      }
-
-      li {
-        margin-bottom: 8px;
-      }
-
-      strong {
-        color: var(--primary);
-      }
-
-      /* --- TABLES --- */
-      .table-responsive {
-        overflow-x: auto;
-        border-radius: var(--radius);
-        border: 1px solid var(--border);
-      }
-
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.95rem;
-        min-width: 600px;
-      }
-
-      th,
-      td {
-        padding: 12px 15px;
-        text-align: left;
-        border-bottom: 1px solid var(--border);
-      }
-
-      th {
-        background-color: rgba(67, 97, 238, 0.1);
-        color: var(--primary);
-        font-weight: 800;
-      }
-
-      tr:last-child td {
-        border-bottom: none;
-      }
-
-      /* --- SPECIAL BOXES & FORMULAS --- */
-      .highlight-box {
-        background: rgba(76, 201, 240, 0.1);
-        padding: 20px;
-        border-radius: var(--radius);
-        border: 1px dashed var(--primary);
-        margin: 15px 0;
-        text-align: center;
-      }
-
-      .formula-container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: "Courier New", monospace;
-        font-weight: bold;
-        font-size: 1.4rem;
-        color: var(--accent);
-        margin: 15px 0;
-        gap: 10px;
-      }
-
-      .fraction {
-        display: inline-block;
-        text-align: center;
-        vertical-align: middle;
-      }
-
-      .fraction-top {
-        border-bottom: 2px solid var(--accent);
-        padding-bottom: 2px;
-        display: block;
-      }
-
-      .fraction-bottom {
-        padding-top: 2px;
-        display: block;
-      }
-
-      .note {
-        font-size: 0.9rem;
-        color: var(--text-light);
-        font-style: italic;
-      }
-
-      /* --- SIMULATION CONTAINERS --- */
-      .sim-wrapper {
-        position: relative;
-        background: #000;
-        border-radius: var(--radius);
-        overflow: hidden;
-        margin: 20px 0;
-        box-shadow: var(--shadow);
-      }
-
-      #atom-canvas {
-        width: 100%;
-        height: 400px;
-        display: block;
-      }
-
-      .sim-controls {
-        padding: 15px;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-
-      [data-theme="light"] .sim-controls {
-        background: rgba(255, 255, 255, 0.8);
-        border-top: 1px solid #ddd;
-      }
-
-      .btn {
-        background: var(--primary);
+      .icon-btn:hover {
         color: white;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 700;
-        font-size: 0.9rem;
+        transform: scale(1.1);
       }
-
-      .btn:hover {
-        background: var(--primary-dark);
-        transform: translateY(-2px);
-      }
-
-      .btn.accent {
-        background: var(--accent);
-      }
-
-      .btn.outline {
-        background: transparent;
-        border: 2px solid var(--primary);
-        color: var(--primary);
-      }
-
-      .btn.outline:hover {
-        background: var(--primary);
-        color: white;
-      }
-
-      /* --- CALCULATOR BOX --- */
-      .calc-box {
-        background: var(--bg);
-        padding: 20px;
-        border-radius: var(--radius);
-        margin-top: 25px;
-        border-left: 4px solid var(--secondary);
-        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.03);
-      }
-
-      .calc-title {
+      .contact-item {
         margin-bottom: 15px;
-        color: var(--secondary);
-        font-weight: 800;
-        text-transform: uppercase;
-        font-size: 1rem;
         display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      /* --- AUFBAU DIAGRAM --- */
-      .aufbau-container {
-        display: flex;
-        flex-direction: column-reverse; /* Energy goes up */
         align-items: center;
         gap: 15px;
-        padding: 20px;
-        background: var(--card-bg);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        margin-top: 20px;
+        color: #94a3b8;
+        transition: 0.3s;
       }
-
-      .orbital-row {
-        display: flex;
-        align-items: center;
-        gap: 20px;
+      .contact-item:hover {
+        color: white;
+        transform: translateX(5px);
       }
-
-      .subshell {
-        display: flex;
-        gap: 5px;
-        position: relative;
+      .contact-item i {
+        color: var(--p-primary);
       }
-
-      .subshell-label {
-        position: absolute;
-        left: -35px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-weight: bold;
-        font-size: 0.85rem;
-        color: var(--text-light);
-      }
-
-      .orbital-box {
-        width: 40px;
-        height: 40px;
-        border: 2px solid var(--text-light);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 1.2rem;
-        background: rgba(0, 0, 0, 0.03);
-        border-radius: 4px;
-      }
-
-      .spin-arrow {
-        font-weight: bold;
-      }
-
-      .spin-up {
-        color: var(--accent);
-      }
-
-      .spin-down {
-        color: var(--primary);
-      }
-
-      /* --- RESPONSIVE --- */
-      @media (max-width: 600px) {
-        .section-title {
-          font-size: 1.5rem;
-        }
-
-        .orbital-box {
-          width: 30px;
-          height: 30px;
-          font-size: 1rem;
-        }
-
-        .header-top {
-          /* flex-direction: column; */
-          /* gap: 10px; */
-          /* align-items: flex-start; */
-        }
-
-        .logo-area span {
-          display: none; /* Hide text on very small screens if needed */
-        }
+      .copyright {
+        margin-top: 80px;
+        text-align: center;
+        padding-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        color: #475569;
+        font-size: 0.9rem;
       }
     </style>
   </head>
-  <body>
-    <header class="main-header">
-      <div class="header-top">
-        <div class="header-left">
-          <a
-            href="../chemstudyteen.html"
-            class="icon-btn"
-            title="Quay về Danh sách"
+  <body
+    class="bg-chem-light dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-body transition-colors duration-300"
+  >
+    <!-- HEADER -->
+    <header
+      class="fixed top-0 w-full z-50 glass shadow-sm transition-all duration-300"
+    >
+      <div
+        class="container mx-auto px-4 h-20 flex items-center justify-between"
+      >
+        <!-- Logo -->
+        <div
+          class="flex items-center gap-3 cursor-pointer group"
+          onclick="window.scrollTo(0, 0)"
+        >
+          <div
+            class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-green-500 flex items-center justify-center text-white font-bold text-xl group-hover:scale-110 transition-transform"
           >
-            <i class="fas fa-arrow-left"></i>
-          </a>
-
-          <div class="logo-area">
-            <i class="fas fa-atom fa-spin"></i>
-            <span
-              >chemstudy teen - HÓA HỌC 10: chủ đề 1: cấu tạo nguyên tử</span
-            >
+            <i
+              class="fas fa-atom text-xl md:text-2xl group-hover:animate-spin-slow"
+            ></i>
           </div>
+          <span
+            class="font-display font-bold text-xl md:text-2xl tracking-tight text-slate-800 dark:text-white"
+          >
+            ChemStudy Expert
+          </span>
         </div>
 
-        <button
-          class="icon-btn theme-toggle"
-          onclick="toggleTheme()"
-          title="Đổi chế độ Sáng/Tối"
+        <!-- Navigation -->
+        <nav
+          class="hidden md:flex gap-6 font-semibold text-sm uppercase tracking-wider text-slate-600 dark:text-slate-300"
         >
-          <i class="fas fa-moon"></i>
-        </button>
-      </div>
+          <a href="#section-1" class="hover:text-blue-500 transition-colors"
+            >Thành phần</a
+          >
+          <a href="#section-2" class="hover:text-blue-500 transition-colors"
+            >Kích thước</a
+          >
+          <a href="#section-3" class="hover:text-blue-500 transition-colors"
+            >Đồng vị</a
+          >
+          <a href="#section-4" class="hover:text-blue-500 transition-colors"
+            >Lớp vỏ</a
+          >
+          <a href="#quiz" class="hover:text-blue-500 transition-colors"
+            >Bài tập</a
+          >
+        </nav>
 
-      <nav class="nav-bar">
-        <a href="#phan1" class="nav-link">I. Thành phần NT</a>
-        <a href="#phan2" class="nav-link">II. Nguyên tố & Đồng vị</a>
-        <a href="#phan3" class="nav-link">III. Cấu trúc vỏ e</a>
-      </nav>
+        <!-- Tools -->
+        <div class="flex items-center gap-3">
+          <button
+            id="theme-toggle"
+            class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-yellow-500 dark:text-blue-400 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors"
+          >
+            <i class="fas fa-sun dark:hidden"></i>
+            <i class="fas fa-moon hidden dark:block"></i>
+          </button>
+        </div>
+      </div>
     </header>
 
-    <div class="container">
-      <section id="phan1" class="section-block">
-        <h1 class="section-title">I. Thành Phần Của Nguyên Tử</h1>
+    <!-- HERO SECTION -->
+    <section
+      class="pt-32 pb-20 px-4 min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-b from-blue-50 to-transparent dark:from-slate-800 dark:to-slate-900"
+    >
+      <!-- Decoration bubbles -->
+      <div
+        class="absolute top-20 left-10 w-32 h-32 bg-blue-400/20 rounded-full blur-3xl animate-pulse-slow"
+      ></div>
+      <div
+        class="absolute bottom-20 right-10 w-48 h-48 bg-green-400/20 rounded-full blur-3xl animate-pulse-slow"
+        style="animation-delay: 2s"
+      ></div>
 
-        <div class="card">
-          <h3><i class="fas fa-microscope"></i> 1. Thành phần cấu tạo</h3>
-          <p>
-            Nguyên tử là hạt vô cùng nhỏ, trung hòa về điện, gồm 2 phần chính:
+      <div
+        class="container mx-auto grid md:grid-cols-2 gap-12 items-center relative z-10"
+      >
+        <div class="space-y-6" data-aos="fade-right">
+          <span
+            class="inline-block py-1 px-3 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-sm font-bold tracking-wide"
+            >CHƯƠNG 1: CẤU TẠO NGUYÊN TỬ</span
+          >
+          <h1 class="text-5xl md:text-7xl font-display font-bold leading-tight">
+            Khám phá <br />
+            <span class="text-gradient">Thế Giới Vi Mô</span>
+          </h1>
+          <p class="text-lg text-slate-600 dark:text-slate-300 max-w-lg">
+            Hành trình từ hạt nhân đến lớp vỏ electron. Trải nghiệm mô phỏng
+            tương tác, thí nghiệm ảo và bài tập thực chiến để làm chủ kiến thức
+            hóa học.
           </p>
-          <ul style="margin-top: 10px">
-            <li>
-              <strong>Hạt nhân (Nucleus):</strong> Nằm ở tâm, mang điện tích
-              dương (+). Gồm hạt Proton (p) và Neutron (n).
-            </li>
-            <li>
-              <strong>Vỏ nguyên tử (Electron Shell):</strong> Gồm các Electron
-              (e) mang điện tích âm (-) chuyển động rất nhanh xung quanh hạt
-              nhân.
-            </li>
-          </ul>
-          <div class="highlight-box">
-            Vì nguyên tử trung hòa về điện nên: <br />
-            <strong style="font-size: 1.2rem"
-              >Số Proton (p) = Số Electron (e) = Z</strong
-            >
-          </div>
+          <a
+            href="#section-1"
+            class="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-blue-500/30 transition-all transform hover:-translate-y-1"
+          >
+            Vào bài học <i class="fas fa-arrow-right"></i>
+          </a>
         </div>
 
-        <div class="card">
-          <h3><i class="fas fa-cube"></i> Mô phỏng cấu tạo nguyên tử</h3>
-          <p class="note">
-            Di chuột để xoay, lăn chuột để phóng to. Hạt đỏ: Proton, Hạt xám:
-            Neutron, Hạt vàng: Electron.
-          </p>
-          <div class="sim-wrapper">
-            <div id="atom-canvas"></div>
-            <div class="sim-controls">
-              <button class="btn" onclick="updateAtom(1)">
-                Hydro (1p, 0n)
-              </button>
-              <button class="btn" onclick="updateAtom(2)">Heli (2p, 2n)</button>
-              <button class="btn" onclick="updateAtom(3)">Liti (3p, 4n)</button>
-              <button class="btn" onclick="updateAtom(6)">
-                Cacbon (6p, 6n)
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3><i class="fas fa-table"></i> 2. Đặc tính các hạt cơ bản</h3>
-          <div class="table-responsive">
-            <table>
-              <thead>
-                <tr>
-                  <th>Hạt</th>
-                  <th>Ký hiệu</th>
-                  <th>Điện tích (Culông)</th>
-                  <th>Điện tích (Quy ước)</th>
-                  <th>Khối lượng (amu)</th>
-                  <th>Khối lượng (kg)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Proton</strong></td>
-                  <td>p</td>
-                  <td>+1,602 × 10<sup>-19</sup></td>
-                  <td>+1</td>
-                  <td>≈ 1</td>
-                  <td>1,673 × 10<sup>-27</sup></td>
-                </tr>
-                <tr>
-                  <td><strong>Neutron</strong></td>
-                  <td>n</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>≈ 1</td>
-                  <td>1,675 × 10<sup>-27</sup></td>
-                </tr>
-                <tr>
-                  <td><strong>Electron</strong></td>
-                  <td>e</td>
-                  <td>-1,602 × 10<sup>-19</sup></td>
-                  <td>-1</td>
-                  <td>≈ 0,00055 (1/1840)</td>
-                  <td>9,11 × 10<sup>-31</sup></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <p style="margin-top: 15px">
-            ➤ <strong>Kết luận:</strong> Khối lượng electron rất nhỏ so với
-            proton và neutron, nên khối lượng nguyên tử tập trung hầu hết ở hạt
-            nhân.
-          </p>
-        </div>
-
-        <div class="card">
-          <h3>
-            <i class="fas fa-ruler-combined"></i> 3. Kích thước & Khối lượng
-          </h3>
-          <ul>
-            <li>
-              <strong>Đường kính:</strong> Nguyên tử (~10<sup>-10</sup>m) > Hạt
-              nhân (~10<sup>-14</sup>m).
-            </li>
-            <li>
-              <strong>Cấu trúc rỗng:</strong> Nếu coi hạt nhân là quả bóng bàn
-              thì nguyên tử to bằng sân vận động.
-            </li>
-            <li>
-              <strong>Đơn vị khối lượng nguyên tử (amu/u):</strong> 1 amu = 1/12
-              khối lượng nguyên tử Carbon-12.
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <section id="phan2" class="section-block">
-        <h1 class="section-title">II. Nguyên Tố Hóa Học</h1>
-
-        <div class="card">
-          <h3><i class="fas fa-fingerprint"></i> 1. Định nghĩa & Số khối</h3>
-          <ul>
-            <li>
-              <strong>Nguyên tố hóa học:</strong> Là tập hợp các nguyên tử có
-              cùng số đơn vị điện tích hạt nhân (cùng số proton Z).
-            </li>
-            <li>Số Z quyết định tính chất hóa học cơ bản của nguyên tố.</li>
-            <li>
-              <strong>Số khối (A):</strong> Tổng số hạt trong hạt nhân.
-              <div
-                class="formula-container"
-                style="justify-content: flex-start; margin-left: 20px"
-              >
-                A = Z + N
+        <div class="flex justify-center" data-aos="fade-left">
+          <!-- CSS 3D Atom Visualization -->
+          <div class="glass-card p-10 rounded-3xl animate-float">
+            <div class="atom-container">
+              <div class="nucleus"></div>
+              <div class="electron-orbit orbit-1">
+                <div class="electron"></div>
               </div>
-            </li>
-            <li>
-              <strong>Ký hiệu nguyên tử:</strong>
-              <span
-                style="
-                  font-family: serif;
-                  font-size: 1.5rem;
-                  display: inline-block;
-                  vertical-align: middle;
-                  line-height: 1;
-                "
-              >
-                <sup>A</sup><sub style="margin-left: -12px">Z</sub
-                ><span style="font-size: 2rem; font-weight: bold">X</span>
-              </span>
-            </li>
-          </ul>
-        </div>
-
-        <div class="card">
-          <h3><i class="fas fa-copy"></i> 2. Đồng vị (Isotopes)</h3>
-          <p>
-            Là những nguyên tử của <strong>cùng một nguyên tố</strong> (cùng Z),
-            nhưng khác nhau về số <strong>Neutron</strong> (khác N) dẫn đến
-            <strong>số khối A</strong> khác nhau.
-          </p>
-          <p>
-            <em>Ví dụ:</em> Hydro có 3 đồng vị: <sup>1</sup>H (Protium),
-            <sup>2</sup>H (Deuterium), <sup>3</sup>H (Tritium).
-          </p>
-        </div>
-
-        <div class="card">
-          <h3>
-            <i class="fas fa-calculator"></i> 3. Nguyên tử khối trung bình
-          </h3>
-          <p>
-            Hầu hết các nguyên tố trong tự nhiên là hỗn hợp của nhiều đồng vị.
-            Công thức tính nguyên tử khối trung bình (Ā) như sau:
-          </p>
-          <div class="highlight-box">
-            <div class="formula-container">
-              <span>Ā = </span>
-              <span class="fraction">
-                <span class="fraction-top">(a . X) + (b . Y) + ...</span>
-                <span class="fraction-bottom">100</span>
-              </span>
+              <div class="electron-orbit orbit-2">
+                <div class="electron"></div>
+              </div>
+              <div class="electron-orbit orbit-3">
+                <div class="electron"></div>
+              </div>
             </div>
-            <p>Trong đó:</p>
-            <ul style="list-style: none; padding: 0">
-              <li><strong>X, Y:</strong> Số khối của các đồng vị.</li>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION I: THÀNH PHẦN CẤU TẠO -->
+    <section id="section-1" class="py-20 px-4">
+      <div class="container mx-auto space-y-12">
+        <!-- Header Section -->
+        <div class="text-center mb-16">
+          <h2 class="text-3xl md:text-4xl font-display font-bold mb-4">
+            <span class="text-blue-500">I.</span> Thành Phần Cấu Tạo Nguyên Tử
+          </h2>
+          <div class="h-1 w-20 bg-blue-500 mx-auto rounded-full"></div>
+        </div>
+
+        <!-- Theory Grid -->
+        <div class="grid md:grid-cols-3 gap-6">
+          <!-- Proton Card -->
+          <div class="glass-card p-6 rounded-2xl border-l-4 border-red-500">
+            <div class="flex items-center gap-3 mb-4">
+              <div
+                class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-500"
+              >
+                <i class="fas fa-plus"></i>
+              </div>
+              <h3 class="font-bold text-xl">Proton (p)</h3>
+            </div>
+            <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-300">
               <li>
-                <strong>a, b:</strong> Phần trăm (%) số nguyên tử tương ứng.
+                <i class="fas fa-check text-green-500 mr-2"></i>Điện tích: +1
+                (dương)
+              </li>
+              <li>
+                <i class="fas fa-check text-green-500 mr-2"></i>Khối lượng ≈ 1
+                amu
+              </li>
+              <li>
+                <i class="fas fa-map-marker-alt text-red-400 mr-2"></i>Nằm trong
+                hạt nhân
               </li>
             </ul>
           </div>
 
-          <div class="calc-box">
-            <div class="calc-title">
-              <i class="fas fa-flask"></i> Công cụ thực hành: Tính Nguyên tử
-              khối
+          <!-- Neutron Card -->
+          <div class="glass-card p-6 rounded-2xl border-l-4 border-gray-500">
+            <div class="flex items-center gap-3 mb-4">
+              <div
+                class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500"
+              >
+                <i class="fas fa-circle"></i>
+              </div>
+              <h3 class="font-bold text-xl">Neutron (n)</h3>
             </div>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap">
-              <div style="flex: 1; min-width: 150px">
-                <label style="font-weight: bold; font-size: 0.9em"
-                  >Đồng vị 1 (Số khối):</label
-                >
-                <input
-                  type="number"
-                  id="mass1"
-                  class="btn outline"
-                  style="width: 100%; text-align: left; color: var(--text)"
-                  placeholder="VD: 35 (Cl)"
-                />
+            <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-300">
+              <li>
+                <i class="fas fa-check text-green-500 mr-2"></i>Điện tích: 0
+                (không mang điện)
+              </li>
+              <li>
+                <i class="fas fa-check text-green-500 mr-2"></i>Khối lượng ≈ 1
+                amu
+              </li>
+              <li>
+                <i class="fas fa-map-marker-alt text-red-400 mr-2"></i>Nằm trong
+                hạt nhân
+              </li>
+            </ul>
+          </div>
+
+          <!-- Electron Card -->
+          <div class="glass-card p-6 rounded-2xl border-l-4 border-blue-500">
+            <div class="flex items-center gap-3 mb-4">
+              <div
+                class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-500"
+              >
+                <i class="fas fa-minus"></i>
               </div>
-              <div style="flex: 1; min-width: 150px">
-                <label style="font-weight: bold; font-size: 0.9em"
-                  >Phần trăm (%):</label
-                >
-                <input
-                  type="number"
-                  id="pct1"
-                  class="btn outline"
-                  style="width: 100%; text-align: left; color: var(--text)"
-                  placeholder="VD: 75"
-                  oninput="document.getElementById('pct2').value = 100 - this.value"
-                />
-              </div>
+              <h3 class="font-bold text-xl">Electron (e)</h3>
             </div>
-            <div
-              style="
-                display: flex;
-                gap: 10px;
-                flex-wrap: wrap;
-                margin-top: 15px;
-              "
-            >
-              <div style="flex: 1; min-width: 150px">
-                <label style="font-weight: bold; font-size: 0.9em"
-                  >Đồng vị 2 (Số khối):</label
-                >
-                <input
-                  type="number"
-                  id="mass2"
-                  class="btn outline"
-                  style="width: 100%; text-align: left; color: var(--text)"
-                  placeholder="VD: 37 (Cl)"
-                />
-              </div>
-              <div style="flex: 1; min-width: 150px">
-                <label style="font-weight: bold; font-size: 0.9em"
-                  >Phần trăm (%):</label
-                >
-                <input
-                  type="number"
-                  id="pct2"
-                  class="btn outline"
-                  style="
-                    width: 100%;
-                    text-align: left;
-                    color: var(--text);
-                    background: #eee;
-                  "
-                  readonly
-                />
-              </div>
-            </div>
-            <button
-              onclick="calculateAvgMass()"
-              class="btn accent"
-              style="width: 100%; margin-top: 20px; padding: 12px"
-            >
-              TÍNH KẾT QUẢ NGAY
-            </button>
-            <div
-              id="calc-result"
-              style="
-                margin-top: 15px;
-                font-weight: 800;
-                text-align: center;
-                color: var(--secondary);
-                font-size: 1.2rem;
-                min-height: 30px;
-              "
-            ></div>
+            <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-300">
+              <li>
+                <i class="fas fa-check text-green-500 mr-2"></i>Điện tích: -1
+                (âm)
+              </li>
+              <li>
+                <i class="fas fa-check text-green-500 mr-2"></i>KL ≈ 0.00055 amu
+                (rất nhẹ)
+              </li>
+              <li>
+                <i class="fas fa-wind text-blue-400 mr-2"></i>Lớp vỏ (Shell)
+              </li>
+            </ul>
           </div>
         </div>
-      </section>
 
-      <section id="phan3" class="section-block">
-        <h1 class="section-title">III. Cấu Trúc Vỏ Nguyên Tử</h1>
+        <!-- SIMULATION: ATOM BUILDER -->
+        <div
+          class="glass-card p-6 md:p-8 rounded-3xl bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-800 dark:to-slate-900/50"
+        >
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-2xl font-bold flex items-center gap-2">
+              <i class="fas fa-wrench text-yellow-500"></i> Xưởng Chế Tạo Nguyên
+              Tử
+            </h3>
+            <span
+              class="text-xs font-mono bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 px-2 py-1 rounded"
+              >INTERACTIVE</span
+            >
+          </div>
 
-        <div class="card">
-          <h3><i class="fas fa-atom"></i> 1. Chuyển động của Electron</h3>
-          <ul>
-            <li>
-              Mô hình hiện đại: Electron chuyển động rất nhanh, không theo quỹ
-              đạo xác định mà trong các vùng không gian gọi là
-              <strong>Orbital (AO)</strong>.
-            </li>
-            <li>
-              AO là vùng không gian có xác suất tìm thấy electron lớn nhất
-              (~90%).
-            </li>
-            <li>
-              Hình dạng AO:
-              <ul>
-                <li><strong>AO s:</strong> Hình cầu.</li>
-                <li><strong>AO p:</strong> Hình số 8 nổi.</li>
-              </ul>
-            </li>
-          </ul>
+          <div class="grid md:grid-cols-2 gap-8">
+            <!-- Visualization Canvas -->
+            <div
+              class="relative bg-white dark:bg-black rounded-xl overflow-hidden shadow-inner aspect-square flex items-center justify-center border border-slate-200 dark:border-slate-700"
+            >
+              <canvas id="atomCanvas" width="400" height="400"></canvas>
+              <div class="absolute bottom-2 right-2 text-xs text-slate-400">
+                Visualizer v1.0
+              </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="space-y-6">
+              <div class="bg-white/50 dark:bg-slate-700/50 p-4 rounded-xl">
+                <label
+                  class="flex justify-between text-sm font-bold text-red-500 mb-2"
+                >
+                  Proton (Z+) <span id="val-p">1</span>
+                </label>
+                <input
+                  type="range"
+                  id="range-p"
+                  min="1"
+                  max="10"
+                  value="1"
+                  class="w-full h-2 bg-red-200 rounded-lg appearance-none cursor-pointer"
+                />
+              </div>
+
+              <div class="bg-white/50 dark:bg-slate-700/50 p-4 rounded-xl">
+                <label
+                  class="flex justify-between text-sm font-bold text-slate-500 mb-2"
+                >
+                  Neutron (N) <span id="val-n">0</span>
+                </label>
+                <input
+                  type="range"
+                  id="range-n"
+                  min="0"
+                  max="12"
+                  value="0"
+                  class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"
+                />
+              </div>
+
+              <div class="bg-white/50 dark:bg-slate-700/50 p-4 rounded-xl">
+                <label
+                  class="flex justify-between text-sm font-bold text-blue-500 mb-2"
+                >
+                  Electron (e-) <span id="val-e">1</span>
+                </label>
+                <input
+                  type="range"
+                  id="range-e"
+                  min="0"
+                  max="10"
+                  value="1"
+                  class="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer"
+                />
+              </div>
+
+              <!-- Analysis Box -->
+              <div class="grid grid-cols-2 gap-4 mt-4">
+                <div
+                  class="p-3 bg-slate-100 dark:bg-slate-800 rounded-lg text-center"
+                >
+                  <div class="text-xs text-slate-500 uppercase">Điện tích</div>
+                  <div
+                    id="atom-charge"
+                    class="text-xl font-bold font-mono text-green-500"
+                  >
+                    0
+                  </div>
+                </div>
+                <div
+                  class="p-3 bg-slate-100 dark:bg-slate-800 rounded-lg text-center"
+                >
+                  <div class="text-xs text-slate-500 uppercase">
+                    Khối lượng (A)
+                  </div>
+                  <div id="atom-mass" class="text-xl font-bold font-mono">
+                    1
+                  </div>
+                </div>
+              </div>
+              <p class="text-sm italic text-slate-500 mt-2">
+                *Lưu ý: Nguyên tử trung hòa về điện khi Proton = Electron.
+              </p>
+            </div>
+          </div>
         </div>
 
-        <div class="card">
-          <h3><i class="fas fa-layer-group"></i> 2. Lớp và Phân lớp</h3>
-          <ul>
-            <li>
-              <strong>Lớp (Shell):</strong> Đánh số n = 1, 2, 3, 4... Tên gọi:
-              K, L, M, N... Năng lượng tăng dần từ trong ra ngoài.
-            </li>
-            <li>
-              <strong>Phân lớp (Subshell):</strong> Ký hiệu s, p, d, f.
-              <ul>
-                <li>Phân lớp s: Tối đa 2e.</li>
-                <li>Phân lớp p: Tối đa 6e.</li>
-                <li>Phân lớp d: Tối đa 10e.</li>
-                <li>Phân lớp f: Tối đa 14e.</li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-
-        <div class="card">
-          <h3><i class="fas fa-pencil-alt"></i> 3. Cấu hình Electron</h3>
-          <p><strong>Thứ tự mức năng lượng (Quy tắc Klechkowski):</strong></p>
+        <!-- Experiments Info (Thomson & Rutherford) -->
+        <div class="grid md:grid-cols-2 gap-8 mt-12">
+          <!-- Thomson -->
           <div
-            class="highlight-box"
-            style="font-weight: bold; color: var(--secondary)"
+            class="glass-card p-6 rounded-2xl relative overflow-hidden group"
           >
-            1s < 2s < 2p < 3s < 3p < 4s < 3d < 4p < 5s...
-          </div>
-          <p class="note">
-            Lưu ý: Phân lớp 4s có năng lượng thấp hơn 3d nên điền e vào 4s
-            trước.
-          </p>
-
-          <div style="margin-top: 20px">
-            <h4>🎯 Tương tác: Xây dựng cấu hình Electron</h4>
-            <p>
-              Nhấn nút (+) để thêm electron vào các ô lượng tử tuân theo Nguyên
-              lý Pauli và Quy tắc Hund.
-            </p>
-
             <div
-              style="
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 10px;
-              "
+              class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"
+            >
+              <i class="fas fa-magnet text-6xl"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-3 text-purple-600">
+              1. Thí nghiệm J.J. Thomson (1897)
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300 mb-4">
+              Tìm ra <b>Electron</b>. Phóng điện cao thế trong ống chân không.
+              Tia âm cực bị lệch về phía cực dương.
+            </p>
+            <div
+              class="bg-slate-900 rounded-lg p-4 h-40 flex items-center justify-center relative overflow-hidden"
+            >
+              <!-- Simple CSS Animation for Ray -->
+              <div
+                class="w-full h-1 bg-green-400 shadow-[0_0_10px_#4ade80] absolute top-1/2 animate-pulse transform -rotate-6 transition-transform"
+                id="thomson-ray"
+              ></div>
+              <div
+                class="absolute top-2 right-10 text-red-500 font-bold text-xl"
+              >
+                +
+              </div>
+              <div
+                class="absolute bottom-2 right-10 text-blue-500 font-bold text-xl"
+              >
+                -
+              </div>
+              <button
+                onclick="
+                  document
+                    .getElementById('thomson-ray')
+                    .classList.toggle('-rotate-12')
+                "
+                class="absolute bottom-2 left-2 text-xs bg-white text-black px-2 py-1 rounded hover:bg-gray-200"
+              >
+                Bật điện trường
+              </button>
+            </div>
+          </div>
+
+          <!-- Rutherford Simulation -->
+          <div class="glass-card p-6 rounded-2xl">
+            <h3 class="text-xl font-bold mb-3 text-yellow-600">
+              2. Thí nghiệm Rutherford (1911)
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300 mb-4">
+              Tìm ra <b>Hạt nhân</b>. Bắn hạt Alpha vào lá vàng mỏng. Hầu hết đi
+              thẳng, một số ít bị bật lại.
+            </p>
+            <div
+              class="relative bg-black rounded-lg h-48 overflow-hidden border border-slate-700"
+            >
+              <canvas id="rutherfordCanvas" width="400" height="200"></canvas>
+              <div
+                class="absolute inset-0 flex items-end justify-center pb-2 pointer-events-none"
+              >
+                <button
+                  id="btn-fire-alpha"
+                  class="pointer-events-auto bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-1 px-4 rounded shadow-lg text-sm transition-transform active:scale-95"
+                >
+                  Bắn hạt Alpha <i class="fas fa-radiation ml-1"></i>
+                </button>
+              </div>
+            </div>
+            <p class="text-xs text-center mt-2 text-slate-500">
+              Quan sát các hạt màu vàng va chạm với hạt nhân đỏ.
+            </p>
+          </div>
+        </div>
+
+        <!-- Content E: Formula & Exercises -->
+        <div
+          class="glass-card p-8 rounded-2xl bg-indigo-50/50 dark:bg-indigo-900/20"
+        >
+          <h4 class="font-bold text-lg mb-4 flex items-center gap-2">
+            <i class="fas fa-calculator text-indigo-500"></i> Dữ Liệu Quan Trọng
+          </h4>
+          <div class="grid md:grid-cols-2 gap-4 text-sm font-mono">
+            <div
+              class="bg-white dark:bg-slate-800 p-3 rounded border border-indigo-100 dark:border-indigo-800"
+            >
+              <span class="text-slate-400">q(e) =</span> -1.602 × 10⁻¹⁹ C
+            </div>
+            <div
+              class="bg-white dark:bg-slate-800 p-3 rounded border border-indigo-100 dark:border-indigo-800"
+            >
+              <span class="text-slate-400">m(p) ≈ m(n) ≈</span> 1 amu
+            </div>
+            <div
+              class="bg-white dark:bg-slate-800 p-3 rounded border border-indigo-100 dark:border-indigo-800 col-span-2"
+            >
+              <span class="text-slate-400">Kết luận:</span> m(nguyên tử) ≈ m(hạt
+              nhân)
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION II: KÍCH THƯỚC VÀ KHỐI LƯỢNG -->
+    <section id="section-2" class="py-20 px-4 bg-slate-50 dark:bg-slate-800/50">
+      <div class="container mx-auto">
+        <h2 class="text-3xl font-display font-bold mb-8 text-center">
+          <span class="text-green-500">II.</span> Kích Thước & Khối Lượng
+        </h2>
+
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+          <!-- Content -->
+          <div class="space-y-6">
+            <div class="glass-card p-6 rounded-2xl">
+              <h3 class="font-bold text-xl mb-2">Siêu nhỏ bé</h3>
+              <p class="text-slate-600 dark:text-slate-300">
+                Kích thước tính bằng Angstrom (Å) hoặc Nanomet (nm).<br />
+                <code
+                  class="bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded text-sm"
+                  >1 nm = 10 Å = 10⁻⁹ m</code
+                >
+              </p>
+            </div>
+            <div class="glass-card p-6 rounded-2xl">
+              <h3 class="font-bold text-xl mb-2">Sự thật thú vị</h3>
+              <p class="text-slate-600 dark:text-slate-300">
+                Nếu nguyên tử là một <b>Sân vận động</b>, thì hạt nhân chỉ như
+                một <b>Quả bóng tennis</b> đặt ở giữa sân.
+              </p>
+            </div>
+            <div class="glass-card p-6 rounded-2xl">
+              <h3 class="font-bold text-xl mb-2">Công thức</h3>
+              <div
+                class="font-mono text-sm bg-slate-900 text-green-400 p-3 rounded"
+              >
+                D = m / V <br />
+                V_cầu = (4/3) * π * r³
+              </div>
+            </div>
+          </div>
+
+          <!-- Simulation/Visual: Scale -->
+          <div class="relative h-80 w-full flex items-center justify-center">
+            <!-- Stadium -->
+            <div
+              class="absolute w-64 h-64 border-4 border-slate-300 dark:border-slate-600 rounded-full flex items-center justify-center animate-pulse-slow"
+            >
+              <span class="absolute -top-8 text-xs font-bold text-slate-400"
+                >NGUYÊN TỬ (Sân vận động)</span
+              >
+              <!-- Nucleus -->
+              <div
+                class="w-1 h-1 bg-red-500 rounded-full shadow-[0_0_20px_#ef4444] z-10 relative group cursor-help"
+              >
+                <!-- Tooltip -->
+                <div
+                  class="absolute bottom-4 left-1/2 -translate-x-1/2 w-32 bg-black text-white text-xs p-2 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+                >
+                  Hạt nhân (Quả bóng)
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION III: HẠT NHÂN & ĐỒNG VỊ -->
+    <section id="section-3" class="py-20 px-4">
+      <div class="container mx-auto space-y-10">
+        <h2 class="text-3xl font-display font-bold text-center">
+          <span class="text-purple-500">III.</span> Hạt Nhân & Đồng Vị
+        </h2>
+
+        <!-- Concepts Cards -->
+        <div class="grid md:grid-cols-3 gap-6">
+          <div
+            class="glass-card p-5 rounded-xl text-center hover:bg-purple-50 dark:hover:bg-purple-900/10"
+          >
+            <div class="text-4xl font-bold text-purple-600 mb-2">Z</div>
+            <div class="font-bold">Số hiệu nguyên tử</div>
+            <div class="text-sm text-slate-500">Z = P = E</div>
+          </div>
+          <div
+            class="glass-card p-5 rounded-xl text-center hover:bg-purple-50 dark:hover:bg-purple-900/10"
+          >
+            <div class="text-4xl font-bold text-purple-600 mb-2">A</div>
+            <div class="font-bold">Số khối</div>
+            <div class="text-sm text-slate-500">A = Z + N</div>
+          </div>
+          <div
+            class="glass-card p-5 rounded-xl text-center hover:bg-purple-50 dark:hover:bg-purple-900/10"
+          >
+            <div class="text-4xl font-bold text-purple-600 mb-2">Ā</div>
+            <div class="font-bold">NTK Trung bình</div>
+            <div class="text-sm text-slate-500">Tính theo % đồng vị</div>
+          </div>
+        </div>
+
+        <!-- ISOTOPE SIMULATOR -->
+        <div
+          class="glass-card p-8 rounded-3xl border border-purple-200 dark:border-purple-800"
+        >
+          <h3 class="text-xl font-bold mb-6 text-purple-600">
+            <i class="fas fa-layer-group"></i> Máy tính Đồng Vị (Isotope)
+          </h3>
+
+          <div class="grid md:grid-cols-2 gap-8">
+            <div>
+              <p class="mb-4 text-sm">
+                Giả sử nguyên tố <b>X</b> có 2 đồng vị bền. Điều chỉnh % số
+                nguyên tử để xem khối lượng trung bình thay đổi thế nào.
+              </p>
+
+              <!-- Slider for Abundance -->
+              <div class="mb-6">
+                <label class="flex justify-between font-bold text-sm mb-2">
+                  <span class="text-blue-500"
+                    >Đồng vị X-35: <span id="iso-1-percent">75</span>%</span
+                  >
+                  <span class="text-green-500"
+                    >Đồng vị X-37: <span id="iso-2-percent">25</span>%</span
+                  >
+                </label>
+                <input
+                  type="range"
+                  id="isotope-slider"
+                  min="0"
+                  max="100"
+                  value="75"
+                  class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-purple-500"
+                />
+              </div>
+
+              <div
+                class="bg-slate-100 dark:bg-slate-800 p-4 rounded-xl text-center"
+              >
+                <div class="text-sm text-slate-500">
+                  Nguyên tử khối trung bình
+                </div>
+                <div
+                  class="text-4xl font-bold font-mono text-purple-600 mt-2 transition-all"
+                  id="avg-mass-display"
+                >
+                  35.50
+                </div>
+              </div>
+            </div>
+
+            <!-- Visual Representation -->
+            <div
+              class="flex items-center justify-center gap-4 bg-white/50 dark:bg-black/20 rounded-xl p-4"
             >
               <div
-                id="config-text"
-                style="
-                  font-size: 1.5rem;
-                  font-weight: 800;
-                  color: var(--primary);
-                "
+                class="text-center transition-transform duration-300"
+                id="visual-iso-1"
+                style="transform: scale(1)"
               >
-                1s⁰
+                <div
+                  class="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-500/40"
+                >
+                  35
+                </div>
+                <div class="mt-2 font-bold text-blue-600 text-sm">X-35</div>
               </div>
-              <div>
-                <button class="btn accent" onclick="addElectron()">
-                  + Thêm e
-                </button>
-                <button class="btn outline" onclick="resetElectron()">
-                  Làm lại
-                </button>
+              <div class="text-2xl text-slate-400">
+                <i class="fas fa-balance-scale"></i>
               </div>
-            </div>
-
-            <div class="aufbau-container" id="aufbau-diagram"></div>
-
-            <div
-              class="highlight-box"
-              style="margin-top: 15px; text-align: left"
-            >
-              <strong>Đặc điểm lớp ngoài cùng:</strong>
-              <ul>
-                <li>1, 2, 3e: Kim loại (thường nhường e).</li>
-                <li>5, 6, 7e: Phi kim (thường nhận e).</li>
-                <li>8e: Khí hiếm (bền vững).</li>
-              </ul>
+              <div
+                class="text-center transition-transform duration-300"
+                id="visual-iso-2"
+                style="transform: scale(0.6)"
+              >
+                <div
+                  class="w-16 h-16 rounded-full bg-green-500 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-green-500/40"
+                >
+                  37
+                </div>
+                <div class="mt-2 font-bold text-green-600 text-sm">X-37</div>
+              </div>
             </div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- SECTION IV: LỚP VỎ ELECTRON -->
+    <section id="section-4" class="py-20 px-4 bg-slate-50 dark:bg-slate-800/50">
+      <div class="container mx-auto">
+        <h2 class="text-3xl font-display font-bold text-center mb-10">
+          <span class="text-orange-500">IV.</span> Lớp Vỏ Electron
+        </h2>
+
+        <div class="grid md:grid-cols-2 gap-12">
+          <!-- Theory -->
+          <div class="space-y-6">
+            <div class="glass-card p-6 rounded-2xl">
+              <h3 class="font-bold text-lg mb-2 text-orange-500">
+                Quy tắc sắp xếp
+              </h3>
+              <ul
+                class="list-disc list-inside text-sm space-y-2 text-slate-600 dark:text-slate-300"
+              >
+                <li><b>Nguyên lí Pauli:</b> Tối đa 2e/AO, quay ngược chiều.</li>
+                <li><b>Nguyên lí Vững bền:</b> Mức năng lượng thấp đến cao.</li>
+                <li><b>Quy tắc Hund:</b> Electron độc thân tối đa.</li>
+              </ul>
+            </div>
+            <div class="glass-card p-6 rounded-2xl">
+              <h3 class="font-bold text-lg mb-2 text-orange-500">
+                Phân lớp & AO
+              </h3>
+              <div class="grid grid-cols-4 gap-2 text-center text-sm font-bold">
+                <div class="bg-white dark:bg-slate-700 p-2 rounded">
+                  s (1 AO)
+                </div>
+                <div class="bg-white dark:bg-slate-700 p-2 rounded">
+                  p (3 AO)
+                </div>
+                <div class="bg-white dark:bg-slate-700 p-2 rounded">
+                  d (5 AO)
+                </div>
+                <div class="bg-white dark:bg-slate-700 p-2 rounded">
+                  f (7 AO)
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Config Builder -->
+          <div class="glass-card p-6 rounded-2xl border-t-4 border-orange-500">
+            <h3 class="font-bold text-lg mb-4">Cấu Hình Electron (Z ≤ 18)</h3>
+
+            <div class="flex gap-2 mb-4 overflow-x-auto pb-2">
+              <!-- Orbitals Clickable -->
+              <button
+                onclick="addElectron('1s')"
+                class="orb-btn relative w-12 h-16 bg-slate-200 dark:bg-slate-700 rounded flex flex-col justify-end items-center hover:bg-orange-100 transition-colors"
+                data-orb="1s"
+              >
+                <span class="text-xs font-bold mb-1">1s</span>
+                <div
+                  class="absolute top-2 w-full flex justify-center gap-1 px-1"
+                  id="vis-1s"
+                ></div>
+              </button>
+
+              <button
+                onclick="addElectron('2s')"
+                class="orb-btn relative w-12 h-16 bg-slate-200 dark:bg-slate-700 rounded flex flex-col justify-end items-center hover:bg-orange-100 transition-colors"
+                data-orb="2s"
+              >
+                <span class="text-xs font-bold mb-1">2s</span>
+                <div
+                  class="absolute top-2 w-full flex justify-center gap-1 px-1"
+                  id="vis-2s"
+                ></div>
+              </button>
+
+              <button
+                onclick="addElectron('2p')"
+                class="orb-btn relative w-36 h-16 bg-slate-200 dark:bg-slate-700 rounded flex flex-col justify-end items-center hover:bg-orange-100 transition-colors"
+                data-orb="2p"
+              >
+                <span class="text-xs font-bold mb-1">2p</span>
+                <div
+                  class="absolute top-2 w-full flex justify-center gap-1 px-1"
+                  id="vis-2p"
+                ></div>
+              </button>
+
+              <button
+                onclick="addElectron('3s')"
+                class="orb-btn relative w-12 h-16 bg-slate-200 dark:bg-slate-700 rounded flex flex-col justify-end items-center hover:bg-orange-100 transition-colors"
+                data-orb="3s"
+              >
+                <span class="text-xs font-bold mb-1">3s</span>
+                <div
+                  class="absolute top-2 w-full flex justify-center gap-1 px-1"
+                  id="vis-3s"
+                ></div>
+              </button>
+            </div>
+
+            <div class="flex justify-between items-center">
+              <div class="text-sm font-bold">
+                Tổng e:
+                <span id="total-e-config" class="text-orange-500 text-xl"
+                  >0</span
+                >
+              </div>
+              <button
+                onclick="resetConfig()"
+                class="text-xs text-red-500 hover:underline"
+              >
+                Reset
+              </button>
+            </div>
+            <div class="mt-2 text-xs text-slate-500">
+              Click vào các ô phân lớp để thêm electron.
+            </div>
+            <div
+              id="config-result"
+              class="mt-3 font-mono font-bold text-center text-blue-600 bg-blue-50 dark:bg-slate-900 p-2 rounded"
+            >
+              1s⁰
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION F: BÀI TẬP (GAME HÓA) -->
+    <section
+      id="quiz"
+      class="py-20 px-4 bg-gradient-to-br from-indigo-600 to-purple-700 text-white"
+    >
+      <div class="container mx-auto max-w-2xl">
+        <h2 class="text-3xl font-display font-bold text-center mb-8">
+          <i class="fas fa-gamepad"></i> Thử Thách Kiến Thức
+        </h2>
+
+        <div
+          class="glass-card bg-white/10 p-8 rounded-3xl backdrop-blur-xl border border-white/20"
+        >
+          <div class="flex justify-between text-sm mb-4 opacity-80">
+            <span id="quiz-progress">Câu 1/5</span>
+            <span id="quiz-score">Điểm: 0</span>
+          </div>
+
+          <!-- Question Container -->
+          <div id="quiz-container">
+            <h3 class="text-xl font-bold mb-6 min-h-[60px]" id="question-text">
+              Loading...
+            </h3>
+            <div class="grid gap-4" id="answers-grid">
+              <!-- Answers injected by JS -->
+            </div>
+          </div>
+
+          <!-- Feedback Area -->
+          <div
+            id="feedback-area"
+            class="hidden mt-6 p-4 rounded-xl bg-white/20 animate-fade-in"
+          >
+            <div class="font-bold mb-2" id="feedback-title"></div>
+            <p class="text-sm" id="feedback-desc"></p>
+            <button
+              onclick="nextQuestion()"
+              class="mt-4 bg-white text-indigo-600 px-6 py-2 rounded-full font-bold hover:bg-indigo-50 transition-colors w-full"
+            >
+              Câu tiếp theo
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FIXED BUTTONS -->
+    <main class="container mx-auto px-4 pb-12 pt-8">
+      <section
+        class="text-center space-x-4 mb-20 flex flex-col md:flex-row justify-center gap-4 md:gap-0"
+      >
+        <button
+          onclick="
+            document
+              .getElementById('quiz')
+              .scrollIntoView({ behavior: 'smooth' })
+          "
+          style="
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.35);
+            transition: 0.3s ease;
+          "
+          onmouseover="
+            this.style.transform = 'translateY(-3px) scale(1.03)';
+            this.style.boxShadow = '0 18px 45px rgba(99,102,241,.55)';
+          "
+          onmouseout="
+            this.style.transform = 'translateY(0) scale(1)';
+            this.style.boxShadow = '0 10px 30px rgba(59,130,246,.35)';
+          "
+        >
+          <i class="fas fa-pen-to-square"></i>
+          Bài tập củng cố
+        </button>
+
+        <button
+          onclick="alert('Quay về trang chủ (Demo Link)')"
+          style="
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.35);
+            transition: 0.3s ease;
+          "
+          onmouseover="
+            this.style.transform = 'translateY(-3px)';
+            this.style.boxShadow = '0 18px 45px rgba(22,163,74,.55)';
+          "
+          onmouseout="
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 10px 30px rgba(34,197,94,.35)';
+          "
+        >
+          <i class="fas fa-arrow-left"></i>
+          Quay về CS Expert
+        </button>
       </section>
-    </div>
+    </main>
 
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-waves"></div>
+      <div class="footer-grid">
+        <div class="footer-brand" data-aos="fade-right">
+          <h2>EDUMATTER</h2>
+          <p style="color: #94a3b8; line-height: 1.8">
+            Kiến tạo môi trường học tập cảm xúc, nơi tri thức được số hóa và
+            truyền tải đầy cảm hứng.
+          </p>
+          <div style="display: flex; gap: 15px; margin-top: 30px">
+            <a href="https://www.facebook.com/ducnt214" class="icon-btn"
+              ><i class="fab fa-facebook" alt="facebook"></i
+            ></a>
+            <a href="https://github.com/ducnt2104" class="icon-btn" alt="github"
+              ><i class="fab fa-github"></i
+            ></a>
+            <a
+              href="https://www.tiktok.com/@ktbtcthm210"
+              class="icon-btn"
+              alt="tiktok"
+              ><i class="fab fa-tiktok"></i
+            ></a>
+          </div>
+        </div>
+        <div class="footer-links" data-aos="fade-up">
+          <h3>Liên hệ nhanh</h3>
+          <div class="contact-item">
+            <i class="fas fa-envelope"></i>
+            <span>ducnt21042010@gmail.com</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-phone"></i>
+            <span>034 226 6204</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-location-dot"></i>
+            <span>THPT Tôn Đức Thắng, Đồng Nai</span>
+          </div>
+        </div>
+        <div class="footer-links" data-aos="fade-left">
+          <h4>Đội ngũ DNT</h4>
+          <p style="color: #94a3b8">
+            "Sáng tạo không ngừng - Vươn tầm tri thức"
+          </p>
+          <div
+            style="
+              margin-top: 20px;
+              padding: 15px;
+              background: rgba(255, 255, 255, 0.05);
+              border-radius: 15px;
+            "
+          >
+            <p style="font-size: 0.8rem; color: #fff">
+              Dự án được phát triển bởi các thành viên đam mê công nghệ tại Việt
+              Nam.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="copyright">
+        <p>
+          © 2024 EDUMATTER Educational Ecosystem. Designed with
+          <i class="fas fa-heart" style="color: #ef4444"></i> by DNT Team.
+        </p>
+      </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-      // --- LOGIC GIAO DIỆN & TƯƠNG TÁC ---
+      // --- 1. DARK MODE & UI LOGIC ---
+      const themeToggle = document.getElementById("theme-toggle");
+      const html = document.documentElement;
 
-      // 1. Dark Mode
-      function toggleTheme() {
-        const body = document.body;
-        const currentTheme = body.getAttribute("data-theme");
-        const icon = document.querySelector(".theme-toggle i");
+      // Check local storage or system preference
+      if (
+        localStorage.theme === "dark" ||
+        (!("theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        html.classList.add("dark");
+      } else {
+        html.classList.remove("dark");
+      }
 
-        if (currentTheme === "dark") {
-          body.setAttribute("data-theme", "light");
-          icon.className = "fas fa-moon";
+      themeToggle.addEventListener("click", () => {
+        html.classList.toggle("dark");
+        if (html.classList.contains("dark")) {
+          localStorage.theme = "dark";
         } else {
-          body.setAttribute("data-theme", "dark");
-          icon.className = "fas fa-sun";
+          localStorage.theme = "light";
+        }
+      });
+
+      // --- 2. ATOM BUILDER SIMULATION (CANVAS) ---
+      class AtomSimulator {
+        constructor() {
+          this.canvas = document.getElementById("atomCanvas");
+          this.ctx = this.canvas.getContext("2d");
+          this.pInput = document.getElementById("range-p");
+          this.nInput = document.getElementById("range-n");
+          this.eInput = document.getElementById("range-e");
+
+          // State
+          this.p = 1;
+          this.n = 0;
+          this.e = 1;
+
+          // Bind events
+          this.pInput.addEventListener("input", (e) => {
+            this.p = parseInt(e.target.value);
+            this.update();
+          });
+          this.nInput.addEventListener("input", (e) => {
+            this.n = parseInt(e.target.value);
+            this.update();
+          });
+          this.eInput.addEventListener("input", (e) => {
+            this.e = parseInt(e.target.value);
+            this.update();
+          });
+
+          // Start loop
+          this.animate();
+        }
+
+        update() {
+          // Update text displays
+          document.getElementById("val-p").innerText = this.p;
+          document.getElementById("val-n").innerText = this.n;
+          document.getElementById("val-e").innerText = this.e;
+
+          // Calculations
+          const charge = this.p - this.e;
+          const mass = this.p + this.n;
+
+          const chargeEl = document.getElementById("atom-charge");
+          chargeEl.innerText = charge > 0 ? `+${charge}` : charge;
+          chargeEl.className = `text-xl font-bold font-mono ${charge > 0 ? "text-red-500" : charge < 0 ? "text-blue-500" : "text-green-500"}`;
+
+          document.getElementById("atom-mass").innerText = mass;
+        }
+
+        drawNucleus(centerX, centerY) {
+          const totalParticles = this.p + this.n;
+          if (totalParticles === 0) return;
+
+          const radius = 6 + Math.sqrt(totalParticles) * 2;
+
+          // Draw Protons (Red)
+          for (let i = 0; i < this.p; i++) {
+            const angle = (i / totalParticles) * Math.PI * 2 * 3; // Spread them
+            const r = Math.random() * radius * 0.8;
+            const x = centerX + Math.cos(angle) * r;
+            const y = centerY + Math.sin(angle) * r;
+
+            this.ctx.beginPath();
+            this.ctx.arc(x, y, 6, 0, Math.PI * 2);
+            this.ctx.fillStyle = "#ef4444";
+            this.ctx.fill();
+            this.ctx.strokeStyle = "white";
+            this.ctx.lineWidth = 1;
+            this.ctx.stroke();
+            // Symbol
+            this.ctx.fillStyle = "white";
+            this.ctx.font = "8px Arial";
+            this.ctx.fillText("+", x - 2.5, y + 3);
+          }
+
+          // Draw Neutrons (Gray)
+          for (let i = 0; i < this.n; i++) {
+            const angle = ((i + this.p) / totalParticles) * Math.PI * 2 * 3;
+            const r = Math.random() * radius * 0.8;
+            const x = centerX + Math.cos(angle) * r;
+            const y = centerY + Math.sin(angle) * r;
+
+            this.ctx.beginPath();
+            this.ctx.arc(x, y, 6, 0, Math.PI * 2);
+            this.ctx.fillStyle = "#64748b";
+            this.ctx.fill();
+            this.ctx.strokeStyle = "white";
+            this.ctx.stroke();
+          }
+        }
+
+        drawElectrons(centerX, centerY, time) {
+          // Shell 1 (K) - Max 2
+          const kShell = Math.min(this.e, 2);
+          if (kShell > 0) {
+            this.ctx.beginPath();
+            this.ctx.arc(centerX, centerY, 60, 0, Math.PI * 2);
+            this.ctx.strokeStyle = "rgba(59, 130, 246, 0.3)";
+            this.ctx.stroke();
+
+            for (let i = 0; i < kShell; i++) {
+              const angle = time * 2 + i * Math.PI;
+              const x = centerX + Math.cos(angle) * 60;
+              const y = centerY + Math.sin(angle) * 60;
+              this.drawElectron(x, y);
+            }
+          }
+
+          // Shell 2 (L) - Max 8
+          const lShell = Math.max(0, Math.min(this.e - 2, 8));
+          if (lShell > 0) {
+            this.ctx.beginPath();
+            this.ctx.arc(centerX, centerY, 100, 0, Math.PI * 2);
+            this.ctx.strokeStyle = "rgba(59, 130, 246, 0.3)";
+            this.ctx.stroke();
+
+            for (let i = 0; i < lShell; i++) {
+              const angle = time * 1.5 + i * ((Math.PI * 2) / lShell);
+              const x = centerX + Math.cos(angle) * 100;
+              const y = centerY + Math.sin(angle) * 100;
+              this.drawElectron(x, y);
+            }
+          }
+        }
+
+        drawElectron(x, y) {
+          this.ctx.beginPath();
+          this.ctx.arc(x, y, 4, 0, Math.PI * 2);
+          this.ctx.fillStyle = "#3b82f6";
+          this.ctx.fill();
+          this.ctx.shadowBlur = 5;
+          this.ctx.shadowColor = "#3b82f6";
+        }
+
+        animate() {
+          const time = Date.now() / 1000;
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+          const cx = this.canvas.width / 2;
+          const cy = this.canvas.height / 2;
+
+          this.drawNucleus(cx, cy);
+          this.drawElectrons(cx, cy, time);
+
+          requestAnimationFrame(() => this.animate());
         }
       }
 
-      // Highlight active nav link on scroll
-      window.addEventListener("scroll", () => {
-        const sections = document.querySelectorAll("section");
-        const navLinks = document.querySelectorAll(".nav-link");
-        let current = "";
+      // --- 3. RUTHERFORD SCATTERING SIMULATION ---
+      class RutherfordSim {
+        constructor() {
+          this.canvas = document.getElementById("rutherfordCanvas");
+          this.ctx = this.canvas.getContext("2d");
+          this.particles = [];
+          this.btn = document.getElementById("btn-fire-alpha");
 
-        sections.forEach((section) => {
-          const sectionTop = section.offsetTop;
-          if (scrollY >= sectionTop - 150) {
-            current = section.getAttribute("id");
-          }
-        });
+          this.btn.addEventListener("click", () => this.fireParticles());
+          this.nucleusX = 300;
+          this.nucleusY = 100;
 
-        navLinks.forEach((link) => {
-          link.classList.remove("active");
-          if (link.getAttribute("href").includes(current)) {
-            link.classList.add("active");
+          this.animate();
+        }
+
+        fireParticles() {
+          // Create 10 particles at random Y
+          for (let i = 0; i < 20; i++) {
+            this.particles.push({
+              x: 0,
+              y: 50 + Math.random() * 100, // Spread vertically
+              vx: 3 + Math.random() * 2,
+              vy: 0,
+              deflected: false,
+            });
           }
-        });
+        }
+
+        animate() {
+          this.ctx.fillStyle = "rgba(0, 0, 0, 0.2)"; // Trail effect
+          this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+          // Draw Gold Nucleus
+          this.ctx.beginPath();
+          this.ctx.arc(this.nucleusX, this.nucleusY, 8, 0, Math.PI * 2);
+          this.ctx.fillStyle = "#ef4444";
+          this.ctx.fill();
+          this.ctx.shadowBlur = 10;
+          this.ctx.shadowColor = "red";
+
+          // Update particles
+          for (let i = this.particles.length - 1; i >= 0; i--) {
+            let p = this.particles[i];
+
+            // Draw particle
+            this.ctx.beginPath();
+            this.ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+            this.ctx.fillStyle = "#fbbf24"; // Gold color alpha
+            this.ctx.fill();
+
+            // Logic: Check proximity to nucleus
+            if (!p.deflected) {
+              const dx = p.x - this.nucleusX;
+              const dy = p.y - this.nucleusY;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+
+              // Interaction zone
+              if (dist < 30) {
+                // Simple repulsion logic
+                if (Math.abs(dy) < 5) {
+                  // Direct hit (rare) -> Bounce back
+                  p.vx = -p.vx;
+                  p.vy = (Math.random() - 0.5) * 4;
+                } else {
+                  // Deflect
+                  p.vy += dy > 0 ? 0.5 : -0.5;
+                }
+                p.deflected = true;
+              }
+            }
+
+            p.x += p.vx;
+            p.y += p.vy;
+
+            // Remove if out of bounds
+            if (
+              p.x > this.canvas.width ||
+              p.x < 0 ||
+              p.y < 0 ||
+              p.y > this.canvas.height
+            ) {
+              this.particles.splice(i, 1);
+            }
+          }
+
+          requestAnimationFrame(() => this.animate());
+        }
+      }
+
+      // --- 4. ISOTOPE LOGIC ---
+      const isoSlider = document.getElementById("isotope-slider");
+      const p1 = document.getElementById("iso-1-percent");
+      const p2 = document.getElementById("iso-2-percent");
+      const massDisplay = document.getElementById("avg-mass-display");
+      const vis1 = document.getElementById("visual-iso-1");
+      const vis2 = document.getElementById("visual-iso-2");
+
+      isoSlider.addEventListener("input", (e) => {
+        const val = parseInt(e.target.value);
+        p1.innerText = val;
+        p2.innerText = 100 - val;
+
+        // Formula: (35*a + 37*b)/100
+        const avg = (35 * val + 37 * (100 - val)) / 100;
+        massDisplay.innerText = avg.toFixed(2);
+
+        // Scale visuals
+        vis1.style.transform = `scale(${0.5 + val / 200})`; // 0.5 to 1.0
+        vis2.style.transform = `scale(${0.5 + (100 - val) / 200})`;
       });
 
-      // 2. Máy tính Nguyên tử khối
-      function calculateAvgMass() {
-        const m1 = parseFloat(document.getElementById("mass1").value);
-        const p1 = parseFloat(document.getElementById("pct1").value);
-        const m2 = parseFloat(document.getElementById("mass2").value);
-        const p2 = 100 - p1; // Auto calc percentage
+      // --- 5. CONFIGURATION BUILDER LOGIC ---
+      let electrons = 0;
+      const orbitData = {}; // Stores electrons in '1s', '2s' etc.
 
-        if (isNaN(m1) || isNaN(p1) || isNaN(m2)) {
-          document.getElementById("calc-result").innerHTML =
-            "⚠️ Vui lòng nhập đủ thông tin!";
+      function addElectron(orbName) {
+        const max = orbName.includes("s") ? 2 : 6;
+        if (!orbitData[orbName]) orbitData[orbName] = 0;
+
+        // Simplified Rule Check (Sequential filling enforced loosely for UX)
+        if (orbitData[orbName] < max) {
+          if (electrons < 18) {
+            // Limit for UI
+            orbitData[orbName]++;
+            electrons++;
+            updateConfigUI();
+          } else {
+            alert("Đã đạt giới hạn mô phỏng (18e)!");
+          }
+        } else {
+          alert(`Phân lớp ${orbName} đã bão hòa (Tối đa ${max}e)!`);
+        }
+      }
+
+      function resetConfig() {
+        electrons = 0;
+        for (let key in orbitData) delete orbitData[key];
+        updateConfigUI();
+      }
+
+      function updateConfigUI() {
+        document.getElementById("total-e-config").innerText = electrons;
+
+        // Update visual arrows
+        ["1s", "2s", "2p", "3s"].forEach((orb) => {
+          const count = orbitData[orb] || 0;
+          const container = document.getElementById(`vis-${orb}`);
+          container.innerHTML = "";
+
+          // Draw arrows (↑ ↓)
+          const pairs = Math.ceil(count / 2); // For P orbital visualization logic
+          // Simplified visual: Just show arrows
+          for (let i = 0; i < count; i++) {
+            const arrow = document.createElement("div");
+            arrow.className = "text-xs font-bold text-blue-600";
+            arrow.innerText = i % 2 === 0 ? "↑" : "↓";
+            container.appendChild(arrow);
+          }
+        });
+
+        // Update Text Config
+        let str = "";
+        if (orbitData["1s"]) str += `1s<sup>${orbitData["1s"]}</sup> `;
+        if (orbitData["2s"]) str += `2s<sup>${orbitData["2s"]}</sup> `;
+        if (orbitData["2p"]) str += `2p<sup>${orbitData["2p"]}</sup> `;
+        if (orbitData["3s"]) str += `3s<sup>${orbitData["3s"]}</sup> `;
+
+        document.getElementById("config-result").innerHTML = str || "1s⁰";
+      }
+
+      // --- 6. QUIZ LOGIC ---
+      const questions = [
+        {
+          q: "Nguyên tử trung hòa về điện vì:",
+          a: [
+            "Được tạo bởi hạt không mang điện",
+            "Số proton = Số electron",
+            "Số electron = Số neutron",
+            "Số neutron = Số proton",
+          ],
+          correct: 1,
+          explain:
+            "Nguyên tử gồm hạt nhân (+) và vỏ electron (-). Số p = số e nên tổng điện tích = 0.",
+        },
+        {
+          q: "Hạt nào nằm ở lớp vỏ nguyên tử?",
+          a: ["Proton", "Neutron", "Electron", "Cả 3 loại"],
+          correct: 2,
+          explain:
+            "Proton và Neutron nằm trong hạt nhân. Electron chuyển động ở lớp vỏ.",
+        },
+        {
+          q: "Đồng vị là những nguyên tử có cùng số... nhưng khác số...",
+          a: [
+            "Proton, Neutron",
+            "Neutron, Proton",
+            "Electron, Proton",
+            "Proton, Electron",
+          ],
+          correct: 0,
+          explain:
+            "Đồng vị: Cùng Z (proton), khác N (neutron) -> Khác A (Số khối).",
+        },
+        {
+          q: "Số electron tối đa trong phân lớp p là bao nhiêu?",
+          a: ["2", "6", "10", "14"],
+          correct: 1,
+          explain: "Phân lớp s(2), p(6), d(10), f(14).",
+        },
+        {
+          q: "Thí nghiệm nào đã tìm ra hạt nhân nguyên tử?",
+          a: [
+            "Tia âm cực (Thomson)",
+            "Bắn phá lá vàng (Rutherford)",
+            "Giọt dầu (Millikan)",
+            "Quang phổ vạch (Bohr)",
+          ],
+          correct: 1,
+          explain:
+            "Rutherford bắn hạt alpha vào lá vàng, thấy một số bị bật lại -> Có hạt nhân đặc, mang điện dương.",
+        },
+      ];
+
+      let currentQ = 0;
+      let score = 0;
+
+      function loadQuiz() {
+        if (currentQ >= questions.length) {
+          // End game
+          document.getElementById("quiz-container").innerHTML = `
+                    <div class="text-center">
+                        <i class="fas fa-trophy text-6xl text-yellow-400 mb-4"></i>
+                        <h3 class="text-2xl font-bold">Hoàn thành!</h3>
+                        <p class="text-lg mb-4">Điểm số: ${score}/${questions.length}</p>
+                        <button onclick="location.reload()" class="bg-white text-purple-600 px-6 py-2 rounded-full font-bold">Làm lại</button>
+                    </div>
+                `;
+          document.getElementById("feedback-area").classList.add("hidden");
           return;
         }
 
-        const result = (m1 * p1 + m2 * p2) / 100;
-        document.getElementById(
-          "calc-result"
-        ).innerHTML = `Kết quả: Ā = ${result.toFixed(4)}`;
-      }
+        const q = questions[currentQ];
+        document.getElementById("quiz-progress").innerText =
+          `Câu ${currentQ + 1}/${questions.length}`;
+        document.getElementById("question-text").innerText = q.q;
 
-      // --- MÔ PHỎNG 3D (THREE.JS) ---
-      let scene,
-        camera,
-        renderer,
-        atomGroup,
-        electrons = [];
+        const grid = document.getElementById("answers-grid");
+        grid.innerHTML = "";
 
-      function init3D() {
-        const container = document.getElementById("atom-canvas");
-        const width = container.offsetWidth;
-        const height = container.offsetHeight;
-
-        scene = new THREE.Scene();
-        camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
-        camera.position.z = 18;
-
-        renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        renderer.setSize(width, height);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        container.appendChild(renderer.domElement);
-
-        const controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
-
-        // Lights
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-        scene.add(ambientLight);
-
-        const pointLight = new THREE.PointLight(0xffffff, 0.8);
-        pointLight.position.set(10, 10, 10);
-        scene.add(pointLight);
-
-        atomGroup = new THREE.Group();
-        scene.add(atomGroup);
-
-        // Initial Atom (Carbon)
-        updateAtom(6);
-        animate();
-
-        window.addEventListener("resize", () => {
-          const newWidth = container.offsetWidth;
-          const newHeight = container.offsetHeight;
-          camera.aspect = newWidth / newHeight;
-          camera.updateProjectionMatrix();
-          renderer.setSize(newWidth, newHeight);
+        q.a.forEach((ans, idx) => {
+          const btn = document.createElement("button");
+          btn.className =
+            "text-left p-4 rounded-xl bg-white/10 hover:bg-white/20 transition-all border border-white/10";
+          btn.innerText = ans;
+          btn.onclick = () => checkAnswer(idx, btn);
+          grid.appendChild(btn);
         });
+
+        document.getElementById("feedback-area").classList.add("hidden");
       }
 
-      function createSphere(radius, color, x, y, z) {
-        const geo = new THREE.SphereGeometry(radius, 32, 32);
-        const mat = new THREE.MeshPhongMaterial({
-          color: color,
-          shininess: 100,
-        });
-        const mesh = new THREE.Mesh(geo, mat);
-        mesh.position.set(x, y, z);
-        return mesh;
-      }
+      function checkAnswer(idx, btn) {
+        const q = questions[currentQ];
+        const allBtns = document.getElementById("answers-grid").children;
 
-      function updateAtom(Z) {
-        // Clear old atom
-        while (atomGroup.children.length > 0) {
-          atomGroup.remove(atomGroup.children[0]);
+        // Disable all buttons
+        for (let b of allBtns) b.disabled = true;
+
+        if (idx === q.correct) {
+          score++;
+          btn.classList.add("bg-green-500", "border-green-400");
+          btn.innerHTML += ' <i class="fas fa-check float-right"></i>';
+          showFeedback(true, q.explain);
+        } else {
+          btn.classList.add("bg-red-500", "border-red-400");
+          allBtns[q.correct].classList.add("bg-green-500", "border-green-400");
+          showFeedback(false, q.explain);
         }
-        electrons = [];
+        document.getElementById("quiz-score").innerText = `Điểm: ${score}`;
+      }
 
-        // 1. Create Nucleus (Protons + Neutrons)
-        // Estimation: N ≈ Z for small atoms (except H)
-        const N = Z === 1 ? 0 : Z;
-        const nucleusGroup = new THREE.Group();
+      function showFeedback(isCorrect, text) {
+        const area = document.getElementById("feedback-area");
+        const title = document.getElementById("feedback-title");
+        const desc = document.getElementById("feedback-desc");
 
-        // Tightly pack spheres
-        const nucleusRadius = 0.6;
-        for (let i = 0; i < Z + N; i++) {
-          // Simple random clustering
-          const r = nucleusRadius * Math.pow(Z + N, 0.3) * 0.8;
-          const theta = Math.random() * Math.PI * 2;
-          const phi = Math.acos(2 * Math.random() - 1);
-
-          const x = r * Math.sin(phi) * Math.cos(theta);
-          const y = r * Math.sin(phi) * Math.sin(theta);
-          const z = r * Math.cos(phi);
-
-          // Red for Proton, Grey for Neutron
-          const isProton = i < Z;
-          const color = isProton ? 0xff4d4d : 0xaaaaaa;
-          nucleusGroup.add(createSphere(0.4, color, x, y, z));
+        area.classList.remove("hidden");
+        if (isCorrect) {
+          title.innerText = "Chính xác! 🎉";
+          title.className = "font-bold mb-2 text-green-300";
+        } else {
+          title.innerText = "Chưa đúng rồi! 😅";
+          title.className = "font-bold mb-2 text-red-300";
         }
-        atomGroup.add(nucleusGroup);
-
-        // 2. Create Electrons & Shells
-        // Config capacity: 2, 8, 18
-        const shellCaps = [2, 8, 8]; // Simplified for first 20 elements
-        let eRemaining = Z;
-        let currentShell = 0;
-
-        while (eRemaining > 0 && currentShell < shellCaps.length) {
-          const count = Math.min(eRemaining, shellCaps[currentShell]);
-          const radius = 4 + currentShell * 2.5;
-          const speed = 0.02 - currentShell * 0.005;
-
-          // Draw orbital path (ring)
-          const pathGeo = new THREE.TorusGeometry(radius, 0.02, 16, 100);
-          const pathMat = new THREE.MeshBasicMaterial({
-            color: 0xffffff,
-            opacity: 0.2,
-            transparent: true,
-          });
-          const path = new THREE.Mesh(pathGeo, pathMat);
-          path.rotation.x = Math.PI / 2;
-          // Tilt shells slightly differently for visual effect
-          path.rotation.y = currentShell * 0.2;
-          atomGroup.add(path);
-
-          // Add electrons
-          for (let i = 0; i < count; i++) {
-            const angle = (i / count) * Math.PI * 2;
-            const eMesh = createSphere(
-              0.2,
-              0xffd166,
-              Math.cos(angle) * radius,
-              0,
-              Math.sin(angle) * radius
-            );
-
-            // Add glow sprite
-            // (Simplified mesh here)
-
-            electrons.push({
-              mesh: eMesh,
-              radius: radius,
-              angle: angle,
-              speed: speed,
-              tilt: currentShell * 0.2,
-            });
-            atomGroup.add(eMesh);
-          }
-          eRemaining -= count;
-          currentShell++;
-        }
+        desc.innerText = text;
       }
 
-      function animate() {
-        requestAnimationFrame(animate);
-
-        // Rotate electrons
-        electrons.forEach((e) => {
-          e.angle += e.speed;
-          // Calculate position based on tilted orbit
-          const x = e.radius * Math.cos(e.angle);
-          const z = e.radius * Math.sin(e.angle);
-
-          // Apply tilt rotation manualy or just group rotation?
-          // Let's keep it simple: rotate x,z on the tilted plane
-          // y = x * sin(tilt), x = x * cos(tilt) roughly
-          e.mesh.position.x = x * Math.cos(e.tilt);
-          e.mesh.position.y = x * Math.sin(e.tilt); // Simplified tilt effect
-          e.mesh.position.z = z;
-        });
-
-        // Gently rotate nucleus
-        atomGroup.children[0].rotation.y += 0.005;
-        atomGroup.children[0].rotation.z += 0.002;
-
-        renderer.render(scene, camera);
+      function nextQuestion() {
+        currentQ++;
+        loadQuiz();
       }
 
-      // --- AUFBAU DIAGRAM BUILDER ---
-      const orbitals = [
-        { name: "1s", n: 1, l: 0, cap: 2 },
-        { name: "2s", n: 2, l: 0, cap: 2 },
-        { name: "2p", n: 2, l: 1, cap: 6 },
-        { name: "3s", n: 3, l: 0, cap: 2 },
-        { name: "3p", n: 3, l: 1, cap: 6 },
-        { name: "4s", n: 4, l: 0, cap: 2 },
-        { name: "3d", n: 3, l: 2, cap: 10 },
-      ];
-
-      let electronCount = 0;
-
-      function renderAufbau() {
-        const container = document.getElementById("aufbau-diagram");
-        container.innerHTML = "";
-
-        let eRem = electronCount;
-        let configStr = "";
-
-        // We render list but CSS reverses it so 1s is at bottom
-        // Need to process data correctly first
-        // Map electron distribution
-        const filledOrbitals = orbitals.map((orb) => {
-          const fill = Math.min(eRem, orb.cap);
-          eRem -= fill;
-          if (fill > 0) configStr += `${orb.name}<sup>${fill}</sup> `;
-          return { ...orb, current: fill };
-        });
-
-        document.getElementById("config-text").innerHTML = configStr || "1s⁰";
-
-        // Render HTML
-        filledOrbitals.forEach((orb) => {
-          const boxCount = orb.cap / 2;
-          let boxesHtml = "";
-
-          for (let i = 0; i < boxCount; i++) {
-            let arrow = "";
-            // Hund's Rule Logic:
-            // If p orbital (3 boxes), and 2 electrons: Up, Up, Empty
-            // If 4 electrons: Up-Down, Up, Up
-            const isUp = orb.current > i;
-            const isDown = orb.current > i + boxCount;
-
-            if (isUp) arrow += `<span class="spin-arrow spin-up">↑</span>`;
-            if (isDown) arrow += `<span class="spin-arrow spin-down">↓</span>`;
-
-            boxesHtml += `<div class="orbital-box">${arrow}</div>`;
-          }
-
-          const row = document.createElement("div");
-          row.className = "orbital-row";
-          row.innerHTML = `
-                <div class="subshell">
-                    <span class="subshell-label">${orb.name}</span>
-                    ${boxesHtml}
-                </div>
-            `;
-          container.appendChild(row);
-        });
-      }
-
-      function addElectron() {
-        if (electronCount < 30) {
-          electronCount++;
-          renderAufbau();
-        }
-      }
-
-      function resetElectron() {
-        electronCount = 0;
-        renderAufbau();
-      }
-
-      // Initialize
-      init3D();
-      renderAufbau();
+      // Initialize things on load
+      window.addEventListener("load", () => {
+        new AtomSimulator();
+        new RutherfordSim();
+        loadQuiz();
+      });
     </script>
   </body>
 </html>

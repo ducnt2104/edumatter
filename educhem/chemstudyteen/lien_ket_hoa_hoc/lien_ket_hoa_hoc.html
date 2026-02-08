@@ -1,101 +1,217 @@
-<!DOCTYPE html>
-<html lang="vi">
+<!doctype html>
+<html lang="vi" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hóa Học 10 - Chương 3: Liên Kết Hóa Học</title>
-    <link rel="icon" href="../../../favicon/educhem.svg" type="image/svg+xml" />
+    <title>Chương 3: Liên Kết Hóa Học – ChemStudy Expert</title>
+    <link rel="icon" href="../../../favicon/educhem.avg" />
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Fonts & Icons -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-
-    <!-- Three.js (Cho mô phỏng tinh thể) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-
-    <!-- Chart.js (Cho biểu đồ nhiệt độ sôi) -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [
-            ["$", "$"],
-            ["\\(", "\\)"],
-          ],
-        },
-      };
-    </script>
-    <script
-      id="MathJax-script"
-      async
-      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-    ></script>
-
     <script>
       tailwind.config = {
         darkMode: "class",
         theme: {
           extend: {
             colors: {
-              primary: "#4f46e5",
-              secondary: "#06b6d4",
-              dark: "#0f172a",
-              card: "#1e293b",
+              chemBlue: "#3b82f6",
+              chemGreen: "#22c55e",
+              chemPurple: "#8b5cf6",
+              darkBg: "#0f172a",
+              lightBg: "#f8fafc",
             },
             fontFamily: {
-              sans: ["Nunito", "sans-serif"],
+              display: ["Space Grotesk", "sans-serif"],
+              body: ["Inter", "sans-serif"],
+            },
+            animation: {
+              float: "floating 3s ease-in-out infinite",
+              "spin-slow": "spin 8s linear infinite",
+              "pulse-glow":
+                "pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+            },
+            keyframes: {
+              floating: {
+                "0%, 100%": { transform: "translateY(0)" },
+                "50%": { transform: "translateY(-10px)" },
+              },
+              "pulse-glow": {
+                "0%, 100%": {
+                  opacity: 1,
+                  boxShadow: "0 0 20px rgba(59, 130, 246, 0.5)",
+                },
+                "50%": {
+                  opacity: 0.8,
+                  boxShadow: "0 0 10px rgba(59, 130, 246, 0.2)",
+                },
+              },
             },
           },
         },
       };
     </script>
 
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Custom CSS (Style Override & Footer) -->
     <style>
-      /* Custom Animations & Styles */
+      /* === BASE STYLES === */
       body {
-        transition: background-color 0.3s, color 0.3s;
-      }
-      .sim-container {
-        position: relative;
-        overflow: hidden;
-        border-radius: 1rem;
-        background: #f1f5f9;
-        transition: background 0.3s;
-        border: 1px solid #e2e8f0;
-      }
-      .dark .sim-container {
-        background: #0f172a;
-        border: 1px solid #334155;
-      }
-      .electron-orbit {
-        fill: none;
-        stroke: #94a3b8;
-        stroke-dasharray: 4;
-        opacity: 0.5;
-      }
-      .atom-core {
-        transition: all 0.5s ease;
-      }
-      .electron-dot {
-        transition: all 0.5s ease;
+        font-family: "Inter", sans-serif;
+        background-color: var(--lightBg);
+        color: #1e293b;
+        transition:
+          background-color 0.3s,
+          color 0.3s;
       }
 
-      /* Range Slider Styling */
+      .font-display {
+        font-family: "Space Grotesk", sans-serif;
+      }
+
+      /* Dark Mode Vars via CSS Classes handled by Tailwind, but strictly following prompt style */
+      :root {
+        --footer-bg: #0f172a;
+        --footer-text: #e2e8f0;
+        --p-primary: #3b82f6;
+      }
+      html.dark :root {
+        --footer-bg: #020617;
+      }
+
+      /* === GLASSMORPHISM === */
+      .glass-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: all 0.3s ease;
+        border-radius: 1rem;
+      }
+      .dark .glass-card {
+        background: rgba(30, 41, 59, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        color: #e2e8f0;
+      }
+      .glass-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+      }
+      .dark .glass-card:hover {
+        box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.2);
+      }
+
+      /* Text Gradient */
+      .text-gradient {
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-image: linear-gradient(to right, #3b82f6, #8b5cf6, #ec4899);
+      }
+
+      /* === FOOTER SPECIFICS (FROM PROMPT) === */
+      footer {
+        background: var(--footer-bg);
+        color: var(--footer-text);
+        padding: 100px 5% 40px;
+        position: relative;
+        overflow: hidden;
+        transition:
+          background-color 0.8s ease,
+          color 0.8s ease;
+      }
+      .footer-waves {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        background: var(--footer-bg);
+        clip-path: polygon(
+          0% 45%,
+          16% 44%,
+          33% 50%,
+          54% 60%,
+          70% 61%,
+          84% 59%,
+          100% 52%,
+          100% 100%,
+          0% 100%
+        );
+        transition: background-color 0.8s;
+      }
+      .footer-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 60px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .footer-brand h2 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 2rem;
+        margin-bottom: 20px;
+      }
+      .footer-links h4,
+      h3 {
+        margin-bottom: 25px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--p-primary);
+      }
+      .icon-btn {
+        color: #94a3b8;
+        font-size: 1.2rem;
+        transition: 0.3s;
+      }
+      .icon-btn:hover {
+        color: white;
+        transform: scale(1.1);
+      }
+      .contact-item {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        color: #94a3b8;
+        transition: 0.3s;
+      }
+      .contact-item i {
+        color: var(--p-primary);
+      }
+      .contact-item:hover {
+        color: white;
+        transform: translateX(5px);
+      }
+      .copyright {
+        margin-top: 80px;
+        text-align: center;
+        padding-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        color: #475569;
+        font-size: 0.9rem;
+      }
+
+      /* Simulation Specifics */
+      .electron {
+        transition: all 0.5s ease-in-out;
+      }
+      .orbit {
+        border: 1px dashed rgba(148, 163, 184, 0.5);
+        border-radius: 50%;
+      }
       input[type="range"] {
         -webkit-appearance: none;
-        width: 100%;
         background: transparent;
       }
       input[type="range"]::-webkit-slider-thumb {
@@ -103,1486 +219,1373 @@
         height: 20px;
         width: 20px;
         border-radius: 50%;
-        background: #4f46e5;
+        background: #3b82f6;
         cursor: pointer;
         margin-top: -8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
       }
       input[type="range"]::-webkit-slider-runnable-track {
         width: 100%;
         height: 4px;
         cursor: pointer;
-        background: #cbd5e1;
+        background: #94a3b8;
         border-radius: 2px;
-      }
-      .dark input[type="range"]::-webkit-slider-thumb {
-        background: #06b6d4;
-      }
-      .dark input[type="range"]::-webkit-slider-runnable-track {
-        background: #475569;
-      }
-
-      /* Water Molecule Animation */
-      @keyframes float {
-        0% {
-          transform: translateY(0px) rotate(0deg);
-        }
-        50% {
-          transform: translateY(-10px) rotate(5deg);
-        }
-        100% {
-          transform: translateY(0px) rotate(0deg);
-        }
-      }
-      .water-molecule {
-        animation: float 4s ease-in-out infinite;
-      }
-
-      /* Card Hover Effect */
-      .hover-card {
-        transition: transform 0.2s, box-shadow 0.2s;
-      }
-      .hover-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
-      }
-
-      /* Tag Styles */
-      .tag-basic {
-        background-color: #dbeafe;
-        color: #1e40af;
-        padding: 2px 8px;
-        border-radius: 4px;
-        font-size: 0.75rem;
-        font-weight: 700;
-        text-transform: uppercase;
-      }
-      .dark .tag-basic {
-        background-color: #1e3a8a;
-        color: #bfdbfe;
-      }
-      .tag-deep {
-        background-color: #fce7f3;
-        color: #9d174d;
-        padding: 2px 8px;
-        border-radius: 4px;
-        font-size: 0.75rem;
-        font-weight: 700;
-        text-transform: uppercase;
-      }
-      .dark .tag-deep {
-        background-color: #831843;
-        color: #fbcfe8;
       }
     </style>
   </head>
-  <body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100">
+  <body class="bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
     <!-- HEADER -->
-    <header
-      class="fixed w-full top-0 z-50 bg-white/90 dark:bg-gray-800/90 backdrop-blur shadow-md transition-colors duration-300"
-    >
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
-          <!-- Back Button & Logo -->
-          <div class="flex items-center gap-4">
-            <a
-              href="../chemstudyteen.html"
-              class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-              title="Quay lại"
-            >
-              <i
-                class="fas fa-arrow-left text-xl text-primary dark:text-secondary"
-              ></i>
-            </a>
-            <div class="flex flex-col">
-              <h1
-                class="font-extrabold text-lg sm:text-2xl bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 dark:from-secondary dark:to-blue-500 truncate"
-              >
-                ChemStudy Teen: Hóa Học - Chủ đề: Liên Kết Hóa Học
-              </h1>
-            </div>
-          </div>
-
-          <!-- Controls -->
-          <div class="flex items-center gap-3">
-            <button
-              onclick="toggleTheme()"
-              class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition focus:outline-none"
-            >
-              <i class="fas fa-moon dark:hidden"></i>
-              <i class="fas fa-sun hidden dark:block text-yellow-400"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </header>
-
-    <!-- NAVIGATION TABS -->
     <nav
-      class="fixed top-16 w-full z-40 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm overflow-x-auto"
+      class="fixed top-0 w-full z-50 glass-card !rounded-none !border-x-0 !border-t-0 px-6 py-3"
     >
-      <div class="max-w-7xl mx-auto px-4 flex space-x-8 min-w-max">
-        <button
-          onclick="scrollToSection('octet')"
-          class="nav-btn py-4 px-1 border-b-2 border-transparent font-medium text-sm hover:text-primary dark:hover:text-secondary whitespace-nowrap active-nav"
+      <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <!-- Logo -->
+        <div
+          class="flex items-center gap-3 cursor-pointer group"
+          onclick="window.scrollTo(0, 0)"
         >
-          I. Quy Tắc Octet
-        </button>
-        <button
-          onclick="scrollToSection('ion')"
-          class="nav-btn py-4 px-1 border-b-2 border-transparent font-medium text-sm hover:text-primary dark:hover:text-secondary whitespace-nowrap"
-        >
-          II. Liên Kết Ion
-        </button>
-        <button
-          onclick="scrollToSection('covalent')"
-          class="nav-btn py-4 px-1 border-b-2 border-transparent font-medium text-sm hover:text-primary dark:hover:text-secondary whitespace-nowrap"
-        >
-          III. Cộng Hóa Trị
-        </button>
-        <button
-          onclick="scrollToSection('weak')"
-          class="nav-btn py-4 px-1 border-b-2 border-transparent font-medium text-sm hover:text-primary dark:hover:text-secondary whitespace-nowrap"
-        >
-          IV. Liên Kết Yếu
-        </button>
+          <div
+            class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-green-500 flex items-center justify-center text-white font-bold text-xl shadow-lg group-hover:shadow-blue-500/50 transition-all"
+          >
+            <i
+              class="fas fa-atom text-xl md:text-2xl group-hover:animate-spin"
+            ></i>
+          </div>
+          <span
+            class="font-display font-bold text-xl md:text-2xl tracking-tight text-slate-800 dark:text-white"
+          >
+            ChemStudy Expert
+          </span>
+        </div>
+
+        <!-- Menu & Dark Mode -->
+        <div class="flex items-center gap-6">
+          <div
+            class="hidden md:flex gap-4 text-sm font-semibold text-slate-600 dark:text-slate-300"
+          >
+            <a href="#octet" class="hover:text-blue-500 transition-colors"
+              >Octet</a
+            >
+            <a href="#ionic" class="hover:text-blue-500 transition-colors"
+              >Ion</a
+            >
+            <a href="#covalent" class="hover:text-blue-500 transition-colors"
+              >Cộng Hóa Trị</a
+            >
+            <a href="#hydrogen" class="hover:text-blue-500 transition-colors"
+              >Hydrogen</a
+            >
+          </div>
+          <button
+            id="themeToggle"
+            class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-700 dark:text-yellow-400 transition-all hover:scale-110"
+          >
+            <i class="fas fa-moon dark:hidden"></i>
+            <i class="fas fa-sun hidden dark:block"></i>
+          </button>
+        </div>
       </div>
     </nav>
 
-    <!-- MAIN CONTENT -->
-    <main class="max-w-6xl mx-auto px-4 pt-36 pb-12 space-y-24">
-      <!-- SECTION I: OCTET -->
-      <section id="octet" class="scroll-mt-40">
-        <div class="flex items-center gap-3 mb-6">
+    <!-- HERO SECTION -->
+    <header class="pt-32 pb-20 px-6 text-center relative overflow-hidden">
+      <div
+        class="absolute top-20 left-10 w-20 h-20 bg-blue-500/20 rounded-full blur-xl animate-float"
+      ></div>
+      <div
+        class="absolute bottom-20 right-10 w-32 h-32 bg-purple-500/20 rounded-full blur-xl animate-float"
+        style="animation-delay: 1.5s"
+      ></div>
+
+      <div class="max-w-4xl mx-auto relative z-10">
+        <span
+          class="inline-block py-1 px-3 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 text-sm font-bold mb-4 animate-pulse"
+          >CHƯƠNG 3</span
+        >
+        <h1
+          class="text-5xl md:text-7xl font-display font-bold mb-6 text-slate-900 dark:text-white"
+        >
+          LIÊN KẾT <span class="text-gradient">HÓA HỌC</span>
+        </h1>
+        <p
+          class="text-xl text-slate-600 dark:text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed"
+        >
+          Khám phá bản chất sự gắn kết giữa các nguyên tử thông qua mô hình
+          tương tác trực quan. Biến lý thuyết khô khan thành trải nghiệm sống
+          động.
+        </p>
+        <a
+          href="#octet"
+          class="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-full shadow-lg shadow-blue-500/30 hover:translate-y-1 hover:shadow-xl transition-all"
+        >
+          Vào bài học <i class="fas fa-arrow-down animate-bounce"></i>
+        </a>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 md:px-6 space-y-24 pb-20">
+      <!-- =========================================================================
+             SECTION I: QUY TẮC OCTET
+             ========================================================================= -->
+      <section id="octet" class="scroll-mt-24">
+        <div class="flex items-center gap-4 mb-8">
           <div
-            class="w-10 h-10 rounded-lg bg-green-500 text-white flex items-center justify-center text-xl font-bold"
+            class="w-12 h-12 rounded-xl bg-blue-500 flex items-center justify-center text-white text-2xl shadow-lg shadow-blue-500/40"
           >
-            I
+            <i class="fas fa-circle-nodes"></i>
           </div>
-          <h2 class="text-3xl font-bold text-gray-900 dark:text-white">
-            Quy Tắc Octet
+          <h2
+            class="text-3xl md:text-4xl font-display font-bold text-slate-800 dark:text-white"
+          >
+            I. Quy Tắc Octet (Bát Tử)
           </h2>
         </div>
 
-        <div class="grid lg:grid-cols-2 gap-8">
-          <!-- Theory Content -->
-          <div class="space-y-6">
-            <div
-              class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700"
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- A. Lý thuyết -->
+          <div class="glass-card p-6 md:p-8 space-y-4">
+            <h3 class="text-xl font-bold text-blue-600 dark:text-blue-400 mb-4">
+              <i class="fas fa-book-open mr-2"></i>A. Kiến thức lý thuyết
+            </h3>
+            <ul
+              class="space-y-3 text-slate-700 dark:text-slate-300 list-disc pl-5"
             >
-              <span class="tag-basic mb-2 inline-block">Cơ bản</span>
-              <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">
-                1. Liên kết hóa học
-              </h3>
-              <p class="text-gray-600 dark:text-gray-300">
-                Liên kết hoá học là lực hút giữa các nguyên tử → giúp tạo thành
-                phân tử hay tinh thể bền vững.
-              </p>
-              <p class="text-gray-600 dark:text-gray-300 mt-2">
-                Nguyên tử liên kết vì tự thân nó không bền, cần đạt cấu hình bền
-                như khí hiếm.
-              </p>
-
-              <div
-                class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700"
-              >
-                <span class="tag-deep mb-2 inline-block">Sâu</span>
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                  Tính bền của khí hiếm đến từ: 8 electron lớp ngoài cùng (trừ
-                  He – 2e) → trạng thái năng lượng thấp.
-                </p>
-              </div>
-            </div>
-
+              <li>
+                <strong>Định nghĩa:</strong> Nguyên tử nhóm A có xu hướng
+                nhường, nhận hoặc góp chung e để đạt 8e lớp ngoài cùng (hoặc 2e
+                với He).
+              </li>
+              <li>
+                <strong>Bản chất:</strong> Khí hiếm bền vững do lớp vỏ bão hòa.
+                Nguyên tử khác muốn mô phỏng cấu hình này.
+              </li>
+              <li>
+                <strong>Ngoại lệ:</strong> Phân tử số e lẻ (NO), ít hơn 8e
+                (BeH₂, BF₃), octet mở rộng (PCl₅, SF₆).
+              </li>
+            </ul>
             <div
-              class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700"
+              class="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/30 rounded-lg border border-yellow-200 dark:border-yellow-700"
             >
-              <span class="tag-basic mb-2 inline-block">Cơ bản</span>
-              <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">
-                2. Quy tắc Octet
-              </h3>
-              <p class="text-gray-600 dark:text-gray-300">
-                Nguyên tử có xu hướng nhận, nhường hoặc chia sẻ electron để đạt
-                <strong>8 electron</strong> ở lớp ngoài cùng.
+              <p class="text-sm text-yellow-800 dark:text-yellow-200">
+                <strong><i class="fas fa-lightbulb"></i> Gợi ý:</strong> Hãy thử
+                làm đầy lớp vỏ electron trong mô phỏng bên cạnh!
               </p>
-
-              <div
-                class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700"
-              >
-                <span class="tag-deep mb-2 inline-block">Sâu</span>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                  Quy tắc này không tuyệt đối:
-                </p>
-                <ul
-                  class="list-disc list-inside text-sm text-gray-500 dark:text-gray-400 space-y-1"
-                >
-                  <li><strong>Thiếu Octet:</strong> $BeCl_2$, $BF_3$.</li>
-                  <li>
-                    <strong>Mở rộng Octet:</strong> $PCl_5$, $SF_6$ (có orbital
-                    d trống).
-                  </li>
-                  <li><strong>Số lẻ e:</strong> $NO$, $NO_2$.</li>
-                </ul>
-                <p class="text-xs italic mt-2 text-gray-400">
-                  Bản chất: bền vững đạt được khi vùng electron hoá trị ổn định,
-                  không chỉ “đúng 8 e”.
-                </p>
-              </div>
             </div>
           </div>
 
-          <!-- Simulations -->
-          <div class="space-y-6">
-            <!-- Sim 1: Complete Octet -->
+          <!-- B. Mô phỏng (Sim 1) -->
+          <div
+            class="glass-card p-6 md:p-8 bg-gradient-to-br from-slate-100 to-white dark:from-slate-800 dark:to-slate-900 relative overflow-hidden"
+          >
             <div
-              class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg hover-card border border-gray-100 dark:border-gray-700"
+              class="absolute top-0 right-0 p-2 bg-blue-500 text-white text-xs font-bold rounded-bl-lg"
             >
-              <h3
-                class="text-lg font-bold text-primary dark:text-secondary mb-3"
-              >
-                <i class="fas fa-gamepad mr-2"></i>Mô phỏng 1: Đạt cấu hình bền
-                (Neon)
-              </h3>
+              MÔ PHỎNG TƯƠNG TÁC
+            </div>
+            <h3
+              class="text-xl font-bold text-green-600 dark:text-green-400 mb-4 text-center"
+            >
+              Xây dựng lớp vỏ Octet
+            </h3>
+
+            <div
+              class="flex flex-col items-center justify-center h-full min-h-[300px]"
+            >
+              <!-- Atom Core -->
               <div
-                class="sim-container h-48 flex flex-col items-center justify-center relative"
-                id="octet-sim"
+                class="relative w-48 h-48 rounded-full border-2 border-dashed border-slate-400 flex items-center justify-center"
               >
-                <svg width="180" height="180" viewBox="0 0 200 200">
-                  <circle
-                    cx="100"
-                    cy="100"
-                    r="25"
-                    fill="#ef4444"
-                    class="atom-core"
-                  />
-                  <text
-                    x="100"
-                    y="105"
-                    text-anchor="middle"
-                    fill="white"
-                    font-size="14"
-                    font-weight="bold"
-                  >
-                    O
-                  </text>
-                  <circle cx="100" cy="100" r="65" class="electron-orbit" />
-                  <g id="valence-electrons">
-                    <!-- Initial 6e -->
-                  </g>
-                </svg>
                 <div
-                  id="octet-status"
-                  class="absolute top-2 right-2 text-xs font-bold px-2 py-1 rounded bg-gray-200 text-gray-600"
-                >
-                  6/8 e
-                </div>
-              </div>
-              <div class="mt-3 flex gap-2 justify-center">
-                <button
+                  class="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center text-white font-bold shadow-lg z-10 cursor-pointer hover:scale-110 transition-transform"
                   onclick="addElectron()"
-                  class="px-3 py-1 bg-primary text-white rounded text-sm hover:bg-primary-dark transition shadow"
+                  title="Click để thêm Electron"
                 >
-                  + Thêm e
-                </button>
-                <button
-                  onclick="resetOctet()"
-                  class="px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-white rounded text-sm hover:bg-gray-300 transition"
+                  <span>Nucleus</span>
+                </div>
+
+                <!-- Electrons Container -->
+                <div
+                  id="electron-orbit"
+                  class="absolute w-full h-full animate-spin-slow"
                 >
-                  Reset
-                </button>
+                  <!-- JS will inject electrons here -->
+                </div>
+              </div>
+
+              <div class="mt-6 text-center">
+                <p class="text-slate-600 dark:text-slate-300 mb-2">
+                  Số electron hiện tại:
+                  <span id="e-count" class="font-bold text-2xl text-blue-600"
+                    >0</span
+                  >/8
+                </p>
+                <div class="flex gap-2 justify-center">
+                  <button
+                    onclick="addElectron()"
+                    class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow transition-all active:scale-95"
+                  >
+                    <i class="fas fa-plus"></i> Thêm e
+                  </button>
+                  <button
+                    onclick="resetOctet()"
+                    class="px-4 py-2 bg-slate-500 hover:bg-slate-600 text-white rounded-lg shadow transition-all active:scale-95"
+                  >
+                    <i class="fas fa-rotate-right"></i> Reset
+                  </button>
+                </div>
+                <p id="octet-status" class="mt-2 text-sm h-6 font-semibold"></p>
               </div>
             </div>
+          </div>
+        </div>
 
-            <!-- Sim 2: Exceptions Visualization -->
+        <!-- D. Công thức & Hệ quả -->
+        <div class="mt-8 glass-card p-6">
+          <h3
+            class="text-xl font-bold text-purple-600 dark:text-purple-400 mb-4"
+          >
+            <i class="fas fa-project-diagram mr-2"></i>D. Nguyên tắc vận dụng
+          </h3>
+          <div class="grid md:grid-cols-2 gap-4">
             <div
-              class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg hover-card border border-gray-100 dark:border-gray-700"
+              class="p-4 bg-blue-50 dark:bg-slate-800 rounded-lg border-l-4 border-blue-500 hover:bg-blue-100 dark:hover:bg-slate-700 transition-colors"
             >
-              <h3
-                class="text-lg font-bold text-yellow-600 dark:text-yellow-400 mb-3"
-              >
-                <i class="fas fa-exclamation-triangle mr-2"></i>Mô phỏng 2:
-                Ngoại lệ Octet
-              </h3>
-              <div class="flex gap-2 mb-4">
-                <button
-                  onclick="showException('becl2')"
-                  class="flex-1 py-1 text-xs bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600"
-                >
-                  BeCl₂ (Thiếu)
-                </button>
-                <button
-                  onclick="showException('pcl5')"
-                  class="flex-1 py-1 text-xs bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600"
-                >
-                  PCl₅ (Mở rộng)
-                </button>
-              </div>
-              <div
-                class="sim-container h-40 flex items-center justify-center"
-                id="exception-viz"
-              >
-                <!-- SVG injected by JS -->
-              </div>
-              <p
-                id="exception-desc"
-                class="text-xs text-center mt-2 text-gray-500 italic"
-              >
-                Chọn phân tử để xem cấu trúc e
+              <h4 class="font-bold text-blue-700 dark:text-blue-300">
+                Kim loại (1, 2, 3e ngoài cùng)
+              </h4>
+              <p class="text-sm mt-1 text-slate-600 dark:text-slate-400">
+                Xu hướng
+                <span class="text-red-500 font-bold">NHƯỜNG</span> electron →
+                Cation (+)
+              </p>
+            </div>
+            <div
+              class="p-4 bg-green-50 dark:bg-slate-800 rounded-lg border-l-4 border-green-500 hover:bg-green-100 dark:hover:bg-slate-700 transition-colors"
+            >
+              <h4 class="font-bold text-green-700 dark:text-green-300">
+                Phi kim (5, 6, 7e ngoài cùng)
+              </h4>
+              <p class="text-sm mt-1 text-slate-600 dark:text-slate-400">
+                Xu hướng <span class="text-blue-500 font-bold">NHẬN</span> hoặc
+                góp chung electron → Anion (-)
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- SECTION II: IONIC BOND -->
-      <section id="ion" class="scroll-mt-40">
-        <div class="flex items-center gap-3 mb-6">
+      <!-- =========================================================================
+             SECTION II: LIÊN KẾT ION
+             ========================================================================= -->
+      <section id="ionic" class="scroll-mt-24">
+        <div class="flex items-center gap-4 mb-8">
           <div
-            class="w-10 h-10 rounded-lg bg-red-500 text-white flex items-center justify-center text-xl font-bold"
+            class="w-12 h-12 rounded-xl bg-green-500 flex items-center justify-center text-white text-2xl shadow-lg shadow-green-500/40"
           >
-            II
+            <i class="fas fa-bolt"></i>
           </div>
-          <h2 class="text-3xl font-bold text-gray-900 dark:text-white">
-            Liên Kết Ion
+          <h2
+            class="text-3xl md:text-4xl font-display font-bold text-slate-800 dark:text-white"
+          >
+            II. Liên Kết Ion
           </h2>
         </div>
 
-        <div class="grid lg:grid-cols-2 gap-8">
-          <!-- Theory -->
-          <div class="space-y-6">
-            <div
-              class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700"
-            >
-              <span class="tag-basic mb-2 inline-block">Cơ bản</span>
-              <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">
-                1. Ion và sự hình thành
-              </h3>
-              <ul
-                class="list-disc list-inside text-gray-600 dark:text-gray-300 space-y-1"
-              >
-                <li>Kim loại nhường e → <strong>Cation (+)</strong></li>
-                <li>Phi kim nhận e → <strong>Anion (-)</strong></li>
-                <li>
-                  Lực hút tĩnh điện giữa ion trái dấu →
-                  <strong>Liên kết ion</strong>
-                </li>
-              </ul>
-              <div
-                class="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg mt-3 font-mono text-sm"
-              >
-                <p>Na → Na⁺ + 1e</p>
-                <p>Cl + 1e → Cl⁻</p>
-                <p class="font-bold text-blue-600 dark:text-blue-400">
-                  Na⁺ + Cl⁻ → NaCl
-                </p>
-              </div>
-
-              <div
-                class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700"
-              >
-                <span class="tag-deep mb-2 inline-block">Sâu</span>
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                  Liên kết ion mạnh hay yếu phụ thuộc: (1) điện tích ion, (2)
-                  bán kính ion, (3) hằng số điện môi môi trường.
-                </p>
-              </div>
-            </div>
-
-            <div
-              class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700"
-            >
-              <span class="tag-basic mb-2 inline-block">Cơ bản</span>
-              <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">
-                2. Tinh thể Ion
-              </h3>
-              <p class="text-gray-600 dark:text-gray-300">
-                Tồn tại dạng mạng tinh thể (không phải phân tử rời rạc). Ion sắp
-                xếp tối ưu để hút lớn nhất, đẩy nhỏ nhất.
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <!-- A. Lý thuyết -->
+          <div class="lg:col-span-1 glass-card p-6 space-y-4">
+            <h3 class="text-xl font-bold text-blue-600 dark:text-blue-400">
+              <i class="fas fa-book-open mr-2"></i>A. Lý thuyết
+            </h3>
+            <ul class="text-sm space-y-3 text-slate-700 dark:text-slate-300">
+              <li>
+                <strong>Định nghĩa:</strong> Lực hút tĩnh điện giữa các ion mang
+                điện tích trái dấu.
+              </li>
+              <li><strong>Cation (Ion +):</strong> Kim loại nhường e.</li>
+              <li><strong>Anion (Ion -):</strong> Phi kim nhận e.</li>
+              <li>
+                <strong>Đặc điểm:</strong> Không định hướng, không bão hòa.
+                Thường giữa KL điển hình (IA, IIA) và PK điển hình (VIA, VIIA).
+              </li>
+            </ul>
+            <div class="p-3 bg-slate-100 dark:bg-slate-800 rounded mt-4">
+              <p class="font-mono text-xs text-center">F = k.q₁.q₂ / r²</p>
+              <p class="text-xs text-center text-slate-500 mt-1">
+                Lực hút tĩnh điện Coulomb
               </p>
-              <div class="grid grid-cols-2 gap-2 mt-3 text-sm">
-                <div class="bg-gray-100 dark:bg-gray-700 p-2 rounded">
-                  🔥 Nóng chảy cao
-                </div>
-                <div class="bg-gray-100 dark:bg-gray-700 p-2 rounded">
-                  🔨 Giòn, dễ vỡ
-                </div>
-                <div class="bg-gray-100 dark:bg-gray-700 p-2 rounded">
-                  💧 Tan trong nước
-                </div>
-                <div class="bg-gray-100 dark:bg-gray-700 p-2 rounded">
-                  ⚡ Dẫn điện (lỏng)
-                </div>
-              </div>
-              <div
-                class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700"
-              >
-                <span class="tag-deep mb-2 inline-block">Sâu</span>
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                  <strong>Năng lượng mạng tinh thể (Lattice Energy)</strong> là
-                  thước đo độ bền liên kết ion.
-                </p>
-              </div>
             </div>
           </div>
 
-          <!-- Simulations -->
-          <div class="space-y-6">
-            <!-- Sim 1: Electron Transfer -->
-            <div
-              class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700"
+          <!-- B. Mô phỏng (Sim 2: Electron Transfer) -->
+          <div class="lg:col-span-2 glass-card p-6 md:p-8 relative">
+            <h3
+              class="text-xl font-bold text-green-600 dark:text-green-400 mb-6 text-center"
             >
-              <h3 class="text-lg font-bold text-red-500 mb-3">
-                <i class="fas fa-exchange-alt mr-2"></i>Mô phỏng 1: Chuyển e (Na
-                + Cl)
-              </h3>
-              <div
-                class="sim-container h-40 flex items-center justify-center"
-                id="ionic-transfer-sim"
-              >
-                <svg width="300" height="120" viewBox="0 0 300 120">
-                  <g id="atom-na" transform="translate(50, 60)">
-                    <circle
-                      r="20"
-                      fill="#fca5a5"
-                      stroke="#ef4444"
-                      stroke-width="2"
-                    />
-                    <text
-                      y="5"
-                      text-anchor="middle"
-                      fill="#7f1d1d"
-                      font-weight="bold"
-                      font-size="12"
-                    >
-                      Na
-                    </text>
-                    <circle
-                      id="moving-electron"
-                      cx="28"
-                      cy="0"
-                      r="4"
-                      fill="#fbbf24"
-                    />
-                  </g>
-                  <g id="atom-cl" transform="translate(250, 60)">
-                    <circle
-                      r="30"
-                      fill="#86efac"
-                      stroke="#22c55e"
-                      stroke-width="2"
-                    />
-                    <text
-                      y="5"
-                      text-anchor="middle"
-                      fill="#14532d"
-                      font-weight="bold"
-                      font-size="12"
-                    >
-                      Cl
-                    </text>
-                  </g>
-                  <text
-                    x="150"
-                    y="110"
-                    text-anchor="middle"
-                    font-size="12"
-                    class="fill-gray-600 dark:fill-gray-300"
-                    id="ionic-status"
-                  >
-                    Nhấn nút để bắt đầu
-                  </text>
-                </svg>
+              Mô phỏng sự hình thành NaCl
+            </h3>
+
+            <div
+              class="flex justify-center items-center gap-8 md:gap-20 min-h-[250px] relative"
+              id="ionic-sim-area"
+            >
+              <!-- Sodium Atom -->
+              <div class="text-center transition-all duration-500" id="na-atom">
+                <div
+                  class="w-24 h-24 rounded-full bg-slate-300 dark:bg-slate-600 flex items-center justify-center relative shadow-lg ring-4 ring-transparent transition-all"
+                >
+                  <span class="font-bold text-xl dark:text-white">Na</span>
+                  <!-- Electron to transfer -->
+                  <div
+                    id="transfer-electron"
+                    class="absolute -right-2 top-10 w-4 h-4 bg-yellow-400 rounded-full shadow-md z-10 cursor-pointer animate-pulse"
+                    title="Electron lớp ngoài cùng"
+                  ></div>
+                </div>
+                <p class="mt-2 font-bold" id="na-label">Na (2,8,1)</p>
               </div>
+
+              <!-- Arrow -->
+              <div class="text-4xl text-slate-300 dark:text-slate-600">
+                <i class="fas fa-arrow-right"></i>
+              </div>
+
+              <!-- Chlorine Atom -->
+              <div class="text-center transition-all duration-500" id="cl-atom">
+                <div
+                  class="w-20 h-20 rounded-full bg-green-200 dark:bg-green-800 flex items-center justify-center relative shadow-lg transition-all"
+                >
+                  <span class="font-bold text-xl dark:text-white">Cl</span>
+                </div>
+                <p class="mt-2 font-bold" id="cl-label">Cl (2,8,7)</p>
+              </div>
+            </div>
+
+            <div class="text-center mt-6">
               <button
-                onclick="startIonicTransfer()"
-                class="mt-3 w-full py-1 bg-red-500 hover:bg-red-600 text-white rounded font-bold text-sm transition"
+                onclick="triggerIonicTransfer()"
+                class="px-6 py-2 bg-gradient-to-r from-green-500 to-teal-500 text-white rounded-full font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all"
               >
-                Bắt đầu phản ứng
+                <i class="fas fa-play mr-2"></i> Chuyển electron
               </button>
-            </div>
-
-            <!-- Sim 2: 3D Lattice -->
-            <div
-              class="bg-black rounded-2xl shadow-lg overflow-hidden relative group h-64"
-            >
-              <div
-                class="absolute top-2 left-2 z-10 bg-black/50 p-2 rounded text-white text-xs backdrop-blur"
+              <button
+                onclick="resetIonicSim()"
+                class="ml-4 px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-all dark:text-white"
               >
-                <h3 class="font-bold">
-                  <i class="fas fa-cube mr-2"></i>Mô phỏng 2: Tinh thể NaCl
-                </h3>
-                <p class="text-gray-300">Xoay để xem cấu trúc 3D</p>
-              </div>
-              <div id="lattice-canvas" class="w-full h-full cursor-move"></div>
-            </div>
-
-            <!-- Sim 3: Coulomb Force -->
-            <div
-              class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700"
-            >
-              <h3 class="text-lg font-bold text-blue-600 mb-3">
-                <i class="fas fa-magnet mr-2"></i>Mô phỏng 3: Lực hút tĩnh điện
-              </h3>
-              <p class="text-xs text-gray-500 mb-3">
-                Lực hút tỉ lệ thuận với điện tích ion ($Q$) và tỉ lệ nghịch với
-                bán kính ($r$).
-              </p>
-
-              <div class="flex items-center gap-4 mb-2">
-                <label class="text-xs font-bold w-20">Điện tích Q:</label>
-                <input
-                  type="range"
-                  min="1"
-                  max="3"
-                  value="1"
-                  step="1"
-                  id="charge-slider"
-                  oninput="updateCoulomb()"
-                />
-              </div>
-              <div class="flex items-center gap-4 mb-4">
-                <label class="text-xs font-bold w-20">Khoảng cách r:</label>
-                <input
-                  type="range"
-                  min="1"
-                  max="3"
-                  value="2"
-                  step="0.5"
-                  id="dist-slider"
-                  oninput="updateCoulomb()"
-                />
-              </div>
-
-              <div
-                class="sim-container h-24 flex items-center justify-center gap-8 relative"
-                id="coulomb-viz"
-              >
-                <div
-                  id="ion-plus"
-                  class="w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center text-xs font-bold transition-all duration-300"
-                >
-                  +1
-                </div>
-                <div
-                  id="force-arrow"
-                  class="h-1 bg-gray-400 transition-all duration-300 flex items-center justify-center text-[10px] text-white font-bold relative"
-                >
-                  <span
-                    class="absolute -top-4 text-gray-500 dark:text-gray-400"
-                    id="force-val"
-                    >F</span
-                  >
-                </div>
-                <div
-                  id="ion-minus"
-                  class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs font-bold transition-all duration-300"
-                >
-                  -1
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- SECTION III: COVALENT BOND -->
-      <section id="covalent" class="scroll-mt-40">
-        <div class="flex items-center gap-3 mb-6">
-          <div
-            class="w-10 h-10 rounded-lg bg-blue-500 text-white flex items-center justify-center text-xl font-bold"
-          >
-            III
-          </div>
-          <h2 class="text-3xl font-bold text-gray-900 dark:text-white">
-            Liên Kết Cộng Hóa Trị
-          </h2>
-        </div>
-
-        <div class="grid lg:grid-cols-2 gap-8">
-          <!-- Theory -->
-          <div class="space-y-6">
-            <div
-              class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700"
-            >
-              <span class="tag-basic mb-2 inline-block">Cơ bản</span>
-              <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">
-                1. Sự hình thành
-              </h3>
-              <p class="text-gray-600 dark:text-gray-300">
-                Hai nguyên tử chia sẻ electron để đạt octet. Một cặp e chung = 1
-                liên kết đơn.
-              </p>
-              <div
-                class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700"
-              >
-                <span class="tag-deep mb-2 inline-block">Sâu</span>
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                  Liên kết hình thành khi orbital nguyên tử xen phủ (overlap).
-                  Xen phủ càng mạnh → liên kết càng bền.
-                </p>
-              </div>
-            </div>
-
-            <div
-              class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700"
-            >
-              <span class="tag-basic mb-2 inline-block">Cơ bản</span>
-              <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">
-                2. Liên kết cho - nhận
-              </h3>
-              <p class="text-gray-600 dark:text-gray-300 text-sm">
-                Một nguyên tử cho cả cặp e liên kết, nguyên tử kia nhận, sau đó
-                dùng chung. VD: $NH_4^+, H_3O^+$.
-              </p>
-              <div
-                class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700"
-              >
-                <span class="tag-deep mb-2 inline-block">Sâu</span>
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                  Về năng lượng giống hệt liên kết thường, chỉ khác nguồn gốc
-                  cặp e.
-                </p>
-              </div>
-            </div>
-
-            <div
-              class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700"
-            >
-              <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">
-                3. Phân loại theo độ âm điện ($\Delta EN$)
-              </h3>
-              <ul class="text-sm space-y-2">
-                <li
-                  class="flex justify-between border-b border-dashed border-gray-300 pb-1"
-                >
-                  <span>$0 \le \Delta EN < 0.4$</span>
-                  <span class="font-bold text-gray-500"
-                    >Không phân cực ($Cl_2$)</span
-                  >
-                </li>
-                <li
-                  class="flex justify-between border-b border-dashed border-gray-300 pb-1"
-                >
-                  <span>$0.4 \le \Delta EN < 1.7$</span>
-                  <span class="font-bold text-blue-500">Phân cực ($HCl$)</span>
-                </li>
-                <li class="flex justify-between">
-                  <span>$\Delta EN \ge 1.7$</span>
-                  <span class="font-bold text-red-500"
-                    >Liên kết ION ($NaCl$)</span
-                  >
-                </li>
-              </ul>
-              <p class="text-xs italic mt-2 text-gray-400">
-                Giá trị xấp xỉ, đúng 99% trường hợp phổ thông.
-              </p>
-            </div>
-
-            <div
-              class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700"
-            >
-              <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">
-                4. Liên kết $\sigma$ và $\pi$
-              </h3>
-              <div class="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <strong class="text-blue-600"
-                    >Liên kết Sigma ($\sigma$)</strong
-                  >
-                  <p class="text-gray-500">
-                    Xen phủ trục (đối đầu). Có ở mọi liên kết. Mạnh, linh động
-                    (xoay được).
-                  </p>
-                </div>
-                <div>
-                  <strong class="text-purple-600">Liên kết Pi ($\pi$)</strong>
-                  <p class="text-gray-500">
-                    Xen phủ bên (song song). Chỉ ở liên kết đôi/ba. Yếu hơn, cản
-                    trở quay.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Simulations -->
-          <div class="space-y-6">
-            <!-- Sim 1: Polarity Slider -->
-            <div
-              class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700"
-            >
-              <h3
-                class="text-lg font-bold text-primary dark:text-secondary mb-3"
-              >
-                <i class="fas fa-sliders-h mr-2"></i>Mô phỏng 1: Độ phân cực
-              </h3>
-              <div class="relative pt-6 pb-2">
-                <input
-                  type="range"
-                  min="0"
-                  max="3.5"
-                  step="0.1"
-                  value="0"
-                  id="polarity-slider"
-                  oninput="updatePolarity(this.value)"
-                />
-                <div
-                  class="flex justify-between text-xs mt-2 text-gray-500 font-mono"
-                >
-                  <span>0</span>
-                  <span>0.4</span>
-                  <span>1.7</span>
-                  <span>3.5</span>
-                </div>
-              </div>
-              <div class="mt-4 text-center">
-                <div
-                  class="text-2xl font-bold text-gray-800 dark:text-white"
-                  id="en-value"
-                >
-                  0.0
-                </div>
-                <div
-                  class="text-lg font-bold transition-colors duration-300"
-                  id="bond-type"
-                >
-                  Cộng hóa trị không cực
-                </div>
-              </div>
-            </div>
-
-            <!-- Sim 2: Orbital Overlap -->
-            <div
-              class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700"
-            >
-              <div class="flex justify-between items-center mb-3">
-                <h3 class="text-lg font-bold text-primary dark:text-secondary">
-                  <i class="fas fa-atom mr-2"></i>Mô phỏng 2: Xen phủ Orbital
-                </h3>
-                <div class="flex gap-2 text-xs">
-                  <button
-                    onclick="showOrbital('sigma')"
-                    class="px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
-                  >
-                    Sigma ($\sigma$)
-                  </button>
-                  <button
-                    onclick="showOrbital('pi')"
-                    class="px-2 py-1 bg-purple-100 text-purple-700 rounded hover:bg-purple-200"
-                  >
-                    Pi ($\pi$)
-                  </button>
-                </div>
-              </div>
-              <div
-                class="sim-container h-48 flex items-center justify-center bg-gray-50 dark:bg-gray-900"
-                id="orbital-viz"
-              >
-                <svg
-                  width="250"
-                  height="150"
-                  viewBox="0 0 300 200"
-                  id="svg-orbital"
-                ></svg>
-              </div>
+                Làm lại
+              </button>
               <p
-                class="mt-2 text-xs text-center text-gray-500 italic"
-                id="orbital-desc"
+                id="ionic-feedback"
+                class="mt-4 text-green-600 dark:text-green-400 font-semibold min-h-[1.5rem]"
               ></p>
             </div>
+          </div>
+        </div>
 
-            <!-- Sim 3: Bond Strength -->
-            <div
-              class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700"
-            >
-              <h3 class="text-lg font-bold text-green-600 mb-3">
-                <i class="fas fa-dumbbell mr-2"></i>Mô phỏng 3: Năng lượng liên
-                kết (C-C)
-              </h3>
-              <p class="text-xs text-gray-500 mb-3">
-                So sánh độ bền: Đơn < Đôi < Ba (Không phải bội số tuyến tính)
+        <!-- C. Thí nghiệm ảo: Nuôi tinh thể -->
+        <div class="mt-8 glass-card p-6 md:p-8">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold text-orange-600 dark:text-orange-400">
+              <i class="fas fa-flask mr-2"></i>C. Thí nghiệm ảo: Nuôi tinh thể
+              NaCl
+            </h3>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div class="space-y-4 text-slate-700 dark:text-slate-300">
+              <p>
+                <strong>Mục tiêu:</strong> Quan sát sự hình thành cấu trúc tinh
+                thể lập phương từ dung dịch bão hòa.
               </p>
-              <div class="space-y-3">
-                <!-- Single -->
+              <div class="bg-white/50 dark:bg-slate-800/50 p-4 rounded-lg">
+                <p class="mb-2 font-semibold">Quy trình:</p>
+                <ol class="list-decimal pl-5 space-y-1 text-sm">
+                  <li>Pha dung dịch NaCl bão hòa nóng.</li>
+                  <li>Để nguội từ từ.</li>
+                  <li>Treo mầm tinh thể.</li>
+                  <li>Quan sát tinh thể lớn dần theo thời gian.</li>
+                </ol>
+              </div>
+            </div>
+
+            <!-- Crystal Lab Visual -->
+            <div
+              class="bg-slate-200 dark:bg-slate-800 rounded-xl h-64 relative flex items-end justify-center overflow-hidden border border-slate-300 dark:border-slate-700"
+            >
+              <!-- Beaker -->
+              <div
+                class="w-32 h-48 border-x-4 border-b-4 border-white/30 bg-blue-400/10 backdrop-blur-sm rounded-b-xl relative z-10 flex justify-center items-end pb-2"
+              >
+                <!-- Solution -->
                 <div
-                  class="relative group cursor-pointer"
-                  onclick="showBondInfo(1)"
+                  id="solution-liquid"
+                  class="absolute bottom-0 w-full h-3/4 bg-blue-300/30 transition-all duration-1000"
+                ></div>
+
+                <!-- Crystal Seed (Starts small) -->
+                <div
+                  id="crystal-seed"
+                  class="w-2 h-2 bg-white shadow-[0_0_10px_white] transition-all duration-[3000ms] ease-out absolute bottom-10 opacity-0 transform rotate-45"
+                ></div>
+
+                <!-- String -->
+                <div
+                  id="crystal-string"
+                  class="w-0.5 h-32 bg-slate-400 absolute top-[-20px] opacity-0 transition-opacity duration-1000"
+                ></div>
+              </div>
+
+              <!-- Controls -->
+              <div class="absolute top-4 right-4 flex flex-col gap-2 z-20">
+                <button
+                  onclick="startCrystalGrowth()"
+                  class="p-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 text-xs font-bold"
                 >
-                  <div class="flex items-center gap-2">
-                    <span class="text-xs font-bold w-12">Đơn:</span>
-                    <div
-                      class="h-2 bg-gray-300 rounded w-1/3 transition-all group-hover:bg-blue-400"
-                    ></div>
-                    <span class="text-xs text-gray-500">~350 kJ/mol</span>
-                  </div>
+                  <i class="fas fa-temperature-arrow-down"></i> Làm nguội
+                </button>
+                <button
+                  onclick="resetCrystal()"
+                  class="p-2 bg-slate-500 text-white rounded-lg shadow hover:bg-slate-600 text-xs"
+                >
+                  <i class="fas fa-redo"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================================================
+             SECTION III: LIÊN KẾT CỘNG HÓA TRỊ
+             ========================================================================= -->
+      <section id="covalent" class="scroll-mt-24">
+        <div class="flex items-center gap-4 mb-8">
+          <div
+            class="w-12 h-12 rounded-xl bg-purple-500 flex items-center justify-center text-white text-2xl shadow-lg shadow-purple-500/40"
+          >
+            <i class="fas fa-share-nodes"></i>
+          </div>
+          <h2
+            class="text-3xl md:text-4xl font-display font-bold text-slate-800 dark:text-white"
+          >
+            III. Liên Kết Cộng Hóa Trị
+          </h2>
+        </div>
+
+        <div class="glass-card p-6 md:p-8">
+          <h3 class="text-xl font-bold text-blue-600 dark:text-blue-400 mb-6">
+            <i class="fas fa-sliders mr-2"></i>B. Mô phỏng: Khoảng cách liên kết
+            & Năng lượng
+          </h3>
+
+          <div class="flex flex-col items-center">
+            <!-- Visualization Area -->
+            <div
+              class="w-full h-64 bg-slate-100 dark:bg-slate-900 rounded-xl relative overflow-hidden flex items-center justify-center mb-6 border border-slate-200 dark:border-slate-700"
+            >
+              <div
+                class="absolute inset-0 flex items-center justify-center opacity-10"
+              >
+                <i class="fas fa-grid text-6xl"></i>
+              </div>
+
+              <!-- Atom Left -->
+              <div
+                id="atom-left"
+                class="w-16 h-16 rounded-full bg-blue-500 shadow-lg absolute transition-transform duration-100 flex items-center justify-center text-white font-bold z-10"
+                style="left: 30%"
+              >
+                H
+              </div>
+
+              <!-- Atom Right -->
+              <div
+                id="atom-right"
+                class="w-16 h-16 rounded-full bg-blue-500 shadow-lg absolute transition-transform duration-100 flex items-center justify-center text-white font-bold z-10"
+                style="right: 30%"
+              >
+                H
+              </div>
+
+              <!-- Electron Cloud (Bond) -->
+              <div
+                id="electron-cloud"
+                class="absolute h-10 bg-blue-300/50 rounded-full blur-md transition-all duration-100 opacity-0"
+                style="width: 10px"
+              ></div>
+
+              <!-- Energy Feedback -->
+              <div
+                id="energy-feedback"
+                class="absolute bottom-4 font-mono text-sm font-bold text-slate-500"
+              >
+                Trạng thái: Tách biệt
+              </div>
+            </div>
+
+            <!-- Slider Control -->
+            <div class="w-full max-w-md px-4">
+              <label
+                for="bond-distance"
+                class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
+                >Điều chỉnh khoảng cách hạt nhân (r)</label
+              >
+              <input
+                type="range"
+                id="bond-distance"
+                min="0"
+                max="100"
+                value="100"
+                class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700"
+              />
+              <div class="flex justify-between text-xs text-slate-500 mt-2">
+                <span>Đẩy nhau (Gần)</span>
+                <span>Cân bằng (Bền)</span>
+                <span>Hút nhau (Xa)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 grid md:grid-cols-2 gap-6">
+            <div class="bg-white/50 dark:bg-slate-800/50 p-4 rounded-lg">
+              <h4 class="font-bold mb-2 text-purple-600">
+                Phân loại theo độ âm điện (Δχ)
+              </h4>
+              <ul class="text-sm space-y-2 text-slate-700 dark:text-slate-300">
+                <li>
+                  <span
+                    class="inline-block w-3 h-3 bg-gray-400 rounded-full mr-2"
+                  ></span
+                  >0 ≤ Δχ < 0,4: CHT Không cực
+                </li>
+                <li>
+                  <span
+                    class="inline-block w-3 h-3 bg-blue-400 rounded-full mr-2"
+                  ></span
+                  >0,4 ≤ Δχ < 1,7: CHT Có cực
+                </li>
+                <li>
+                  <span
+                    class="inline-block w-3 h-3 bg-green-400 rounded-full mr-2"
+                  ></span
+                  >Δχ ≥ 1,7: Liên kết Ion
+                </li>
+              </ul>
+            </div>
+            <div class="bg-white/50 dark:bg-slate-800/50 p-4 rounded-lg">
+              <h4 class="font-bold mb-2 text-purple-600">
+                Dạng hình học (VSEPR)
+              </h4>
+              <div
+                class="flex gap-4 text-2xl text-slate-600 dark:text-slate-400 justify-around"
+              >
+                <div class="text-center group cursor-pointer">
+                  <p class="text-xs mb-1">CO₂</p>
+                  <i
+                    class="fas fa-grip-lines group-hover:text-blue-500 transition-colors"
+                  ></i>
                 </div>
-                <!-- Double -->
-                <div
-                  class="relative group cursor-pointer"
-                  onclick="showBondInfo(2)"
-                >
-                  <div class="flex items-center gap-2">
-                    <span class="text-xs font-bold w-12">Đôi:</span>
-                    <div
-                      class="h-2 bg-gray-400 rounded w-2/3 transition-all group-hover:bg-blue-500"
-                    ></div>
-                    <span class="text-xs text-gray-500">~610 kJ/mol</span>
-                  </div>
+                <div class="text-center group cursor-pointer">
+                  <p class="text-xs mb-1">CH₄</p>
+                  <i
+                    class="fas fa-cube group-hover:text-blue-500 transition-colors"
+                  ></i>
                 </div>
-                <!-- Triple -->
-                <div
-                  class="relative group cursor-pointer"
-                  onclick="showBondInfo(3)"
-                >
-                  <div class="flex items-center gap-2">
-                    <span class="text-xs font-bold w-12">Ba:</span>
-                    <div
-                      class="h-2 bg-gray-500 rounded w-full transition-all group-hover:bg-blue-600"
-                    ></div>
-                    <span class="text-xs text-gray-500">~840 kJ/mol</span>
-                  </div>
+                <div class="text-center group cursor-pointer">
+                  <p class="text-xs mb-1">H₂O</p>
+                  <i
+                    class="fas fa-chevron-down group-hover:text-blue-500 transition-colors"
+                  ></i>
                 </div>
               </div>
-              <p
-                id="bond-info-text"
-                class="text-xs text-center mt-3 text-primary font-bold min-h-[1rem]"
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================================================
+             SECTION IV: HYDROGEN & VAN DER WAALS
+             ========================================================================= -->
+      <section id="hydrogen" class="scroll-mt-24">
+        <div class="flex items-center gap-4 mb-8">
+          <div
+            class="w-12 h-12 rounded-xl bg-pink-500 flex items-center justify-center text-white text-2xl shadow-lg shadow-pink-500/40"
+          >
+            <i class="fas fa-water"></i>
+          </div>
+          <h2
+            class="text-3xl md:text-4xl font-display font-bold text-slate-800 dark:text-white"
+          >
+            IV. Liên Kết Hydrogen & Van der Waals
+          </h2>
+        </div>
+
+        <div class="glass-card p-6 md:p-8">
+          <div class="grid md:grid-cols-2 gap-8">
+            <!-- Theory -->
+            <div class="space-y-4">
+              <h3 class="text-xl font-bold text-pink-600 dark:text-pink-400">
+                A. Lý thuyết & Hệ quả
+              </h3>
+              <p class="text-slate-700 dark:text-slate-300 text-sm">
+                <strong>LK Hydrogen:</strong> Hình thành giữa H (liên kết với N,
+                O, F) và nguyên tử có độ âm điện lớn khác. <br /><em
+                  class="text-slate-500"
+                  >Biểu diễn: dấu ba chấm (...)</em
+                >
+              </p>
+              <ul
+                class="text-sm list-disc pl-5 text-slate-700 dark:text-slate-300"
               >
-                Click vào thanh để xem chi tiết
+                <li>Tăng nhiệt độ sôi, nhiệt độ nóng chảy.</li>
+                <li>Tăng độ tan trong nước.</li>
+                <li>Nước đá nhẹ hơn nước lỏng (cấu trúc rỗng).</li>
+                <li>Giữ bền cấu trúc DNA.</li>
+              </ul>
+            </div>
+
+            <!-- Simulation: Water States -->
+            <div
+              class="bg-gradient-to-b from-blue-100 to-white dark:from-slate-800 dark:to-slate-900 rounded-xl p-4 border border-blue-200 dark:border-slate-700 flex flex-col items-center"
+            >
+              <h4 class="font-bold text-blue-600 dark:text-blue-400 mb-2">
+                Mô hình cấu trúc nước
+              </h4>
+
+              <div
+                id="water-sim-container"
+                class="w-full h-48 relative overflow-hidden bg-white/30 dark:bg-black/20 rounded-lg mb-4 flex flex-wrap content-center justify-center gap-2 p-2"
+              >
+                <!-- Water molecules handled by JS -->
+              </div>
+
+              <div
+                class="flex gap-2 bg-slate-200 dark:bg-slate-700 p-1 rounded-full"
+              >
+                <button
+                  onclick="setWaterState('ice')"
+                  class="px-4 py-1 rounded-full text-xs font-bold transition-all hover:bg-white dark:hover:bg-slate-600"
+                  id="btn-ice"
+                >
+                  Đá (Rắn)
+                </button>
+                <button
+                  onclick="setWaterState('liquid')"
+                  class="px-4 py-1 rounded-full text-xs font-bold bg-white dark:bg-slate-600 shadow text-blue-600"
+                  id="btn-liquid"
+                >
+                  Lỏng
+                </button>
+                <button
+                  onclick="setWaterState('gas')"
+                  class="px-4 py-1 rounded-full text-xs font-bold transition-all hover:bg-white dark:hover:bg-slate-600"
+                  id="btn-gas"
+                >
+                  Hơi
+                </button>
+              </div>
+              <p
+                id="water-desc"
+                class="text-xs text-center mt-2 text-slate-500"
+              >
+                Các phân tử chuyển động hỗn loạn, liên kết H hình thành và phá
+                vỡ liên tục.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- SECTION IV: WEAK INTERACTIONS -->
-      <section id="weak" class="scroll-mt-40">
-        <div class="flex items-center gap-3 mb-6">
+      <!-- =========================================================================
+             SECTION F: GAME QUIZ
+             ========================================================================= -->
+      <section id="quiz" class="scroll-mt-24 mb-20">
+        <div class="flex items-center gap-4 mb-8">
           <div
-            class="w-10 h-10 rounded-lg bg-purple-500 text-white flex items-center justify-center text-xl font-bold"
+            class="w-12 h-12 rounded-xl bg-yellow-500 flex items-center justify-center text-white text-2xl shadow-lg shadow-yellow-500/40"
           >
-            IV
+            <i class="fas fa-gamepad"></i>
           </div>
-          <h2 class="text-3xl font-bold text-gray-900 dark:text-white">
-            Liên Kết Yếu
+          <h2
+            class="text-3xl md:text-4xl font-display font-bold text-slate-800 dark:text-white"
+          >
+            F. Bài Tập Củng Cố
           </h2>
         </div>
 
-        <div class="grid lg:grid-cols-2 gap-8">
-          <!-- Theory -->
-          <div class="space-y-6">
-            <div
-              class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700"
+        <div
+          class="glass-card p-6 md:p-10 max-w-3xl mx-auto text-center"
+          id="quiz-container"
+        >
+          <!-- Start Screen -->
+          <div id="quiz-start">
+            <i class="fas fa-brain text-6xl text-gradient mb-6"></i>
+            <h3 class="text-2xl font-bold mb-4 text-slate-800 dark:text-white">
+              Sẵn sàng thử thách?
+            </h3>
+            <p class="text-slate-600 dark:text-slate-300 mb-8">
+              5 câu hỏi trắc nghiệm nhanh để kiểm tra kiến thức vừa học.
+            </p>
+            <button
+              onclick="startQuiz()"
+              class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full shadow-lg transition-transform hover:scale-105"
             >
-              <span class="tag-basic mb-2 inline-block">Cơ bản</span>
-              <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">
-                1. Liên kết Hydrogen (H-bond)
-              </h3>
-              <p class="text-gray-600 dark:text-gray-300">
-                Xảy ra khi H liên kết với nguyên tử có độ âm điện lớn (F, O, N).
-                $H(\delta^+)$ hút cặp e tự do của nguyên tử kia.
-              </p>
-              <p class="text-sm font-bold mt-2 text-purple-600">
-                Ví dụ mạnh nhất: $HF, H_2O, NH_3$.
-              </p>
-
-              <div class="mt-3 bg-purple-50 dark:bg-purple-900/20 p-3 rounded">
-                <strong>Tính chất:</strong>
-                <ul class="list-disc list-inside text-sm mt-1">
-                  <li>Làm nhiệt độ sôi tăng mạnh (bất thường).</li>
-                  <li>Tạo mạng lưới trong nước đá, cấu trúc DNA.</li>
-                </ul>
-              </div>
-
-              <div
-                class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700"
-              >
-                <span class="tag-deep mb-2 inline-block">Sâu</span>
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                  Không phải liên kết hoá trị, là tương tác tĩnh điện định
-                  hướng. Mạnh hơn Van der Waals nhưng yếu hơn Cộng hoá trị.
-                </p>
-              </div>
-            </div>
-
-            <div
-              class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700"
-            >
-              <span class="tag-basic mb-2 inline-block">Cơ bản</span>
-              <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">
-                2. Tương tác Van der Waals
-              </h3>
-              <p class="text-gray-600 dark:text-gray-300 text-sm">
-                Xuất hiện giữa mọi phân tử (kể cả khí hiếm). Nhỏ nhưng quan
-                trọng khi số lượng lớn (polymer, protein).
-              </p>
-
-              <div class="mt-3 grid grid-cols-1 gap-2 text-xs font-mono">
-                <div class="p-2 bg-gray-100 dark:bg-gray-700 rounded">
-                  1. Lực định hướng (dipole-dipole)
-                </div>
-                <div class="p-2 bg-gray-100 dark:bg-gray-700 rounded">
-                  2. Lực cảm ứng (dipole-induced)
-                </div>
-                <div class="p-2 bg-gray-100 dark:bg-gray-700 rounded">
-                  3. Lực khuếch tán (London)
-                </div>
-              </div>
-
-              <div
-                class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700"
-              >
-                <span class="tag-deep mb-2 inline-block">Sâu</span>
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                  Lực London tăng khi: Phân tử lớn, Dễ phân cực, Nhiều e (đám
-                  mây e dễ "nhảy" tạo dipole tạm thời).
-                </p>
-              </div>
-            </div>
+              Bắt đầu ngay
+            </button>
           </div>
 
-          <!-- Simulations -->
-          <div class="space-y-6">
-            <!-- Sim 1: H-Bond Water -->
-            <div
-              class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700"
-            >
-              <h3 class="text-lg font-bold text-purple-600 mb-3">
-                <i class="fas fa-tint mr-2"></i>Mô phỏng 1: Mạng lưới nước
-                (H-bond)
-              </h3>
-              <div
-                class="sim-container h-48 relative overflow-hidden bg-blue-50 dark:bg-blue-900/20"
+          <!-- Question Screen -->
+          <div id="quiz-question" class="hidden text-left">
+            <div class="flex justify-between items-center mb-6">
+              <span class="text-sm font-bold text-slate-500"
+                >Câu <span id="q-current">1</span>/<span id="q-total"
+                  >5</span
+                ></span
               >
-                <!-- Molecules -->
-                <div class="water-molecule absolute top-8 left-12">
-                  <div class="relative">
-                    <div
-                      class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md"
-                    >
-                      O
-                    </div>
-                    <div
-                      class="absolute -bottom-2 -left-2 w-4 h-4 bg-white border border-gray-300 rounded-full flex items-center justify-center text-[8px]"
-                    >
-                      H
-                    </div>
-                    <div
-                      class="absolute -bottom-2 -right-2 w-4 h-4 bg-white border border-gray-300 rounded-full flex items-center justify-center text-[8px]"
-                    >
-                      H
-                    </div>
-                  </div>
-                </div>
+              <div class="w-1/2 h-2 bg-slate-200 rounded-full">
                 <div
-                  class="water-molecule absolute bottom-8 right-12"
-                  style="animation-delay: 1.5s"
-                >
-                  <div class="relative">
-                    <div
-                      class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md"
-                    >
-                      O
-                    </div>
-                    <div
-                      class="absolute -top-2 -left-2 w-4 h-4 bg-white border border-gray-300 rounded-full flex items-center justify-center text-[8px]"
-                    >
-                      H
-                    </div>
-                    <div
-                      class="absolute -top-2 -right-2 w-4 h-4 bg-white border border-gray-300 rounded-full flex items-center justify-center text-[8px]"
-                    >
-                      H
-                    </div>
-                  </div>
-                </div>
-                <!-- Bond Line -->
-                <svg class="absolute inset-0 w-full h-full pointer-events-none">
-                  <line
-                    x1="80"
-                    y1="70"
-                    x2="220"
-                    y2="150"
-                    stroke="#a855f7"
-                    stroke-width="2"
-                    stroke-dasharray="5,3"
-                  >
-                    <animate
-                      attributeName="opacity"
-                      values="0;1;0"
-                      dur="2s"
-                      repeatCount="indefinite"
-                    />
-                  </line>
-                  <text
-                    x="150"
-                    y="100"
-                    fill="#a855f7"
-                    font-size="10"
-                    font-weight="bold"
-                    text-anchor="middle"
-                  >
-                    Liên kết H
-                  </text>
-                </svg>
+                  id="progress-bar"
+                  class="h-2 bg-blue-500 rounded-full transition-all duration-300"
+                  style="width: 0%"
+                ></div>
               </div>
             </div>
 
-            <!-- Sim 2: VDW Dipole -->
-            <div
-              class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700"
+            <h4
+              id="q-text"
+              class="text-xl font-bold text-slate-800 dark:text-white mb-6"
             >
-              <h3
-                class="text-lg font-bold text-gray-700 dark:text-gray-300 mb-3"
-              >
-                <i class="fas fa-wind mr-2"></i>Mô phỏng 2: Lưỡng cực tạm thời
-                (VDW)
-              </h3>
-              <div
-                class="sim-container h-32 flex items-center justify-center relative"
-              >
-                <div
-                  class="w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-700 relative overflow-hidden shadow-inner flex items-center justify-center"
-                >
-                  <div
-                    id="vdw-dipole"
-                    class="absolute inset-0 transition-opacity duration-1000 opacity-0 bg-gradient-to-r from-blue-400/60 to-red-400/60"
-                  ></div>
-                  <span class="relative z-10 text-xs font-mono font-bold"
-                    >He Atom</span
-                  >
-                </div>
-              </div>
-              <p class="text-center text-xs text-gray-400 mt-2">
-                Đám mây e dao động tạo cực âm/dương tạm thời
-              </p>
+              Nội dung câu hỏi...
+            </h4>
+
+            <div id="q-options" class="space-y-3">
+              <!-- Options injected by JS -->
             </div>
 
-            <!-- Sim 3: Boiling Point Chart -->
-            <div
-              class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700"
+            <div id="q-feedback" class="mt-4 p-4 rounded-lg hidden"></div>
+
+            <button
+              id="next-btn"
+              onclick="nextQuestion()"
+              class="mt-6 w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg hidden"
             >
-              <h3 class="text-lg font-bold text-orange-500 mb-3">
-                <i class="fas fa-chart-bar mr-2"></i>Mô phỏng 3: Ảnh hưởng nhiệt
-                độ sôi
-              </h3>
-              <p class="text-xs text-gray-500 mb-2">
-                So sánh $H_2O$ (có lk Hydrogen) và $H_2S$ (chỉ có VDW).
-              </p>
-              <div class="relative h-40 w-full">
-                <canvas id="bpChart"></canvas>
-              </div>
+              Câu tiếp theo <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+          </div>
+
+          <!-- Result Screen -->
+          <div id="quiz-result" class="hidden">
+            <div
+              class="w-24 h-24 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-6"
+            >
+              <i class="fas fa-trophy text-4xl text-green-600"></i>
             </div>
+            <h3 class="text-3xl font-bold text-slate-800 dark:text-white mb-2">
+              Hoàn thành!
+            </h3>
+            <p class="text-xl text-slate-600 dark:text-slate-300 mb-8">
+              Bạn đạt:
+              <span id="score" class="font-bold text-blue-600">0</span>/5 câu
+              đúng
+            </p>
+            <button
+              onclick="resetQuiz()"
+              class="px-6 py-2 border-2 border-slate-300 hover:bg-slate-100 dark:border-slate-600 dark:hover:bg-slate-800 rounded-full transition-all text-slate-600 dark:text-white font-bold"
+            >
+              Làm lại
+            </button>
           </div>
         </div>
+      </section>
+
+      <!-- NAVIGATION BUTTONS (FIXED FROM PROMPT) -->
+      <section
+        class="text-center space-x-4 mb-20 flex flex-col md:flex-row justify-center gap-4 md:gap-0"
+      >
+        <button
+          onclick="window.location.href = 'bai_tap.html'"
+          style="
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.35);
+            transition: 0.3s ease;
+          "
+          onmouseover="
+            this.style.transform = 'translateY(-3px) scale(1.03)';
+            this.style.boxShadow = '0 18px 45px rgba(99,102,241,.55)';
+          "
+          onmouseout="
+            this.style.transform = 'translateY(0) scale(1)';
+            this.style.boxShadow = '0 10px 30px rgba(59,130,246,.35)';
+          "
+        >
+          <i class="fas fa-pen-to-square"></i>
+          Bài tập củng cố
+        </button>
+
+        <button
+          onclick="window.location.href = '../chemstudyteen.html'"
+          style="
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.35);
+            transition: 0.3s ease;
+          "
+          onmouseover="
+            this.style.transform = 'translateY(-3px)';
+            this.style.boxShadow = '0 18px 45px rgba(22,163,74,.55)';
+          "
+          onmouseout="
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 10px 30px rgba(34,197,94,.35)';
+          "
+        >
+          <i class="fas fa-arrow-left"></i>
+          Quay về CS Expert
+        </button>
       </section>
     </main>
 
+    <!-- FOOTER (FIXED FROM PROMPT) -->
+    <footer>
+      <div class="footer-waves"></div>
+      <div class="footer-grid">
+        <div class="footer-brand" data-aos="fade-right">
+          <h2>EDUMATTER</h2>
+          <p style="color: #94a3b8; line-height: 1.8">
+            Kiến tạo môi trường học tập cảm xúc, nơi tri thức được số hóa và
+            truyền tải đầy cảm hứng.
+          </p>
+          <div style="display: flex; gap: 15px; margin-top: 30px">
+            <a href="https://www.facebook.com/ducnt214" class="icon-btn"
+              ><i class="fab fa-facebook" alt="facebook"></i
+            ></a>
+            <a href="https://github.com/ducnt2104" class="icon-btn" alt="github"
+              ><i class="fab fa-github"></i
+            ></a>
+            <a
+              href="https://www.tiktok.com/@ktbtcthm210"
+              class="icon-btn"
+              alt="tiktok"
+              ><i class="fab fa-tiktok"></i
+            ></a>
+          </div>
+        </div>
+        <div class="footer-links" data-aos="fade-up">
+          <h3>Liên hệ nhanh</h3>
+          <div class="contact-item">
+            <i class="fas fa-envelope"></i>
+            <span>ducnt21042010@gmail.com</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-phone"></i>
+            <span>034 226 6204</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-location-dot"></i>
+            <span>THPT Tôn Đức Thắng, Đồng Nai</span>
+          </div>
+        </div>
+        <div class="footer-links" data-aos="fade-left">
+          <h4>Đội ngũ DNT</h4>
+          <p style="color: #94a3b8">
+            "Sáng tạo không ngừng - Vươn tầm tri thức"
+          </p>
+          <div
+            style="
+              margin-top: 20px;
+              padding: 15px;
+              background: rgba(255, 255, 255, 0.05);
+              border-radius: 15px;
+            "
+          >
+            <p style="font-size: 0.8rem; color: #fff">
+              Dự án được phát triển bởi các thành viên đam mê công nghệ tại Việt
+              Nam.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="copyright">
+        <p>
+          © 2024 EDUMATTER Educational Ecosystem. Designed with
+          <i class="fas fa-heart" style="color: #ef4444"></i> by DNT Team.
+        </p>
+      </div>
+    </footer>
+
     <!-- JAVASCRIPT LOGIC -->
     <script>
-      // --- THEME TOGGLE ---
-      function toggleTheme() {
-        document.documentElement.classList.toggle("dark");
-        localStorage.setItem(
-          "theme",
-          document.documentElement.classList.contains("dark") ? "dark" : "light"
-        );
-        if (bpChart) bpChart.update(); // Update chart colors
-      }
+      // === 1. THEME MANAGEMENT ===
+      const themeToggle = document.getElementById("themeToggle");
+      const html = document.documentElement;
 
-      // Load saved theme
+      // Check local storage or system preference
       if (
-        localStorage.getItem("theme") === "dark" ||
+        localStorage.theme === "dark" ||
         (!("theme" in localStorage) &&
           window.matchMedia("(prefers-color-scheme: dark)").matches)
       ) {
-        document.documentElement.classList.add("dark");
+        html.classList.add("dark");
+      } else {
+        html.classList.remove("dark");
       }
 
-      // --- SCROLL SPY ---
-      function scrollToSection(id) {
-        document.getElementById(id).scrollIntoView({ behavior: "smooth" });
-      }
-
-      window.addEventListener("scroll", () => {
-        const sections = ["octet", "ion", "covalent", "weak"];
-        const navBtns = document.querySelectorAll(".nav-btn");
-
-        let current = "";
-        sections.forEach((section) => {
-          const element = document.getElementById(section);
-          if (scrollY >= element.offsetTop - 200) {
-            current = section;
-          }
-        });
-
-        navBtns.forEach((btn) => {
-          btn.classList.remove(
-            "text-primary",
-            "dark:text-secondary",
-            "border-primary",
-            "dark:border-secondary"
-          );
-          btn.classList.add("border-transparent");
-          if (btn.getAttribute("onclick").includes(current)) {
-            btn.classList.add(
-              "text-primary",
-              "dark:text-secondary",
-              "border-primary"
-            );
-            btn.classList.remove("border-transparent");
-          }
-        });
+      themeToggle.addEventListener("click", () => {
+        html.classList.toggle("dark");
+        localStorage.theme = html.classList.contains("dark") ? "dark" : "light";
       });
 
-      // --- SECTION I: OCTET SIMS ---
-      let octetCurrent = 6;
+      // === 2. OCTET SIMULATION (Mục đích: Hiểu quy tắc bát tử) ===
+      let electrons = 0;
+      const orbit = document.getElementById("electron-orbit");
+      const countDisplay = document.getElementById("e-count");
+      const statusDisplay = document.getElementById("octet-status");
+
       function addElectron() {
-        if (octetCurrent < 8) {
-          octetCurrent++;
-          renderOctet();
-          if (octetCurrent === 8) {
-            const status = document.getElementById("octet-status");
-            status.innerHTML = "✅ Bền vững!";
-            status.className =
-              "absolute top-2 right-2 text-xs font-bold px-2 py-1 rounded bg-green-500 text-white";
-          }
+        if (electrons < 8) {
+          electrons++;
+          const el = document.createElement("div");
+          // Calculate position on circle
+          const angle = (electrons - 1) * (360 / 8) * (Math.PI / 180);
+          const radius = 90; // px
+          const x = Math.cos(angle) * radius + 96 - 8; // center offset
+          const y = Math.sin(angle) * radius + 96 - 8;
+
+          el.className =
+            "absolute w-4 h-4 bg-yellow-400 rounded-full shadow-md animate-pulse";
+          el.style.left = `${x}px`;
+          el.style.top = `${y}px`;
+          orbit.appendChild(el);
+
+          countDisplay.innerText = electrons;
+          updateOctetStatus();
         }
       }
 
       function resetOctet() {
-        octetCurrent = 6;
-        const status = document.getElementById("octet-status");
-        status.innerHTML = "6/8 e";
-        status.className =
-          "absolute top-2 right-2 text-xs font-bold px-2 py-1 rounded bg-gray-200 text-gray-600";
-        renderOctet();
+        electrons = 0;
+        orbit.innerHTML = "";
+        countDisplay.innerText = "0";
+        updateOctetStatus();
       }
 
-      function renderOctet() {
-        const group = document.getElementById("valence-electrons");
-        group.innerHTML = "";
-        // Positions for electrons
-        const positions = [
-          { cx: 100, cy: 35 },
-          { cx: 100, cy: 165 },
-          { cx: 45, cy: 65 },
-          { cx: 155, cy: 65 },
-          { cx: 45, cy: 135 },
-          { cx: 155, cy: 135 },
-          { cx: 35, cy: 100 },
-          { cx: 165, cy: 100 }, // Extra slots
-        ];
-
-        for (let i = 0; i < octetCurrent; i++) {
-          const circle = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "circle"
+      function updateOctetStatus() {
+        if (electrons === 8) {
+          statusDisplay.innerText = "🎉 Bền vững (Quy tắc Octet)!";
+          statusDisplay.className =
+            "mt-2 text-sm h-6 font-bold text-green-600 animate-bounce";
+          orbit.parentElement.classList.add(
+            "border-green-500",
+            "shadow-[0_0_20px_limegreen]",
           );
-          circle.setAttribute("cx", positions[i].cx);
-          circle.setAttribute("cy", positions[i].cy);
-          circle.setAttribute("r", 8);
-          circle.setAttribute("fill", i < 6 ? "#3b82f6" : "#10b981");
-          circle.classList.add("electron-dot");
-          group.appendChild(circle);
-        }
-      }
-      renderOctet(); // Init
-
-      function showException(type) {
-        const container = document.getElementById("exception-viz");
-        const desc = document.getElementById("exception-desc");
-        container.innerHTML = "";
-
-        if (type === "becl2") {
-          // BeCl2 SVG
-          container.innerHTML = `
-                <svg width="200" height="100" viewBox="0 0 200 100">
-                    <line x1="60" y1="50" x2="140" y2="50" stroke="#94a3b8" stroke-width="2"/>
-                    <circle cx="100" cy="50" r="15" fill="#f59e0b"/>
-                    <text x="100" y="55" text-anchor="middle" fill="white" font-size="10" font-weight="bold">Be</text>
-                    <circle cx="40" cy="50" r="12" fill="#22c55e"/>
-                    <text x="40" y="54" text-anchor="middle" fill="white" font-size="8" font-weight="bold">Cl</text>
-                    <circle cx="160" cy="50" r="12" fill="#22c55e"/>
-                    <text x="160" y="54" text-anchor="middle" fill="white" font-size="8" font-weight="bold">Cl</text>
-                </svg>
-              `;
-          desc.innerHTML = `Be chỉ có 4e lớp ngoài cùng (Thiếu Octet).`;
+          orbit.parentElement.classList.remove("border-slate-400");
         } else {
-          // PCl5 SVG
-          container.innerHTML = `
-                <svg width="200" height="150" viewBox="0 0 200 150">
-                    <circle cx="100" cy="75" r="15" fill="#f97316"/>
-                    <text x="100" y="80" text-anchor="middle" fill="white" font-size="10" font-weight="bold">P</text>
-                    <!-- Cl atoms around -->
-                    <circle cx="100" cy="30" r="10" fill="#22c55e"/><line x1="100" y1="60" x2="100" y2="40" stroke="#94a3b8"/>
-                    <circle cx="100" cy="120" r="10" fill="#22c55e"/><line x1="100" y1="90" x2="100" y2="110" stroke="#94a3b8"/>
-                    <circle cx="50" cy="75" r="10" fill="#22c55e"/><line x1="85" y1="75" x2="60" y2="75" stroke="#94a3b8"/>
-                    <circle cx="150" cy="75" r="10" fill="#22c55e"/><line x1="115" y1="75" x2="140" y2="75" stroke="#94a3b8"/>
-                    <circle cx="70" cy="45" r="10" fill="#22c55e" opacity="0.7"/><line x1="90" y1="65" x2="75" y2="50" stroke="#94a3b8"/>
-                </svg>
-              `;
-          desc.innerHTML = `P có 10e lớp ngoài cùng (Mở rộng Octet).`;
+          statusDisplay.innerText = "Chưa bền vững...";
+          statusDisplay.className =
+            "mt-2 text-sm h-6 font-semibold text-slate-500";
+          orbit.parentElement.classList.remove(
+            "border-green-500",
+            "shadow-[0_0_20px_limegreen]",
+          );
+          orbit.parentElement.classList.add("border-slate-400");
         }
       }
 
-      // --- SECTION II: ION SIMS ---
-      function startIonicTransfer() {
-        const e = document.getElementById("moving-electron");
-        const status = document.getElementById("ionic-status");
+      // === 3. IONIC SIMULATION (Mục đích: Hiểu sự chuyển e) ===
+      let isTransferred = false;
+      function triggerIonicTransfer() {
+        if (isTransferred) return;
+        isTransferred = true;
 
-        e.setAttribute("cx", 28); // Reset
-        let pos = 28;
-        const interval = setInterval(() => {
-          pos += 4;
-          e.setAttribute("cx", pos);
-          if (pos >= 195) {
-            // Arrived at Cl
-            clearInterval(interval);
-            status.textContent = "Đã tạo Na⁺ và Cl⁻!";
-            status.setAttribute("fill", "#22c55e");
-          }
-        }, 16);
+        const electron = document.getElementById("transfer-electron");
+        const na = document.getElementById("na-atom");
+        const cl = document.getElementById("cl-atom");
+        const feedback = document.getElementById("ionic-feedback");
+        const naLabel = document.getElementById("na-label");
+        const clLabel = document.getElementById("cl-label");
+
+        // Move electron logic (CSS animation via classes/styles)
+        // Simplified relative movement for demo
+        electron.style.transition = "all 1s ease-in-out";
+        electron.style.transform = "translate(150px, 0)"; // Move roughly to Cl (responsive needs calculation but fixed px works for sim container)
+        electron.style.opacity = "0"; // Fade out into Cl
+
+        setTimeout(() => {
+          // Na becomes Na+ (smaller)
+          na.querySelector("div").classList.remove(
+            "w-24",
+            "h-24",
+            "bg-slate-300",
+          );
+          na.querySelector("div").classList.add(
+            "w-16",
+            "h-16",
+            "bg-red-200",
+            "border-4",
+            "border-red-500",
+          );
+          na.querySelector("span").innerText = "Na⁺";
+          naLabel.innerText = "Cation Na⁺ (2,8)";
+
+          // Cl becomes Cl- (larger)
+          cl.querySelector("div").classList.remove(
+            "w-20",
+            "h-20",
+            "bg-green-200",
+          );
+          cl.querySelector("div").classList.add(
+            "w-28",
+            "h-28",
+            "bg-green-400",
+            "border-4",
+            "border-green-600",
+          );
+          cl.querySelector("span").innerText = "Cl⁻";
+          clLabel.innerText = "Anion Cl⁻ (2,8,8)";
+
+          feedback.innerText = "✨ Lực hút tĩnh điện hình thành liên kết ION!";
+
+          // Add electrostatic pull effect
+          document.getElementById("ionic-sim-area").classList.add("gap-4");
+          document
+            .getElementById("ionic-sim-area")
+            .classList.remove("gap-8", "md:gap-20");
+        }, 1000);
       }
 
-      // Three.js Lattice
-      function initLattice() {
-        const container = document.getElementById("lattice-canvas");
-        if (!container) return;
+      function resetIonicSim() {
+        isTransferred = false;
+        const electron = document.getElementById("transfer-electron");
+        const na = document.getElementById("na-atom");
+        const cl = document.getElementById("cl-atom");
 
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x111111);
+        electron.style.transform = "translate(0, 0)";
+        electron.style.opacity = "1";
 
-        const camera = new THREE.PerspectiveCamera(
-          50,
-          container.clientWidth / container.clientHeight,
-          0.1,
-          1000
-        );
-        camera.position.z = 8;
+        na.querySelector("div").className =
+          "w-24 h-24 rounded-full bg-slate-300 dark:bg-slate-600 flex items-center justify-center relative shadow-lg ring-4 ring-transparent transition-all";
+        na.querySelector("span").innerText = "Na";
+        document.getElementById("na-label").innerText = "Na (2,8,1)";
 
-        const renderer = new THREE.WebGLRenderer({
-          alpha: true,
-          antialias: true,
-        });
-        renderer.setSize(container.clientWidth, container.clientHeight);
-        container.appendChild(renderer.domElement);
+        cl.querySelector("div").className =
+          "w-20 h-20 rounded-full bg-green-200 dark:bg-green-800 flex items-center justify-center relative shadow-lg transition-all";
+        cl.querySelector("span").innerText = "Cl";
+        document.getElementById("cl-label").innerText = "Cl (2,8,7)";
 
-        const controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.autoRotate = true;
-        controls.autoRotateSpeed = 2.0;
-
-        const group = new THREE.Group();
-        const geo = new THREE.SphereGeometry(0.35, 16, 16);
-        const matNa = new THREE.MeshPhongMaterial({
-          color: 0xa855f7,
-          shininess: 100,
-        });
-        const matCl = new THREE.MeshPhongMaterial({
-          color: 0x22c55e,
-          shininess: 100,
-        });
-
-        for (let x = -1; x <= 1; x++) {
-          for (let y = -1; y <= 1; y++) {
-            for (let z = -1; z <= 1; z++) {
-              const isNa = (x + y + z) % 2 === 0;
-              const sphere = new THREE.Mesh(geo, isNa ? matNa : matCl);
-              sphere.position.set(x * 1.1, y * 1.1, z * 1.1);
-              group.add(sphere);
-            }
-          }
-        }
-        scene.add(group);
-
-        const light = new THREE.DirectionalLight(0xffffff, 1);
-        light.position.set(5, 5, 5);
-        scene.add(light);
-        scene.add(new THREE.AmbientLight(0x404040));
-
-        function animate() {
-          requestAnimationFrame(animate);
-          controls.update();
-          renderer.render(scene, camera);
-        }
-        animate();
-
-        window.addEventListener("resize", () => {
-          camera.aspect = container.clientWidth / container.clientHeight;
-          camera.updateProjectionMatrix();
-          renderer.setSize(container.clientWidth, container.clientHeight);
-        });
+        document.getElementById("ionic-feedback").innerText = "";
+        document.getElementById("ionic-sim-area").classList.remove("gap-4");
+        document
+          .getElementById("ionic-sim-area")
+          .classList.add("gap-8", "md:gap-20");
       }
 
-      // Coulomb Sim
-      function updateCoulomb() {
-        const q = parseInt(document.getElementById("charge-slider").value);
-        const r = parseFloat(document.getElementById("dist-slider").value);
+      // === 4. CRYSTAL LAB (Mục đích: Quan sát quá trình kết tinh) ===
+      function startCrystalGrowth() {
+        const seed = document.getElementById("crystal-seed");
+        const string = document.getElementById("crystal-string");
+        const solution = document.getElementById("solution-liquid");
 
-        // F ~ q*q / r*r (Simplified)
-        // Just visually represent force
-        const force = (q * q) / (r * r);
+        // 1. Drop string
+        string.style.opacity = "1";
+        string.style.height = "120px"; // Dip into water
 
-        const plus = document.getElementById("ion-plus");
-        const minus = document.getElementById("ion-minus");
-        const arrow = document.getElementById("force-arrow");
-        const val = document.getElementById("force-val");
-
-        // Update Text
-        plus.innerHTML = `+${q}`;
-        minus.innerHTML = `-${q}`;
-
-        // Update Distance UI (using margin/gap is tricky, let's use translate)
-        // Base distance + slider factor
-        const gap = r * 20;
-        // Actually let's just animate width of arrow and margin
-        document.getElementById("coulomb-viz").style.gap = `${r * 30}px`;
-
-        // Update Force Arrow Thickness/Opacity
-        const thickness = Math.min(12, Math.max(2, force * 8));
-        arrow.style.height = `${thickness}px`;
-        arrow.style.opacity = Math.min(1, force);
-
-        val.innerHTML = `F ≈ ${force.toFixed(2)}`;
+        setTimeout(() => {
+          // 2. Crystal grows
+          seed.style.opacity = "1";
+          seed.style.transform = "scale(5) rotate(45deg)"; // Grow big
+          solution.style.height = "60%"; // Solution reduces slightly
+        }, 1000);
       }
 
-      // --- SECTION III: COVALENT SIMS ---
-      function updatePolarity(val) {
-        document.getElementById("en-value").innerText = val;
-        const type = document.getElementById("bond-type");
+      function resetCrystal() {
+        const seed = document.getElementById("crystal-seed");
+        const string = document.getElementById("crystal-string");
+        const solution = document.getElementById("solution-liquid");
 
-        if (val < 0.4) {
-          type.innerText = "Cộng Hóa Trị KHÔNG CỰC";
-          type.className = "text-lg font-bold text-gray-500";
-        } else if (val < 1.7) {
-          type.innerText = "Cộng Hóa Trị PHÂN CỰC";
-          type.className = "text-lg font-bold text-blue-600";
+        string.style.height = "128px";
+        string.style.opacity = "0";
+
+        seed.style.opacity = "0";
+        seed.style.transform = "scale(1) rotate(45deg)";
+
+        solution.style.height = "75%";
+      }
+
+      // === 5. COVALENT BOND SLIDER (Mục đích: Quan sát năng lượng liên kết) ===
+      const bondSlider = document.getElementById("bond-distance");
+      const atomLeft = document.getElementById("atom-left");
+      const atomRight = document.getElementById("atom-right");
+      const electronCloud = document.getElementById("electron-cloud");
+      const energyText = document.getElementById("energy-feedback");
+
+      bondSlider.addEventListener("input", (e) => {
+        const val = e.target.value; // 0 (close) to 100 (far)
+
+        // Map value to visual distance %
+        const leftPos = 30 + (val / 100) * 15; // 30% to 45%
+        const rightPos = 30 + (val / 100) * 15; // 30% to 45% (from right)
+
+        atomLeft.style.left = 50 - (100 - val) / 4 + "%";
+        atomRight.style.right = 50 - (100 - val) / 4 + "%";
+
+        // Logic logic
+        if (val > 80) {
+          energyText.innerText = "Trạng thái: Quá xa (Không liên kết)";
+          energyText.className =
+            "absolute bottom-4 font-mono text-sm font-bold text-slate-500";
+          electronCloud.style.opacity = 0;
+        } else if (val < 20) {
+          energyText.innerText = "Trạng thái: Quá gần (Đẩy nhau mạnh)";
+          energyText.className =
+            "absolute bottom-4 font-mono text-sm font-bold text-red-500 animate-pulse";
+          electronCloud.style.opacity = 0.5;
+          electronCloud.style.width = "40px";
+          electronCloud.className =
+            "absolute h-10 bg-red-400/50 rounded-full blur-md transition-all duration-100";
         } else {
-          type.innerText = "LIÊN KẾT ION";
-          type.className = "text-lg font-bold text-red-600";
+          energyText.innerText = "Trạng thái: Cân bằng (Liên kết bền)";
+          energyText.className =
+            "absolute bottom-4 font-mono text-sm font-bold text-green-600";
+          electronCloud.style.opacity = 1;
+          electronCloud.style.width = "80px"; // Bridge the gap
+          electronCloud.className =
+            "absolute h-10 bg-blue-400/50 rounded-full blur-md transition-all duration-100";
+        }
+      });
+
+      // === 6. WATER SIMULATION (Mục đích: Hiểu trạng thái vật chất) ===
+      const waterContainer = document.getElementById("water-sim-container");
+      const waterDesc = document.getElementById("water-desc");
+
+      // Generate water molecules HTML
+      function generateWaterMolecules() {
+        waterContainer.innerHTML = "";
+        for (let i = 0; i < 15; i++) {
+          const mol = document.createElement("div");
+          mol.className =
+            "w-6 h-6 bg-blue-400 rounded-full flex items-center justify-center text-[8px] text-white shadow-sm m-1 transition-all duration-1000 water-mol relative";
+          mol.innerHTML = "H₂O";
+          waterContainer.appendChild(mol);
         }
       }
+      generateWaterMolecules();
 
-      function showOrbital(type) {
-        const svg = document.getElementById("svg-orbital");
-        const desc = document.getElementById("orbital-desc");
-        svg.innerHTML = "";
+      function setWaterState(state) {
+        const mols = document.querySelectorAll(".water-mol");
 
-        if (type === "sigma") {
-          svg.innerHTML = `
-            <circle cx="80" cy="75" r="30" fill="#93c5fd" opacity="0.8"/>
-            <circle cx="170" cy="75" r="30" fill="#93c5fd" opacity="0.8"/>
-            <!-- Overlap -->
-            <path d="M 110 75 A 10 25 0 0 0 140 75 A 10 25 0 0 0 110 75" fill="#2563eb" />
-            <text x="125" y="80" fill="white" font-size="12" text-anchor="middle" font-weight="bold">σ</text>
-            <line x1="40" y1="75" x2="210" y2="75" stroke="#94a3b8" stroke-dasharray="4"/>
-          `;
-          desc.innerHTML =
-            "Xen phủ trục (đối đầu) → Bền vững, e nằm trên đường nối tâm.";
-        } else {
-          svg.innerHTML = `
-            <ellipse cx="100" cy="50" rx="15" ry="30" fill="#d8b4fe" opacity="0.8"/>
-            <ellipse cx="100" cy="100" rx="15" ry="30" fill="#d8b4fe" opacity="0.8"/>
-            <ellipse cx="160" cy="50" rx="15" ry="30" fill="#d8b4fe" opacity="0.8"/>
-            <ellipse cx="160" cy="100" rx="15" ry="30" fill="#d8b4fe" opacity="0.8"/>
-            <!-- Overlap Regions -->
-            <rect x="100" y="30" width="60" height="15" fill="#9333ea" opacity="0.5" rx="5"/>
-            <rect x="100" y="105" width="60" height="15" fill="#9333ea" opacity="0.5" rx="5"/>
-            <text x="130" y="42" fill="white" font-size="10" text-anchor="middle" font-weight="bold">π</text>
-            <text x="130" y="117" fill="white" font-size="10" text-anchor="middle" font-weight="bold">π</text>
-          `;
-          desc.innerHTML =
-            "Xen phủ bên (song song) → Kém bền hơn, e nằm hai bên trục.";
-        }
-      }
-
-      function showBondInfo(n) {
-        const txt = document.getElementById("bond-info-text");
-        if (n === 1)
-          txt.innerText =
-            "Liên kết đơn (sigma): Dài nhất, năng lượng thấp nhất (~350kJ).";
-        if (n === 2)
-          txt.innerText =
-            "Liên kết đôi (1 sigma + 1 pi): Ngắn hơn, năng lượng cao hơn (~610kJ).";
-        if (n === 3)
-          txt.innerText =
-            "Liên kết ba (1 sigma + 2 pi): Ngắn nhất, bền nhất (~840kJ).";
-      }
-
-      // --- SECTION IV: WEAK SIMS ---
-      // VDW Animation
-      setInterval(() => {
-        const dipole = document.getElementById("vdw-dipole");
-        dipole.style.opacity = Math.random() > 0.4 ? "1" : "0";
-        dipole.style.background =
-          Math.random() > 0.5
-            ? "linear-gradient(to right, rgba(96, 165, 250, 0.6), rgba(248, 113, 113, 0.6))"
-            : "linear-gradient(to left, rgba(96, 165, 250, 0.6), rgba(248, 113, 113, 0.6))";
-      }, 1200);
-
-      // Chart.js for Boiling Point
-      let bpChart;
-      function initChart() {
-        const ctx = document.getElementById("bpChart");
-        if (!ctx) return;
-
-        bpChart = new Chart(ctx, {
-          type: "bar",
-          data: {
-            labels: ["H₂S (VDW)", "H₂O (H-Bond)"],
-            datasets: [
-              {
-                label: "Nhiệt độ sôi (°C)",
-                data: [-60, 100],
-                backgroundColor: [
-                  "rgba(156, 163, 175, 0.6)", // Gray for H2S
-                  "rgba(59, 130, 246, 0.8)", // Blue for H2O
-                ],
-                borderColor: ["rgb(107, 114, 128)", "rgb(37, 99, 235)"],
-                borderWidth: 1,
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: { display: false },
-            },
-            scales: {
-              y: {
-                beginAtZero: false,
-                grid: {
-                  color: document.documentElement.classList.contains("dark")
-                    ? "#374151"
-                    : "#e5e7eb",
-                },
-                ticks: {
-                  color: document.documentElement.classList.contains("dark")
-                    ? "#9ca3af"
-                    : "#4b5563",
-                },
-              },
-              x: {
-                ticks: {
-                  color: document.documentElement.classList.contains("dark")
-                    ? "#9ca3af"
-                    : "#4b5563",
-                },
-              },
-            },
-          },
+        // Reset active buttons
+        ["btn-ice", "btn-liquid", "btn-gas"].forEach((id) => {
+          document.getElementById(id).className =
+            "px-4 py-1 rounded-full text-xs font-bold transition-all hover:bg-white dark:hover:bg-slate-600";
+          document.getElementById(id).style.color = "";
         });
+        document.getElementById(`btn-${state}`).className =
+          "px-4 py-1 rounded-full text-xs font-bold bg-white dark:bg-slate-600 shadow text-blue-600";
+
+        if (state === "ice") {
+          waterContainer.className =
+            "w-full h-48 relative overflow-hidden bg-white/30 dark:bg-black/20 rounded-lg mb-4 grid grid-cols-5 gap-1 p-8 content-center";
+          mols.forEach((m) => (m.style.transform = "translate(0,0)"));
+          waterDesc.innerText =
+            "Đá (Rắn): Cấu trúc tinh thể rỗng, trật tự, thể tích lớn.";
+        } else if (state === "liquid") {
+          waterContainer.className =
+            "w-full h-48 relative overflow-hidden bg-white/30 dark:bg-black/20 rounded-lg mb-4 flex flex-wrap content-end justify-center gap-0 p-2";
+          mols.forEach((m, i) => {
+            m.style.transform = `translate(${Math.sin(i) * 5}px, 0)`; // Slight jiggle
+          });
+          waterDesc.innerText =
+            "Lỏng: Các phân tử trượt lên nhau, liên kết H linh động.";
+        } else if (state === "gas") {
+          waterContainer.className =
+            "w-full h-48 relative overflow-hidden bg-white/30 dark:bg-black/20 rounded-lg mb-4 block";
+          mols.forEach((m) => {
+            // Random positions
+            const x = Math.random() * 200;
+            const y = Math.random() * 100;
+            m.style.position = "absolute";
+            m.style.transform = `translate(${x}px, ${y}px)`;
+            m.style.opacity = Math.random() > 0.5 ? 1 : 0.6;
+          });
+          waterDesc.innerText =
+            "Hơi: Khoảng cách xa, chuyển động hỗn loạn, gần như không có liên kết.";
+        }
+      }
+      // Initialize Liquid
+      setWaterState("liquid");
+
+      // === 7. QUIZ SYSTEM (Game hóa) ===
+      const questions = [
+        {
+          q: "Nguyên tử nguyên tố nào sau đây có xu hướng nhường 1 electron?",
+          opts: ["Chlorine (Cl)", "Potassium (K)", "Neon (Ne)", "Oxygen (O)"],
+          a: 1,
+          expl: "Potassium (K) thuộc nhóm IA, có 1e lớp ngoài cùng nên dễ nhường 1e.",
+        },
+        {
+          q: "Liên kết trong phân tử NaCl thuộc loại nào?",
+          opts: [
+            "Cộng hóa trị không cực",
+            "Cộng hóa trị có cực",
+            "Liên kết Ion",
+            "Liên kết kim loại",
+          ],
+          a: 2,
+          expl: "NaCl hình thành giữa kim loại mạnh (Na) và phi kim mạnh (Cl) do lực hút tĩnh điện.",
+        },
+        {
+          q: "Để đạt quy tắc Octet, nguyên tử Nitrogen (Z=7) cần:",
+          opts: [
+            "Nhường 3 electron",
+            "Nhận 3 electron",
+            "Nhường 5 electron",
+            "Không nhận/nhường",
+          ],
+          a: 1,
+          expl: "Nitrogen có 5e lớp ngoài cùng, cần nhận thêm 3e để đạt 8e bền vững.",
+        },
+        {
+          q: "Liên kết Hydrogen giải thích tính chất nào của nước?",
+          opts: [
+            "Màu sắc trong suốt",
+            "Nhiệt độ sôi cao bất thường",
+            "Tính dẫn điện",
+            "Khối lượng mol",
+          ],
+          a: 1,
+          expl: "Liên kết Hydrogen giữa các phân tử nước làm tăng nhiệt độ sôi so với các chất cùng nhóm.",
+        },
+        {
+          q: "Công thức Lewis của CH₄ có bao nhiêu cặp electron chung?",
+          opts: ["2 cặp", "3 cặp", "4 cặp", "1 cặp"],
+          a: 2,
+          expl: "C tạo 4 liên kết đơn với 4 nguyên tử H => 4 cặp electron chung.",
+        },
+      ];
+
+      let currentQ = 0;
+      let score = 0;
+
+      function startQuiz() {
+        document.getElementById("quiz-start").classList.add("hidden");
+        document.getElementById("quiz-question").classList.remove("hidden");
+        loadQuestion();
       }
 
-      // INIT
-      window.onload = function () {
-        initLattice();
-        updateCoulomb();
-        showOrbital("sigma");
-        updatePolarity(0);
-        initChart();
-      };
+      function loadQuestion() {
+        const q = questions[currentQ];
+        document.getElementById("q-current").innerText = currentQ + 1;
+        document.getElementById("q-text").innerText = q.q;
+
+        const optsDiv = document.getElementById("q-options");
+        optsDiv.innerHTML = "";
+
+        q.opts.forEach((opt, idx) => {
+          const btn = document.createElement("button");
+          btn.className =
+            "w-full text-left p-4 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-800 transition-all font-medium text-slate-700 dark:text-slate-300";
+          btn.innerText = opt;
+          btn.onclick = () => checkAnswer(idx, btn);
+          optsDiv.appendChild(btn);
+        });
+
+        document.getElementById("progress-bar").style.width =
+          ((currentQ + 1) / questions.length) * 100 + "%";
+        document.getElementById("q-feedback").classList.add("hidden");
+        document.getElementById("next-btn").classList.add("hidden");
+      }
+
+      function checkAnswer(idx, btn) {
+        // Disable all buttons
+        const btns = document.getElementById("q-options").children;
+        for (let b of btns) b.disabled = true;
+
+        const correctIdx = questions[currentQ].a;
+        const feedback = document.getElementById("q-feedback");
+        feedback.classList.remove("hidden");
+
+        if (idx === correctIdx) {
+          score++;
+          btn.classList.add(
+            "bg-green-100",
+            "border-green-500",
+            "text-green-800",
+            "dark:bg-green-900",
+            "dark:text-white",
+          );
+          feedback.className =
+            "mt-4 p-4 rounded-lg bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-200";
+          feedback.innerHTML = `<strong>Chính xác!</strong> ${questions[currentQ].expl}`;
+        } else {
+          btn.classList.add(
+            "bg-red-100",
+            "border-red-500",
+            "text-red-800",
+            "dark:bg-red-900",
+            "dark:text-white",
+          );
+          // Highlight correct
+          btns[correctIdx].classList.add(
+            "bg-green-100",
+            "border-green-500",
+            "text-green-800",
+            "dark:bg-green-900",
+            "dark:text-white",
+          );
+          feedback.className =
+            "mt-4 p-4 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 border border-red-200";
+          feedback.innerHTML = `<strong>Sai rồi!</strong> ${questions[currentQ].expl}`;
+        }
+
+        document.getElementById("next-btn").classList.remove("hidden");
+        if (currentQ === questions.length - 1) {
+          document.getElementById("next-btn").innerText = "Xem kết quả";
+        }
+      }
+
+      function nextQuestion() {
+        currentQ++;
+        if (currentQ < questions.length) {
+          loadQuestion();
+        } else {
+          showResult();
+        }
+      }
+
+      function showResult() {
+        document.getElementById("quiz-question").classList.add("hidden");
+        document.getElementById("quiz-result").classList.remove("hidden");
+        document.getElementById("score").innerText = score;
+      }
+
+      function resetQuiz() {
+        currentQ = 0;
+        score = 0;
+        document.getElementById("quiz-result").classList.add("hidden");
+        startQuiz();
+      }
     </script>
   </body>
 </html>

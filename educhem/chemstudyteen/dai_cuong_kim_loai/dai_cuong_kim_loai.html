@@ -1,40 +1,52 @@
-<!DOCTYPE html>
-<html lang="vi" class="scroll-smooth">
+<!doctype html>
+<html lang="vi" class="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ChemStudy Teen - Chương 6: Đại Cương Kim Loại</title>
-    <link rel="icon" href="../../../favicon/educhem.svg" type="image/svg+xml" />
+    <title>Chương 6: Đại Cương Về Kim Loại – ChemStudy Expert</title>
+    <link rel="icon" href="../../../favicon/educhem.avg" />
 
-    <!-- Tailwind CSS -->
+    <!-- TailwindCSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Config Tailwind -->
     <script>
       tailwind.config = {
         darkMode: "class",
         theme: {
           extend: {
+            fontFamily: {
+              sans: ['"Be Vietnam Pro"', "sans-serif"],
+              display: ['"Space Grotesk"', "sans-serif"],
+            },
             colors: {
               chem: {
-                50: "#f0f9ff",
-                100: "#e0f2fe",
-                500: "#0ea5e9",
-                600: "#0284c7",
-                900: "#0c4a6e",
+                blue: "#3b82f6",
+                purple: "#8b5cf6",
+                green: "#10b981",
                 dark: "#0f172a",
-              },
-              ore: {
-                iron: "#8D6E63",
-                alum: "#EF9A9A",
-                copper: "#FFCC80",
+                light: "#f8fafc",
               },
             },
             animation: {
-              float: "float 3s ease-in-out infinite",
-              "pulse-fast": "pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+              float: "floating 3s ease-in-out infinite",
+              "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
               "spin-slow": "spin 8s linear infinite",
             },
             keyframes: {
-              float: {
+              floating: {
                 "0%, 100%": { transform: "translateY(0)" },
                 "50%": { transform: "translateY(-10px)" },
               },
@@ -44,1031 +56,1289 @@
       };
     </script>
 
-    <!-- Three.js for 3D Simulations -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-
-    <!-- Icons -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap");
+      /* CSS Variables & Global Styles */
+      :root {
+        --footer-bg: #0f172a;
+        --footer-text: #e2e8f0;
+        --p-primary: #3b82f6;
+      }
+
+      html.dark :root {
+        --footer-bg: #020617;
+      }
 
       body {
-        font-family: "Nunito", sans-serif;
-        overflow-x: hidden;
+        transition:
+          background-color 0.5s ease,
+          color 0.5s ease;
+      }
+
+      /* Glassmorphism Classes */
+      .glass-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .dark .glass-card {
+        background: rgba(30, 41, 59, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .glass-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+      }
+
+      .glass-nav {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .dark .glass-nav {
+        background: rgba(15, 23, 42, 0.85);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      /* Gradient Text */
+      .text-gradient {
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-image: linear-gradient(to right, #3b82f6, #8b5cf6, #ec4899);
       }
 
       /* Custom Scrollbar */
       ::-webkit-scrollbar {
         width: 8px;
-        height: 8px;
       }
       ::-webkit-scrollbar-track {
-        background: rgba(0, 0, 0, 0.05);
+        background: transparent;
       }
       ::-webkit-scrollbar-thumb {
         background: #cbd5e1;
-        border-radius: 10px;
+        border-radius: 4px;
       }
       .dark ::-webkit-scrollbar-thumb {
         background: #475569;
       }
-      .dark ::-webkit-scrollbar-track {
-        background: #1e293b;
-      }
 
-      /* Glassmorphism */
-      .glass {
-        background: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.6);
-      }
-      .dark .glass {
-        background: rgba(30, 41, 59, 0.8);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-      }
-
-      /* Simulation Canvas Containers */
-      .sim-container {
+      /* Footer Specifics (Provided Code) */
+      footer {
+        background: var(--footer-bg);
+        color: var(--footer-text);
+        padding: 100px 5% 40px;
         position: relative;
-        width: 100%;
-        height: 400px;
         overflow: hidden;
-        border-radius: 1rem;
-        background: radial-gradient(circle at center, #f8fafc, #e2e8f0);
-        box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
-      }
-      .dark .sim-container {
-        background: radial-gradient(circle at center, #1e293b, #0f172a);
+        transition:
+          background-color 0.8s ease,
+          color 0.8s ease;
       }
 
-      .section-header {
+      .footer-waves {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        background: var(--footer-bg);
+        clip-path: polygon(
+          0% 45%,
+          16% 44%,
+          33% 50%,
+          54% 60%,
+          70% 61%,
+          84% 59%,
+          100% 52%,
+          100% 100%,
+          0% 100%
+        );
+        transition: background-color 0.8s;
+      }
+
+      .footer-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 60px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .icon-btn {
+        color: #94a3b8;
+        font-size: 1.2rem;
+        transition: 0.3s;
+      }
+
+      .icon-btn:hover {
+        color: white;
+        transform: scale(1.1);
+      }
+
+      .contact-item {
+        margin-bottom: 15px;
         display: flex;
         align-items: center;
-        gap: 0.75rem;
-        padding-left: 1rem;
-        border-left: 4px solid;
-        margin-bottom: 2rem;
+        gap: 15px;
+        color: #94a3b8;
+        transition: 0.3s;
       }
 
-      .card-hover {
-        transition: all 0.3s ease;
-      }
-      .card-hover:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
-          0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      .contact-item i {
+        color: var(--p-primary);
       }
 
-      /* Method Tabs */
-      .method-btn.active {
-        background-color: #10b981; /* emerald-500 */
+      .contact-item:hover {
         color: white;
-        transform: scale(1.05);
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        transform: translateX(5px);
+      }
+
+      .footer-brand h2 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 2rem;
+        margin-bottom: 20px;
+      }
+
+      .footer-links h4,
+      h3 {
+        margin-bottom: 25px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--p-primary);
+      }
+
+      .copyright {
+        margin-top: 80px;
+        text-align: center;
+        padding-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        color: #475569;
+        font-size: 0.9rem;
+      }
+
+      /* Simulation Specific CSS */
+      .sim-container {
+        position: relative;
+        overflow: hidden;
+        border-radius: 1rem;
+        background: linear-gradient(to bottom, #f0f9ff, #e0f2fe);
+      }
+      .dark .sim-container {
+        background: linear-gradient(to bottom, #1e293b, #0f172a);
+      }
+
+      .atom {
+        transition: all 0.5s ease;
+      }
+
+      .electron {
+        width: 4px;
+        height: 4px;
+        background-color: #fbbf24;
+        border-radius: 50%;
+        position: absolute;
+        pointer-events: none;
+        box-shadow: 0 0 4px #fbbf24;
+      }
+
+      .bubble {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 50%;
+        animation: rise 2s infinite ease-in;
+      }
+
+      @keyframes rise {
+        0% {
+          bottom: 0;
+          opacity: 0;
+          transform: scale(0.5);
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          bottom: 100%;
+          opacity: 0;
+          transform: scale(1.2);
+        }
+      }
+
+      /* Lattice 3D imitation */
+      .lattice-node {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 30% 30%, #60a5fa, #1d4ed8);
+        position: absolute;
+        transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Quiz Styles */
+      .quiz-option {
+        transition: all 0.2s;
+        cursor: pointer;
+      }
+      .quiz-option:hover {
+        background-color: rgba(59, 130, 246, 0.1);
+        border-color: #3b82f6;
+      }
+      .quiz-option.selected {
+        background-color: #3b82f6;
+        color: white;
+        border-color: #3b82f6;
+      }
+      .quiz-option.correct {
+        background-color: #22c55e;
+        color: white;
+        border-color: #22c55e;
+      }
+      .quiz-option.wrong {
+        background-color: #ef4444;
+        color: white;
+        border-color: #ef4444;
       }
     </style>
   </head>
   <body
-    class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300"
+    class="bg-gray-50 text-gray-800 dark:bg-slate-900 dark:text-gray-100 font-sans antialiased overflow-x-hidden"
   >
-    <!-- NAVIGATION BAR -->
-    <nav
-      class="fixed top-0 w-full z-50 glass shadow-sm transition-all duration-300"
+    <!-- HEADER -->
+    <header
+      class="fixed w-full top-0 z-50 glass-nav transition-all duration-300"
     >
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
-          <!-- Left: Back & Logo -->
-          <div class="flex items-center gap-4">
-            <a
-              href="../chemstudyteen.html"
-              class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition"
-              title="Quay về"
-            >
-              <i
-                class="fa-solid fa-arrow-left text-xl text-chem-600 dark:text-chem-500"
-              ></i>
-            </a>
-            <div
-              class="flex items-center gap-2 cursor-pointer"
-              onclick="window.scrollTo(0,0)"
-            >
-              <i
-                class="fa-solid fa-flask text-2xl text-chem-500 animate-float"
-              ></i>
-              <span class="font-bold text-xl tracking-tight hidden sm:block"
-                >ChemStudy Teen</span
-              >
-            </div>
-          </div>
-
-          <!-- Center: Tabs -->
+        <div class="flex justify-between items-center h-20">
+          <!-- Logo -->
           <div
-            class="hidden md:flex space-x-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-xl"
+            class="flex items-center gap-3 cursor-pointer group"
+            onclick="window.scrollTo(0, 0)"
           >
-            <button
-              onclick="scrollToSection('structure')"
-              class="px-4 py-2 rounded-lg text-sm font-semibold hover:bg-white dark:hover:bg-gray-700 shadow-sm transition text-chem-600 dark:text-chem-400"
+            <div
+              class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-green-500 flex items-center justify-center text-white font-bold text-xl shadow-lg group-hover:shadow-blue-500/50 transition-all duration-300"
             >
-              Cấu Tạo
-            </button>
-            <button
-              onclick="scrollToSection('properties')"
-              class="px-4 py-2 rounded-lg text-sm font-semibold hover:bg-white dark:hover:bg-gray-700 transition text-gray-600 dark:text-gray-400"
+              <i class="fas fa-atom text-2xl group-hover:animate-spin"></i>
+            </div>
+            <span
+              class="font-display font-bold text-xl md:text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-green-500 dark:from-blue-400 dark:to-green-400"
             >
-              Tính Chất
-            </button>
-            <button
-              onclick="scrollToSection('preparation')"
-              class="px-4 py-2 rounded-lg text-sm font-semibold hover:bg-white dark:hover:bg-gray-700 transition text-gray-600 dark:text-gray-400"
-            >
-              Điều Chế
-            </button>
-            <button
-              onclick="scrollToSection('alloys')"
-              class="px-4 py-2 rounded-lg text-sm font-semibold hover:bg-white dark:hover:bg-gray-700 transition text-gray-600 dark:text-gray-400"
-            >
-              Hợp Kim & Ăn Mòn
-            </button>
+              ChemStudy Expert
+            </span>
           </div>
 
-          <!-- Right: Settings -->
-          <div class="flex items-center gap-3">
-            <button
-              id="themeToggle"
-              class="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-yellow-500 hover:rotate-12 transition duration-300"
+          <!-- Desktop Menu -->
+          <nav class="hidden md:flex space-x-8">
+            <a
+              href="#sec-structure"
+              class="hover:text-blue-500 font-medium transition-colors"
+              >Cấu Tạo</a
             >
-              <i class="fa-solid fa-sun text-xl dark:hidden"></i>
-              <i class="fa-solid fa-moon text-xl hidden dark:block"></i>
+            <a
+              href="#sec-physical"
+              class="hover:text-blue-500 font-medium transition-colors"
+              >Vật Lý</a
+            >
+            <a
+              href="#sec-chemical"
+              class="hover:text-blue-500 font-medium transition-colors"
+              >Hóa Học</a
+            >
+            <a
+              href="#sec-extraction"
+              class="hover:text-blue-500 font-medium transition-colors"
+              >Điều Chế</a
+            >
+            <a
+              href="#sec-corrosion"
+              class="hover:text-blue-500 font-medium transition-colors"
+              >Ăn Mòn</a
+            >
+          </nav>
+
+          <!-- Tools -->
+          <div class="flex items-center gap-4">
+            <button
+              id="theme-toggle"
+              class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors focus:outline-none"
+            >
+              <i
+                class="fas fa-moon text-gray-600 dark:text-yellow-300 text-lg transition-transform duration-500 transform rotate-0 dark:-rotate-180"
+              ></i>
+            </button>
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden text-gray-600 dark:text-gray-300 text-2xl">
+              <i class="fas fa-bars"></i>
             </button>
           </div>
         </div>
       </div>
-    </nav>
+    </header>
 
     <!-- MAIN CONTENT -->
-    <main class="pt-24 pb-20 px-4 max-w-7xl mx-auto space-y-24">
-      <!-- HEADER HERO -->
-      <header class="text-center space-y-6 animate-float">
+    <main class="pt-24 pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24">
+      <!-- HERO SECTION -->
+      <section class="text-center py-20 relative">
         <div
-          class="inline-block px-4 py-1 rounded-full bg-chem-100 dark:bg-chem-900 text-chem-600 dark:text-chem-300 text-sm font-bold tracking-wider uppercase mb-2"
+          class="absolute top-10 left-10 text-6xl text-blue-500 opacity-10 animate-float"
         >
-          Hóa Học 12
+          <i class="fas fa-cube"></i>
         </div>
+        <div
+          class="absolute bottom-10 right-10 text-6xl text-green-500 opacity-10 animate-float"
+          style="animation-delay: 1.5s"
+        >
+          <i class="fas fa-flask"></i>
+        </div>
+
+        <span
+          class="inline-block py-1 px-3 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 text-sm font-bold mb-4 animate-pulse-slow"
+        >
+          HÓA HỌC 12 • CHƯƠNG 6
+        </span>
         <h1
-          class="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-chem-600 to-purple-600 dark:from-chem-400 dark:to-purple-400 leading-tight"
+          class="text-5xl md:text-7xl font-display font-bold mb-6 leading-tight"
         >
-          Chương 6: Đại Cương Kim Loại
+          Đại Cương Về <br />
+          <span class="text-gradient">Kim Loại</span>
         </h1>
-        <p class="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-          Từ cấu trúc mạng tinh thể vi mô đến các ứng dụng hợp kim vĩ mô và công
-          nghệ tái chế hiện đại.
+        <p
+          class="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed"
+        >
+          Khám phá thế giới của các nguyên tử kim loại, từ cấu trúc tinh thể vi
+          mô đến những ứng dụng khổng lồ trong đời sống.
+          <br />Học qua trải nghiệm - Hiểu qua tương tác.
         </p>
-      </header>
-
-      <!-- I. CẤU TẠO & LIÊN KẾT -->
-      <section id="structure" class="scroll-mt-24">
-        <div
-          class="section-header border-chem-500 text-chem-700 dark:text-chem-400"
+        <button
+          onclick="
+            document
+              .getElementById('sec-structure')
+              .scrollIntoView({ behavior: 'smooth' })
+          "
+          class="group relative px-8 py-4 bg-blue-600 text-white rounded-full font-bold text-lg shadow-lg hover:shadow-blue-500/40 transition-all duration-300 hover:-translate-y-1 overflow-hidden"
         >
-          <i class="fa-solid fa-atom text-2xl"></i>
-          <h2 class="text-3xl font-bold">I. Cấu Tạo & Liên Kết Kim Loại</h2>
+          <span class="relative z-10 flex items-center gap-2">
+            Bắt đầu bài học
+            <i
+              class="fas fa-arrow-down group-hover:translate-y-1 transition-transform"
+            ></i>
+          </span>
+          <div
+            class="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 group-hover:scale-105 transition-transform duration-300"
+          ></div>
+        </button>
+      </section>
+
+      <!-- ================= SECTION I: CẤU TẠO ================= -->
+      <section id="sec-structure" class="scroll-mt-28">
+        <div class="flex items-center gap-4 mb-8">
+          <div
+            class="w-12 h-12 rounded-xl bg-blue-500 flex items-center justify-center text-white text-2xl shadow-lg shadow-blue-500/30"
+          >
+            <i class="fas fa-shapes"></i>
+          </div>
+          <h2 class="text-3xl md:text-4xl font-display font-bold">
+            I. Cấu Tạo & Liên Kết
+          </h2>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <!-- 1. Mạng tinh thể -->
-          <div class="glass p-6 rounded-2xl shadow-lg card-hover">
-            <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
-              <span
-                class="bg-chem-100 dark:bg-chem-900 p-2 rounded-lg text-chem-600"
-                ><i class="fa-solid fa-cube"></i
-              ></span>
-              1. Mạng Tinh Thể Kim Loại
-            </h3>
-            <ul
-              class="list-disc list-inside space-y-2 mb-4 text-sm text-gray-700 dark:text-gray-300"
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- A. Theory -->
+          <div class="glass-card p-6 rounded-2xl md:col-span-1 h-full">
+            <h3
+              class="text-xl font-bold text-blue-500 mb-4 border-b border-gray-200 dark:border-gray-700 pb-2"
             >
-              <li>Hầu hết kim loại tồn tại dạng tinh thể (trừ Hg lỏng).</li>
-              <li>
-                <strong>Thành phần:</strong> Nguyên tử, ion kim loại nằm ở nút
-                mạng.
+              <i class="fas fa-book-open mr-2"></i> Kiến Thức Lý Thuyết
+            </h3>
+            <ul class="space-y-4 text-gray-700 dark:text-gray-300">
+              <li class="flex gap-3">
+                <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                <div>
+                  <strong>Vị trí BTH:</strong> Nhóm IA (trừ H), IIA, IIIA (trừ
+                  B), một phần IVA-VIA. Tất cả nhóm B (IB-VIIIB), họ
+                  Lanthanides, Actinides.
+                </div>
               </li>
-              <li><strong>Đặc điểm:</strong> Mật độ sắp xếp chặt chẽ.</li>
+              <li class="flex gap-3">
+                <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                <div>
+                  <strong>Cấu hình e:</strong> Ít e lớp ngoài cùng (1, 2, 3e).
+                  Bán kính nguyên tử > phi kim, điện tích hạt nhân nhỏ hơn
+                  (trong cùng chu kì).
+                </div>
+              </li>
+              <li class="flex gap-3">
+                <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                <div>
+                  <strong>Mạng tinh thể:</strong>
+                  <ul
+                    class="list-disc ml-5 mt-1 text-sm text-gray-500 dark:text-gray-400"
+                  >
+                    <li>Lập phương tâm khối: Li, Na, K, Ba, Fe, Cr...</li>
+                    <li>Lập phương tâm diện: Cu, Ag, Au, Al, Ni...</li>
+                    <li>Lục phương: Be, Mg, Zn...</li>
+                  </ul>
+                </div>
+              </li>
+              <li class="flex gap-3">
+                <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                <div>
+                  <strong>Liên kết kim loại:</strong> Lực hút tĩnh điện giữa ion
+                  dương (+) tại nút mạng và các electron tự do (-) chuyển động
+                  hỗn loạn.
+                </div>
+              </li>
             </ul>
-
-            <!-- 3D Canvas -->
-            <div
-              id="crystal-canvas-container"
-              class="sim-container shadow-inner mb-4 cursor-move h-[300px]"
-            ></div>
-
-            <div class="flex flex-wrap gap-2 justify-center">
-              <button
-                onclick="loadCrystal('bcc')"
-                class="px-3 py-1 text-sm bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 rounded hover:bg-blue-200 font-bold transition"
-              >
-                Tâm khối (Li, Na, K)
-              </button>
-              <button
-                onclick="loadCrystal('fcc')"
-                class="px-3 py-1 text-sm bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200 rounded hover:bg-green-200 font-bold transition"
-              >
-                Tâm diện (Cu, Ag, Au)
-              </button>
-              <button
-                onclick="loadCrystal('hcp')"
-                class="px-3 py-1 text-sm bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-200 rounded hover:bg-purple-200 font-bold transition"
-              >
-                Lục phương (Mg, Zn)
-              </button>
-            </div>
           </div>
 
-          <!-- 2. Liên kết kim loại -->
-          <div class="glass p-6 rounded-2xl shadow-lg card-hover flex flex-col">
-            <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
-              <span
-                class="bg-yellow-100 dark:bg-yellow-900 p-2 rounded-lg text-yellow-600"
-                ><i class="fa-solid fa-link"></i
-              ></span>
-              2. Liên Kết Kim Loại
+          <!-- B. Interactive Model: Lattice Types -->
+          <div class="glass-card p-6 rounded-2xl md:col-span-1 flex flex-col">
+            <h3 class="text-xl font-bold text-purple-500 mb-4">
+              <i class="fas fa-cube mr-2"></i> Mô Phỏng Mạng Tinh Thể
             </h3>
-            <p class="mb-4 text-sm text-gray-700 dark:text-gray-300">
-              Là lực hút tĩnh điện giữa các
-              <strong>ion dương kim loại</strong> (nút mạng) và các
-              <strong>electron tự do</strong> di chuyển trong toàn bộ mạng tinh
-              thể.
+            <div
+              class="flex-grow sim-container bg-gray-100 dark:bg-gray-800 rounded-xl h-64 relative flex items-center justify-center perspective-1000"
+              id="lattice-container"
+            >
+              <!-- Lattice nodes will be injected here by JS -->
+              <div class="text-gray-400">Chọn một kiểu mạng bên dưới</div>
+            </div>
+            <div class="flex gap-2 mt-4 justify-center">
+              <button
+                onclick="renderLattice('bcc')"
+                class="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded hover:bg-blue-500 hover:text-white transition text-sm font-bold"
+              >
+                Lập phương tâm khối (BCC)
+              </button>
+              <button
+                onclick="renderLattice('fcc')"
+                class="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded hover:bg-blue-500 hover:text-white transition text-sm font-bold"
+              >
+                Lập phương tâm diện (FCC)
+              </button>
+              <button
+                onclick="renderLattice('hcp')"
+                class="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded hover:bg-blue-500 hover:text-white transition text-sm font-bold"
+              >
+                Lục phương (HCP)
+              </button>
+            </div>
+            <p class="text-xs text-center mt-2 text-gray-500 italic">
+              Bấm nút để xem cấu trúc sắp xếp các nguyên tử
             </p>
-
-            <div
-              class="sim-container bg-gray-900 relative flex-grow"
-              id="electron-sea"
-            >
-              <canvas
-                id="electronSeaCanvas"
-                class="w-full h-full block"
-              ></canvas>
-              <div
-                class="absolute top-2 left-2 bg-black/60 text-white text-xs p-2 rounded backdrop-blur-sm border border-white/10"
-              >
-                <div class="flex items-center gap-2 mb-1">
-                  <span
-                    class="w-3 h-3 rounded-full bg-red-500 border border-red-300"
-                  ></span>
-                  Ion dương (M⁺)
-                </div>
-                <div class="flex items-center gap-2">
-                  <span
-                    class="w-2 h-2 rounded-full bg-yellow-300 shadow-[0_0_5px_yellow]"
-                  ></span>
-                  Electron tự do (e⁻)
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- II. TÍNH CHẤT VẬT LÝ & HÓA HỌC -->
-      <section id="properties" class="scroll-mt-24">
-        <div
-          class="section-header border-yellow-500 text-yellow-700 dark:text-yellow-500"
-        >
-          <i class="fa-solid fa-flask text-2xl"></i>
-          <h2 class="text-3xl font-bold">II. Tính Chất Vật Lý & Hóa Học</h2>
-        </div>
-
-        <!-- 1. Tính chất vật lý -->
-        <div class="mb-12">
-          <h3
-            class="text-2xl font-bold mb-6 pl-2 border-l-4 border-gray-300 dark:border-gray-600"
-          >
-            1. Tính chất vật lý chung
-          </h3>
-          <p class="mb-4 text-gray-600 dark:text-gray-400 italic text-sm">
-            (Gây ra bởi sự có mặt của các electron tự do)
-          </p>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            <!-- Cards -->
-            <div
-              class="glass p-4 rounded-xl cursor-pointer group card-hover text-center"
-              onclick="toggleSim('elec-cond')"
-            >
-              <div
-                class="w-16 h-16 mx-auto bg-yellow-100 dark:bg-yellow-900/50 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition text-yellow-500 text-2xl"
-              >
-                <i class="fa-solid fa-bolt"></i>
-              </div>
-              <h4 class="font-bold">Dẫn Điện</h4>
-              <p class="text-xs text-gray-500 mt-2">Ag > Cu > Au > Al > Fe</p>
-            </div>
-
-            <div
-              class="glass p-4 rounded-xl cursor-pointer group card-hover text-center"
-              onclick="toggleSim('therm-cond')"
-            >
-              <div
-                class="w-16 h-16 mx-auto bg-red-100 dark:bg-red-900/50 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition text-red-500 text-2xl"
-              >
-                <i class="fa-solid fa-fire"></i>
-              </div>
-              <h4 class="font-bold">Dẫn Nhiệt</h4>
-              <p class="text-xs text-gray-500 mt-2">
-                Electron mang năng lượng đi xa
-              </p>
-            </div>
-
-            <div
-              class="glass p-4 rounded-xl cursor-pointer group card-hover text-center"
-              onclick="toggleSim('malleability')"
-            >
-              <div
-                class="w-16 h-16 mx-auto bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition text-blue-500 text-2xl"
-              >
-                <i class="fa-solid fa-layer-group"></i>
-              </div>
-              <h4 class="font-bold">Tính Dẻo</h4>
-              <p class="text-xs text-gray-500 mt-2">
-                Dát mỏng, kéo sợi (Au dẻo nhất)
-              </p>
-            </div>
-
-            <div
-              class="glass p-4 rounded-xl cursor-pointer group card-hover text-center"
-              onclick="toggleSim('luster')"
-            >
-              <div
-                class="w-16 h-16 mx-auto bg-purple-100 dark:bg-purple-900/50 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition text-purple-500 text-2xl"
-              >
-                <i class="fa-solid fa-star"></i>
-              </div>
-              <h4 class="font-bold">Ánh Kim</h4>
-              <p class="text-xs text-gray-500 mt-2">
-                Phản xạ ánh sáng nhìn thấy
-              </p>
-            </div>
-
-            <div
-              class="glass p-4 rounded-xl cursor-pointer group card-hover text-center border-2 border-gray-200 dark:border-gray-700"
-            >
-              <div
-                class="w-16 h-16 mx-auto bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition text-gray-500 text-2xl"
-              >
-                <i class="fa-solid fa-weight-hanging"></i>
-              </div>
-              <h4 class="font-bold">Khối lượng riêng & nóng chảy</h4>
-              <p class="text-xs text-gray-500 mt-2">
-                Nặng (Os), Nhẹ (Li). T°nc: W (cao), Hg (thấp).
-              </p>
-            </div>
           </div>
         </div>
 
-        <!-- 2. Tính chất hóa học (Virtual Lab) -->
-        <div>
-          <h3
-            class="text-2xl font-bold mb-6 pl-2 border-l-4 border-gray-300 dark:border-gray-600"
-          >
-            2. Tính chất hóa học (Tính khử đặc trưng)
-          </h3>
-
+        <!-- Simulation: Electron Sea -->
+        <div class="mt-8 glass-card p-6 rounded-2xl">
+          <div class="flex justify-between items-end mb-4">
+            <h3 class="text-xl font-bold text-orange-500">
+              <i class="fas fa-water mr-2"></i> Mô Hình "Biển Electron"
+            </h3>
+            <span
+              class="text-sm bg-orange-100 text-orange-600 px-2 py-1 rounded dark:bg-orange-900 dark:text-orange-200"
+            >
+              Electron tự do di chuyển
+            </span>
+          </div>
           <div
-            class="glass rounded-2xl overflow-hidden shadow-xl border border-gray-200 dark:border-gray-700 mb-8"
+            class="relative w-full h-64 bg-slate-900 rounded-xl overflow-hidden shadow-inner"
+            id="electron-sea"
           >
+            <canvas
+              id="seaCanvas"
+              class="absolute top-0 left-0 w-full h-full"
+            ></canvas>
             <div
-              class="bg-chem-600 dark:bg-chem-800 p-4 text-white flex justify-between items-center"
+              class="absolute bottom-4 left-4 text-white text-xs bg-black/50 p-2 rounded backdrop-blur-sm pointer-events-none"
             >
-              <h3 class="text-lg font-bold">
-                <i class="fa-solid fa-flask-vial mr-2"></i> Thí Nghiệm Ảo: M →
-                Mⁿ⁺ + ne
-              </h3>
-              <div class="flex gap-2 text-xs">
-                <span class="px-2 py-1 bg-white/20 rounded">Phi kim</span>
-                <span class="px-2 py-1 bg-white/20 rounded">Axit</span>
-                <span class="px-2 py-1 bg-white/20 rounded">Nước</span>
-                <span class="px-2 py-1 bg-white/20 rounded">Muối</span>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 min-h-[500px]">
-              <!-- Control Panel -->
-              <div
-                class="p-6 bg-gray-50 dark:bg-gray-800 border-r dark:border-gray-700 space-y-6"
-              >
-                <div>
-                  <label
-                    class="block text-sm font-bold mb-2 uppercase text-gray-500"
-                    >1. Chọn kim loại:</label
-                  >
-                  <select
-                    id="metal-select"
-                    class="w-full p-2 rounded bg-white dark:bg-gray-700 border dark:border-gray-600 shadow-sm focus:ring-2 focus:ring-chem-500 outline-none"
-                  >
-                    <option value="Na">Natri (Mạnh)</option>
-                    <option value="Mg">Magie (Mạnh)</option>
-                    <option value="Fe">Sắt (Trung bình)</option>
-                    <option value="Cu">Đồng (Yếu)</option>
-                    <option value="Ag">Bạc (Yếu)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label
-                    class="block text-sm font-bold mb-2 uppercase text-gray-500"
-                    >2. Chọn tác nhân:</label
-                  >
-                  <div class="grid grid-cols-2 gap-2">
-                    <button
-                      onclick="runReaction('O2')"
-                      class="p-2 bg-blue-100 dark:bg-blue-900/50 hover:bg-blue-200 rounded text-sm font-medium transition text-left"
-                    >
-                      <i class="fa-solid fa-wind mr-1"></i> Oxi (t°)
-                    </button>
-                    <button
-                      onclick="runReaction('Cl2')"
-                      class="p-2 bg-green-100 dark:bg-green-900/50 hover:bg-green-200 rounded text-sm font-medium transition text-left"
-                    >
-                      <i class="fa-solid fa-cloud mr-1"></i> Clo (t°)
-                    </button>
-                    <button
-                      onclick="runReaction('H2O')"
-                      class="p-2 bg-cyan-100 dark:bg-cyan-900/50 hover:bg-cyan-200 rounded text-sm font-medium transition text-left"
-                    >
-                      <i class="fa-solid fa-droplet mr-1"></i> Nước
-                    </button>
-                    <button
-                      onclick="runReaction('HCl')"
-                      class="p-2 bg-red-100 dark:bg-red-900/50 hover:bg-red-200 rounded text-sm font-medium transition text-left"
-                    >
-                      <i class="fa-solid fa-vial mr-1"></i> HCl loãng
-                    </button>
-                    <button
-                      onclick="runReaction('H2SO4')"
-                      class="p-2 bg-purple-100 dark:bg-purple-900/50 hover:bg-purple-200 rounded text-sm font-medium transition text-left"
-                    >
-                      <i class="fa-solid fa-flask mr-1"></i> H₂SO₄ đặc nóng
-                    </button>
-                    <button
-                      onclick="runReaction('CuSO4')"
-                      class="p-2 bg-indigo-100 dark:bg-indigo-900/50 hover:bg-indigo-200 rounded text-sm font-medium transition text-left"
-                    >
-                      <i class="fa-solid fa-tablets mr-1"></i> Muối CuSO₄
-                    </button>
-                  </div>
-                </div>
-
-                <div
-                  class="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800"
-                >
-                  <h4
-                    class="font-bold text-yellow-700 dark:text-yellow-500 mb-1 text-sm"
-                  >
-                    <i class="fa-solid fa-arrow-down-short-wide"></i> Dãy điện
-                    hóa (Hoạt động hóa học):
-                  </h4>
-                  <div
-                    class="flex justify-between text-xs font-mono mt-2 overflow-x-auto whitespace-nowrap pb-1"
-                  >
-                    <span class="font-bold text-red-500">K Na Ca Mg Al</span>
-                    <span class="font-bold text-yellow-500">Zn Fe Pb H</span>
-                    <span class="font-bold text-blue-500">Cu Ag Au</span>
-                  </div>
-                  <div
-                    class="w-full h-1.5 bg-gradient-to-r from-red-500 via-yellow-400 to-blue-500 rounded-full mt-1"
-                  ></div>
-                  <div
-                    class="flex justify-between text-[10px] mt-1 text-gray-500 uppercase"
-                  >
-                    <span>Tính khử mạnh</span>
-                    <span>Yếu</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Visual Output -->
-              <div
-                class="lg:col-span-2 relative bg-white dark:bg-gray-900 flex flex-col items-center justify-center p-8"
-                id="lab-display"
-              >
-                <div
-                  id="reaction-container"
-                  class="w-full h-64 flex items-center justify-center relative bg-gray-50 dark:bg-black/20 rounded-xl border border-dashed border-gray-300 dark:border-gray-700"
-                >
-                  <!-- Default state -->
-                  <div class="text-gray-400 text-center" id="lab-placeholder">
-                    <i
-                      class="fa-solid fa-hand-pointer text-4xl mb-3 animate-bounce"
-                    ></i>
-                    <p class="font-medium">
-                      Chọn Kim loại và Thuốc thử ở bảng bên trái
-                    </p>
-                  </div>
-                </div>
-
-                <!-- Log Output -->
-                <div
-                  id="reaction-log"
-                  class="w-full mt-4 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg font-mono text-sm min-h-[100px] border-l-4 border-chem-500 shadow-inner"
-                >
-                  <p class="text-gray-500">>> Hệ thống sẵn sàng...</p>
-                </div>
-              </div>
+              🔴 Ion dương (đứng yên/dao động) <br />
+              🟡 Electron tự do (di chuyển hỗn loạn)
             </div>
           </div>
+          <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+            <strong>Bản chất:</strong> Các ion dương nằm tại các nút mạng, trong
+            khi các electron hóa trị tách ra và di chuyển tự do trong toàn bộ
+            khối kim loại, tạo nên lực liên kết bền vững.
+          </div>
+        </div>
 
-          <!-- Chemical Properties Summary Accordion -->
-          <div class="space-y-2">
-            <details class="group glass rounded-lg">
-              <summary
-                class="flex justify-between items-center font-medium cursor-pointer list-none p-4 text-chem-800 dark:text-chem-200"
-              >
-                <span
-                  ><i class="fa-solid fa-check-circle text-green-500 mr-2"></i>
-                  Tổng hợp lý thuyết phản ứng</span
-                >
-                <span class="transition group-open:rotate-180"
-                  ><i class="fa-solid fa-chevron-down"></i
-                ></span>
-              </summary>
-              <div
-                class="text-gray-600 dark:text-gray-300 p-4 pt-0 text-sm grid grid-cols-1 md:grid-cols-2 gap-4"
-              >
-                <ul class="list-disc list-inside space-y-1">
-                  <li>
-                    <strong>Tác dụng Phi kim:</strong> Tạo oxit (với O₂), tạo
-                    muối (với Cl₂, S...).
-                  </li>
-                  <li>
-                    <strong>Tác dụng Axit loãng (HCl, H₂SO₄):</strong> Kim loại
-                    trước H → Muối + H₂.
-                  </li>
-                  <li>
-                    <strong>Tác dụng Axit đặc (HNO₃, H₂SO₄):</strong> Hầu hết
-                    kim loại (trừ Au, Pt) → Muối + Sp khử + H₂O (Không giải
-                    phóng H₂).
-                  </li>
-                </ul>
-                <ul class="list-disc list-inside space-y-1">
-                  <li>
-                    <strong>Tác dụng Nước:</strong> Kim loại mạnh (K, Na, Ca,
-                    Ba) → Bazơ + H₂ (nhiệt độ thường).
-                  </li>
-                  <li>
-                    <strong>Tác dụng Muối:</strong> Kim loại mạnh hơn đẩy kim
-                    loại yếu hơn ra khỏi muối (trừ kim loại tan trong nước).
-                  </li>
-                </ul>
-              </div>
-            </details>
+        <!-- D. Formulas & Misconceptions -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+          <div class="glass-card p-5 rounded-xl border-l-4 border-blue-500">
+            <h4 class="font-bold text-lg mb-2">Công thức cần nhớ</h4>
+            <div
+              class="font-mono bg-gray-100 dark:bg-gray-800 p-3 rounded text-center text-lg"
+            >
+              D = (n · M) / (Nₐ · V₀)
+            </div>
+            <p class="text-sm mt-2 text-gray-500">
+              Độ đặc khít: BCC (68%), FCC/HCP (74%)
+            </p>
+          </div>
+          <div class="glass-card p-5 rounded-xl border-l-4 border-red-500">
+            <h4 class="font-bold text-lg mb-2">Hiểu sai phổ biến</h4>
+            <p class="text-sm text-gray-600 dark:text-gray-300">
+              ❌ <strong>Sai:</strong> Tất cả kim loại đều có 1-3e lớp ngoài
+              cùng.<br />
+              ✅ <strong>Đúng:</strong> Một số kim loại nhóm IVA, VA, VIA (Sn,
+              Pb, Bi, Po) có 4, 5, 6e.
+            </p>
           </div>
         </div>
       </section>
 
-      <!-- III. ĐIỀU CHẾ KIM LOẠI -->
-      <section id="preparation" class="scroll-mt-24">
-        <div
-          class="section-header border-green-500 text-green-700 dark:text-green-500"
-        >
-          <i class="fa-solid fa-industry text-2xl"></i>
-          <h2 class="text-3xl font-bold">III. Sản Xuất & Tách Kim Loại</h2>
-        </div>
-
-        <!-- 1. Trạng thái tự nhiên -->
-        <div class="mb-12">
-          <h3 class="text-xl font-bold mb-4">1. Trạng thái tự nhiên & Quặng</h3>
-          <p class="mb-6 text-gray-600 dark:text-gray-300">
-            Chỉ có Au, Pt, Ag tồn tại dạng tự do. Còn lại tồn tại dạng hợp chất
-            (Oxit, Sunfua, Muối...).
-          </p>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div
-              class="glass p-5 rounded-xl border-t-4 border-red-800 shadow-lg hover:translate-y-1 transition"
-            >
-              <div
-                class="h-24 bg-ore-iron/20 rounded-lg mb-3 flex items-center justify-center relative overflow-hidden"
-              >
-                <div
-                  class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/rocky-wall.png')] opacity-30"
-                ></div>
-                <span class="text-3xl font-bold text-red-900">Fe</span>
-              </div>
-              <h4 class="font-bold text-lg">Quặng Sắt</h4>
-              <ul
-                class="text-sm text-gray-600 dark:text-gray-400 mt-2 space-y-1"
-              >
-                <li>Hematit (Fe₂O₃)</li>
-                <li>Magnetit (Fe₃O₄) - Giàu sắt nhất</li>
-              </ul>
-            </div>
-
-            <div
-              class="glass p-5 rounded-xl border-t-4 border-pink-400 shadow-lg hover:translate-y-1 transition"
-            >
-              <div
-                class="h-24 bg-ore-alum/20 rounded-lg mb-3 flex items-center justify-center relative overflow-hidden"
-              >
-                <div
-                  class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/rocky-wall.png')] opacity-30"
-                ></div>
-                <span class="text-3xl font-bold text-pink-700">Al</span>
-              </div>
-              <h4 class="font-bold text-lg">Quặng Nhôm</h4>
-              <ul
-                class="text-sm text-gray-600 dark:text-gray-400 mt-2 space-y-1"
-              >
-                <li>Bôxit (Al₂O₃·nH₂O)</li>
-                <li>Nguyên liệu sản xuất nhôm</li>
-              </ul>
-            </div>
-
-            <div
-              class="glass p-5 rounded-xl border-t-4 border-yellow-600 shadow-lg hover:translate-y-1 transition"
-            >
-              <div
-                class="h-24 bg-ore-copper/20 rounded-lg mb-3 flex items-center justify-center relative overflow-hidden"
-              >
-                <div
-                  class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/rocky-wall.png')] opacity-30"
-                ></div>
-                <span class="text-3xl font-bold text-yellow-800">Cu</span>
-              </div>
-              <h4 class="font-bold text-lg">Quặng Đồng</h4>
-              <ul
-                class="text-sm text-gray-600 dark:text-gray-400 mt-2 space-y-1"
-              >
-                <li>Chalcopyrit (CuFeS₂)</li>
-                <li>Dùng trong thủy luyện/nhiệt luyện</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <!-- 2. Phương pháp tách -->
-        <div
-          x-data="{ method: 'thermal' }"
-          class="glass p-6 rounded-2xl mb-12 shadow-xl border border-green-100 dark:border-green-900"
-        >
-          <h3 class="text-xl font-bold mb-4">
-            2. Các phương pháp tách kim loại
-          </h3>
+      <!-- ================= SECTION II: TÍNH CHẤT VẬT LÝ ================= -->
+      <section id="sec-physical" class="scroll-mt-28">
+        <div class="flex items-center gap-4 mb-8">
           <div
-            class="flex flex-wrap gap-4 mb-6 border-b border-gray-200 dark:border-gray-700 pb-4"
+            class="w-12 h-12 rounded-xl bg-green-500 flex items-center justify-center text-white text-2xl shadow-lg shadow-green-500/30"
           >
-            <button
-              onclick="showMethod('thermal')"
-              id="btn-thermal"
-              class="method-btn px-4 py-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-300 transition shadow-sm"
-            >
-              A. Nhiệt luyện
-            </button>
-            <button
-              onclick="showMethod('hydro')"
-              id="btn-hydro"
-              class="method-btn px-4 py-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-300 transition shadow-sm"
-            >
-              B. Thủy luyện
-            </button>
-            <button
-              onclick="showMethod('electro')"
-              id="btn-electro"
-              class="method-btn px-4 py-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-300 transition shadow-sm"
-            >
-              C. Điện phân
-            </button>
+            <i class="fas fa-bolt"></i>
           </div>
-
-          <!-- Simulation Views -->
-          <div id="method-content" class="min-h-[300px] relative">
-            <!-- Content Injected via JS -->
-          </div>
+          <h2 class="text-3xl md:text-4xl font-display font-bold">
+            II. Tính Chất Vật Lý
+          </h2>
         </div>
 
-        <!-- 3. Tái chế -->
-        <div
-          class="glass p-8 rounded-2xl border-l-8 border-green-500 bg-green-50 dark:bg-green-900/10"
-        >
-          <div class="flex flex-col md:flex-row items-center gap-8">
-            <div class="flex-1">
-              <h3
-                class="text-2xl font-bold text-green-800 dark:text-green-400 mb-4 flex items-center gap-2"
-              >
-                <i class="fa-solid fa-recycle"></i> 3. Nhu cầu & Thực tiễn Tái
-                Chế
-              </h3>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
-                  <h4 class="font-bold text-green-600 mb-1">Lợi ích</h4>
-                  <ul
-                    class="text-sm list-disc list-inside text-gray-600 dark:text-gray-300"
-                  >
-                    <li>Tiết kiệm tài nguyên, năng lượng.</li>
-                    <li>Giảm phát thải CO₂.</li>
-                    <li>Giảm rác thải điện tử.</li>
-                  </ul>
-                </div>
-                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
-                  <h4 class="font-bold text-green-600 mb-1">
-                    Đối tượng tái chế
-                  </h4>
-                  <ul
-                    class="text-sm list-disc list-inside text-gray-600 dark:text-gray-300"
-                  >
-                    <li>Nhôm (lon nước).</li>
-                    <li>Thép, sắt xây dựng.</li>
-                    <li>Đồng (dây điện).</li>
-                    <li>Vàng, Bạc (Urban Mining).</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div class="w-32 h-32 flex items-center justify-center relative">
-              <i
-                class="fa-solid fa-arrows-spin text-9xl text-green-200 dark:text-green-800 absolute animate-spin-slow"
-              ></i>
-              <i class="fa-solid fa-leaf text-4xl text-green-600 absolute"></i>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- IV. HỢP KIM & ĂN MÒN -->
-      <section id="alloys" class="scroll-mt-24">
-        <div
-          class="section-header border-red-500 text-red-700 dark:text-red-500"
-        >
-          <i class="fa-solid fa-shield-halved text-2xl"></i>
-          <h2 class="text-3xl font-bold">IV. Hợp Kim & Ăn Mòn</h2>
-        </div>
-
-        <!-- 1. Hợp kim -->
-        <div class="mb-12">
-          <h3 class="text-2xl font-bold mb-6">1. Hợp Kim</h3>
-          <p class="mb-6 text-gray-600 dark:text-gray-400">
-            Hợp kim thường cứng hơn, bền hơn và chống ăn mòn tốt hơn kim loại
-            nguyên chất.
-          </p>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div
-              class="glass p-4 rounded-xl border-t-4 border-gray-600 hover:shadow-lg transition"
-            >
-              <h4 class="font-bold text-lg text-gray-800 dark:text-gray-200">
-                Thép & Gang
-              </h4>
-              <div class="text-sm text-gray-500 mb-2">Fe + C</div>
-              <p class="text-xs">
-                Thép (0.02-2% C), Gang (2-5% C). Cứng, dùng trong xây dựng.
-              </p>
-            </div>
-            <div
-              class="glass p-4 rounded-xl border-t-4 border-yellow-500 hover:shadow-lg transition"
-            >
-              <h4
-                class="font-bold text-lg text-yellow-800 dark:text-yellow-200"
-              >
-                Đồng thau (Brass)
-              </h4>
-              <div class="text-sm text-gray-500 mb-2">Cu + Zn</div>
-              <p class="text-xs">
-                Cứng, màu vàng đẹp, dùng làm chi tiết máy, nhạc cụ.
-              </p>
-            </div>
-            <div
-              class="glass p-4 rounded-xl border-t-4 border-orange-600 hover:shadow-lg transition"
-            >
-              <h4
-                class="font-bold text-lg text-orange-800 dark:text-orange-200"
-              >
-                Đồng thanh (Bronze)
-              </h4>
-              <div class="text-sm text-gray-500 mb-2">Cu + Sn</div>
-              <p class="text-xs">Bền, đúc chuông, tượng, chi tiết máy.</p>
-            </div>
-            <div
-              class="glass p-4 rounded-xl border-t-4 border-gray-400 hover:shadow-lg transition"
-            >
-              <h4 class="font-bold text-lg text-gray-600 dark:text-gray-300">
-                Inox (Thép không gỉ)
-              </h4>
-              <div class="text-sm text-gray-500 mb-2">Fe + Cr + Ni</div>
-              <p class="text-xs">
-                Rất bền, không gỉ, dùng làm đồ gia dụng, y tế.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- 2. Ăn mòn -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <!-- Theory -->
-          <div class="glass p-6 rounded-2xl">
-            <h3 class="text-xl font-bold mb-4">2. Ăn Mòn Kim Loại</h3>
+          <div class="glass-card p-6 rounded-2xl lg:col-span-1">
+            <h3 class="text-xl font-bold text-green-500 mb-4">
+              <i class="fas fa-list-ul mr-2"></i> Tính Chất Chung
+            </h3>
             <div class="space-y-4">
               <div
-                class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border-l-4 border-blue-500"
+                class="group cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 p-2 rounded transition"
               >
-                <h4 class="font-bold text-blue-700 dark:text-blue-300">
-                  A. Ăn mòn hóa học
+                <h4 class="font-bold text-gray-800 dark:text-gray-200">
+                  1. Tính dẻo
                 </h4>
-                <p class="text-sm mt-1">
-                  Phản ứng trực tiếp với môi trường, không phát sinh dòng điện.
-                  <br />VD: Thiết bị lò đốt bị gỉ.
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                  Các lớp tinh thể trượt lên nhau không tách rời nhờ e tự do.
                 </p>
               </div>
               <div
-                class="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border-l-4 border-red-500"
+                class="group cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 p-2 rounded transition"
               >
-                <h4 class="font-bold text-red-700 dark:text-red-300">
-                  B. Ăn mòn điện hóa
+                <h4 class="font-bold text-gray-800 dark:text-gray-200">
+                  2. Dẫn điện
                 </h4>
-                <p class="text-sm mt-1">
-                  Phát sinh dòng điện khi 2 kim loại tiếp xúc trong dung dịch
-                  điện ly. Kim loại mạnh hơn (Anode) bị ăn mòn.
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                  Dòng e chuyển dời có hướng. Ag > Cu > Au > Al > Fe.
                 </p>
-                <div
-                  class="mt-2 text-xs font-mono bg-white dark:bg-black p-2 rounded"
-                >
-                  VD: Gang (Fe-C) trong không khí ẩm.<br />
-                  (-) Fe → Fe²⁺ + 2e (Fe bị ăn mòn)
-                </div>
+              </div>
+              <div
+                class="group cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 p-2 rounded transition"
+              >
+                <h4 class="font-bold text-gray-800 dark:text-gray-200">
+                  3. Dẫn nhiệt
+                </h4>
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                  Truyền động năng từ e nóng sang ion lạnh.
+                </p>
               </div>
             </div>
           </div>
 
-          <!-- Simulation -->
-          <div class="glass p-6 rounded-2xl relative overflow-hidden">
-            <h3 class="text-xl font-bold mb-4">
-              Mô phỏng: Pin Galvani (Điện hóa)
+          <!-- Simulation: Conductivity & Heat -->
+          <div class="glass-card p-6 rounded-2xl lg:col-span-2 flex flex-col">
+            <h3
+              class="text-xl font-bold text-yellow-500 mb-4 flex justify-between"
+            >
+              <span
+                ><i class="fas fa-microchip mr-2"></i> Mô Phỏng Dẫn Điện & Nhiệt
+                Độ</span
+              >
+              <span
+                id="temp-display"
+                class="text-sm bg-gray-200 dark:bg-gray-700 px-2 rounded"
+                >25°C</span
+              >
             </h3>
+
             <div
-              class="relative h-64 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 flex justify-center items-end p-4 shadow-inner"
+              class="relative h-60 bg-gray-900 rounded-xl overflow-hidden border border-gray-700 mb-4"
+              id="conductivity-box"
+            >
+              <canvas id="condCanvas" class="w-full h-full"></canvas>
+            </div>
+
+            <div class="flex items-center gap-4">
+              <span class="text-sm font-bold"
+                ><i class="fas fa-temperature-low text-blue-400"></i> Lạnh</span
+              >
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value="25"
+                class="flex-grow h-2 bg-gradient-to-r from-blue-400 via-yellow-400 to-red-500 rounded-lg appearance-none cursor-pointer"
+                id="temp-slider"
+              />
+              <span class="text-sm font-bold"
+                >Nóng <i class="fas fa-temperature-high text-red-500"></i
+              ></span>
+            </div>
+            <p
+              class="text-sm mt-3 text-gray-600 dark:text-gray-400 text-center italic"
+            >
+              Kéo thanh trượt: Nhiệt độ tăng → Ion dương dao động mạnh → Cản trở
+              electron → Điện trở tăng (Độ dẫn điện giảm).
+            </p>
+          </div>
+        </div>
+
+        <!-- Experiment: Malleability -->
+        <div class="mt-8 glass-card p-6 rounded-2xl">
+          <h3 class="text-xl font-bold text-blue-500 mb-4">
+            <i class="fas fa-hammer mr-2"></i> Thí Nghiệm Ảo: Tính Dẻo
+          </h3>
+          <div
+            class="flex flex-col md:flex-row gap-8 items-center justify-center"
+          >
+            <div
+              class="relative w-64 h-40 bg-gray-200 dark:bg-gray-800 rounded-lg flex flex-col justify-center items-center border-b-8 border-gray-400"
             >
               <div
-                class="absolute bottom-0 w-full h-3/4 bg-gradient-to-t from-blue-300/30 to-blue-100/10 rounded-b-xl flex justify-center items-center"
+                id="metal-block"
+                class="w-40 h-24 relative transition-all duration-300"
               >
-                <span
-                  class="text-blue-800 dark:text-blue-200 font-bold opacity-30"
-                  >Dung dịch điện ly</span
+                <!-- Layers -->
+                <div
+                  class="layer absolute top-0 w-full h-1/3 bg-gradient-to-r from-gray-400 to-gray-300 rounded flex justify-around items-center px-1 border border-gray-500 transition-transform duration-300"
+                  id="layer-1"
                 >
+                  <div class="w-6 h-6 rounded-full bg-gray-600/50"></div>
+                  <div class="w-6 h-6 rounded-full bg-gray-600/50"></div>
+                  <div class="w-6 h-6 rounded-full bg-gray-600/50"></div>
+                </div>
+                <div
+                  class="layer absolute top-1/3 w-full h-1/3 bg-gradient-to-r from-gray-400 to-gray-300 rounded flex justify-around items-center px-1 border border-gray-500 transition-transform duration-300"
+                  id="layer-2"
+                >
+                  <div class="w-6 h-6 rounded-full bg-gray-600/50"></div>
+                  <div class="w-6 h-6 rounded-full bg-gray-600/50"></div>
+                  <div class="w-6 h-6 rounded-full bg-gray-600/50"></div>
+                </div>
+                <div
+                  class="layer absolute top-2/3 w-full h-1/3 bg-gradient-to-r from-gray-400 to-gray-300 rounded flex justify-around items-center px-1 border border-gray-500"
+                  id="layer-3"
+                >
+                  <div class="w-6 h-6 rounded-full bg-gray-600/50"></div>
+                  <div class="w-6 h-6 rounded-full bg-gray-600/50"></div>
+                  <div class="w-6 h-6 rounded-full bg-gray-600/50"></div>
+                </div>
               </div>
-
-              <!-- Anode Zn -->
+              <!-- Hammer -->
               <div
-                class="w-20 h-48 bg-gray-300 border-2 border-gray-500 mr-12 relative z-10 flex flex-col items-center shadow-lg"
+                id="hammer"
+                class="absolute -top-10 right-0 text-6xl text-gray-700 dark:text-gray-300 transition-transform duration-100 origin-bottom-right"
+                style="transform: rotate(30deg)"
               >
-                <span
-                  class="font-bold text-xs mt-2 text-black bg-white px-1 rounded shadow"
-                  >Zn (-)</span
+                <i class="fas fa-gavel"></i>
+              </div>
+            </div>
+
+            <div class="text-center">
+              <button
+                onclick="hitMetal()"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transform active:scale-95 transition"
+              >
+                <i class="fas fa-hammer mr-2"></i> Tác dụng lực
+              </button>
+              <button
+                onclick="resetMetal()"
+                class="ml-2 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transform active:scale-95 transition"
+              >
+                <i class="fas fa-undo"></i>
+              </button>
+              <p class="mt-4 max-w-xs text-sm text-gray-600 dark:text-gray-300">
+                <strong>Hiện tượng:</strong> Các lớp tinh thể trượt lên nhau mà
+                không gãy vỡ. <br />
+                <strong>Giải thích:</strong> Liên kết kim loại được duy trì bởi
+                đám mây electron.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SECTION III: TÍNH CHẤT HÓA HỌC ================= -->
+      <section id="sec-chemical" class="scroll-mt-28">
+        <div class="flex items-center gap-4 mb-8">
+          <div
+            class="w-12 h-12 rounded-xl bg-red-500 flex items-center justify-center text-white text-2xl shadow-lg shadow-red-500/30"
+          >
+            <i class="fas fa-flask"></i>
+          </div>
+          <h2 class="text-3xl md:text-4xl font-display font-bold">
+            III. Tính Chất Hóa Học
+          </h2>
+        </div>
+
+        <!-- Experiment Lab Interface -->
+        <div
+          class="glass-card p-1 rounded-2xl overflow-hidden shadow-2xl border border-blue-500/30"
+        >
+          <div
+            class="bg-gray-900 text-white p-4 flex justify-between items-center"
+          >
+            <span class="font-bold font-mono"
+              ><i class="fas fa-vial mr-2"></i> PHÒNG THÍ NGHIỆM ẢO</span
+            >
+            <div class="flex gap-2 text-xs">
+              <span class="px-2 py-1 bg-green-600 rounded"
+                >Trạng thái: Sẵn sàng</span
+              >
+            </div>
+          </div>
+
+          <div
+            class="grid grid-cols-1 md:grid-cols-3 bg-gray-100 dark:bg-gray-800 h-[500px]"
+          >
+            <!-- Control Panel -->
+            <div
+              class="p-6 border-r border-gray-300 dark:border-gray-700 flex flex-col gap-6"
+            >
+              <div>
+                <label class="block text-sm font-bold mb-2"
+                  >1. Chọn Kim Loại:</label
                 >
-                <div
-                  id="zn-bubbles"
-                  class="hidden absolute w-full h-full opacity-50 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8Y2lyY2xlIGN4PSIyIiBjeT0iMiIgcj0iMSIgZmlsbD0iIzMzMyIvPgo8L3N2Zz4=')]"
-                ></div>
-                <div
-                  class="absolute -bottom-2 text-[10px] text-red-600 font-bold hidden"
-                  id="zn-corrosion-text"
-                >
-                  Ăn mòn
+                <div class="grid grid-cols-2 gap-2">
+                  <button
+                    onclick="selectMetal('Na')"
+                    class="metal-btn p-2 border rounded hover:bg-blue-100 dark:hover:bg-blue-900 focus:ring-2 ring-blue-500"
+                  >
+                    Na (Natri)
+                  </button>
+                  <button
+                    onclick="selectMetal('Fe')"
+                    class="metal-btn p-2 border rounded hover:bg-blue-100 dark:hover:bg-blue-900 focus:ring-2 ring-blue-500"
+                  >
+                    Fe (Sắt)
+                  </button>
+                  <button
+                    onclick="selectMetal('Cu')"
+                    class="metal-btn p-2 border rounded hover:bg-blue-100 dark:hover:bg-blue-900 focus:ring-2 ring-blue-500"
+                  >
+                    Cu (Đồng)
+                  </button>
+                  <button
+                    onclick="selectMetal('Ag')"
+                    class="metal-btn p-2 border rounded hover:bg-blue-100 dark:hover:bg-blue-900 focus:ring-2 ring-blue-500"
+                  >
+                    Ag (Bạc)
+                  </button>
                 </div>
               </div>
 
-              <!-- Cathode Cu -->
-              <div
-                class="w-20 h-48 bg-orange-300 border-2 border-orange-500 ml-12 relative z-10 flex flex-col items-center shadow-lg"
-              >
-                <span
-                  class="font-bold text-xs mt-2 text-black bg-white px-1 rounded shadow"
-                  >Cu (+)</span
+              <div>
+                <label class="block text-sm font-bold mb-2"
+                  >2. Chọn Dung Dịch:</label
                 >
-                <div
-                  id="cu-bubbles"
-                  class="absolute w-full h-full opacity-0 transition-opacity duration-500"
-                ></div>
+                <div class="grid grid-cols-1 gap-2">
+                  <button
+                    onclick="selectSolution('HCl')"
+                    class="sol-btn p-2 border rounded hover:bg-green-100 dark:hover:bg-green-900 focus:ring-2 ring-green-500"
+                  >
+                    HCl (Acid Loãng)
+                  </button>
+                  <button
+                    onclick="selectSolution('CuSO4')"
+                    class="sol-btn p-2 border rounded hover:bg-blue-100 dark:hover:bg-blue-900 focus:ring-2 ring-blue-500"
+                  >
+                    CuSO4 (Muối)
+                  </button>
+                  <button
+                    onclick="selectSolution('H2O')"
+                    class="sol-btn p-2 border rounded hover:bg-cyan-100 dark:hover:bg-cyan-900 focus:ring-2 ring-cyan-500"
+                  >
+                    H2O (Nước)
+                  </button>
+                </div>
               </div>
 
-              <!-- Wire -->
+              <button
+                onclick="runReaction()"
+                class="mt-auto w-full py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white font-bold rounded-lg shadow-lg transform active:scale-95 transition hover:shadow-red-500/50"
+              >
+                TIẾN HÀNH THÍ NGHIỆM
+              </button>
+            </div>
+
+            <!-- Visualization Area -->
+            <div
+              class="col-span-2 relative bg-white dark:bg-gray-900 flex items-center justify-center overflow-hidden"
+            >
+              <!-- Beaker -->
               <div
-                class="absolute top-10 w-52 h-24 border-t-4 border-gray-700 dark:border-gray-200 rounded-t-full"
+                class="relative w-48 h-64 border-l-4 border-r-4 border-b-4 border-gray-400/50 rounded-b-3xl glass-card flex items-end justify-center overflow-hidden"
+                id="beaker"
+              >
+                <!-- Solution Liquid -->
+                <div
+                  id="liquid"
+                  class="w-full h-3/4 bg-blue-100/30 transition-colors duration-1000 flex items-end justify-center relative"
+                >
+                  <!-- Metal Piece -->
+                  <div
+                    id="metal-piece"
+                    class="w-16 h-32 bg-gray-400 rounded-t mb-2 hidden transition-all duration-1000 transform translate-y-full"
+                  ></div>
+                  <!-- Bubbles container -->
+                  <div
+                    id="bubbles-container"
+                    class="absolute inset-0 pointer-events-none"
+                  ></div>
+                </div>
+              </div>
+
+              <!-- Reaction Info Overlay -->
+              <div
+                id="reaction-info"
+                class="absolute top-4 right-4 bg-black/70 text-white p-4 rounded-lg backdrop-blur-md max-w-xs text-sm hidden"
+              >
+                <h4 class="font-bold text-yellow-400 mb-1">Kết quả:</h4>
+                <p id="reaction-text">...</p>
+                <div
+                  class="mt-2 font-mono bg-white/10 p-2 rounded text-xs"
+                  id="reaction-equation"
+                >
+                  ...
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reactivity Series (Dãy điện hóa) -->
+        <div class="mt-8 glass-card p-6 rounded-2xl">
+          <h3 class="text-xl font-bold text-indigo-500 mb-6 text-center">
+            Dãy Điện Hóa Của Kim Loại
+          </h3>
+          <div class="overflow-x-auto pb-4">
+            <div class="flex min-w-max gap-1 px-4 items-end h-32">
+              <!-- Rendered via JS for interactivity -->
+              <div class="flex" id="reactivity-series"></div>
+            </div>
+          </div>
+          <p class="text-center text-sm text-gray-500 mt-2">
+            <span class="text-red-500 font-bold">← Tính Khử Tăng</span> |
+            <span class="text-blue-500 font-bold">Tính Oxi Hóa Tăng →</span>
+          </p>
+        </div>
+      </section>
+
+      <!-- ================= SECTION IV: ĐIỀU CHẾ ================= -->
+      <section id="sec-extraction" class="scroll-mt-28">
+        <div class="flex items-center gap-4 mb-8">
+          <div
+            class="w-12 h-12 rounded-xl bg-orange-500 flex items-center justify-center text-white text-2xl shadow-lg shadow-orange-500/30"
+          >
+            <i class="fas fa-industry"></i>
+          </div>
+          <h2 class="text-3xl md:text-4xl font-display font-bold">
+            IV. Phương Pháp Tách Kim Loại
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Method 1 -->
+          <div
+            class="glass-card p-5 rounded-xl hover:bg-orange-50 dark:hover:bg-gray-800 cursor-pointer transition group"
+            onclick="showExtraction('thermal')"
+          >
+            <div
+              class="text-orange-500 text-4xl mb-3 group-hover:scale-110 transition-transform"
+            >
+              <i class="fas fa-fire"></i>
+            </div>
+            <h3 class="font-bold text-lg">1. Nhiệt Luyện</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+              Dùng C, CO, Al khử oxit ở nhiệt độ cao. (Fe, Zn...)
+            </p>
+          </div>
+          <!-- Method 2 -->
+          <div
+            class="glass-card p-5 rounded-xl hover:bg-blue-50 dark:hover:bg-gray-800 cursor-pointer transition group"
+            onclick="showExtraction('hydro')"
+          >
+            <div
+              class="text-blue-500 text-4xl mb-3 group-hover:scale-110 transition-transform"
+            >
+              <i class="fas fa-water"></i>
+            </div>
+            <h3 class="font-bold text-lg">2. Thủy Luyện</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+              Dùng kim loại mạnh đẩy kim loại yếu khỏi dung dịch. (Cu, Ag...)
+            </p>
+          </div>
+          <!-- Method 3 -->
+          <div
+            class="glass-card p-5 rounded-xl hover:bg-purple-50 dark:hover:bg-gray-800 cursor-pointer transition group"
+            onclick="showExtraction('electrolysis')"
+          >
+            <div
+              class="text-purple-500 text-4xl mb-3 group-hover:scale-110 transition-transform"
+            >
+              <i class="fas fa-bolt"></i>
+            </div>
+            <h3 class="font-bold text-lg">3. Điện Phân</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+              Dùng dòng điện một chiều. (Mạnh nhất: K, Na, Al...)
+            </p>
+          </div>
+        </div>
+
+        <!-- Detailed Interactive View -->
+        <div
+          class="mt-8 glass-card p-6 rounded-2xl min-h-[300px]"
+          id="extraction-detail"
+        >
+          <h3 class="text-xl font-bold mb-4 text-center">
+            Mô Phỏng Điện Phân Nóng Chảy Al₂O₃
+          </h3>
+          <div
+            class="flex flex-col md:flex-row gap-8 items-center justify-center"
+          >
+            <div
+              class="relative w-64 h-64 bg-gray-800 rounded-lg p-4 border-4 border-gray-600"
+            >
+              <!-- Anodes (Carbon) -->
+              <div
+                class="absolute top-0 left-10 w-8 h-24 bg-black border border-gray-500"
               ></div>
               <div
-                id="electron-flow"
-                class="absolute top-7 left-1/2 transform -translate-x-1/2 text-yellow-500 font-bold hidden bg-black/80 px-2 rounded text-xs animate-pulse"
+                class="absolute top-0 right-10 w-8 h-24 bg-black border border-gray-500"
+              ></div>
+              <div class="text-xs text-white absolute top-2 left-20">
+                Anode (+)
+              </div>
+
+              <!-- Cathode (Tank) -->
+              <div class="absolute bottom-0 w-full h-2 bg-black"></div>
+              <div
+                class="text-xs text-white absolute bottom-2 w-full text-center"
               >
-                e⁻ <i class="fa-solid fa-arrow-right"></i>
+                Cathode (-)
+              </div>
+
+              <!-- Molten Al2O3 -->
+              <div
+                class="absolute bottom-2 left-0 w-full h-32 bg-orange-600/80 flex items-center justify-center overflow-hidden"
+                id="electrolysis-bath"
+              >
+                <!-- JS will inject moving ions here -->
               </div>
             </div>
-
-            <div class="mt-4 flex gap-4 justify-center">
+            <div class="space-y-2 max-w-md">
+              <div class="bg-gray-100 dark:bg-gray-800 p-3 rounded">
+                <strong>Phương trình:</strong> <br />
+                <span class="font-mono text-blue-600 dark:text-blue-400"
+                  >2Al₂O₃ → 4Al + 3O₂</span
+                >
+              </div>
+              <div class="text-sm">
+                <p>
+                  <span class="text-red-500 font-bold">O²⁻</span> di chuyển về
+                  Anode (+), nhường e tạo khí O₂.
+                </p>
+                <p>
+                  <span class="text-blue-500 font-bold">Al³⁺</span> di chuyển về
+                  Cathode (-), nhận e tạo Al nóng chảy.
+                </p>
+              </div>
               <button
-                onclick="startCorrosion()"
-                class="px-6 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-bold shadow-lg transition active:scale-95"
+                onclick="animateElectrolysis()"
+                class="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700 transition"
               >
-                <i class="fa-solid fa-play mr-2"></i> Bắt đầu
-              </button>
-              <button
-                onclick="resetCorrosion()"
-                class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-bold shadow-lg transition active:scale-95"
-              >
-                <i class="fa-solid fa-rotate-right mr-2"></i> Reset
+                Bật Dòng Điện
               </button>
             </div>
           </div>
         </div>
+      </section>
 
-        <!-- 3. Chống ăn mòn -->
-        <div class="glass p-6 rounded-2xl border-t-4 border-green-500">
-          <h3 class="text-xl font-bold mb-4">3. Phòng Chống Ăn Mòn Kim Loại</h3>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="flex items-start gap-3">
-              <div class="bg-green-100 p-3 rounded-full text-green-600">
-                <i class="fa-solid fa-paint-roller"></i>
+      <!-- ================= SECTION V: ĂN MÒN & HỢP KIM ================= -->
+      <section id="sec-corrosion" class="scroll-mt-28">
+        <div class="flex items-center gap-4 mb-8">
+          <div
+            class="w-12 h-12 rounded-xl bg-gray-600 flex items-center justify-center text-white text-2xl shadow-lg shadow-gray-500/30"
+          >
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h2 class="text-3xl md:text-4xl font-display font-bold">
+            V. Hợp Kim & Ăn Mòn
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- Corrosion Theory -->
+          <div class="glass-card p-6 rounded-2xl">
+            <h3 class="text-xl font-bold mb-4">Các Loại Ăn Mòn</h3>
+            <div
+              class="flex gap-4 mb-4 border-b border-gray-200 dark:border-gray-700 pb-4"
+            >
+              <div class="w-1/2">
+                <h4 class="font-bold text-red-500">Hóa Học</h4>
+                <p class="text-xs mt-1">
+                  Oxi hóa - khử trực tiếp. Không phát sinh dòng điện. (Ví dụ: Lò
+                  đốt than).
+                </p>
               </div>
-              <div>
-                <h4 class="font-bold">Phương pháp bề mặt</h4>
-                <p class="text-sm text-gray-600 dark:text-gray-400">
-                  Sơn, mạ (Zn, Sn, Ni, Cr), bôi dầu mỡ để cách ly kim loại với
-                  môi trường.
+              <div class="w-1/2 border-l pl-4 dark:border-gray-700">
+                <h4 class="font-bold text-blue-500">Điện Hóa</h4>
+                <p class="text-xs mt-1">
+                  2 kim loại khác nhau, tiếp xúc dung dịch điện ly. Phát sinh
+                  dòng điện. Kim loại mạnh bị ăn mòn.
                 </p>
               </div>
             </div>
-            <div class="flex items-start gap-3">
-              <div class="bg-blue-100 p-3 rounded-full text-blue-600">
-                <i class="fa-solid fa-car-battery"></i>
+
+            <h3 class="text-xl font-bold mb-2 mt-6">Bảo Vệ: "Vật Hy Sinh"</h3>
+            <p class="text-sm mb-4">
+              Để bảo vệ vỏ tàu biển bằng thép (Fe), người ta gắn các tấm Kẽm
+              (Zn) lên vỏ tàu.
+            </p>
+
+            <!-- Simulation: Sacrificial Anode -->
+            <div
+              class="relative w-full h-48 bg-cyan-100 rounded-lg overflow-hidden border border-cyan-300"
+            >
+              <div
+                class="absolute bottom-0 w-full h-1/2 bg-blue-500/30 backdrop-blur-sm z-10 flex items-center justify-center"
+              >
+                <span class="text-blue-900 font-bold opacity-50"
+                  >Nước Biển (Dung dịch điện ly)</span
+                >
               </div>
-              <div>
-                <h4 class="font-bold">Điện hóa (Cực hi sinh)</h4>
-                <p class="text-sm text-gray-600 dark:text-gray-400">
-                  Gắn kim loại hoạt động mạnh hơn (VD: Zn, Mg) để bảo vệ kim
-                  loại yếu hơn (Fe) (tàu biển, đường ống).
-                </p>
+
+              <!-- Boat Hull (Steel/Fe) -->
+              <div
+                id="boat-hull"
+                class="absolute top-10 left-1/4 w-1/2 h-20 bg-gray-600 rounded-b-full transition-colors duration-1000 z-20 flex items-center justify-center text-white text-xs"
+              >
+                Vỏ Tàu (Fe)
+              </div>
+
+              <!-- Zinc Block -->
+              <div
+                id="zinc-anode"
+                class="absolute top-20 left-1/2 w-8 h-4 bg-gray-300 border border-gray-500 transform -translate-x-1/2 transition-all duration-500 opacity-0 z-30"
+              >
+                Zn
+              </div>
+
+              <!-- Controls -->
+              <div
+                class="absolute top-2 right-2 z-40 bg-white/80 p-2 rounded shadow"
+              >
+                <label
+                  class="flex items-center gap-2 text-xs font-bold cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    id="toggle-anode"
+                    onchange="toggleProtection()"
+                    class="form-checkbox text-blue-600"
+                  />
+                  Gắn Kẽm Bảo Vệ
+                </label>
               </div>
             </div>
-            <div class="flex items-start gap-3">
-              <div class="bg-purple-100 p-3 rounded-full text-purple-600">
-                <i class="fa-solid fa-wand-magic-sparkles"></i>
-              </div>
-              <div>
-                <h4 class="font-bold">Chế tạo hợp kim</h4>
-                <p class="text-sm text-gray-600 dark:text-gray-400">
-                  Thêm Cr, Ni vào thép để tạo Inox chống gỉ.
+            <p
+              id="protection-status"
+              class="text-center text-xs font-bold mt-2 text-red-500"
+            >
+              Chưa bảo vệ: Sắt đang bị ăn mòn!
+            </p>
+          </div>
+
+          <!-- Interactive Exercise/Game -->
+          <div
+            class="glass-card p-6 rounded-2xl border-2 border-dashed border-blue-300 dark:border-blue-700"
+          >
+            <div class="text-center mb-6">
+              <span class="text-4xl">🎮</span>
+              <h3 class="text-2xl font-bold mt-2">Bài Tập Củng Cố</h3>
+              <p class="text-sm text-gray-500">
+                Kiểm tra nhanh kiến thức vừa học
+              </p>
+            </div>
+
+            <div id="quiz-container" class="space-y-4">
+              <div class="bg-blue-50 dark:bg-gray-800 p-4 rounded-lg">
+                <p id="quiz-question" class="font-bold text-lg mb-4">
+                  Đang tải câu hỏi...
                 </p>
+                <div id="quiz-options" class="grid grid-cols-1 gap-3">
+                  <!-- Options injected by JS -->
+                </div>
+              </div>
+              <div class="flex justify-between items-center mt-4">
+                <div class="text-sm font-bold">
+                  Điểm: <span id="score" class="text-blue-600 text-xl">0</span>
+                </div>
+                <button
+                  onclick="nextQuestion()"
+                  class="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition disabled:opacity-50"
+                  id="next-btn"
+                  disabled
+                >
+                  Câu tiếp theo <i class="fas fa-arrow-right ml-1"></i>
+                </button>
               </div>
             </div>
           </div>
         </div>
+      </section>
+
+      <!-- NAVIGATION BUTTONS (REQUIRED) -->
+      <section
+        class="text-center space-x-4 mb-20 flex flex-wrap justify-center gap-4"
+      >
+        <button
+          onclick="window.location.href = 'bai_tap.html'"
+          style="
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.35);
+            transition: 0.3s ease;
+          "
+          onmouseover="
+            this.style.transform = 'translateY(-3px) scale(1.03)';
+            this.style.boxShadow = '0 18px 45px rgba(99,102,241,.55)';
+          "
+          onmouseout="
+            this.style.transform = 'translateY(0) scale(1)';
+            this.style.boxShadow = '0 10px 30px rgba(59,130,246,.35)';
+          "
+        >
+          <i class="fas fa-pen-to-square"></i>
+          Bài tập củng cố
+        </button>
+
+        <button
+          onclick="window.location.href = '../chemstudyteen.html'"
+          style="
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.35);
+            transition: 0.3s ease;
+          "
+          onmouseover="
+            this.style.transform = 'translateY(-3px)';
+            this.style.boxShadow = '0 18px 45px rgba(22,163,74,.55)';
+          "
+          onmouseout="
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 10px 30px rgba(34,197,94,.35)';
+          "
+        >
+          <i class="fas fa-arrow-left"></i>
+          Quay về CS Expert
+        </button>
       </section>
     </main>
 
-    <!-- Modal/Overlay for Physical Properties Sims -->
-    <div
-      id="sim-modal"
-      class="fixed inset-0 z-[60] hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
-    >
-      <div
-        class="bg-white dark:bg-gray-800 w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden animate-zoomIn"
-      >
-        <div
-          class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-chem-50 dark:bg-chem-900"
-        >
-          <h3
-            id="modal-title"
-            class="text-xl font-bold text-chem-700 dark:text-chem-400"
-          >
-            Mô phỏng
-          </h3>
-          <button
-            onclick="closeSim()"
-            class="text-gray-500 hover:text-red-500 text-2xl transition"
-          >
-            &times;
-          </button>
+    <!-- FOOTER (EXACT STRUCTURE REQUIRED) -->
+    <footer>
+      <div class="footer-waves"></div>
+      <div class="footer-grid">
+        <div class="footer-brand" data-aos="fade-right">
+          <h2>EDUMATTER</h2>
+          <p style="color: #94a3b8; line-height: 1.8">
+            Kiến tạo môi trường học tập cảm xúc, nơi tri thức được số hóa và
+            truyền tải đầy cảm hứng.
+          </p>
+          <div style="display: flex; gap: 15px; margin-top: 30px">
+            <a href="https://www.facebook.com/ducnt214" class="icon-btn"
+              ><i class="fab fa-facebook" alt="facebook"></i
+            ></a>
+            <a href="https://github.com/ducnt2104" class="icon-btn" alt="github"
+              ><i class="fab fa-github"></i
+            ></a>
+            <a
+              href="https://www.tiktok.com/@ktbtcthm210"
+              class="icon-btn"
+              alt="tiktok"
+              ><i class="fab fa-tiktok"></i
+            ></a>
+          </div>
         </div>
-        <div
-          class="p-6 h-[400px] bg-gray-100 dark:bg-gray-900 relative flex items-center justify-center"
-          id="modal-content"
-        >
-          <!-- Content injected via JS -->
+        <div class="footer-links" data-aos="fade-up">
+          <h3>Liên hệ nhanh</h3>
+          <div class="contact-item">
+            <i class="fas fa-envelope"></i>
+            <span>ducnt21042010@gmail.com</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-phone"></i>
+            <span>034 226 6204</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-location-dot"></i>
+            <span>THPT Tôn Đức Thắng, Đồng Nai</span>
+          </div>
         </div>
-        <div
-          class="p-4 bg-gray-50 dark:bg-gray-800 text-sm text-gray-600 dark:text-gray-400 text-center"
-          id="modal-desc"
-        >
-          Description goes here.
+        <div class="footer-links" data-aos="fade-left">
+          <h4>Đội ngũ DNT</h4>
+          <p style="color: #94a3b8">
+            "Sáng tạo không ngừng - Vươn tầm tri thức"
+          </p>
+          <div
+            style="
+              margin-top: 20px;
+              padding: 15px;
+              background: rgba(255, 255, 255, 0.05);
+              border-radius: 15px;
+            "
+          >
+            <p style="font-size: 0.8rem; color: #fff">
+              Dự án được phát triển bởi các thành viên đam mê công nghệ tại Việt
+              Nam.
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+      <div class="copyright">
+        <p>
+          © 2024 EDUMATTER Educational Ecosystem. Designed with
+          <i class="fas fa-heart" style="color: #ef4444"></i> by DNT Team.
+        </p>
+      </div>
+    </footer>
 
-    <!-- SCRIPTS -->
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-      // --- THEME TOGGLE ---
-      const themeToggle = document.getElementById("themeToggle");
+      // --- 1. THEME TOGGLE LOGIC ---
+      const themeToggle = document.getElementById("theme-toggle");
       const html = document.documentElement;
 
+      // Check local storage or system preference
       if (
         localStorage.theme === "dark" ||
         (!("theme" in localStorage) &&
@@ -1082,558 +1352,609 @@
       themeToggle.addEventListener("click", () => {
         html.classList.toggle("dark");
         localStorage.theme = html.classList.contains("dark") ? "dark" : "light";
-        // renderCrystal(); removed to fix ReferenceError
+        // Trigger redrawing of canvases if needed (colors change)
+        initElectronSea();
       });
 
-      // --- NAVIGATION SCROLL ---
-      function scrollToSection(id) {
-        const el = document.getElementById(id);
-        if (el) {
-          const y = el.getBoundingClientRect().top + window.pageYOffset - 100;
-          window.scrollTo({ top: y, behavior: "smooth" });
-        }
-      }
-
-      // --- 1. THREE.JS CRYSTAL SIMULATION ---
-      let scene, camera, renderer, crystalGroup;
-      const container = document.getElementById("crystal-canvas-container");
-
-      function initThreeJS() {
-        scene = new THREE.Scene();
-        camera = new THREE.PerspectiveCamera(
-          75,
-          container.clientWidth / container.clientHeight,
-          0.1,
-          1000
-        );
-        renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        renderer.setSize(container.clientWidth, container.clientHeight);
+      // --- 2. LATTICE SIMULATION (CSS Grid/Transform based) ---
+      function renderLattice(type) {
+        const container = document.getElementById("lattice-container");
         container.innerHTML = "";
-        container.appendChild(renderer.domElement);
 
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-        scene.add(ambientLight);
-        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        dirLight.position.set(5, 5, 5);
-        scene.add(dirLight);
-
-        camera.position.z = 5;
-
-        window.addEventListener("resize", () => {
-          if (container.clientWidth > 0) {
-            camera.aspect = container.clientWidth / container.clientHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(container.clientWidth, container.clientHeight);
-          }
-        });
-
-        loadCrystal("bcc");
-        animateCrystal();
-      }
-
-      function createAtom(x, y, z, color) {
-        const geometry = new THREE.SphereGeometry(0.4, 32, 32);
-        const material = new THREE.MeshPhongMaterial({
-          color: color,
-          shininess: 100,
-        });
-        const sphere = new THREE.Mesh(geometry, material);
-        sphere.position.set(x, y, z);
-        return sphere;
-      }
-
-      function loadCrystal(type) {
-        if (crystalGroup) scene.remove(crystalGroup);
-        crystalGroup = new THREE.Group();
-
-        const color = 0x3b82f6;
-
+        let nodesHTML = "";
+        // Simplified 2D representation of 3D structures with perspective
         if (type === "bcc") {
-          [-1, 1].forEach((x) => {
-            [-1, 1].forEach((y) => {
-              [-1, 1].forEach((z) => {
-                crystalGroup.add(createAtom(x, y, z, color));
-              });
-            });
-          });
-          crystalGroup.add(createAtom(0, 0, 0, 0xeab308));
+          // Body Centered Cubic
+          // 8 corners + 1 center
+          // Using absolute positioning to fake 3D
+          nodesHTML += createAtom(50, 50, 0, 1.2); // Center
+          // Corners
+          const corners = [
+            [20, 20],
+            [80, 20],
+            [20, 80],
+            [80, 80],
+          ];
+          corners.forEach((p) => (nodesHTML += createAtom(p[0], p[1], -20, 1)));
         } else if (type === "fcc") {
-          [-1, 1].forEach((x) => {
-            [-1, 1].forEach((y) => {
-              [-1, 1].forEach((z) => {
-                crystalGroup.add(createAtom(x, y, z, color));
-              });
-            });
-          });
-          [
-            [0, 0, 1],
-            [0, 0, -1],
-            [0, 1, 0],
-            [0, -1, 0],
-            [1, 0, 0],
-            [-1, 0, 0],
-          ].forEach((p) =>
-            crystalGroup.add(createAtom(p[0], p[1], p[2], 0x22c55e))
+          // Face Centered Cubic
+          // Faces
+          nodesHTML += createAtom(50, 50, 0, 1.1);
+          nodesHTML += createAtom(50, 20, 0, 1);
+          nodesHTML += createAtom(50, 80, 0, 1);
+          nodesHTML += createAtom(20, 50, 0, 1);
+          nodesHTML += createAtom(80, 50, 0, 1);
+          // Corners
+          const corners = [
+            [20, 20],
+            [80, 20],
+            [20, 80],
+            [80, 80],
+          ];
+          corners.forEach(
+            (p) => (nodesHTML += createAtom(p[0], p[1], -20, 0.9)),
           );
         } else if (type === "hcp") {
-          for (let i = 0; i < 6; i++) {
-            const angle = (i / 6) * Math.PI * 2;
-            crystalGroup.add(
-              createAtom(
-                Math.cos(angle) * 1.5,
-                -1,
-                Math.sin(angle) * 1.5,
-                color
-              )
-            );
-            crystalGroup.add(
-              createAtom(Math.cos(angle) * 1.5, 1, Math.sin(angle) * 1.5, color)
-            );
-          }
-          crystalGroup.add(createAtom(0, -1, 0, color));
-          crystalGroup.add(createAtom(0, 1, 0, color));
-          for (let i = 0; i < 3; i++) {
-            const angle = (i / 3) * Math.PI * 2 + Math.PI / 6;
-            crystalGroup.add(
-              createAtom(
-                Math.cos(angle) * 0.8,
-                0,
-                Math.sin(angle) * 0.8,
-                0xeab308
-              )
-            );
-          }
+          // Hexagonal
+          // Hexagon pattern
+          const hex = [
+            [50, 20],
+            [80, 35],
+            [80, 65],
+            [50, 80],
+            [20, 65],
+            [20, 35],
+            [50, 50],
+          ];
+          hex.forEach((p) => (nodesHTML += createAtom(p[0], p[1], 0, 1)));
         }
-        scene.add(crystalGroup);
-        gsap.from(crystalGroup.scale, {
-          x: 0,
-          y: 0,
-          z: 0,
-          duration: 1,
-          ease: "back.out(1.7)",
-        });
+        container.innerHTML = nodesHTML;
       }
 
-      function animateCrystal() {
-        requestAnimationFrame(animateCrystal);
-        if (crystalGroup) {
-          crystalGroup.rotation.y += 0.005;
-          crystalGroup.rotation.x += 0.002;
-        }
-        renderer.render(scene, camera);
+      function createAtom(x, y, z, scale) {
+        // z-index based on scale (fake depth)
+        const zIndex = Math.floor(scale * 10);
+        return `<div class="lattice-node animate-float" style="left: ${x}%; top: ${y}%; transform: translate(-50%, -50%) scale(${scale}); z-index: ${zIndex}; animation-delay: ${Math.random()}s"></div>`;
       }
 
-      setTimeout(initThreeJS, 100);
+      // Initial Render
+      renderLattice("bcc");
 
-      // --- 2. ELECTRON SEA SIMULATION ---
-      const seaCanvas = document.getElementById("electronSeaCanvas");
-      const seaCtx = seaCanvas.getContext("2d");
-      let seaW, seaH;
-      const cations = [];
-      const electrons = [];
+      // --- 3. ELECTRON SEA CANVAS ANIMATION ---
+      function initElectronSea() {
+        const canvas = document.getElementById("seaCanvas");
+        const ctx = canvas.getContext("2d");
+        let width, height;
 
-      function initSea() {
-        seaW = seaCanvas.parentElement.clientWidth;
-        seaH = seaCanvas.parentElement.clientHeight;
-        seaCanvas.width = seaW;
-        seaCanvas.height = seaH;
-        cations.length = 0;
-        electrons.length = 0;
+        const ions = [];
+        const electrons = [];
 
-        const rows = 5,
-          cols = 8;
-        const spX = seaW / cols;
-        const spY = seaH / rows;
+        function resize() {
+          width = canvas.parentElement.offsetWidth;
+          height = canvas.parentElement.offsetHeight;
+          canvas.width = width;
+          canvas.height = height;
+          initParticles();
+        }
 
-        for (let i = 0; i < rows; i++) {
-          for (let j = 0; j < cols; j++) {
-            cations.push({ x: j * spX + spX / 2, y: i * spY + spY / 2, r: 12 });
+        function initParticles() {
+          ions.length = 0;
+          electrons.length = 0;
+
+          // Create Ion Grid
+          const rows = 4;
+          const cols = 8;
+          const spX = width / cols;
+          const spY = height / rows;
+
+          for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++) {
+              ions.push({
+                x: j * spX + spX / 2,
+                y: i * spY + spY / 2,
+                baseX: j * spX + spX / 2,
+                baseY: i * spY + spY / 2,
+              });
+            }
+          }
+
+          // Create Free Electrons
+          for (let i = 0; i < 50; i++) {
+            electrons.push({
+              x: Math.random() * width,
+              y: Math.random() * height,
+              vx: (Math.random() - 0.5) * 4,
+              vy: (Math.random() - 0.5) * 4,
+            });
           }
         }
-        for (let k = 0; k < 80; k++) {
-          electrons.push({
-            x: Math.random() * seaW,
-            y: Math.random() * seaH,
-            vx: (Math.random() - 0.5) * 3,
-            vy: (Math.random() - 0.5) * 3,
+
+        function animate() {
+          ctx.clearRect(0, 0, width, height);
+
+          // Draw Ions
+          ctx.fillStyle = "#ef4444"; // Red
+          ions.forEach((ion) => {
+            // Jitter effect
+            ion.x = ion.baseX + (Math.random() - 0.5) * 2;
+            ion.y = ion.baseY + (Math.random() - 0.5) * 2;
+
+            ctx.beginPath();
+            ctx.arc(ion.x, ion.y, 15, 0, Math.PI * 2);
+            ctx.fill();
+
+            // + Sign
+            ctx.fillStyle = "white";
+            ctx.font = "14px Arial";
+            ctx.fillText("+", ion.x - 4, ion.y + 4);
+            ctx.fillStyle = "#ef4444";
           });
-        }
-      }
 
-      function drawSea() {
-        seaCtx.clearRect(0, 0, seaW, seaH);
-        cations.forEach((c) => {
-          seaCtx.beginPath();
-          seaCtx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
-          seaCtx.fillStyle = "#ef4444";
-          seaCtx.fill();
-          seaCtx.fillStyle = "white";
-          seaCtx.font = "10px Arial";
-          seaCtx.textAlign = "center";
-          seaCtx.textBaseline = "middle";
-          seaCtx.fillText("+", c.x, c.y);
-        });
-        seaCtx.fillStyle = "#fde047";
-        electrons.forEach((e) => {
-          e.x += e.vx;
-          e.y += e.vy;
-          if (e.x < 0 || e.x > seaW) e.vx *= -1;
-          if (e.y < 0 || e.y > seaH) e.vy *= -1;
-          seaCtx.beginPath();
-          seaCtx.arc(e.x, e.y, 2.5, 0, Math.PI * 2);
-          seaCtx.fill();
-        });
-        requestAnimationFrame(drawSea);
-      }
-      setTimeout(() => {
-        initSea();
-        drawSea();
-      }, 500);
-      window.addEventListener("resize", initSea);
+          // Draw Electrons
+          ctx.fillStyle = "#fbbf24"; // Yellow
+          electrons.forEach((e) => {
+            e.x += e.vx;
+            e.y += e.vy;
 
-      // --- 3. VIRTUAL LAB ---
-      function runReaction(reagent) {
-        const metal = document.getElementById("metal-select").value;
-        const container = document.getElementById("reaction-container");
-        const log = document.getElementById("reaction-log");
+            // Bounce off walls
+            if (e.x < 0 || e.x > width) e.vx *= -1;
+            if (e.y < 0 || e.y > height) e.vy *= -1;
 
-        let resultHTML = "";
-        let logText = "";
-        let equation = "";
+            ctx.beginPath();
+            ctx.arc(e.x, e.y, 3, 0, Math.PI * 2);
+            ctx.fill();
+          });
 
-        if (reagent === "O2") {
-          if (metal === "Ag") {
-            logText = "Bạc không phản ứng với Oxi kể cả nhiệt độ cao.";
-            resultHTML = `<div class='flex flex-col items-center'><div class='w-20 h-20 bg-gray-300 rounded-full flex items-center justify-center text-xs border-4 border-gray-400 font-bold'>Ag</div><p class='mt-2 text-gray-500'>Không hiện tượng</p></div>`;
-          } else {
-            logText = `${metal} cháy trong Oxi tạo oxit kim loại.`;
-            equation =
-              metal === "Fe"
-                ? "3Fe + 2O₂ → Fe₃O₄ (t°)"
-                : `2${metal} + O₂ → 2${metal}O (t°)`;
-            resultHTML = `<div class='animate-pulse text-center'><i class="fa-solid fa-fire text-6xl text-orange-500 mb-2"></i><div class="text-sm">Cháy sáng</div></div>`;
-          }
-        } else if (reagent === "H2O") {
-          if (metal === "Na") {
-            logText =
-              "Natri phản ứng mãnh liệt, nóng chảy thành giọt, chạy trên mặt nước.";
-            equation = "2Na + 2H₂O → 2NaOH + H₂↑";
-            resultHTML = `
-                        <div class="relative w-full h-full bg-blue-100 flex items-end overflow-hidden">
-                            <div class="w-full h-2/3 bg-blue-400/30 border-t border-blue-400 relative">
-                                <div class="absolute top-[-10px] left-10 w-6 h-6 bg-gray-200 rounded-full animate-[float_0.5s_infinite] border border-gray-400 shadow flex items-center justify-center text-[8px]">Na</div>
-                                <div class="absolute top-0 left-10 w-2 h-2 bg-white rounded-full animate-ping"></div>
-                            </div>
-                        </div>
-                    `;
-          } else if (metal === "Mg") {
-            logText = "Mg phản ứng chậm với nước nóng.";
-            equation = "Mg + 2H₂O → Mg(OH)₂ + H₂↑ (t°)";
-            resultHTML = `<div class="text-center"><i class="fa-solid fa-mug-hot text-5xl text-gray-400 mb-2"></i><p>Sủi bọt khí (nước nóng)</p></div>`;
-          } else {
-            logText = `${metal} không phản ứng với nước ở điều kiện thường.`;
-            resultHTML = `<div class="flex flex-col items-center opacity-50"><i class="fa-solid fa-droplet-slash text-5xl text-blue-300"></i><p>Không phản ứng</p></div>`;
-          }
-        } else if (reagent === "HCl") {
-          if (["Cu", "Ag"].includes(metal)) {
-            logText = `${metal} đứng sau H trong dãy hoạt động => Không phản ứng với HCl loãng.`;
-            resultHTML = `<div class="flex flex-col items-center"><i class="fa-solid fa-ban text-5xl text-red-500 mb-2"></i><p>Không tan</p></div>`;
-          } else {
-            logText = `${metal} tan trong axit HCl, sủi bọt khí H₂.`;
-            equation =
-              metal === "Fe"
-                ? "Fe + 2HCl → FeCl₂ + H₂↑"
-                : `${metal} + 2HCl → ${metal}Cl₂ + H₂↑`;
-            if (metal === "Na") equation = "2Na + 2HCl → 2NaCl + H₂↑";
-            resultHTML = `
-                        <div class="w-32 h-40 border-x-2 border-b-2 border-gray-400 rounded-b-lg relative bg-blue-50/50 flex justify-center items-end mx-auto">
-                            <div class="w-16 h-10 bg-gray-500 rounded-sm mb-2 relative">
-                                <div class="absolute -top-10 w-full flex justify-center space-x-1">
-                                    <div class="w-2 h-2 bg-white rounded-full animate-[float_1s_infinite]"></div>
-                                    <div class="w-1 h-1 bg-white rounded-full animate-[float_1.5s_infinite] delay-75"></div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-          }
-        } else if (reagent === "H2SO4") {
-          logText = `${metal} tác dụng H₂SO₄ đặc nóng sinh ra khí SO₂.`;
-          equation =
-            metal === "Fe"
-              ? "2Fe + 6H₂SO₄ → Fe₂(SO₄)₃ + 3SO₂ + 6H₂O"
-              : "M + H₂SO₄(đ) → Muối + SO₂ + H₂O";
-          if (metal === "Au" || metal === "Pt") {
-            logText = "Không phản ứng.";
-            resultHTML = `<i class="fa-solid fa-ban text-4xl"></i>`;
-          } else
-            resultHTML = `<div class="text-center"><i class="fa-solid fa-smog text-5xl text-gray-500 animate-pulse mb-2"></i><p>Khí SO₂ (mùi hắc)</p></div>`;
-        } else if (reagent === "CuSO4") {
-          if (["Na"].includes(metal)) {
-            logText = "Na phản ứng với nước trong dung dịch muối trước!";
-            equation =
-              "2Na + 2H₂O → 2NaOH + H₂; 2NaOH + CuSO₄ → Cu(OH)₂↓ + Na₂SO₄";
-            resultHTML = `<div class="text-blue-600 font-bold flex flex-col items-center"><i class="fa-solid fa-arrow-down mb-1"></i>Kết tủa xanh Cu(OH)₂</div>`;
-          } else if (["Mg", "Fe"].includes(metal)) {
-            logText = `${metal} mạnh hơn Cu => Đẩy Cu ra khỏi muối.`;
-            equation = `${metal} + CuSO₄ → ${metal}SO₄ + Cu↓`;
-            resultHTML = `
-                        <div class="flex flex-col items-center">
-                            <div class="w-4 h-20 bg-gray-400 relative border border-gray-600">
-                                <div class="absolute inset-0 bg-red-500/80" style="clip-path: inset(30% 0 0 0);"></div>
-                            </div>
-                            <span class="text-red-600 font-bold text-sm mt-2">Lớp Cu đỏ bám vào</span>
-                        </div>
-                    `;
-          } else {
-            logText =
-              "Không phản ứng (Cu không đẩy được chính nó, Ag yếu hơn Cu).";
-            resultHTML = `<div class="opacity-50 text-center"><i class="fa-solid fa-xmark text-4xl"></i></div>`;
-          }
-        } else if (reagent === "Cl2") {
-          logText = `${metal} cháy sáng trong khí Clo.`;
-          equation =
-            metal === "Fe"
-              ? "2Fe + 3Cl₂ → 2FeCl₃ (Nâu đỏ)"
-              : `2${metal} + nCl₂ → 2${metal}Clₙ`;
-          resultHTML = `<div class="bg-yellow-100 rounded-full w-24 h-24 flex items-center justify-center animate-pulse border-4 border-yellow-300 shadow-[0_0_20px_yellow]"><span class="text-yellow-800 font-bold">Khói</span></div>`;
+          requestAnimationFrame(animate);
         }
 
-        container.innerHTML = resultHTML;
-        log.innerHTML = `
-                <div class="flex items-start gap-2">
-                    <i class="fa-solid fa-caret-right mt-1 text-chem-500"></i>
-                    <div>
-                        <p class="font-bold text-gray-800 dark:text-gray-200">Hiện tượng:</p>
-                        <p class="mb-2 text-gray-600 dark:text-gray-400">${logText}</p>
-                    </div>
-                </div>
-                ${
-                  equation
-                    ? `<div class="mt-2 p-2 bg-white dark:bg-black/30 rounded border border-gray-300 dark:border-gray-600 font-bold text-center text-sm md:text-base text-green-600 dark:text-green-400 font-mono shadow-sm">${equation}</div>`
-                    : ""
-                }
-            `;
+        window.addEventListener("resize", resize);
+        resize();
+        animate();
+      }
+      initElectronSea();
+
+      // --- 4. CONDUCTIVITY & TEMP SIMULATION ---
+      const tempSlider = document.getElementById("temp-slider");
+      const tempDisplay = document.getElementById("temp-display");
+      let temperature = 25;
+
+      tempSlider.addEventListener("input", (e) => {
+        temperature = parseInt(e.target.value);
+        tempDisplay.innerText = temperature + "°C";
+      });
+
+      function initConductivity() {
+        const canvas = document.getElementById("condCanvas");
+        const ctx = canvas.getContext("2d");
+        let w, h;
+
+        // Electrons moving right
+        const es = [];
+        // Ions fixed but vibrating
+        const is = [];
+
+        function resize() {
+          w = canvas.parentElement.offsetWidth;
+          h = canvas.parentElement.offsetHeight;
+          canvas.width = w;
+          canvas.height = h;
+
+          // Init particles
+          is.length = 0;
+          for (let x = 20; x < w; x += 60) {
+            for (let y = 20; y < h; y += 60) {
+              is.push({ baseX: x, baseY: y, x: x, y: y });
+            }
+          }
+          es.length = 0;
+          for (let i = 0; i < 30; i++)
+            es.push({ x: Math.random() * w, y: Math.random() * h, speed: 5 });
+        }
+
+        function animate() {
+          ctx.clearRect(0, 0, w, h);
+
+          // Vibration amplitude depends on temperature
+          const vibration = (temperature / 100) * 5;
+
+          // Draw Ions
+          ctx.fillStyle = "#3b82f6";
+          is.forEach((i) => {
+            i.x = i.baseX + (Math.random() - 0.5) * vibration;
+            i.y = i.baseY + (Math.random() - 0.5) * vibration;
+            ctx.beginPath();
+            ctx.arc(i.x, i.y, 10, 0, Math.PI * 2);
+            ctx.fill();
+          });
+
+          // Draw Electrons (Flow)
+          ctx.fillStyle = "#fbbf24";
+          es.forEach((e) => {
+            // Check collision/resistance
+            let speed = 5 - (temperature / 100) * 3; // Hotter = Slower flow
+            e.x += speed;
+            if (e.x > w) e.x = 0;
+
+            // Simple dodge y
+            e.y += (Math.random() - 0.5) * 2;
+
+            ctx.beginPath();
+            ctx.arc(e.x, e.y, 2, 0, Math.PI * 2);
+            ctx.fill();
+          });
+
+          requestAnimationFrame(animate);
+        }
+
+        window.addEventListener("resize", resize);
+        resize();
+        animate();
+      }
+      initConductivity();
+
+      // --- 5. MALLEABILITY EXPERIMENT ---
+      function hitMetal() {
+        const l1 = document.getElementById("layer-1");
+        const l2 = document.getElementById("layer-2");
+        const hammer = document.getElementById("hammer");
+
+        // Animate Hammer
+        hammer.style.transform = "rotate(-45deg) translate(-20px, 20px)";
+        setTimeout(() => (hammer.style.transform = "rotate(30deg)"), 200);
+
+        // Shift Layers
+        setTimeout(() => {
+          l1.style.transform = "translateX(20px)";
+          l2.style.transform = "translateX(10px)";
+        }, 100);
       }
 
-      // --- 4. PREPARATION METHODS ---
-      const methodContent = document.getElementById("method-content");
-      const methodsData = {
-        thermal: {
-          title: "A. Nhiệt luyện",
-          desc: "Dùng chất khử (C, CO, H₂, Al) khử ion kim loại trong oxit ở nhiệt độ cao.",
-          scope: "Kim loại trung bình (sau Al): Zn, Fe, Pb, Cu...",
-          visual: `<div class="flex flex-col items-center bg-orange-50 dark:bg-orange-900/10 p-4 rounded-xl">
-                            <div class="text-center mb-4 text-sm font-mono bg-white dark:bg-black p-2 rounded border border-orange-200">Fe₂O₃ + 3CO → 2Fe + 3CO₂</div>
-                            <div class="w-full h-32 relative flex justify-center items-end">
-                                <div class="w-24 h-24 bg-gray-700 rounded-t-full relative flex items-center justify-center border-4 border-gray-800">
-                                    <div class="absolute bottom-0 w-full h-4 bg-orange-500 blur-md animate-pulse"></div>
-                                    <span class="text-white font-bold z-10">Lò cao</span>
-                                </div>
-                                <div class="absolute top-0 right-10 animate-[float_2s_infinite] text-gray-400"><i class="fa-solid fa-smog text-2xl"></i> CO₂</div>
-                            </div>
-                         </div>`,
-        },
-        hydro: {
-          title: "B. Thủy luyện",
-          desc: "Dùng dung dịch (như NaCN) hòa tan quặng, sau đó dùng kim loại mạnh đẩy kim loại yếu.",
-          scope: "Kim loại yếu (đứng sau H): Cu, Ag, Au...",
-          visual: `<div class="flex flex-col items-center bg-blue-50 dark:bg-blue-900/10 p-4 rounded-xl">
-                             <div class="flex items-center gap-2 mb-4">
-                                <div class="w-12 h-16 border-2 border-blue-400 bg-blue-200/50 rounded-b-lg flex items-end justify-center pb-1 text-xs">Ag⁺</div>
-                                <i class="fa-solid fa-plus text-gray-400"></i>
-                                <div class="w-8 h-8 bg-gray-400 rounded shadow flex items-center justify-center text-xs font-bold border border-gray-500">Zn</div>
-                                <i class="fa-solid fa-arrow-right text-gray-400"></i>
-                                <div class="w-8 h-8 bg-yellow-100 rounded-full border-2 border-yellow-500 shadow flex items-center justify-center font-bold text-yellow-700">Ag</div>
-                             </div>
-                             <p class="text-xs text-center italic">Zn đẩy Ag ra khỏi phức chất</p>
-                         </div>`,
-        },
-        electro: {
-          title: "C. Điện phân",
-          desc: "Dùng dòng điện một chiều để khử ion kim loại.",
-          scope:
-            "<ul class='list-disc list-inside text-sm mt-2'><li><strong>ĐP Nóng chảy:</strong> Kim loại MẠNH (K, Na, Mg, Al). VD: 2NaCl → 2Na + Cl₂.</li><li><strong>ĐP Dung dịch:</strong> Kim loại TB/Yếu. VD: CuCl₂ → Cu + Cl₂.</li></ul>",
-          visual: `<div class="flex justify-center h-40 relative bg-yellow-50 dark:bg-yellow-900/10 p-4 rounded-xl">
-                            <div class="w-32 h-24 border-b-4 border-x-4 border-gray-500 rounded-b-lg relative bg-yellow-200/30 overflow-hidden">
-                                <div class="absolute top-0 left-6 w-4 h-full bg-gray-800"></div>
-                                <div class="absolute top-0 right-6 w-4 h-full bg-gray-800"></div>
-                                <div class="absolute bottom-2 left-2 text-[10px] font-bold">Catot (-)</div>
-                                <div class="absolute bottom-2 right-2 text-[10px] font-bold">Anot (+)</div>
-                            </div>
-                            <div class="absolute top-2 bg-white dark:bg-gray-700 border border-gray-400 px-2 py-1 rounded text-xs font-bold shadow">Nguồn DC</div>
-                         </div>`,
-        },
-      };
+      function resetMetal() {
+        document.getElementById("layer-1").style.transform = "translateX(0)";
+        document.getElementById("layer-2").style.transform = "translateX(0)";
+      }
 
-      function showMethod(type) {
+      // --- 6. CHEMICAL REACTION LAB ---
+      let selectedMetal = null;
+      let selectedSol = null;
+
+      function selectMetal(m) {
+        selectedMetal = m;
         document
-          .querySelectorAll(".method-btn")
-          .forEach((btn) => btn.classList.remove("active"));
-        document.getElementById("btn-" + type).classList.add("active");
+          .querySelectorAll(".metal-btn")
+          .forEach((b) =>
+            b.classList.remove("ring-2", "ring-offset-2", "bg-blue-200"),
+          );
+        event.target.classList.add("ring-2", "ring-offset-2", "bg-blue-200");
+      }
 
-        const data = methodsData[type];
-        methodContent.innerHTML = `
-                <div class="animate-fadeIn space-y-4">
-                    <h3 class="text-2xl font-bold text-green-700 dark:text-green-400">${data.title}</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                        <div class="text-gray-700 dark:text-gray-300">
-                            <p class="mb-4 text-base">${data.desc}</p>
-                            <div class="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg border-l-4 border-green-500">
-                                <strong>Phạm vi áp dụng:</strong>
-                                <div class="mt-1">${data.scope}</div>
-                            </div>
-                        </div>
-                        <div class="glass p-2 rounded-xl">
-                            ${data.visual}
-                        </div>
-                    </div>
+      function selectSolution(s) {
+        selectedSol = s;
+        document
+          .querySelectorAll(".sol-btn")
+          .forEach((b) =>
+            b.classList.remove("ring-2", "ring-offset-2", "bg-green-200"),
+          );
+        event.target.classList.add("ring-2", "ring-offset-2", "bg-green-200");
+
+        // Change liquid color preview
+        const liquid = document.getElementById("liquid");
+        if (s === "HCl")
+          liquid.className =
+            "w-full h-3/4 bg-transparent transition-colors duration-1000 flex items-end justify-center relative";
+        if (s === "CuSO4")
+          liquid.className =
+            "w-full h-3/4 bg-blue-500/40 transition-colors duration-1000 flex items-end justify-center relative";
+        if (s === "H2O")
+          liquid.className =
+            "w-full h-3/4 bg-cyan-100/30 transition-colors duration-1000 flex items-end justify-center relative";
+      }
+
+      function runReaction() {
+        if (!selectedMetal || !selectedSol) {
+          alert("Vui lòng chọn Kim loại và Dung dịch!");
+          return;
+        }
+
+        const metalPiece = document.getElementById("metal-piece");
+        const bubbles = document.getElementById("bubbles-container");
+        const infoBox = document.getElementById("reaction-info");
+        const infoText = document.getElementById("reaction-text");
+        const infoEq = document.getElementById("reaction-equation");
+        const liquid = document.getElementById("liquid");
+
+        // Reset Animation
+        metalPiece.style.transform = "translateY(0)"; // Drop in
+        metalPiece.classList.remove("hidden");
+
+        // Colors for metals
+        if (selectedMetal === "Cu")
+          metalPiece.style.backgroundColor = "#b45309";
+        else if (selectedMetal === "Fe")
+          metalPiece.style.backgroundColor = "#6b7280";
+        else if (selectedMetal === "Ag")
+          metalPiece.style.backgroundColor = "#e5e7eb";
+        else if (selectedMetal === "Na")
+          metalPiece.style.backgroundColor = "#d1d5db";
+
+        // Logic
+        setTimeout(() => {
+          let result = "";
+          let eq = "";
+          let hasBubbles = false;
+
+          // Logic check
+          if (selectedSol === "HCl") {
+            if (selectedMetal === "Fe") {
+              result = "Sắt tan dần, sủi bọt khí.";
+              eq = "Fe + 2HCl → FeCl₂ + H₂↑";
+              hasBubbles = true;
+              liquid.classList.add("bg-green-100"); // Fecl2 light green
+            } else if (selectedMetal === "Na") {
+              result = "Nổ nhẹ, phản ứng mãnh liệt!";
+              eq = "2Na + 2HCl → 2NaCl + H₂↑";
+              hasBubbles = true;
+            } else {
+              result = "Không phản ứng.";
+              eq = "M đứng sau H trong dãy điện hóa.";
+            }
+          } else if (selectedSol === "CuSO4") {
+            if (selectedMetal === "Fe") {
+              result = "Có lớp đồng đỏ bám vào sắt, dd nhạt màu.";
+              eq = "Fe + CuSO₄ → FeSO₄ + Cu";
+              metalPiece.style.backgroundColor = "#b45309"; // Turns copper color
+            } else if (selectedMetal === "Na") {
+              result = "Na tác dụng với nước trước!";
+              eq = "2Na + 2H₂O → 2NaOH + H₂↑; ...";
+              hasBubbles = true;
+            } else {
+              result = "Không hiện tượng.";
+              eq = "";
+            }
+          } else if (selectedSol === "H2O") {
+            if (selectedMetal === "Na") {
+              result = "Na chạy trên mặt nước, sủi bọt.";
+              eq = "2Na + 2H₂O → 2NaOH + H₂↑";
+              hasBubbles = true;
+            } else {
+              result = "Không phản ứng ở nhiệt độ thường.";
+              eq = "";
+            }
+          }
+
+          // Show Bubble Animation
+          bubbles.innerHTML = "";
+          if (hasBubbles) {
+            for (let i = 0; i < 20; i++) {
+              const b = document.createElement("div");
+              b.className = "bubble w-2 h-2 absolute left-1/2 bottom-0";
+              b.style.left = Math.random() * 60 + 20 + "%";
+              b.style.animationDuration = Math.random() * 1 + 0.5 + "s";
+              b.style.animationDelay = Math.random() + "s";
+              bubbles.appendChild(b);
+            }
+          }
+
+          // Show Info
+          infoText.innerText = result;
+          infoEq.innerText = eq;
+          infoBox.classList.remove("hidden");
+        }, 1000);
+      }
+
+      // --- 7. REACTIVITY SERIES RENDER ---
+      const metals = [
+        "K",
+        "Na",
+        "Mg",
+        "Al",
+        "Zn",
+        "Fe",
+        "Ni",
+        "Sn",
+        "Pb",
+        "H",
+        "Cu",
+        "Ag",
+        "Au",
+      ];
+      const container = document.getElementById("reactivity-series");
+      metals.forEach((m, idx) => {
+        const el = document.createElement("div");
+        el.className = `flex flex-col items-center p-2 rounded hover:bg-white/50 hover:scale-110 transition cursor-pointer`;
+        // Color gradient from Red (Strong) to Blue (Weak)
+        const red = Math.max(0, 255 - idx * 20);
+        const blue = Math.min(255, idx * 20);
+
+        el.innerHTML = `
+                <span class="text-xs font-bold text-gray-500">${idx + 1}</span>
+                <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shadow" style="background-color: rgb(${red}, 0, ${blue})">
+                    ${m}
                 </div>
             `;
-      }
-      showMethod("thermal");
+        container.appendChild(el);
+      });
 
-      // --- 5. CORROSION SIMULATION ---
-      let corrosionInterval;
-      function startCorrosion() {
-        if (corrosionInterval) clearInterval(corrosionInterval);
-        document.getElementById("electron-flow").classList.remove("hidden");
-        document.getElementById("zn-bubbles").classList.remove("hidden");
-        document.getElementById("zn-corrosion-text").classList.remove("hidden");
-        document.getElementById("cu-bubbles").style.opacity = "1";
+      // --- 8. ELECTROLYSIS ANIMATION ---
+      function animateElectrolysis() {
+        const bath = document.getElementById("electrolysis-bath");
+        bath.innerHTML = ""; // Reset
 
-        const cuBubbles = document.getElementById("cu-bubbles");
-        cuBubbles.innerHTML = "";
+        // Create Ions
+        for (let i = 0; i < 10; i++) {
+          // O2- ions move UP (Anode)
+          const o = document.createElement("div");
+          o.className =
+            "absolute w-4 h-4 rounded-full bg-red-500 text-[8px] flex items-center justify-center text-white font-bold";
+          o.innerText = "O";
+          o.style.left = Math.random() * 80 + 10 + "%";
+          o.style.top = "80%";
+          o.style.transition = "top 2s ease-in";
+          bath.appendChild(o);
 
-        corrosionInterval = setInterval(() => {
-          const bubble = document.createElement("div");
-          bubble.className =
-            "absolute w-2 h-2 bg-white rounded-full opacity-80 border border-blue-200";
-          bubble.style.left = Math.random() * 80 + 10 + "%";
-          bubble.style.bottom = "0";
-          bubble.style.transition = "bottom 1.5s linear, opacity 1.5s";
-          cuBubbles.appendChild(bubble);
+          // Al3+ ions move DOWN (Cathode)
+          const al = document.createElement("div");
+          al.className =
+            "absolute w-4 h-4 rounded-full bg-blue-500 text-[8px] flex items-center justify-center text-white font-bold";
+          al.innerText = "Al";
+          al.style.left = Math.random() * 80 + 10 + "%";
+          al.style.top = "10%";
+          al.style.transition = "top 2s ease-in";
+          bath.appendChild(al);
+
+          // Trigger move
           setTimeout(() => {
-            bubble.style.bottom = "100%";
-            bubble.style.opacity = "0";
-          }, 50);
-          setTimeout(() => bubble.remove(), 1500);
-        }, 300);
-      }
-
-      function resetCorrosion() {
-        clearInterval(corrosionInterval);
-        document.getElementById("electron-flow").classList.add("hidden");
-        document.getElementById("zn-bubbles").classList.add("hidden");
-        document.getElementById("zn-corrosion-text").classList.add("hidden");
-        document.getElementById("cu-bubbles").style.opacity = "0";
-        document.getElementById("cu-bubbles").innerHTML = "";
-      }
-
-      // --- 6. MODAL SIMS ---
-      const modal = document.getElementById("sim-modal");
-      const modalContent = document.getElementById("modal-content");
-      const modalTitle = document.getElementById("modal-title");
-      const modalDesc = document.getElementById("modal-desc");
-
-      function toggleSim(type) {
-        modal.classList.remove("hidden");
-        modalContent.innerHTML = "";
-
-        if (type === "elec-cond") {
-          modalTitle.innerText = "Mô phỏng: Tính Dẫn Điện";
-          modalDesc.innerText =
-            "Khi có hiệu điện thế, electron tự do chuyển dời có hướng từ cực âm sang cực dương.";
-          modalContent.innerHTML = `
-                    <div class="relative w-full h-full bg-gray-800 rounded-xl flex items-center justify-center flex-col p-8">
-                        <div class="w-full h-16 bg-yellow-600/50 border-y-4 border-yellow-500 relative overflow-hidden mb-8 rounded">
-                            <div class="absolute inset-0 flex items-center justify-around px-4">
-                                <div class="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-white font-bold text-xs">+</div>
-                                <div class="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-white font-bold text-xs">+</div>
-                                <div class="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-white font-bold text-xs">+</div>
-                            </div>
-                            <div id="e-stream" class="absolute w-full h-full pointer-events-none">
-                                <!-- JS injected electrons -->
-                            </div>
-                        </div>
-                        <button onclick="toggleFlow()" class="px-6 py-2 bg-green-500 text-white rounded font-bold hover:bg-green-600 transition">Bật/Tắt Nguồn điện</button>
-                    </div>
-                `;
-          // Add electrons
-          const stream = document.getElementById("e-stream");
-          for (let i = 0; i < 10; i++) {
-            const e = document.createElement("div");
-            e.className =
-              "absolute w-3 h-3 bg-yellow-300 rounded-full shadow-[0_0_5px_yellow] transition-transform duration-[2000ms] linear";
-            e.style.top = Math.random() * 40 + 10 + "px";
-            e.style.left = Math.random() * 90 + "%";
-            stream.appendChild(e);
-          }
-        } else if (type === "malleability") {
-          modalTitle.innerText = "Mô phỏng: Tính Dẻo";
-          modalDesc.innerText =
-            "Các lớp mạng tinh thể trượt lên nhau mà không tách rời nhờ lớp đệm electron tự do.";
-          modalContent.innerHTML = `
-                    <div class="flex flex-col items-center justify-center h-full w-full bg-slate-100 dark:bg-slate-800">
-                        <div class="relative">
-                            <div id="layer-1" class="flex gap-1 mb-1 transition-transform duration-500"><div class="w-12 h-12 rounded-full bg-red-500 shadow-inner"></div><div class="w-12 h-12 rounded-full bg-red-500 shadow-inner"></div><div class="w-12 h-12 rounded-full bg-red-500 shadow-inner"></div></div>
-                            <div id="layer-2" class="flex gap-1"><div class="w-12 h-12 rounded-full bg-red-500 shadow-inner"></div><div class="w-12 h-12 rounded-full bg-red-500 shadow-inner"></div><div class="w-12 h-12 rounded-full bg-red-500 shadow-inner"></div></div>
-                            <div class="absolute inset-0 bg-yellow-400/20 blur-xl"></div>
-                        </div>
-                        <button onclick="document.getElementById('layer-1').style.transform = 'translateX(40px)'" class="mt-8 px-6 py-2 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 active:scale-95 transition">
-                            <i class="fa-solid fa-gavel mr-2"></i> Tác dụng lực
-                        </button>
-                    </div>
-                `;
-        } else if (type === "luster") {
-          modalTitle.innerText = "Mô phỏng: Ánh Kim";
-          modalDesc.innerText =
-            "Bề mặt kim loại phản xạ hầu hết các tia sáng chiếu tới.";
-          modalContent.innerHTML = `
-                    <div class="flex flex-col items-center justify-center h-full w-full bg-gray-900 relative overflow-hidden">
-                        <div class="w-64 h-32 bg-gradient-to-r from-gray-300 via-white to-gray-300 rounded-lg shadow-[0_0_30px_white] transform rotate-x-12 cursor-pointer transition hover:shadow-[0_0_50px_white]" id="metal-surface"></div>
-                        <i class="fa-solid fa-sun text-yellow-500 text-6xl absolute top-10 left-10 animate-spin-slow"></i>
-                        <div class="absolute top-1/2 left-1/2 w-full h-1 bg-white/50 -translate-x-1/2 rotate-45 blur-sm animate-pulse"></div>
-                    </div>
-                 `;
-        } else if (type === "therm-cond") {
-          modalTitle.innerText = "Mô phỏng: Dẫn Nhiệt";
-          modalDesc.innerText =
-            "Đốt nóng một đầu thanh kim loại, nhiệt truyền nhanh sang đầu kia.";
-          modalContent.innerHTML = `
-                    <div class="flex items-center justify-center h-full w-full bg-gray-100 dark:bg-gray-800">
-                        <div class="w-64 h-8 bg-gray-400 rounded relative overflow-hidden">
-                            <div id="heat-bar" class="absolute left-0 top-0 h-full w-0 bg-gradient-to-r from-red-600 to-transparent transition-all duration-[3000ms] ease-out"></div>
-                        </div>
-                        <div class="ml-4 cursor-pointer" onclick="document.getElementById('heat-bar').style.width = '100%'"><i class="fa-solid fa-fire-burner text-4xl text-red-500 animate-bounce"></i> Click me</div>
-                    </div>
-                 `;
+            o.style.top = "10%";
+            al.style.top = "90%";
+          }, 100);
         }
       }
 
-      window.toggleFlow = function () {
-        const electrons = document.querySelectorAll("#e-stream div");
-        electrons.forEach((e) => {
-          e.style.transform =
-            e.style.transform === "translateX(400px)"
-              ? "translateX(0)"
-              : "translateX(400px)";
-          // Reset to loop
-          if (e.style.transform === "translateX(0)") {
-            setTimeout(() => (e.style.transition = "none"), 2000);
-            setTimeout(() => (e.style.transform = "translateX(-20px)"), 2010);
-            setTimeout(
-              () => (e.style.transition = "transform 2s linear"),
-              2050
-            );
+      // --- 9. SACRIFICIAL ANODE (CORROSION) ---
+      function toggleProtection() {
+        const isProtected = document.getElementById("toggle-anode").checked;
+        const status = document.getElementById("protection-status");
+        const hull = document.getElementById("boat-hull");
+        const zinc = document.getElementById("zinc-anode");
+
+        if (isProtected) {
+          // Protection ON
+          zinc.style.opacity = "1";
+          hull.classList.remove("bg-red-700"); // Remove rust
+          hull.classList.add("bg-gray-600");
+          status.innerText = "Đã bảo vệ: Kẽm (Zn) bị ăn mòn thay cho vỏ tàu.";
+          status.className =
+            "text-center text-xs font-bold mt-2 text-green-600";
+
+          // Zinc corrodes animation
+          zinc.style.transform = "translate(-50%, 0) scale(0.8)";
+        } else {
+          // Protection OFF
+          zinc.style.opacity = "0";
+          zinc.style.transform = "translate(-50%, 0) scale(1)";
+
+          setTimeout(() => {
+            hull.classList.remove("bg-gray-600");
+            hull.classList.add("bg-red-700"); // Rust color
+          }, 500);
+
+          status.innerText = "Chưa bảo vệ: Sắt đang bị ăn mòn điện hóa!";
+          status.className = "text-center text-xs font-bold mt-2 text-red-500";
+        }
+      }
+
+      // --- 10. QUIZ GAME LOGIC ---
+      const quizData = [
+        {
+          q: "Kim loại nào dẫn điện tốt nhất trong các kim loại sau?",
+          options: ["Nhôm (Al)", "Đồng (Cu)", "Bạc (Ag)", "Vàng (Au)"],
+          correct: 2, // Index of Ag
+        },
+        {
+          q: "Để bảo vệ vỏ tàu biển làm bằng thép, người ta gắn vào vỏ tàu kim loại nào?",
+          options: ["Đồng (Cu)", "Chì (Pb)", "Kẽm (Zn)", "Thiếc (Sn)"],
+          correct: 2,
+        },
+        {
+          q: "Hiện tượng xảy ra khi cho đinh sắt vào dung dịch CuSO4?",
+          options: [
+            "Sủi bọt khí",
+            "Dung dịch chuyển màu vàng",
+            "Có lớp kim loại đỏ bám vào đinh sắt",
+            "Không có hiện tượng",
+          ],
+          correct: 2,
+        },
+        {
+          q: "Phương pháp chung để điều chế các kim loại Na, Ca, Al là?",
+          options: [
+            "Nhiệt luyện",
+            "Thủy luyện",
+            "Điện phân dung dịch",
+            "Điện phân nóng chảy",
+          ],
+          correct: 3,
+        },
+      ];
+
+      let currentQ = 0;
+      let score = 0;
+
+      function loadQuiz() {
+        const qObj = quizData[currentQ];
+        document.getElementById("quiz-question").innerText =
+          `Câu ${currentQ + 1}: ${qObj.q}`;
+        const optsContainer = document.getElementById("quiz-options");
+        optsContainer.innerHTML = "";
+
+        qObj.options.forEach((opt, idx) => {
+          const btn = document.createElement("div");
+          btn.className =
+            "quiz-option p-3 border rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600";
+          btn.innerText = opt;
+          btn.onclick = () => checkAnswer(btn, idx);
+          optsContainer.appendChild(btn);
+        });
+
+        document.getElementById("next-btn").disabled = true;
+      }
+
+      function checkAnswer(btn, idx) {
+        // Disable all clicks
+        const allOpts = document.querySelectorAll(".quiz-option");
+        allOpts.forEach((o) => (o.style.pointerEvents = "none"));
+
+        const correctIdx = quizData[currentQ].correct;
+
+        if (idx === correctIdx) {
+          btn.classList.add("correct");
+          score += 10;
+          document.getElementById("score").innerText = score;
+        } else {
+          btn.classList.add("wrong");
+          allOpts[correctIdx].classList.add("correct");
+        }
+
+        document.getElementById("next-btn").disabled = false;
+      }
+
+      function nextQuestion() {
+        currentQ++;
+        if (currentQ < quizData.length) {
+          loadQuiz();
+        } else {
+          document.getElementById("quiz-container").innerHTML = `
+                    <div class="text-center py-10">
+                        <div class="text-6xl mb-4">🏆</div>
+                        <h3 class="text-2xl font-bold">Hoàn Thành!</h3>
+                        <p class="text-lg">Điểm số của bạn: ${score}/${quizData.length * 10}</p>
+                        <button onclick="location.reload()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded-full">Làm lại</button>
+                    </div>
+                `;
+        }
+      }
+
+      loadQuiz();
+
+      // AOS (Animate On Scroll) Shim since no library allowed
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("opacity-100", "translate-y-0");
+            entry.target.classList.remove("opacity-0", "translate-y-10");
           }
         });
-      };
+      });
 
-      function closeSim() {
-        modal.classList.add("hidden");
-      }
-      modal.addEventListener("click", (e) => {
-        if (e.target === modal) closeSim();
+      document.querySelectorAll("section").forEach((sec) => {
+        sec.classList.add(
+          "transition-all",
+          "duration-700",
+          "opacity-0",
+          "translate-y-10",
+        );
+        observer.observe(sec);
       });
     </script>
   </body>
