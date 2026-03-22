@@ -1,10 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   "use strict";
 
-  /* ========================================================================
-         SYSTEM CORE CONFIGURATION
-         ========================================================================
-        */
+  /* SYSTEM CORE CONFIGURATION */
   const CONFIG = {
     mascot: {
       idleTime: 5000,
@@ -33,16 +30,57 @@ document.addEventListener("DOMContentLoaded", () => {
         title: "EDUCHEM - Hóa Học",
         color: "var(--c-chem)",
         content:
-          "Khám phá bảng tuần hoàn, cân bằng phản ứng và xem mô phỏng phân tử 3D.",
+          "Nền tảng học Hóa toàn diện: từ bảng tuần hoàn, mô phỏng 3D đến AI giải bài và luyện thi chuyên sâu.",
         features: [
-          "Bảng tuần hoàn Interactive",
-          "Thư viện phản ứng",
-          "Lab ảo 3D",
-          "Hệ thống nguyên tố tương tác",
+          "Bảng tuần hoàn thông minh (tra cứu + xu hướng)",
+          "AI cân bằng phản ứng + giải thích từng bước",
+          "AI giải bài tập hóa (đa dạng phương pháp)",
+          "Lab ảo 3D (mô phỏng phản ứng, thí nghiệm)",
+          "Flashcard thông minh (Spaced Repetition)",
+          "Thư viện phản ứng + cơ chế hữu cơ",
+          "Luyện đề trắc nghiệm + tự luận",
+          "Phân tích điểm yếu & gợi ý học tập",
+        ],
+        advancedFeatures: [
+          "Nhận diện dạng bài (oxi hóa - khử, bảo toàn e, mol, đồ thị...)",
+          "Sinh bài tập tự động theo level (dễ → HSG)",
+          "Timeline học cá nhân hóa",
+          "So sánh tiến độ với người học khác",
+          "Chế độ thi thử áp lực thời gian",
+        ],
+        learningModes: [
+          "Học lý thuyết",
+          "Luyện tập",
+          "Thi thử",
+          "Khám phá (3D + mô phỏng)",
+          "Ôn tập nhanh (flashcard)",
+        ],
+        curriculum: [
+          "Hóa cơ bản (lớp 6–10)",
+          "Vô cơ chuyên sâu",
+          "Hữu cơ từ cơ bản → nâng cao",
+          "Hóa lý & bài toán tính toán",
+          "Ôn thi THPTQG",
+        ],
+        userStats: {
+          progressTracking: true,
+          weakPointAnalysis: true,
+          dailyGoal: true,
+          streak: true,
+        },
+        gamification: {
+          xp: true,
+          level: true,
+          badges: ["Master Nguyên Tố", "Trùm Cân Bằng", "Phản Ứng Vua"],
+        },
+        integrations: [
+          "Export bài tập PDF",
+          "Sync tiến độ cloud",
+          "Chia sẻ bài giải",
         ],
         status: "active",
+        version: "2.0",
         link: "educhem/educhem.html",
-        curriculum: ["Vô cơ cơ bản", "Hữu cơ nâng cao", "Hóa lý thuyết"],
       },
       edutech: {
         title: "EDUTECH - Công Nghệ",
@@ -112,17 +150,13 @@ document.addEventListener("DOMContentLoaded", () => {
       },
     },
     physics: {
-      particleDensity: 0.08, // Hạt trên mỗi pixel vuông
+      particleDensity: 0.08,
       mouseForce: 100,
       friction: 0.98,
       connectionDist: 150,
     },
   };
-
-  /* ========================================================================
-         MODULE 1: AUDIO SYSTEM (UPGRADED)
-         ========================================================================
-        */
+  /* MODULE 1: AUDIO SYSTEM */
   class AudioSystem {
     constructor() {
       this.muted = true;
@@ -131,7 +165,6 @@ document.addEventListener("DOMContentLoaded", () => {
       this.btn = document.getElementById("toggle-mute");
       this.control = document.getElementById("audio-control");
 
-      // 🎵 Nhạc nền
       this.bgAudio = new Audio();
       this.bgAudio.loop = true;
       this.bgAudio.volume = 0.4;
@@ -142,8 +175,6 @@ document.addEventListener("DOMContentLoaded", () => {
       this.initListeners();
       this.observeThemeChange();
     }
-
-    /* ---------------- CORE ---------------- */
 
     initListeners() {
       if (!this.btn) return;
@@ -168,8 +199,6 @@ document.addEventListener("DOMContentLoaded", () => {
         this.bgAudio.play().catch(() => {});
       }
     }
-
-    /* ---------------- THEME + MUSIC ---------------- */
 
     detectTheme() {
       return document.body.classList.contains("dark") ? "dark" : "light";
@@ -201,8 +230,6 @@ document.addEventListener("DOMContentLoaded", () => {
         attributeFilter: ["class"],
       });
     }
-
-    /* ---------------- SFX ---------------- */
 
     playTone(freq, type = "sine", duration = 0.1, vol = 0.05) {
       if (this.muted || !this.ctx) return;
@@ -246,10 +273,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  /* ========================================================================
-         MODULE 2: MASCOT SYSTEM (UPGRADED INTELLIGENCE)
-         ========================================================================
-        */
+  /*  MODULE 2: MASCOT SYSTEM (UPGRADED INTELLIGENCE) */
   class MascotSystem {
     constructor() {
       this.body = document.getElementById("mascot-body");
@@ -306,14 +330,11 @@ document.addEventListener("DOMContentLoaded", () => {
       clearTimeout(this.idleTimer);
       this.idleTimer = setTimeout(() => {
         this.say(CONFIG.mascot.messages.inactive, "thinking");
-      }, 30000); // 30s không hoạt động
+      }, 30000);
     }
   }
 
-  /* ========================================================================
-         MODULE 3: THEME & CANVAS ENGINE (PHYSICS BASED)
-         ========================================================================
-        */
+  /* MODULE 3: THEME & CANVAS ENGINE (PHYSICS BASED) */
   class ThemeManager {
     constructor() {
       this.canvas = document.getElementById("bg-canvas");
@@ -395,15 +416,12 @@ document.addEventListener("DOMContentLoaded", () => {
         : "rgba(79, 70, 229, 0.2)";
 
       this.particles.forEach((p) => {
-        // Physics Calculation
         p.x += p.vx;
         p.y += p.vy;
 
-        // Border Bounce
         if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1;
         if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1;
 
-        // Mouse Interaction
         const dx = this.mouse.x - p.x;
         const dy = this.mouse.y - p.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -413,7 +431,6 @@ document.addEventListener("DOMContentLoaded", () => {
           p.vy -= (dy / dist) * force * 0.2;
         }
 
-        // Draw Particle
         this.ctx.beginPath();
         this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         this.ctx.fill();
@@ -465,10 +482,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  /* ========================================================================
-         MODULE 4: UI CONTROLLER (EXPANDED LOGIC)
-         ========================================================================
-        */
+  /* MODULE 4: UI CONTROLLER */
   document.querySelectorAll(".nav-link").forEach((item) => {
     item.addEventListener("click", () => {
       const link = item.dataset.link;
@@ -496,10 +510,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     initListeners() {
-      // Header Scroll Logic
       window.addEventListener("scroll", () => this.handleScroll());
 
-      // Sidebar Controls
       const btnOpen = document.getElementById("btn-sidebar-open");
       const btnClose = document.getElementById("btn-sidebar-close");
       if (btnOpen)
@@ -511,7 +523,6 @@ document.addEventListener("DOMContentLoaded", () => {
           this.toggleSidebar(),
         );
 
-      // Modal Controls
       const btnCloseModal = document.querySelector(".close-modal");
       if (btnCloseModal)
         btnCloseModal.addEventListener("click", () => this.closeModal());
@@ -525,7 +536,6 @@ document.addEventListener("DOMContentLoaded", () => {
           this.closeModal();
       });
 
-      // Theme Switcher
       const themeBtn = document.getElementById("themeToggle");
       if (themeBtn) {
         themeBtn.addEventListener("click", () => {
@@ -534,7 +544,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
 
-      // Dev Mode Section Toggle
       const devToggleBtn = document.getElementById("toggle-dev-section");
       if (devToggleBtn) {
         devToggleBtn.addEventListener("click", function () {
@@ -556,7 +565,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
 
-      // Subject Cards Interactions
       document.querySelectorAll(".subject-card").forEach((card) => {
         const id = card.getAttribute("data-id");
 
@@ -586,7 +594,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       });
 
-      // Footer Observer for Mascot
       const footer = document.querySelector("footer");
       const observer = new IntersectionObserver(
         (entries) => {
@@ -600,7 +607,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     initDynamicUI() {
-      // Tự động gán màu cho các icon aura dựa trên data-id
       document.querySelectorAll(".subject-card").forEach((card) => {
         const id = card.getAttribute("data-id");
         const subject = CONFIG.subjects[id];
@@ -615,14 +621,12 @@ document.addEventListener("DOMContentLoaded", () => {
       if (scrollY > 50) this.header.classList.add("scrolled");
       else this.header.classList.remove("scrolled");
 
-      // Update Progress Bar
       const height =
         document.documentElement.scrollHeight -
         document.documentElement.clientHeight;
       const scrolled = (scrollY / height) * 100;
       if (this.scrollBar) this.scrollBar.style.width = scrolled + "%";
 
-      // Scroll trigger for mascot
       if (scrollY > 1000 && !this.scrolledPastHalf) {
         this.mascot.say(CONFIG.mascot.messages.scroll, "surprised");
         this.scrolledPastHalf = true;
@@ -705,12 +709,10 @@ document.addEventListener("DOMContentLoaded", () => {
       this.modalContent.innerHTML = htmlContent;
       this.modal.style.display = "grid";
 
-      // Internal close btn
       const innerClose = document.getElementById("btn-modal-inner-close");
       if (innerClose)
         innerClose.addEventListener("click", () => this.closeModal());
 
-      // Entry animation
       anime({
         targets: ".modal-content",
         scale: [0.9, 1],
@@ -735,11 +737,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  /* ========================================================================
-         MAIN INITIALIZATION
-         ========================================================================
-        */
-  // 1. Initialize Libraries
+  /*  MAIN INITIALIZATION */
   if (typeof AOS !== "undefined") {
     AOS.init({
       duration: 1000,
@@ -749,30 +747,25 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 2. Instantiate Systems
   const audioSys = new AudioSystem();
   const mascot = new MascotSystem();
   const themeMgr = new ThemeManager();
   const uiController = new UIController(audioSys, mascot, themeMgr);
 
-  // 3. Persist Theme
   if (localStorage.getItem("edumatter-theme") === "dark") {
     document.body.classList.add("dark-mode");
     const icon = document.querySelector("#themeToggle i");
     if (icon) icon.className = "fas fa-sun";
   }
 
-  // 4. Entry Experience
   window.addEventListener("load", () => {
     setTimeout(() => {
       mascot.say(CONFIG.mascot.messages.welcome, "happy");
     }, 2000);
   });
 
-  // Disable context menu for cleaner UI
   document.addEventListener("contextmenu", (e) => {
     if (e.target.tagName !== "INPUT" && e.target.tagName !== "TEXTAREA") {
-      // e.preventDefault();
     }
   });
 });
