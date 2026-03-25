@@ -768,12 +768,12 @@ Câu 60. (Vận dụng cao) Tổng số hạt trong ion Na+ (Z=11, A=23)?`;
 
   // Đáp án trích xuất chính xác từ phần IV
   const ansMCQList =
-    "C,C,B,A,C,B,C,B,C,B,C,B,C,B,C,A,B,C,B,C,B,C,A,B,B,B,B,C,B,A,B,B,B,B,B,C,C,A,C,B,B,B,A,C,C,C,D,B,B,C,B,B,C,A,C,C,B,B,A,A,D,C,B,C,B,A,B,B,C,B,B,C,B,C,B,B,A,C,B,C,B,C,B,B,C,C,B,C,C,B,B,B,B,A,B,B,A,C,A,B".split(
+    "C,C,B,A,C,B,C,B,C,B,C,B,C,B,C,A,B,C,B,C,B,C,A,B,B,B,B,C,B,A,B,B,B,B,B,C,C,A,C,B,B,B,A,B,C,C,D,B,B,C,B,B,C,A,C,C,B,B,A,A,D,C,B,C,B,A,B,B,C,B,B,C,B,C,B,B,A,C,B,C,B,C,B,B,C,C,B,C,C,B,B,B,B,A,B,B,A,C,A,B".split(
       ",",
     );
   const ansTFList = [
     "ĐĐSĐ",
-    "ĐSĐĐ",
+    "ĐSĐS",
     "SĐSĐ",
     "ĐĐSS",
     "ĐSĐS",
@@ -782,28 +782,28 @@ Câu 60. (Vận dụng cao) Tổng số hạt trong ion Na+ (Z=11, A=23)?`;
     "ĐĐSS",
     "ĐSSĐ",
     "SĐĐS",
-    "SĐĐS",
-    "ĐSĐS",
-    "ĐSĐĐ",
-    "ĐĐĐS",
-    "ĐSSS",
-    "ĐĐĐS",
-    "ĐĐĐĐ",
-    "ĐĐĐS",
-    "ĐSSS",
-    "ĐĐSS",
-    "ĐSĐS",
-    "ĐSĐĐ",
-    "ĐĐĐĐ",
-    "ĐĐĐĐ",
     "SĐSĐ",
+    "ĐSĐS",
+    "ĐSĐĐ",
+    "ĐĐĐS",
+    "ĐSSS",
+    "ĐĐĐS",
     "ĐĐĐĐ",
     "ĐĐĐS",
+    "ĐSĐS",
+    "ĐĐSS",
+    "ĐSĐS",
     "ĐSĐĐ",
+    "ĐĐĐĐ",
+    "ĐĐĐĐ",
+    "ĐSĐĐ",
+    "ĐĐĐĐ",
+    "ĐĐĐS",
+    "ĐĐSĐ",
     "ĐĐSS",
     "ĐĐĐĐ",
     "ĐĐĐĐ",
-    "SĐĐĐ",
+    "ĐĐĐĐ",
     "ĐĐSS",
     "ĐĐĐĐ",
     "ĐĐĐĐ",
@@ -1252,3 +1252,10 @@ function submitQuiz() {
 
 // Chạy ngay khi mở file
 window.onload = initExam;
+function toggleSidebar() {
+  const sidebar = document.querySelector(".sidebar");
+  const overlay = document.querySelector(".overlay");
+
+  sidebar.classList.toggle("active");
+  overlay.classList.toggle("show");
+}
