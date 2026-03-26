@@ -1,0 +1,885 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Python Learning Hub - Học lập trình 4.0</title>
+    <!-- Thư viện Pyodide để chạy Python trong trình duyệt -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Tailwind CSS cho layout -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      :root {
+        --bg-dark: #0f172a;
+        --bg-card: #1e293b;
+        --primary: #8b5cf6;
+        --secondary: #3b82f6;
+        --accent: #10b981;
+        --text-main: #f1f5f9;
+        --python-yellow: #ffd43b;
+        --python-blue: #3776ab;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg-dark);
+        color: var(--text-main);
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+      }
+
+      .code-font {
+        font-family: "Fira Code", monospace;
+      }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg-dark);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #334155;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--primary);
+      }
+
+      /* Glassmorphism */
+      .glass {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      /* Sidebar Transition */
+      .sidebar-item {
+        transition: all 0.3s ease;
+        border-left: 4px solid transparent;
+      }
+      .sidebar-item.active {
+        background: rgba(139, 92, 246, 0.1);
+        border-left-color: var(--primary);
+        color: var(--primary);
+      }
+
+      /* Editor Style */
+      #code-editor,
+      .exercise-editor {
+        background: #111827;
+        color: #d1d5db;
+        border: 1px solid #374151;
+        resize: none;
+        outline: none;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        width: 100%;
+        min-height: 200px;
+      }
+
+      /* Pythonic Box */
+      .pythonic-tip {
+        border-left: 4px solid var(--accent);
+        background: rgba(16, 185, 129, 0.05);
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .animate-fade {
+        animation: fadeIn 0.5s ease forwards;
+      }
+
+      .progress-bar-fill {
+        transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* Floating elements for background */
+      .blob {
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        filter: blur(80px);
+        opacity: 0.15;
+        z-index: -1;
+        border-radius: 50%;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen">
+    <!-- Blobs Background -->
+    <div class="blob top-10 left-10"></div>
+    <div class="blob bottom-10 right-10"></div>
+
+    <!-- Header -->
+    <header
+      class="sticky top-0 z-50 glass border-b border-slate-800 px-6 py-4 flex items-center justify-between"
+    >
+      <div class="flex items-center gap-3">
+        <div
+          class="p-2 bg-gradient-to-br from-blue-500 to-yellow-400 rounded-lg"
+        >
+          <i data-lucide="terminal" class="text-white w-6 h-6"></i>
+        </div>
+        <h1
+          class="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400"
+        >
+          PYTHON LEARNING HUB
+        </h1>
+      </div>
+      <div class="flex items-center gap-6">
+        <div class="hidden md:flex flex-col items-end">
+          <span class="text-xs text-slate-400 uppercase tracking-widest"
+            >Tiến độ của bạn</span
+          >
+          <div class="w-48 h-2 bg-slate-700 rounded-full mt-1 overflow-hidden">
+            <div
+              id="overall-progress"
+              class="progress-bar-fill h-full bg-gradient-to-r from-blue-500 to-purple-500"
+              style="width: 0%"
+            ></div>
+          </div>
+        </div>
+        <div
+          class="flex items-center gap-2 px-3 py-1 bg-slate-800 rounded-full border border-slate-700"
+        >
+          <i data-lucide="award" class="text-yellow-400 w-4 h-4"></i>
+          <span id="user-score" class="font-bold text-sm">0 XP</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="flex flex-col md:flex-row min-h-[calc(100vh-73px)]">
+      <!-- Sidebar Navigation -->
+      <nav class="w-full md:w-64 border-r border-slate-800 p-4 space-y-2 glass">
+        <p class="text-[10px] font-bold text-slate-500 uppercase px-3 py-2">
+          Học tập
+        </p>
+        <button
+          onclick="switchTab('theory')"
+          id="btn-theory"
+          class="sidebar-item active flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-slate-800"
+        >
+          <i data-lucide="book-open" class="w-5 h-5"></i>
+          <span class="font-medium">Lý thuyết</span>
+        </button>
+        <button
+          onclick="switchTab('playground')"
+          id="btn-playground"
+          class="sidebar-item flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-slate-800"
+        >
+          <i data-lucide="code-2" class="w-5 h-5"></i>
+          <span class="font-medium">Thực hành</span>
+        </button>
+        <button
+          onclick="switchTab('exercises')"
+          id="btn-exercises"
+          class="sidebar-item flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-slate-800"
+        >
+          <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+          <span class="font-medium">Bài tập</span>
+        </button>
+        <div class="pt-4">
+          <p class="text-[10px] font-bold text-slate-500 uppercase px-3 py-2">
+            Công cụ
+          </p>
+          <button
+            onclick="toggleGame()"
+            class="flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-slate-800 text-pink-400"
+          >
+            <i data-lucide="gamepad-2" class="w-5 h-5"></i>
+            <span class="font-medium">Mini Game</span>
+          </button>
+        </div>
+      </nav>
+
+      <!-- Main Content -->
+      <main class="flex-1 p-6 md:p-8 max-w-5xl mx-auto w-full">
+        <!-- Tab: Theory -->
+        <section id="tab-theory" class="animate-fade space-y-12">
+          <header>
+            <h2 class="text-3xl font-bold mb-2">
+              Xin chào lập trình viên tương lai! 👋
+            </h2>
+            <p class="text-slate-400">
+              Hôm nay chúng ta sẽ khám phá sức mạnh của Python thông qua các cấu
+              trúc điều khiển và vòng lặp.
+            </p>
+          </header>
+
+          <!-- Section: Indentation -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-2 text-blue-400">
+              <i data-lucide="align-left" class="w-6 h-6"></i>
+              <h3 class="text-xl font-semibold">
+                1. Thụt lề (Indentation) - Luật sắt trong Python
+              </h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-3">
+                <p>
+                  Khác với C++ hay Java dùng dấu ngoặc nhọn <code>{}</code>,
+                  Python dùng <b>khoảng trắng</b> để xác định các khối lệnh.
+                  Thông thường là 4 dấu cách.
+                </p>
+                <div
+                  class="p-4 bg-red-900/20 border border-red-500/30 rounded-lg"
+                >
+                  <p
+                    class="text-red-400 text-sm font-bold flex items-center gap-2"
+                  >
+                    <i data-lucide="alert-triangle" class="w-4 h-4"></i> Cảnh
+                    báo lỗi!
+                  </p>
+                  <p class="text-xs text-red-300/80 mt-1">
+                    Nếu bạn thụt lề sai, Python sẽ báo lỗi
+                    <b>IndentationError</b> ngay lập tức.
+                  </p>
+                </div>
+              </div>
+              <div class="space-y-2">
+                <div
+                  class="bg-[#1e293b] rounded-lg overflow-hidden border border-slate-700"
+                >
+                  <div
+                    class="bg-slate-800 px-4 py-1 text-[10px] text-slate-400"
+                  >
+                    VÍ DỤ
+                  </div>
+                  <pre class="p-4 text-xs code-font">
+<span class="text-green-400"># Đúng ✅</span>
+if True:
+    print("Chào Python!")
+
+<span class="text-red-400"># Sai ❌ (Lỗi IndentationError)</span>
+if True:
+print("Chào Python!")</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section: While Loop -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-2 text-purple-400">
+              <i data-lucide="rotate-cw" class="w-6 h-6"></i>
+              <h3 class="text-xl font-semibold">
+                2. Vòng lặp while - Lặp cho tới khi chán
+              </h3>
+            </div>
+            <div class="bg-slate-800/50 p-6 rounded-xl border border-slate-700">
+              <p class="mb-4">
+                Vòng lặp <code>while</code> sẽ chạy liên tục khối lệnh bên trong
+                chừng nào điều kiện vẫn còn <b>Đúng (True)</b>.
+              </p>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <pre
+                  class="bg-black/40 p-4 rounded-lg text-sm code-font leading-relaxed"
+                >
+<span class="text-purple-400">while</span> <span class="text-blue-300">điều_kiện</span>:
+    <span class="text-slate-500"># Thực hiện lệnh</span>
+<span class="text-purple-400">else</span>:
+    <span class="text-slate-500"># Chạy khi điều kiện sai</span></pre>
+                <div class="flex flex-col justify-center">
+                  <ul class="space-y-2 text-sm text-slate-300">
+                    <li class="flex items-center gap-2">
+                      <i data-lucide="check" class="w-4 h-4 text-green-500"></i>
+                      Dùng khi không biết trước số lần lặp.
+                    </li>
+                    <li class="flex items-center gap-2">
+                      <i data-lucide="check" class="w-4 h-4 text-green-500"></i>
+                      Cẩn thận với lặp vô tận (Infinity Loop)!
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section: For Loop -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-2 text-emerald-400">
+              <i data-lucide="repeat-2" class="w-6 h-6"></i>
+              <h3 class="text-xl font-semibold">
+                3. Vòng lặp for...in - Duyệt qua mọi thứ
+              </h3>
+            </div>
+            <p>
+              Trong Python, <code>for</code> cực kỳ mạnh mẽ để duyệt qua các
+              phần tử của một danh sách (list), chuỗi (string) hoặc một phạm vi
+              (range).
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="p-4 bg-slate-800 rounded-lg border border-slate-700">
+                <span class="text-xs font-bold text-slate-500 block mb-2"
+                  >DUYỆT CHUỖI</span
+                >
+                <pre class="text-xs code-font text-blue-300">
+for x in "PYTHON":
+    print(x)</pre
+                >
+              </div>
+              <div class="p-4 bg-slate-800 rounded-lg border border-slate-700">
+                <span class="text-xs font-bold text-slate-500 block mb-2"
+                  >HÀM RANGE()</span
+                >
+                <pre class="text-xs code-font text-purple-300">
+for i in range(5):
+    print(i) # 0 -> 4</pre
+                >
+              </div>
+              <div class="p-4 bg-slate-800 rounded-lg border border-slate-700">
+                <span class="text-xs font-bold text-slate-500 block mb-2"
+                  >SO VỚI C/C++</span
+                >
+                <p class="text-[10px] text-slate-400 mt-1">
+                  Python viết ngắn gọn hơn nhiều, không cần i++, i < n...
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section: Advanced Logic -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-2 text-orange-400">
+              <i data-lucide="Zap" class="text-orange-400 w-6 h-6"></i>
+              <h3 class="text-xl font-semibold">
+                4. Lệnh điều hướng: break & continue
+              </h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div
+                class="p-5 border border-slate-700 rounded-xl relative overflow-hidden group"
+              >
+                <div
+                  class="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity"
+                >
+                  <i
+                    data-lucide="octagon-pause"
+                    class="w-16 h-16 text-red-500"
+                  ></i>
+                </div>
+                <h4 class="font-bold text-red-400 mb-2">break</h4>
+                <p class="text-sm text-slate-400">
+                  "Dừng cuộc chơi!" - Thoát khỏi vòng lặp ngay lập tức dù điều
+                  kiện vẫn đúng.
+                </p>
+              </div>
+              <div
+                class="p-5 border border-slate-700 rounded-xl relative overflow-hidden group"
+              >
+                <div
+                  class="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity"
+                >
+                  <i
+                    data-lucide="fast-forward"
+                    class="w-16 h-16 text-green-500"
+                  ></i>
+                </div>
+                <h4 class="font-bold text-green-400 mb-2">continue</h4>
+                <p class="text-sm text-slate-400">
+                  "Nhảy cóc!" - Bỏ qua các lệnh còn lại trong lượt lặp này và
+                  bắt đầu lượt mới.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section: Pythonic Notes -->
+          <div class="pythonic-tip p-6 rounded-r-xl space-y-3">
+            <div class="flex items-center gap-2 text-accent">
+              <i data-lucide="lightbulb" class="w-5 h-5"></i>
+              <h3 class="font-bold uppercase tracking-widest text-sm">
+                Ghi chú Pythonic (Viết code như chuyên gia)
+              </h3>
+            </div>
+            <ul class="text-sm space-y-3 list-disc list-inside text-slate-300">
+              <li>
+                <b>Không cần Switch-case:</b> Python sử dụng
+                <code>if-elif-else</code> (Từ bản 3.10 có
+                <code>match-case</code> nhưng if vẫn phổ biến nhất).
+              </li>
+              <li>
+                <b>Boolean:</b> Hãy viết <code>while True:</code> thay vì
+                <code>while 1:</code>.
+              </li>
+              <li>
+                <b>Lặp thông minh:</b> Tránh dùng
+                <code>range(len(my_list))</code>, hãy dùng trực tiếp
+                <code>for item in my_list:</code>.
+              </li>
+            </ul>
+          </div>
+
+          <div class="py-10 text-center">
+            <button
+              onclick="switchTab('playground')"
+              class="px-8 py-3 bg-primary hover:bg-primary/80 rounded-full font-bold transition-all transform hover:scale-105 shadow-lg shadow-primary/20"
+            >
+              Bắt đầu thực hành ngay 🚀
+            </button>
+          </div>
+        </section>
+
+        <!-- Tab: Playground -->
+        <section id="tab-playground" class="hidden animate-fade space-y-6">
+          <header class="flex justify-between items-end">
+            <div>
+              <h2 class="text-2xl font-bold">Python Online Playground</h2>
+              <p class="text-slate-400 text-sm">
+                Viết và chạy code Python trực tiếp trên trình duyệt của bạn.
+              </p>
+            </div>
+            <div
+              id="pyodide-status"
+              class="text-[10px] flex items-center gap-2 px-2 py-1 bg-slate-800 rounded border border-slate-700"
+            >
+              <span
+                class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"
+              ></span>
+              Đang tải Python...
+            </div>
+          </header>
+
+          <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            <div class="lg:col-span-3 space-y-4">
+              <div class="relative">
+                <div class="absolute top-2 right-4 z-10 flex gap-2">
+                  <button
+                    onclick="resetEditor()"
+                    title="Xóa hết"
+                    class="p-1 hover:text-red-400 text-slate-500 transition-colors"
+                  >
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                  </button>
+                  <button
+                    onclick="copyEditor()"
+                    title="Copy code"
+                    class="p-1 hover:text-blue-400 text-slate-500 transition-colors"
+                  >
+                    <i data-lucide="copy" class="w-4 h-4"></i>
+                  </button>
+                </div>
+                <textarea id="code-editor" class="code-font" spellcheck="false">
+# Viết code Python tại đây
+def chao_ban():
+    for i in range(3):
+        print(f"Lần lặp thứ {i+1}: Chào lập trình viên!")
+
+chao_ban()</textarea
+                >
+              </div>
+              <div class="flex gap-4">
+                <button
+                  id="run-btn"
+                  onclick="runPython('code-editor', 'output-console')"
+                  disabled
+                  class="flex-1 bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-700 py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition-all"
+                >
+                  <i data-lucide="play" class="w-5 h-5"></i> CHẠY CODE
+                </button>
+              </div>
+            </div>
+            <div class="lg:col-span-2 flex flex-col h-full">
+              <div
+                class="flex-1 bg-[#020617] rounded-lg border border-slate-800 overflow-hidden flex flex-col"
+              >
+                <div
+                  class="bg-slate-900 px-4 py-2 border-b border-slate-800 flex justify-between items-center"
+                >
+                  <span
+                    class="text-xs font-bold text-slate-500 uppercase tracking-widest"
+                    >Kết quả (Output)</span
+                  >
+                  <button
+                    onclick="clearConsole('output-console')"
+                    class="text-[10px] text-slate-500 hover:text-white"
+                  >
+                    Xóa
+                  </button>
+                </div>
+                <div
+                  id="output-console"
+                  class="p-4 code-font text-sm text-emerald-400 whitespace-pre-wrap overflow-y-auto max-h-[400px]"
+                >
+                  Đang chờ bạn chạy code...
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab: Exercises -->
+        <section id="tab-exercises" class="hidden animate-fade space-y-8">
+          <header class="text-center">
+            <h2 class="text-3xl font-bold">Thử thách lập trình 🏆</h2>
+            <p class="text-slate-400">
+              Hoàn thành các bài tập để nhận XP và thăng cấp!
+            </p>
+          </header>
+
+          <div id="exercise-list" class="space-y-6">
+            <!-- Exercises will be injected here by JS -->
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Mini Game Modal -->
+    <div
+      id="game-modal"
+      class="fixed inset-0 z-[60] hidden bg-black/80 flex items-center justify-center p-4"
+    >
+      <div
+        class="bg-slate-900 w-full max-w-md rounded-2xl border border-slate-700 p-8 space-y-6 animate-fade"
+      >
+        <div class="flex justify-between items-center">
+          <h3 class="text-2xl font-bold text-pink-400 flex items-center gap-2">
+            <i data-lucide="target" class="w-6 h-6"></i> Number Guessing
+          </h3>
+          <button
+            onclick="toggleGame()"
+            class="text-slate-500 hover:text-white"
+          >
+            <i data-lucide="x" class="w-6 h-6"></i>
+          </button>
+        </div>
+        <div id="game-content" class="text-center space-y-4">
+          <p>Máy tính đã chọn 1 số từ 1 đến 50. Hãy đoán xem đó là số nào!</p>
+          <input
+            type="number"
+            id="game-input"
+            placeholder="Nhập số..."
+            class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-center text-xl outline-none focus:border-pink-500"
+          />
+          <button
+            onclick="playGuessGame()"
+            class="w-full bg-pink-600 hover:bg-pink-500 py-3 rounded-lg font-bold"
+          >
+            ĐOÁN THỬ
+          </button>
+          <div
+            id="game-feedback"
+            class="h-12 flex items-center justify-center text-sm font-medium"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div
+      id="toast"
+      class="fixed bottom-6 right-6 z-[100] transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none"
+    >
+      <div
+        class="bg-white text-slate-900 px-6 py-3 rounded-lg shadow-2xl flex items-center gap-3 font-semibold"
+      >
+        <i data-lucide="info" class="w-5 h-5 text-blue-600"></i>
+        <span id="toast-msg">Thông báo nè!</span>
+      </div>
+    </div>
+
+    <script>
+      // --- DATA BÀI TẬP ---
+      const EXERCISES = [
+        {
+          id: 1,
+          title: "Tính tổng số chẵn",
+          desc: "Dùng vòng lặp <b>while</b> để tính tổng các số chẵn từ 2 đến n (với n nhập từ bàn phím).",
+          hint: "Gợi ý: Dùng n = int(input()) và i += 2 bên trong vòng lặp.",
+          initCode:
+            "n = 10\ntong = 0\ni = 2\nwhile i <= n:\n    # Viết code tính tổng ở đây\n    i += 2\nprint(tong)",
+          validate: (output, code) =>
+            code.includes("while") && output.trim() === "30",
+          xp: 100,
+        },
+        {
+          id: 2,
+          title: "Bảng cửu chương 7",
+          desc: "Sử dụng vòng lặp <b>for</b> và hàm <b>range()</b> để in bảng cửu chương 7 (từ 7x1 đến 7x10).",
+          hint: "Gợi ý: for i in range(1, 11): print(f'7 x {i} = {7*i}')",
+          initCode:
+            "# In bảng cửu chương 7\nfor i in range(1, 11):\n    # Code của bạn...",
+          validate: (output) =>
+            output.includes("7 x 10 = 70") && output.includes("7 x 1 = 7"),
+          xp: 150,
+        },
+        {
+          id: 3,
+          title: "Kiểm tra Chẵn/Lẻ",
+          desc: "Viết chương trình yêu cầu nhập vào 1 số, in ra 'Chẵn' nếu số đó chia hết cho 2, ngược lại in 'Lẻ'.",
+          hint: "Dùng toán tử % (chia lấy dư). Ví dụ: x % 2 == 0",
+          initCode: "x = 7\n# Kiểm tra và in ra kết quả...",
+          validate: (output) =>
+            output.trim().toLowerCase() === "lẻ" ||
+            output.trim().toLowerCase() === "le",
+          xp: 80,
+        },
+        {
+          id: 4,
+          title: "Thoát hiểm bất ngờ",
+          desc: "Duyệt danh sách <code>[10, 20, -5, 30]</code>. Nếu gặp số âm, hãy dùng <b>break</b> để dừng vòng lặp.",
+          hint: "Sử dụng: if item < 0: break",
+          initCode:
+            "nums = [10, 20, -5, 30]\nfor n in nums:\n    if n < 0:\n        # Code ở đây\n    print(n)",
+          validate: (output) => output.includes("20") && !output.includes("30"),
+          xp: 120,
+        },
+        {
+          id: 5,
+          title: "Bỏ qua số chia hết cho 3",
+          desc: "In các số từ 1 đến 10, nhưng bỏ qua các số chia hết cho 3 bằng lệnh <b>continue</b>.",
+          hint: "Sử dụng range(1, 11) và check n % 3 == 0.",
+          initCode:
+            "for i in range(1, 11):\n    if i % 3 == 0:\n        # Code ở đây\n    print(i)",
+          validate: (output) =>
+            output.includes("2") &&
+            !output.includes("3") &&
+            output.includes("4"),
+          xp: 200,
+        },
+      ];
+
+      // --- CORE LOGIC ---
+      let pyodide;
+      let userScore = 0;
+      let completedExercises = new Set();
+      let targetNumber = Math.floor(Math.random() * 50) + 1;
+
+      // Khởi tạo icons
+      lucide.createIcons();
+
+      // Khởi tạo Pyodide
+      async function initPython() {
+        const statusEl = document.getElementById("pyodide-status");
+        try {
+          pyodide = await loadPyodide();
+          statusEl.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> Python Sẵn sàng`;
+          document.getElementById("run-btn").disabled = false;
+          showToast("Python engine đã sẵn sàng! 🐍");
+        } catch (err) {
+          statusEl.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-500"></span> Lỗi tải Python`;
+          console.error(err);
+        }
+      }
+
+      // Chạy Code Python
+      async function runPython(editorId, outputId, exerciseId = null) {
+        const code = document.getElementById(editorId).value;
+        const outputEl = document.getElementById(outputId);
+        outputEl.innerText = "Đang chạy...";
+        outputEl.style.color = "#8b5cf6"; // Đang chạy màu tím
+
+        // Redirect stdout của Python về console của mình
+        pyodide.runPython(`
+                import sys
+                import io
+                sys.stdout = io.StringIO()
+            `);
+
+        try {
+          await pyodide.runPythonAsync(code);
+          const stdout = pyodide.runPython("sys.stdout.getvalue()");
+          outputEl.innerText =
+            stdout || "Chương trình chạy xong (Không có output)";
+          outputEl.style.color = "#10b981"; // Thành công màu xanh lá
+
+          // Kiểm tra bài tập
+          if (exerciseId) {
+            const ex = EXERCISES.find((e) => e.id === exerciseId);
+            if (ex.validate(stdout, code)) {
+              handleExerciseSuccess(ex);
+            } else {
+              outputEl.innerText +=
+                "\n\n❌ Kết quả chưa đúng, hãy thử lại nhé!";
+              outputEl.style.color = "#f87171";
+            }
+          }
+        } catch (err) {
+          outputEl.innerText = `LỖI PYTHON:\n${err.message}`;
+          outputEl.style.color = "#f87171"; // Lỗi màu đỏ
+        }
+      }
+
+      // Xử lý khi làm đúng bài tập
+      function handleExerciseSuccess(ex) {
+        if (!completedExercises.has(ex.id)) {
+          completedExercises.add(ex.id);
+          userScore += ex.xp;
+          updateStats();
+          showToast(`Tuyệt vời! +${ex.xp} XP 🏆`);
+          renderExercises(); // Re-render để đánh dấu hoàn thành
+
+          // Sound effect (giả lập)
+          const audioCtx = new (
+            window.AudioContext || window.webkitAudioContext
+          )();
+          const oscillator = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          oscillator.connect(gain);
+          gain.connect(audioCtx.destination);
+          oscillator.type = "sine";
+          oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
+          oscillator.frequency.exponentialRampToValueAtTime(
+            880,
+            audioCtx.currentTime + 0.2,
+          );
+          gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(
+            0.01,
+            audioCtx.currentTime + 0.2,
+          );
+          oscillator.start();
+          oscillator.stop(audioCtx.currentTime + 0.2);
+        }
+      }
+
+      function updateStats() {
+        document.getElementById("user-score").innerText = `${userScore} XP`;
+        const progress = (completedExercises.size / EXERCISES.size) * 100;
+        document.getElementById("overall-progress").style.width =
+          `${progress}%`;
+      }
+
+      // --- GIAO DIỆN ---
+      function switchTab(tabName) {
+        ["theory", "playground", "exercises"].forEach((t) => {
+          document.getElementById(`tab-${t}`).classList.add("hidden");
+          document.getElementById(`btn-${t}`).classList.remove("active");
+        });
+        document.getElementById(`tab-${tabName}`).classList.remove("hidden");
+        document.getElementById(`btn-${tabName}`).classList.add("active");
+        window.scrollTo(0, 0);
+      }
+
+      function renderExercises() {
+        const container = document.getElementById("exercise-list");
+        container.innerHTML = EXERCISES.map(
+          (ex) => `
+                <div class="glass p-6 rounded-2xl border border-slate-700 transition-all hover:border-slate-500 overflow-hidden relative">
+                    ${completedExercises.has(ex.id) ? '<div class="absolute -right-10 -top-10 w-24 h-24 bg-emerald-500/20 rotate-45 flex items-end justify-center pb-2 font-bold text-emerald-400">DONE</div>' : ""}
+                    <div class="flex flex-col md:flex-row gap-6">
+                        <div class="flex-1 space-y-4">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center font-bold text-sm">${ex.id}</span>
+                                <h3 class="text-xl font-bold">${ex.title}</h3>
+                            </div>
+                            <p class="text-slate-400 text-sm">${ex.desc}</p>
+                            <div class="p-3 bg-blue-900/10 border border-blue-500/20 rounded-lg text-xs text-blue-300 italic">
+                                💡 ${ex.hint}
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-yellow-500 uppercase">Thưởng: ${ex.xp} XP</span>
+                                <button onclick="resetEx(${ex.id})" class="text-[10px] text-slate-500 hover:text-white">Reset bài này</button>
+                            </div>
+                        </div>
+                        <div class="flex-1 space-y-3">
+                            <textarea id="ex-editor-${ex.id}" class="exercise-editor code-font text-xs" spellcheck="false">${ex.initCode}</textarea>
+                            <button onclick="runPython('ex-editor-${ex.id}', 'ex-output-${ex.id}', ${ex.id})" 
+                                class="w-full py-2 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm flex items-center justify-center gap-2">
+                                <i data-lucide="play" class="w-4 h-4"></i> KIỂM TRA
+                            </button>
+                            <div id="ex-output-${ex.id}" class="p-3 bg-black/30 rounded-lg text-xs code-font min-h-[50px] whitespace-pre-wrap">Output sẽ hiện ở đây...</div>
+                        </div>
+                    </div>
+                </div>
+            `,
+        ).join("");
+        lucide.createIcons();
+      }
+
+      // Mini Game logic
+      function toggleGame() {
+        const m = document.getElementById("game-modal");
+        m.classList.toggle("hidden");
+        if (!m.classList.contains("hidden")) {
+          targetNumber = Math.floor(Math.random() * 50) + 1;
+          document.getElementById("game-feedback").innerText = "";
+        }
+      }
+
+      function playGuessGame() {
+        const input = document.getElementById("game-input");
+        const feedback = document.getElementById("game-feedback");
+        const val = parseInt(input.value);
+
+        if (val === targetNumber) {
+          feedback.innerHTML =
+            "<span class='text-green-400'>🎉 Chúc mừng! Bạn quá giỏi! +50 XP</span>";
+          userScore += 50;
+          updateStats();
+          setTimeout(toggleGame, 2000);
+        } else if (val < targetNumber) {
+          feedback.innerText = "Số của bạn hơi NHỎ quá...";
+          feedback.className =
+            "text-blue-400 h-12 flex items-center justify-center";
+        } else {
+          feedback.innerText = "Hơi LỚN rồi đó nha!";
+          feedback.className =
+            "text-orange-400 h-12 flex items-center justify-center";
+        }
+      }
+
+      // Utils
+      function showToast(msg) {
+        const toast = document.getElementById("toast");
+        document.getElementById("toast-msg").innerText = msg;
+        toast.classList.remove("translate-y-20", "opacity-0");
+        setTimeout(() => {
+          toast.classList.add("translate-y-20", "opacity-0");
+        }, 3000);
+      }
+
+      function resetEditor() {
+        document.getElementById("code-editor").value = "";
+        clearConsole("output-console");
+      }
+
+      function clearConsole(id) {
+        document.getElementById(id).innerText = "Đang chờ...";
+      }
+
+      function copyEditor() {
+        const content = document.getElementById("code-editor").value;
+        const temp = document.createElement("textarea");
+        temp.value = content;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand("copy");
+        document.body.removeChild(temp);
+        showToast("Đã copy code vào clipboard! 📋");
+      }
+
+      function resetEx(id) {
+        const ex = EXERCISES.find((e) => e.id === id);
+        document.getElementById(`ex-editor-${id}`).value = ex.initCode;
+        document.getElementById(`ex-output-${id}`).innerText =
+          "Output sẽ hiện ở đây...";
+      }
+
+      // Chạy khởi tạo
+      window.onload = () => {
+        initPython();
+        renderExercises();
+      };
+    </script>
+  </body>
+</html>

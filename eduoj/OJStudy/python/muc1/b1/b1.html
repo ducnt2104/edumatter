@@ -1,0 +1,885 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lập Trình Python Cơ Bản Cho Người Mới</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;600;700&display=swap");
+
+      :root {
+        --py-blue: #3776ab;
+        --py-yellow: #ffd43b;
+        --bg-dark: #0f172a;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg-dark);
+        color: #e2e8f0;
+        scroll-behavior: smooth;
+      }
+
+      code,
+      pre,
+      textarea {
+        font-family: "Fira Code", monospace;
+      }
+
+      .python-gradient {
+        background: linear-gradient(135deg, var(--py-blue), #2b5b84);
+      }
+      .glass-card {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .sidebar-link.active {
+        background-color: var(--py-blue);
+        color: white;
+        border-radius: 0.5rem;
+      }
+
+      .important-box {
+        border-left: 4px solid #ef4444;
+        background: rgba(239, 68, 68, 0.1);
+        padding: 1rem;
+        border-radius: 0.5rem;
+      }
+      .tip-box {
+        border-left: 4px solid #10b981;
+        background: rgba(16, 185, 129, 0.1);
+        padding: 1rem;
+        border-radius: 0.5rem;
+      }
+
+      pre {
+        background: #011627;
+        padding: 1rem;
+        border-radius: 0.75rem;
+        overflow-x: auto;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+      }
+      .keyword {
+        color: #c792ea;
+        font-weight: bold;
+      }
+      .function {
+        color: #82aaff;
+      }
+      .string {
+        color: #c3e88d;
+      }
+      .comment {
+        color: #637777;
+        font-style: italic;
+      }
+      .number {
+        color: #f78c6c;
+      }
+
+      /* Custom scrollbar cho editor */
+      textarea::-webkit-scrollbar {
+        width: 8px;
+      }
+      textarea::-webkit-scrollbar-track {
+        background: #011627;
+      }
+      textarea::-webkit-scrollbar-thumb {
+        background: #334155;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body class="overflow-x-hidden">
+    <header
+      class="fixed top-0 w-full z-50 glass-card py-3 px-6 flex justify-between items-center border-b border-white/5"
+    >
+      <div class="flex items-center gap-3">
+        <div
+          class="w-10 h-10 python-gradient rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg"
+        >
+          Py
+        </div>
+        <h1 class="text-xl font-bold text-white hidden md:block">
+          Hành Trình Chinh Phục Python
+        </h1>
+      </div>
+      <div
+        id="py-status"
+        class="text-sm font-bold text-yellow-400 bg-yellow-400/10 px-4 py-2 rounded-full border border-yellow-400/20"
+      >
+        <i class="fas fa-circle-notch animate-spin mr-2"></i> Đang nạp engine
+        Python...
+      </div>
+    </header>
+
+    <div class="flex pt-20 min-h-screen">
+      <nav
+        class="fixed left-0 w-64 h-full bg-slate-900/80 p-6 hidden lg:block border-r border-white/5 overflow-y-auto pb-24"
+      >
+        <ul class="space-y-2 text-sm font-medium">
+          <li>
+            <a
+              href="#intro"
+              class="sidebar-link active flex items-center gap-3 p-3 transition hover:bg-slate-800 rounded-lg"
+              ><i class="fas fa-star text-yellow-400 w-5"></i> 1. Giới thiệu</a
+            >
+          </li>
+          <li>
+            <a
+              href="#io"
+              class="sidebar-link flex items-center gap-3 p-3 transition hover:bg-slate-800 rounded-lg"
+              ><i class="fas fa-exchange-alt text-green-400 w-5"></i> 2. Nhập &
+              Xuất Sâu</a
+            >
+          </li>
+          <li>
+            <a
+              href="#if"
+              class="sidebar-link flex items-center gap-3 p-3 transition hover:bg-slate-800 rounded-lg"
+              ><i class="fas fa-code-branch text-purple-400 w-5"></i> 3. Câu
+              lệnh Điều Kiện</a
+            >
+          </li>
+          <li>
+            <a
+              href="#examples"
+              class="sidebar-link flex items-center gap-3 p-3 transition hover:bg-slate-800 rounded-lg"
+              ><i class="fas fa-book-open text-blue-400 w-5"></i> 4. 10 Ví Dụ
+              Minh Hoạ</a
+            >
+          </li>
+          <li>
+            <a
+              href="#exercises"
+              class="sidebar-link flex items-center gap-3 p-3 transition hover:bg-slate-800 rounded-lg"
+              ><i class="fas fa-dumbbell text-orange-400 w-5"></i> 5. Bài Tập
+              Chấm Code</a
+            >
+          </li>
+          <li>
+            <a
+              href="#playground"
+              class="sidebar-link flex items-center gap-3 p-3 transition text-yellow-400 font-bold hover:bg-slate-800 rounded-lg border border-yellow-400/20"
+              ><i class="fas fa-terminal w-5"></i> Playground</a
+            >
+          </li>
+        </ul>
+      </nav>
+
+      <main class="flex-1 lg:ml-64 p-6 md:p-10 space-y-20 max-w-5xl mx-auto">
+        <section id="intro" class="scroll-mt-24">
+          <h2
+            class="text-3xl font-bold mb-6 text-white border-b border-white/10 pb-4"
+          >
+            1. Python là gì?
+          </h2>
+          <div class="space-y-4 text-slate-300 leading-relaxed">
+            <p>
+              Hãy tưởng tượng Python là một người bạn ngoại quốc rất thông minh
+              nhưng chỉ hiểu những câu lệnh đơn giản, rõ ràng. Python hiện đang
+              là ngôn ngữ lập trình <strong>phổ biến nhất thế giới</strong>,
+              dùng trong trí tuệ nhân tạo (AI), làm web, phân tích dữ liệu, và
+              tự động hoá.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+              <div
+                class="p-5 bg-slate-800/50 rounded-xl border border-white/5 hover:border-blue-500/30 transition"
+              >
+                <h3 class="font-bold text-white mb-2">
+                  <i class="fas fa-check text-green-400 mr-2"></i>Cú pháp tự
+                  nhiên
+                </h3>
+                <p class="text-sm">
+                  Mã nguồn Python gần giống tiếng Anh, không dùng quá nhiều dấu
+                  ngoặc phức tạp như C++ hay Java.
+                </p>
+              </div>
+              <div
+                class="p-5 bg-slate-800/50 rounded-xl border border-white/5 hover:border-yellow-500/30 transition"
+              >
+                <h3 class="font-bold text-white mb-2">
+                  <i class="fas fa-indent text-yellow-400 mr-2"></i>Thụt đầu
+                  dòng (Indentation)
+                </h3>
+                <p class="text-sm">
+                  Python dùng khoảng trắng (Space/Tab) ở đầu dòng để gom nhóm
+                  các lệnh. Thụt dòng sai = Code lỗi!
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="io" class="scroll-mt-24">
+          <h2
+            class="text-3xl font-bold mb-6 text-green-400 border-b border-white/10 pb-4"
+          >
+            2. Đi Sâu Vào Nhập & Xuất Dữ Liệu
+          </h2>
+          <div class="space-y-8 text-slate-300">
+            <div>
+              <h3 class="text-2xl font-semibold mb-3 text-white">
+                2.1 Xuất dữ liệu (Output) - Hàm `print()`
+              </h3>
+              <p class="mb-3">
+                Lệnh <code>print()</code> dùng để in thông tin ra màn hình. Tuy
+                nhiên, nó có rất nhiều "tuyệt chiêu":
+              </p>
+
+              <div
+                class="bg-slate-800/80 p-5 rounded-xl mb-4 border border-slate-700"
+              >
+                <h4 class="font-bold text-blue-300 mb-2">
+                  A. F-string (Định dạng chuỗi cực xịn từ Python 3.6)
+                </h4>
+                <p class="text-sm mb-2">
+                  Chỉ cần thêm chữ <code>f</code> trước chuỗi, bạn có thể nhét
+                  thẳng biến vào trong cặp ngoặc nhọn <code>{}</code>.
+                </p>
+                <pre><code>ten = <span class="string">"Huy"</span>
+tuoi = <span class="number">20</span>
+<span class="function">print</span>(<span class="string">f"Xin chào, mình là {ten}, năm nay mình {tuoi} tuổi."</span>)</code></pre>
+              </div>
+
+              <div
+                class="bg-slate-800/80 p-5 rounded-xl border border-slate-700"
+              >
+                <h4 class="font-bold text-blue-300 mb-2">
+                  B. Tham số `end` và `sep`
+                </h4>
+                <ul class="list-disc list-inside text-sm space-y-2 mb-2">
+                  <li>
+                    <code>sep</code>: Ký tự phân cách giữa các biến (mặc định là
+                    dấu cách).
+                  </li>
+                  <li>
+                    <code>end</code>: Ký tự cuối cùng sau khi in (mặc định là
+                    xuống dòng `\n`).
+                  </li>
+                </ul>
+                <pre><code><span class="comment"># Thay đổi dấu phân cách</span>
+<span class="function">print</span>(<span class="string">"Cam"</span>, <span class="string">"Táo"</span>, <span class="string">"Nho"</span>, sep=<span class="string">" - "</span>) <span class="comment"># Kết quả: Cam - Táo - Nho</span>
+
+<span class="comment"># Không xuống dòng sau khi in</span>
+<span class="function">print</span>(<span class="string">"Đang tải"</span>, end=<span class="string">"..."</span>)
+<span class="function">print</span>(<span class="string">"Xong!"</span>) <span class="comment"># Kết quả: Đang tải...Xong!</span></code></pre>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold mb-3 text-white">
+                2.2 Nhập dữ liệu (Input) và Ép Kiểu
+              </h3>
+              <p class="mb-3">
+                Dùng <code>input()</code> để lấy dữ liệu từ bàn phím.
+                <strong>Lưu ý cực kỳ quan trọng:</strong> Mọi thứ bạn nhập vào
+                qua `input()` đều được Python hiểu là
+                <strong>Chuỗi chữ (String)</strong>.
+              </p>
+
+              <div class="important-box mb-4">
+                <p>
+                  Nếu bạn muốn tính toán toán học, bạn
+                  <strong>BẮT BUỘC</strong> phải "ép kiểu" (biến chữ thành số)
+                  bằng `int()` (số nguyên) hoặc `float()` (số thập phân).
+                </p>
+              </div>
+
+              <pre><code><span class="comment"># Nhập chữ thông thường</span>
+ten = <span class="function">input</span>(<span class="string">"Tên bạn là gì? "</span>)
+
+<span class="comment"># Ép kiểu sang số nguyên để tính toán</span>
+nam_sinh_chuoi = <span class="function">input</span>(<span class="string">"Nhập năm sinh: "</span>)
+nam_sinh_so = <span class="function">int</span>(nam_sinh_chuoi)
+tuoi = <span class="number">2026</span> - nam_sinh_so
+<span class="function">print</span>(<span class="string">f"Tuổi của bạn là: {tuoi}"</span>)
+
+<span class="comment"># Viết gộp cho lẹ:</span>
+can_nang = <span class="function">float</span>(<span class="function">input</span>(<span class="string">"Nhập cân nặng (kg): "</span>))</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <section id="if" class="scroll-mt-24">
+          <h2
+            class="text-3xl font-bold mb-6 text-purple-400 border-b border-white/10 pb-4"
+          >
+            3. Rẽ Nhánh Logic: If...Elif...Else
+          </h2>
+          <div class="space-y-6 text-slate-300">
+            <p>
+              Giống như trong đời sống: "Nếu trời mưa thì ở nhà, ngược lại thì
+              đi chơi".
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div
+                class="bg-slate-800 p-5 rounded-xl border border-purple-500/30"
+              >
+                <h4 class="font-bold text-white mb-2">
+                  Cấu trúc IF - ELIF - ELSE
+                </h4>
+                <p class="text-sm mb-3 text-slate-400">
+                  Dùng <code>elif</code> (viết tắt của else if) khi có nhiều hơn
+                  2 trường hợp.
+                </p>
+                <pre><code>diem = <span class="number">7.5</span>
+
+<span class="keyword">if</span> diem >= <span class="number">8.0</span>:
+    <span class="function">print</span>(<span class="string">"Học sinh Giỏi"</span>)
+<span class="keyword">elif</span> diem >= <span class="number">6.5</span>:
+    <span class="function">print</span>(<span class="string">"Học sinh Khá"</span>)
+<span class="keyword">else</span>:
+    <span class="function">print</span>(<span class="string">"Học sinh Trung bình"</span>)</code></pre>
+              </div>
+
+              <div
+                class="bg-slate-800 p-5 rounded-xl border border-purple-500/30"
+              >
+                <h4 class="font-bold text-white mb-2">
+                  Toán tử Logic (Kết hợp nhiều điều kiện)
+                </h4>
+                <ul class="text-sm space-y-2 font-mono">
+                  <li>
+                    <span class="text-purple-400 font-bold">and</span> : Cả hai
+                    đều ĐÚNG
+                  </li>
+                  <li>
+                    <span class="text-purple-400 font-bold">or</span> : Chỉ cần
+                    1 cái ĐÚNG
+                  </li>
+                  <li>
+                    <span class="text-purple-400 font-bold">not</span> : Đảo
+                    ngược (ĐÚNG thành SAI)
+                  </li>
+                </ul>
+                <pre class="mt-3"><code>tuoi = <span class="number">20</span>
+co_ve = <span class="keyword">True</span>
+
+<span class="keyword">if</span> tuoi >= <span class="number">18</span> <span class="keyword">and</span> co_ve:
+    <span class="function">print</span>(<span class="string">"Được vào xem phim rạp"</span>)</code></pre>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="examples" class="scroll-mt-24">
+          <h2
+            class="text-3xl font-bold mb-6 text-blue-400 border-b border-white/10 pb-4"
+          >
+            4. Tổng hợp 10 Ví dụ Minh Hoạ Thực Tế
+          </h2>
+          <p class="text-slate-400 mb-6">
+            Đọc và nghiền ngẫm các đoạn code này để hiểu sâu cách kết hợp
+            Nhập/Xuất và Điều kiện nhé!
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="glass-card p-4 rounded-xl">
+              <span
+                class="text-xs bg-blue-500 text-white px-2 py-1 rounded font-bold"
+                >Ví dụ 1</span
+              >
+              Nhập xuất cơ bản
+              <pre><code>ten = <span class="function">input</span>(<span class="string">"Nhập tên: "</span>)
+<span class="function">print</span>(<span class="string">f"Xin chào {ten}!"</span>)</code></pre>
+            </div>
+            <div class="glass-card p-4 rounded-xl">
+              <span
+                class="text-xs bg-blue-500 text-white px-2 py-1 rounded font-bold"
+                >Ví dụ 2</span
+              >
+              Ép kiểu để tính chu vi
+              <pre><code>canh = <span class="function">int</span>(<span class="function">input</span>(<span class="string">"Cạnh hình vuông: "</span>))
+<span class="function">print</span>(<span class="string">f"Chu vi: {canh * 4}"</span>)</code></pre>
+            </div>
+            <div class="glass-card p-4 rounded-xl">
+              <span
+                class="text-xs bg-blue-500 text-white px-2 py-1 rounded font-bold"
+                >Ví dụ 3</span
+              >
+              Phép chia lấy dư (%)
+              <pre><code>so = <span class="function">int</span>(<span class="function">input</span>(<span class="string">"Nhập 1 số: "</span>))
+<span class="keyword">if</span> so % <span class="number">2</span> == <span class="number">0</span>:
+    <span class="function">print</span>(<span class="string">"Số chẵn"</span>)
+<span class="keyword">else</span>:
+    <span class="function">print</span>(<span class="string">"Số lẻ"</span>)</code></pre>
+            </div>
+            <div class="glass-card p-4 rounded-xl">
+              <span
+                class="text-xs bg-blue-500 text-white px-2 py-1 rounded font-bold"
+                >Ví dụ 4</span
+              >
+              If lồng nhau (Nested If)
+              <pre><code>n = <span class="number">10</span>
+<span class="keyword">if</span> n > <span class="number">0</span>:
+    <span class="keyword">if</span> n % <span class="number">2</span> == <span class="number">0</span>:
+        <span class="function">print</span>(<span class="string">"Số dương chẵn"</span>)</code></pre>
+            </div>
+            <div class="glass-card p-4 rounded-xl">
+              <span
+                class="text-xs bg-blue-500 text-white px-2 py-1 rounded font-bold"
+                >Ví dụ 5</span
+              >
+              Dùng 'or'
+              <pre><code>thang = <span class="number">8</span>
+<span class="keyword">if</span> thang == <span class="number">7</span> <span class="keyword">or</span> thang == <span class="number">8</span>:
+    <span class="function">print</span>(<span class="string">"Đang là mùa hè!"</span>)</code></pre>
+            </div>
+            <div class="glass-card p-4 rounded-xl">
+              <span
+                class="text-xs bg-blue-500 text-white px-2 py-1 rounded font-bold"
+                >Ví dụ 6</span
+              >
+              So sánh chuỗi
+              <pre><code>pass = <span class="function">input</span>(<span class="string">"Mật khẩu: "</span>)
+<span class="keyword">if</span> pass == <span class="string">"12345"</span>:
+    <span class="function">print</span>(<span class="string">"Mở khóa!"</span>)
+<span class="keyword">else</span>:
+    <span class="function">print</span>(<span class="string">"Sai mật khẩu"</span>)</code></pre>
+            </div>
+            <div class="glass-card p-4 rounded-xl">
+              <span
+                class="text-xs bg-blue-500 text-white px-2 py-1 rounded font-bold"
+                >Ví dụ 7</span
+              >
+              If một dòng (Ternary)
+              <pre><code>tuoi = <span class="number">20</span>
+status = <span class="string">"Lớn"</span> <span class="keyword">if</span> tuoi >= <span class="number">18</span> <span class="keyword">else</span> <span class="string">"Nhỏ"</span>
+<span class="function">print</span>(status)</code></pre>
+            </div>
+            <div class="glass-card p-4 rounded-xl">
+              <span
+                class="text-xs bg-blue-500 text-white px-2 py-1 rounded font-bold"
+                >Ví dụ 8</span
+              >
+              Kiểm tra số âm dương
+              <pre><code>x = <span class="function">float</span>(<span class="function">input</span>(<span class="string">"Nhập x: "</span>))
+<span class="keyword">if</span> x > <span class="number">0</span>: <span class="function">print</span>(<span class="string">"Dương"</span>)
+<span class="keyword">elif</span> x <span class="number">0</span>: <span class="function">print</span>(<span class="string">"Âm"</span>)
+<span class="keyword">else</span>: <span class="function">print</span>(<span class="string">"Bằng Không"</span>)</code></pre>
+            </div>
+            <div class="glass-card p-4 rounded-xl">
+              <span
+                class="text-xs bg-blue-500 text-white px-2 py-1 rounded font-bold"
+                >Ví dụ 9</span
+              >
+              Kết hợp and & or
+              <pre><code>toan = <span class="number">9</span>
+van = <span class="number">8</span>
+<span class="keyword">if</span> (toan >= <span class="number">8</span> <span class="keyword">and</span> van >= <span class="number">8</span>) <span class="keyword">or</span> toan == <span class="number">10</span>:
+    <span class="function">print</span>(<span class="string">"Thưởng lớn!"</span>)</code></pre>
+            </div>
+            <div class="glass-card p-4 rounded-xl">
+              <span
+                class="text-xs bg-blue-500 text-white px-2 py-1 rounded font-bold"
+                >Ví dụ 10</span
+              >
+              Đổi nhiệt độ C -> F
+              <pre><code>c = <span class="function">float</span>(<span class="function">input</span>(<span class="string">"Độ C: "</span>))
+f = (c * <span class="number">9</span>/<span class="number">5</span>) + <span class="number">32</span>
+<span class="function">print</span>(<span class="string">f"{c} độ C = {f} độ F"</span>)</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <section id="exercises" class="scroll-mt-24">
+          <h2
+            class="text-3xl font-bold mb-6 text-orange-400 border-b border-white/10 pb-4"
+          >
+            5. Bài Tập Thực Hành (Chấm Tự Động)
+          </h2>
+          <p class="mb-6 text-slate-300">
+            Tự tay gõ code và hệ thống sẽ kiểm tra Output của bạn xem có khớp
+            với yêu cầu không nhé!
+            <strong>Lưu ý: Chỉ sửa code ở phần có ghi chú.</strong>
+          </p>
+
+          <div class="space-y-8">
+            <div
+              class="bg-slate-800/60 rounded-xl overflow-hidden border border-slate-600"
+            >
+              <div class="bg-slate-700/50 p-4 border-b border-slate-600">
+                <h3 class="font-bold text-lg">
+                  <i class="fas fa-edit text-orange-400 mr-2"></i>Bài 1: Lời
+                  chào đầu tiên
+                </h3>
+                <p class="text-sm text-slate-300 mt-1">
+                  Yêu cầu: Dùng hàm `print()` để in ra màn hình chính xác dòng
+                  chữ: <code>Python that de!</code>
+                </p>
+              </div>
+              <div class="p-0">
+                <textarea
+                  id="code-ex1"
+                  class="w-full h-24 p-4 bg-[#011627] text-blue-300 outline-none resize-none"
+                >
+# Viết code của bạn ở dòng dưới:
+</textarea
+                >
+              </div>
+              <div
+                class="bg-slate-900 p-4 flex justify-between items-center border-t border-slate-700"
+              >
+                <div id="out-ex1" class="text-sm font-mono w-2/3">
+                  Chưa chạy code...
+                </div>
+                <button
+                  onclick="runExercise(1, 'Python that de!\n')"
+                  class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded font-bold transition"
+                >
+                  Chấm Bài
+                </button>
+              </div>
+            </div>
+
+            <div
+              class="bg-slate-800/60 rounded-xl overflow-hidden border border-slate-600"
+            >
+              <div class="bg-slate-700/50 p-4 border-b border-slate-600">
+                <h3 class="font-bold text-lg">
+                  <i class="fas fa-edit text-orange-400 mr-2"></i>Bài 2: Máy
+                  tính Mini
+                </h3>
+                <p class="text-sm text-slate-300 mt-1">
+                  Yêu cầu: Cho 2 biến <code>a = 15</code> và <code>b = 7</code>.
+                  Hãy in ra màn hình <strong>tổng</strong> của a và b.
+                </p>
+              </div>
+              <div class="p-0">
+                <textarea
+                  id="code-ex2"
+                  class="w-full h-32 p-4 bg-[#011627] text-blue-300 outline-none resize-none"
+                >
+a = 15
+b = 7
+# Tính tổng và in kết quả ra dưới đây:
+</textarea
+                >
+              </div>
+              <div
+                class="bg-slate-900 p-4 flex justify-between items-center border-t border-slate-700"
+              >
+                <div id="out-ex2" class="text-sm font-mono w-2/3">
+                  Chưa chạy code...
+                </div>
+                <button
+                  onclick="runExercise(2, '22\n')"
+                  class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded font-bold transition"
+                >
+                  Chấm Bài
+                </button>
+              </div>
+            </div>
+
+            <div
+              class="bg-slate-800/60 rounded-xl overflow-hidden border border-slate-600"
+            >
+              <div class="bg-slate-700/50 p-4 border-b border-slate-600">
+                <h3 class="font-bold text-lg">
+                  <i class="fas fa-edit text-orange-400 mr-2"></i>Bài 3: Chẵn
+                  hay Lẻ?
+                </h3>
+                <p class="text-sm text-slate-300 mt-1">
+                  Yêu cầu: Cho <code>so = 42</code>. Dùng if/else, nếu 'so' chia
+                  hết cho 2 (chia dư = 0), in ra <code>Chan</code>. Ngược lại in
+                  <code>Le</code>.
+                </p>
+              </div>
+              <div class="p-0">
+                <textarea
+                  id="code-ex3"
+                  class="w-full h-40 p-4 bg-[#011627] text-blue-300 outline-none resize-none"
+                >
+so = 42
+# Viết logic if/else của bạn:
+</textarea
+                >
+              </div>
+              <div
+                class="bg-slate-900 p-4 flex justify-between items-center border-t border-slate-700"
+              >
+                <div id="out-ex3" class="text-sm font-mono w-2/3">
+                  Chưa chạy code...
+                </div>
+                <button
+                  onclick="runExercise(3, 'Chan\n')"
+                  class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded font-bold transition"
+                >
+                  Chấm Bài
+                </button>
+              </div>
+            </div>
+
+            <div
+              class="bg-slate-800/60 rounded-xl overflow-hidden border border-slate-600"
+            >
+              <div class="bg-slate-700/50 p-4 border-b border-slate-600">
+                <h3 class="font-bold text-lg">
+                  <i class="fas fa-edit text-orange-400 mr-2"></i>Bài 4: Phân
+                  loại điểm (if...elif...else)
+                </h3>
+                <p class="text-sm text-slate-300 mt-1">
+                  Cho <code>dtb = 7.5</code>. Nếu dtb >= 8 in <code>Gioi</code>.
+                  Nếu 6.5 <= dtb < 8 in <code>Kha</code>. Còn lại in
+                  <code>Trung binh</code>. Nhớ in chữ in hoa chữ cái đầu y hệt
+                  yêu cầu!
+                </p>
+              </div>
+              <div class="p-0">
+                <textarea
+                  id="code-ex4"
+                  class="w-full h-40 p-4 bg-[#011627] text-blue-300 outline-none resize-none"
+                >
+dtb = 7.5
+# Phân loại và in kết quả:
+</textarea
+                >
+              </div>
+              <div
+                class="bg-slate-900 p-4 flex justify-between items-center border-t border-slate-700"
+              >
+                <div id="out-ex4" class="text-sm font-mono w-2/3">
+                  Chưa chạy code...
+                </div>
+                <button
+                  onclick="runExercise(4, 'Kha\n')"
+                  class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded font-bold transition"
+                >
+                  Chấm Bài
+                </button>
+              </div>
+            </div>
+
+            <div
+              class="bg-slate-800/60 rounded-xl overflow-hidden border border-slate-600"
+            >
+              <div class="bg-slate-700/50 p-4 border-b border-slate-600">
+                <h3 class="font-bold text-lg">
+                  <i class="fas fa-edit text-orange-400 mr-2"></i>Bài 5: Học
+                  bổng (Toán tử 'and')
+                </h3>
+                <p class="text-sm text-slate-300 mt-1">
+                  Cho <code>toan = 9</code>, <code>van = 8</code>. Để có học
+                  bổng, điểm toán VÀ văn đều phải >= 8. Dùng if/else kết hợp
+                  'and' để kiểm tra. Đạt thì in <code>Co hoc bong</code>, ngược
+                  lại in <code>Khong dat</code>.
+                </p>
+              </div>
+              <div class="p-0">
+                <textarea
+                  id="code-ex5"
+                  class="w-full h-40 p-4 bg-[#011627] text-blue-300 outline-none resize-none"
+                >
+toan = 9
+van = 8
+# Viết logic kiểm tra:
+</textarea
+                >
+              </div>
+              <div
+                class="bg-slate-900 p-4 flex justify-between items-center border-t border-slate-700"
+              >
+                <div id="out-ex5" class="text-sm font-mono w-2/3">
+                  Chưa chạy code...
+                </div>
+                <button
+                  onclick="runExercise(5, 'Co hoc bong\n')"
+                  class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded font-bold transition"
+                >
+                  Chấm Bài
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="playground" class="scroll-mt-24 pb-20">
+          <h2
+            class="text-3xl font-bold mb-6 text-yellow-400 border-b border-white/10 pb-4"
+          >
+            6. Playground (Viết Code Tự Do)
+          </h2>
+          <p class="mb-4 text-slate-300">
+            Nơi bạn có thể tự do gõ bất cứ đoạn code Python nào. Lệnh
+            <code>input()</code> ở đây sẽ mở ra một hộp thoại để bạn nhập văn
+            bản!
+          </p>
+
+          <div
+            class="glass-card rounded-3xl overflow-hidden border border-white/10 shadow-2xl"
+          >
+            <div class="bg-slate-800 p-4 flex justify-between items-center">
+              <span class="text-sm font-bold text-slate-300"
+                ><i class="fas fa-terminal mr-2"></i>Trình Soạn Thảo
+                (Editor)</span
+              >
+              <button
+                onclick="runFreeCode()"
+                class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg text-sm font-bold transition-all active:scale-95 shadow-lg shadow-blue-500/30"
+              >
+                <i class="fas fa-play mr-2"></i>CHẠY CODE
+              </button>
+            </div>
+            <textarea
+              id="editor"
+              class="w-full h-64 p-6 bg-[#011627] text-blue-300 outline-none resize-none text-[15px]"
+              spellcheck="false"
+            >
+# Bạn thử chạy đoạn code dùng input() này xem sao:
+ho_ten = input("Nhập họ tên của bạn: ")
+nam_sinh = input("Bạn sinh năm bao nhiêu? ")
+
+tuoi = 2026 - int(nam_sinh)
+print(f"Chào {ho_ten}! Chà, năm nay bạn đã {tuoi} tuổi rồi đấy!")
+
+if tuoi >= 18:
+    print("Đủ tuổi làm căn cước công dân rồi nhé!")
+else:
+    print("Vẫn còn tuổi teen nha!")</textarea
+            >
+            <div class="bg-black/80 p-5 border-t border-white/10">
+              <p
+                class="text-xs text-slate-500 uppercase font-bold mb-3 flex items-center"
+              >
+                <i class="fas fa-desktop mr-2"></i>Màn Hình Hiển Thị (Output)
+              </p>
+              <pre
+                id="output-screen"
+                class="p-0 bg-transparent text-green-400 text-base min-h-[60px] whitespace-pre-wrap"
+              >
+Kết quả sẽ hiển thị ở đây...</pre
+              >
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      let pyodide;
+
+      async function init() {
+        try {
+          pyodide = await loadPyodide();
+
+          // Giả lập hàm input() bằng window.prompt của JS
+          pyodide.globals.set("js_prompt", prompt);
+          await pyodide.runPythonAsync(`
+                    import sys, builtins
+                    def custom_input(prompt_text=""):
+                        return js_prompt(prompt_text) or ""
+                    builtins.input = custom_input
+                `);
+
+          document.getElementById("py-status").innerHTML =
+            '<i class="fas fa-check-circle text-green-500 mr-2"></i> Máy ảo Python đã sẵn sàng';
+          document
+            .getElementById("py-status")
+            .classList.replace("text-yellow-400", "text-green-400");
+          document
+            .getElementById("py-status")
+            .classList.replace("bg-yellow-400/10", "bg-green-400/10");
+          document
+            .getElementById("py-status")
+            .classList.replace("border-yellow-400/20", "border-green-400/20");
+        } catch (error) {
+          document.getElementById("py-status").innerHTML =
+            '<i class="fas fa-times-circle text-red-500 mr-2"></i> Lỗi nạp Python';
+          console.error(error);
+        }
+      }
+      init();
+
+      // Hàm chạy code trong Playground
+      async function runFreeCode() {
+        const code = document.getElementById("editor").value;
+        const output = document.getElementById("output-screen");
+        if (!pyodide) {
+          output.innerText = "Đang tải Python, vui lòng chờ vài giây...";
+          return;
+        }
+
+        try {
+          // Reset stdout
+          pyodide.runPython(`import sys, io; sys.stdout = io.StringIO()`);
+          // Chạy code
+          await pyodide.runPythonAsync(code);
+          // Lấy kết quả
+          const result = pyodide.runPython("sys.stdout.getvalue()");
+          output.innerText =
+            result ||
+            "Code chạy thành công nhưng không có lệnh print() nào được gọi.";
+          output.style.color = "#4ade80"; // Màu xanh
+        } catch (err) {
+          output.innerText = "Lỗi cú pháp hoặc runtime:\n" + err.message;
+          output.style.color = "#f87171"; // Màu đỏ
+        }
+      }
+
+      // Hàm chạy và chấm bài tập
+      async function runExercise(id, expected) {
+        const code = document.getElementById(`code-ex${id}`).value;
+        const outBox = document.getElementById(`out-ex${id}`);
+
+        if (!pyodide) {
+          outBox.innerHTML =
+            "<span class='text-yellow-400'>Đang tải Python...</span>";
+          return;
+        }
+
+        try {
+          pyodide.runPython(`import sys, io; sys.stdout = io.StringIO()`);
+          await pyodide.runPythonAsync(code);
+          let result = pyodide.runPython("sys.stdout.getvalue()");
+
+          // Xoá khoảng trắng và dấu xuống dòng thừa để chấm chính xác hơn
+          if (result.trim() === expected.trim()) {
+            outBox.innerHTML = `<span class="text-green-400 font-bold"><i class="fas fa-check-circle mr-1"></i> Chính xác! Output: "${result.trim()}"</span>`;
+          } else {
+            outBox.innerHTML = `<span class="text-red-400 font-bold"><i class="fas fa-times-circle mr-1"></i> Sai! Output của bạn: "${result.trim()}". (Cần: "${expected.trim()}")</span>`;
+          }
+        } catch (err) {
+          // Chỉ lấy dòng lỗi cuối cùng cho đỡ dài
+          let errorLines = err.message.split("\\n");
+          let lastError = errorLines[errorLines.length - 2] || err.message;
+          outBox.innerHTML = `<span class="text-red-500"><i class="fas fa-exclamation-triangle mr-1"></i> Lỗi Code: ${lastError}</span>`;
+        }
+      }
+
+      // Highlight menu khi scroll
+      window.addEventListener("scroll", () => {
+        const sections = [
+          "intro",
+          "io",
+          "if",
+          "examples",
+          "exercises",
+          "playground",
+        ];
+        let current = "";
+        sections.forEach((s) => {
+          const el = document.getElementById(s);
+          if (el && el.getBoundingClientRect().top <= 200) {
+            current = s;
+          }
+        });
+        document.querySelectorAll(".sidebar-link").forEach((link) => {
+          link.classList.remove("active", "bg-slate-800");
+          if (link.getAttribute("href") === `#${current}`) {
+            link.classList.add("active");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

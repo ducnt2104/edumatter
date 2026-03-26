@@ -1,0 +1,990 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Python Master - Chuyên đề Mảng 2 Chiều</title>
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --bg-dark: #0b0f1a;
+        --card-bg: rgba(22, 30, 46, 0.8);
+        --primary: #a855f7;
+        --secondary: #22d3ee;
+        --accent: #10b981;
+        --text-main: #f8fafc;
+        --text-dim: #94a3b8;
+        --code-bg: #011627;
+        --neon-glow: 0 0 20px rgba(168, 85, 247, 0.4);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        background-color: var(--bg-dark);
+        color: var(--text-main);
+        line-height: 1.6;
+        overflow-x: hidden;
+        background-image:
+          radial-gradient(
+            circle at 10% 20%,
+            rgba(168, 85, 247, 0.1) 0%,
+            transparent 30%
+          ),
+          radial-gradient(
+            circle at 90% 80%,
+            rgba(34, 211, 238, 0.1) 0%,
+            transparent 30%
+          );
+      }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg-dark);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--primary);
+        border-radius: 10px;
+      }
+
+      /* Navbar */
+      nav {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        padding: 1rem 5%;
+        background: rgba(11, 15, 26, 0.9);
+        backdrop-filter: blur(12px);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .logo {
+        font-size: 1.4rem;
+        font-weight: 800;
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+        list-style: none;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: var(--text-dim);
+        font-size: 0.95rem;
+        font-weight: 500;
+        transition: 0.3s;
+        cursor: pointer;
+      }
+
+      .nav-links a:hover,
+      .nav-links a.active {
+        color: var(--secondary);
+        text-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
+      }
+
+      /* Progress Bar */
+      .progress-container {
+        position: fixed;
+        top: 64px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.05);
+        z-index: 999;
+      }
+
+      #progress-bar {
+        height: 100%;
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        width: 0%;
+        transition: width 0.4s ease;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 120px auto 60px;
+        padding: 0 20px;
+      }
+
+      /* Hero Robot */
+      .hero-ai {
+        display: flex;
+        align-items: center;
+        gap: 25px;
+        background: var(--card-bg);
+        padding: 30px;
+        border-radius: 24px;
+        margin-bottom: 50px;
+        border: 1px solid rgba(168, 85, 247, 0.2);
+        box-shadow: var(--neon-glow);
+      }
+
+      .ai-avatar {
+        font-size: 4rem;
+        filter: drop-shadow(0 0 10px var(--primary));
+        animation: float 3s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      /* Content Sections */
+      .section {
+        display: none;
+        animation: slideUp 0.6s ease-out;
+      }
+
+      .section.active {
+        display: block;
+      }
+
+      h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        color: var(--secondary);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .card {
+        background: var(--card-bg);
+        padding: 30px;
+        border-radius: 20px;
+        margin-bottom: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.03);
+        transition: 0.3s;
+      }
+
+      .card:hover {
+        border-color: rgba(168, 85, 247, 0.3);
+        background: rgba(22, 30, 46, 0.95);
+      }
+
+      /* Code Block Styling */
+      .code-block {
+        background: var(--code-bg);
+        padding: 20px;
+        border-radius: 12px;
+        font-family: "Fira Code", monospace;
+        font-size: 0.9rem;
+        margin: 18px 0;
+        border-left: 4px solid var(--primary);
+        overflow-x: auto;
+        position: relative;
+      }
+
+      .code-keyword {
+        color: #c792ea;
+      }
+      .code-func {
+        color: #82aaff;
+      }
+      .code-str {
+        color: #ecc48d;
+      }
+      .code-comment {
+        color: #637777;
+        font-style: italic;
+      }
+      .code-num {
+        color: #f78c6c;
+      }
+
+      /* Matrix Viz */
+      .matrix-container {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        background: rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        border-radius: 12px;
+        width: fit-content;
+        margin: 20px 0;
+        border: 1px dashed var(--text-dim);
+      }
+
+      .matrix-row {
+        display: flex;
+        gap: 8px;
+      }
+
+      .matrix-cell {
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--code-bg);
+        border: 1px solid var(--secondary);
+        border-radius: 6px;
+        font-family: "Fira Code", monospace;
+        font-weight: 600;
+        color: var(--secondary);
+        transition: 0.3s;
+      }
+
+      .matrix-cell:hover {
+        background: var(--secondary);
+        color: var(--bg-dark);
+        transform: scale(1.1);
+      }
+
+      /* Interactive Playground */
+      .playground {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+        margin-top: 25px;
+      }
+
+      @media (max-width: 850px) {
+        .playground {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .editor-wrap {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .editor-label {
+        background: #1e293b;
+        padding: 8px 15px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        border-radius: 12px 12px 0 0;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      textarea {
+        background: #0f172a;
+        color: #e2e8f0;
+        border: 1px solid #1e293b;
+        border-top: none;
+        padding: 20px;
+        font-family: "Fira Code", monospace;
+        font-size: 0.9rem;
+        min-height: 200px;
+        outline: none;
+        resize: none;
+      }
+
+      .editor-actions {
+        background: #1e293b;
+        padding: 12px;
+        display: flex;
+        gap: 12px;
+        border-radius: 0 0 12px 12px;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.85rem;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+      }
+
+      .btn-outline {
+        background: transparent;
+        color: var(--text-dim);
+        border: 1px solid #334155;
+      }
+      .btn-outline:hover {
+        color: white;
+        border-color: var(--text-dim);
+      }
+
+      .console {
+        background: #011627;
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid #1e293b;
+        font-family: "Fira Code", monospace;
+        font-size: 0.9rem;
+        color: #addb67;
+        height: 100%;
+        min-height: 150px;
+      }
+
+      /* Toast */
+      #toast {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: var(--accent);
+        color: white;
+        padding: 15px 30px;
+        border-radius: 12px;
+        font-weight: 600;
+        display: none;
+        z-index: 2000;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      @keyframes slideUp {
+        from {
+          transform: translateY(20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .step-footer {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .important-box {
+        background: rgba(245, 158, 11, 0.1);
+        border-left: 4px solid #f59e0b;
+        padding: 15px;
+        border-radius: 0 8px 8px 0;
+        margin: 20px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="logo">
+        <i class="fas fa-layer-group"></i>
+        PYTHON 2D-LIST MASTER
+      </div>
+      <ul class="nav-links">
+        <li>
+          <a onclick="showSection('intro')" id="link-intro" class="active"
+            >Giới thiệu</a
+          >
+        </li>
+        <li>
+          <a onclick="showSection('basic')" id="link-basic"
+            >Khai báo & Truy xuất</a
+          >
+        </li>
+        <li>
+          <a onclick="showSection('loops')" id="link-loops">Duyệt mảng</a>
+        </li>
+        <li><a onclick="showSection('edit')" id="link-edit">Thêm & Xóa</a></li>
+        <li>
+          <a onclick="showSection('advanced')" id="link-advanced">Nâng cao</a>
+        </li>
+        <li>
+          <a onclick="showSection('practice')" id="link-practice"
+            >Luyện tập 🎖️</a
+          >
+        </li>
+      </ul>
+    </nav>
+
+    <div class="progress-container">
+      <div id="progress-bar"></div>
+    </div>
+
+    <div id="toast">Tuyệt vời! Bạn đã vượt qua thử thách. 🚀</div>
+
+    <div class="container">
+      <!-- AI Tutor -->
+      <div class="hero-ai">
+        <div class="ai-avatar">🤖</div>
+        <div>
+          <h3 id="ai-title">Chào Master Python tương lai!</h3>
+          <p id="ai-msg">
+            Mảng 2 chiều (2D List) là một trong những cấu trúc dữ liệu quan
+            trọng nhất để giải quyết các bài toán về ma trận, bản đồ và trò
+            chơi. Hãy cùng tôi làm chủ nó!
+          </p>
+        </div>
+      </div>
+
+      <!-- SECTION: INTRO -->
+      <div id="section-intro" class="section active">
+        <h2><i class="fas fa-info-circle"></i> Mảng 2 chiều là gì?</h2>
+        <div class="card">
+          <p>
+            Hãy tưởng tượng mảng 1 chiều là một hàng ghế, thì mảng 2 chiều chính
+            là <b>toàn bộ khán đài</b> với nhiều hàng và nhiều cột.
+          </p>
+          <p style="margin-top: 15px">
+            Trong Python, mảng 2 chiều thực chất là một
+            <b>List chứa các List con</b>.
+          </p>
+
+          <div class="matrix-container">
+            <div class="matrix-row">
+              <div class="matrix-cell">1</div>
+              <div class="matrix-cell">2</div>
+              <div class="matrix-cell">3</div>
+            </div>
+            <div class="matrix-row">
+              <div class="matrix-cell">4</div>
+              <div class="matrix-cell">5</div>
+              <div class="matrix-cell">6</div>
+            </div>
+            <div class="matrix-row">
+              <div class="matrix-cell">7</div>
+              <div class="matrix-cell">8</div>
+              <div class="matrix-cell">9</div>
+            </div>
+          </div>
+          <p>
+            <small
+              ><i class="fas fa-lightbulb"></i> Ma trận 3x3 ở trên có 3 hàng và
+              3 cột.</small
+            >
+          </p>
+        </div>
+        <button
+          class="btn btn-primary"
+          style="width: 100%; justify-content: center; padding: 18px"
+          onclick="showSection('basic')"
+        >
+          KHÁM PHÁ CÁCH TẠO MẢNG <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+
+      <!-- SECTION: BASIC -->
+      <div id="section-basic" class="section">
+        <h2><i class="fas fa-edit"></i> Khai báo & Truy xuất</h2>
+        <div class="card">
+          <h3>1. Cách khai báo</h3>
+          <div class="code-block">
+            <span class="code-comment"># Cách 1: Khai báo trực tiếp</span><br />
+            matrix = [<br />
+            &nbsp;&nbsp;[<span class="code-num">10</span>,
+            <span class="code-num">20</span>],<br />
+            &nbsp;&nbsp;[<span class="code-num">30</span>,
+            <span class="code-num">40</span>]<br />
+            ]
+          </div>
+
+          <h3>2. Truy xuất phần tử</h3>
+          <p>Công thức: <code>list[chỉ_số_hàng][chỉ_số_cột]</code></p>
+          <div class="code-block">
+            <span class="code-func">print</span>(matrix[<span class="code-num"
+              >0</span
+            >][<span class="code-num">1</span>])
+            <span class="code-comment"># Kết quả: 20 (Hàng 0, Cột 1)</span
+            ><br />
+            matrix[<span class="code-num">1</span>][<span class="code-num"
+              >0</span
+            >] = <span class="code-num">99</span>
+            <span class="code-comment"
+              ># Thay đổi giá trị tại Hàng 1, Cột 0 thành 99</span
+            >
+          </div>
+        </div>
+
+        <!-- Bài tập 1 -->
+        <div class="card">
+          <h3>📝 Thử thách 1: Lấy dữ liệu</h3>
+          <p>
+            Viết code để in ra phần tử nằm ở <b>hàng 1, cột 2</b> của ma trận
+            bên dưới.
+          </p>
+          <div class="playground">
+            <div class="editor-wrap">
+              <div class="editor-label">
+                Python Editor <span>Exercise 1</span>
+              </div>
+              <textarea id="code-1">
+data = [
+    [5, 10, 15],
+    [20, 25, 30],
+    [35, 40, 45]
+]
+# Viết code của bạn ở đây
+print()</textarea
+              >
+              <div class="editor-actions">
+                <button class="btn btn-outline" onclick="showHint(1)">
+                  Gợi ý
+                </button>
+                <button class="btn btn-primary" onclick="runCode(1, '30')">
+                  Chạy code <i class="fas fa-play"></i>
+                </button>
+              </div>
+            </div>
+            <div class="console-wrap">
+              <div class="editor-label">Console</div>
+              <div id="output-1" class="console">>_ Đang chờ...</div>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer">
+          <button class="btn btn-outline" onclick="showSection('intro')">
+            Quay lại
+          </button>
+          <button class="btn btn-primary" onclick="showSection('loops')">
+            Học Duyệt mảng
+          </button>
+        </div>
+      </div>
+
+      <!-- SECTION: LOOPS -->
+      <div id="section-loops" class="section">
+        <h2><i class="fas fa-redo"></i> Duyệt mảng 2 chiều</h2>
+        <div class="card">
+          <h3>Sử dụng vòng lặp lồng nhau (Nested Loops)</h3>
+          <p>
+            Để quét qua toàn bộ các phần tử, ta cần 2 vòng lặp <code>for</code>:
+            một cái cho hàng và một cái cho cột.
+          </p>
+          <div class="code-block">
+            matrix = [[<span class="code-num">1</span>,
+            <span class="code-num">2</span>], [<span class="code-num">3</span>,
+            <span class="code-num">4</span>]]<br /><br />
+            <span class="code-comment"># Cách duyệt theo từng phần tử</span
+            ><br />
+            <span class="code-keyword">for</span> row
+            <span class="code-keyword">in</span> matrix:<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">for</span> x
+            <span class="code-keyword">in</span> row:<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+              class="code-func"
+              >print</span
+            >(x, end=<span class="code-str">" "</span>)
+          </div>
+        </div>
+
+        <!-- Bài tập 2 -->
+        <div class="card">
+          <h3>📝 Thử thách 2: Tính tổng ma trận</h3>
+          <p>
+            Tính tổng tất cả các số có trong ma trận
+            <code>[[1, 1], [2, 2]]</code>.
+          </p>
+          <div class="playground">
+            <div class="editor-wrap">
+              <div class="editor-label">
+                Python Editor <span>Exercise 2</span>
+              </div>
+              <textarea id="code-2">
+matrix = [[1, 1], [2, 2]]
+total = 0
+# Duyệt mảng và cộng dồn vào biến total
+for row in matrix:
+    for x in row:
+        total += x
+print(total)</textarea
+              >
+              <div class="editor-actions">
+                <button class="btn btn-outline" onclick="showHint(2)">
+                  Gợi ý
+                </button>
+                <button class="btn btn-primary" onclick="runCode(2, '6')">
+                  Chạy code <i class="fas fa-play"></i>
+                </button>
+              </div>
+            </div>
+            <div class="console-wrap">
+              <div class="editor-label">Console</div>
+              <div id="output-2" class="console">>_ Sẵn sàng...</div>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer">
+          <button class="btn btn-outline" onclick="showSection('basic')">
+            Quay lại
+          </button>
+          <button class="btn btn-primary" onclick="showSection('edit')">
+            Thêm & Xóa
+          </button>
+        </div>
+      </div>
+
+      <!-- SECTION: EDIT -->
+      <div id="section-edit" class="section">
+        <h2><i class="fas fa-plus-square"></i> Thêm & Xóa hàng/cột</h2>
+        <div class="card">
+          <p>
+            Vì mảng 2 chiều là một List lớn chứa các List nhỏ, ta sử dụng các
+            hàm của List thông thường.
+          </p>
+          <div class="code-block">
+            matrix = [[<span class="code-num">1</span>,
+            <span class="code-num">2</span>]]<br /><br />
+            <span class="code-comment"># 1. Thêm một hàng mới vào cuối</span
+            ><br />
+            matrix.<span class="code-func">append</span>([<span class="code-num"
+              >3</span
+            >, <span class="code-num">4</span>])<br /><br />
+            <span class="code-comment"># 2. Xóa hàng đầu tiên</span><br />
+            <span class="code-keyword">del</span> matrix[<span class="code-num"
+              >0</span
+            >]<br /><br />
+            <span class="code-comment"
+              ># 3. Thêm một phần tử vào hàng cụ thể</span
+            ><br />
+            matrix[<span class="code-num">0</span>].<span class="code-func"
+              >append</span
+            >(<span class="code-num">5</span>)
+          </div>
+        </div>
+
+        <!-- Bài tập 3 -->
+        <div class="card">
+          <h3>📝 Thử thách 3: Mở rộng ma trận</h3>
+          <p>
+            Bắt đầu với mảng <code>m = [[1, 2]]</code>. Hãy thêm hàng
+            <code>[3, 4]</code> vào mảng <code>m</code> rồi in mảng đó ra.
+          </p>
+          <div class="playground">
+            <div class="editor-wrap">
+              <div class="editor-label">
+                Python Editor <span>Exercise 3</span>
+              </div>
+              <textarea id="code-3">
+m = [[1, 2]]
+# Thêm hàng [3, 4] vào m và in kết quả
+m.append([3, 4])
+print(m)</textarea
+              >
+              <div class="editor-actions">
+                <button class="btn btn-outline" onclick="showHint(3)">
+                  Gợi ý
+                </button>
+                <button
+                  class="btn btn-primary"
+                  onclick="runCode(3, '[[1, 2], [3, 4]]')"
+                >
+                  Chạy code <i class="fas fa-play"></i>
+                </button>
+              </div>
+            </div>
+            <div class="console-wrap">
+              <div class="editor-label">Console</div>
+              <div id="output-3" class="console">
+                >_ Output sẽ hiện ở đây...
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer">
+          <button class="btn btn-outline" onclick="showSection('loops')">
+            Quay lại
+          </button>
+          <button class="btn btn-primary" onclick="showSection('advanced')">
+            Kiến thức nâng cao
+          </button>
+        </div>
+      </div>
+
+      <!-- SECTION: ADVANCED -->
+      <div id="section-advanced" class="section">
+        <h2><i class="fas fa-brain"></i> Kỹ thuật nâng cao</h2>
+        <div class="card">
+          <h3>1. List Comprehension</h3>
+          <p>
+            Cách cực nhanh để tạo một ma trận rỗng hoặc chứa giá trị mặc định.
+          </p>
+          <div class="code-block">
+            <span class="code-comment"># Tạo ma trận 3x3 toàn số 0</span><br />
+            zeros = [[<span class="code-num">0</span>
+            <span class="code-keyword">for</span> j
+            <span class="code-keyword">in</span>
+            <span class="code-func">range</span>(<span class="code-num">3</span
+            >)] <span class="code-keyword">for</span> i
+            <span class="code-keyword">in</span>
+            <span class="code-func">range</span>(<span class="code-num">3</span
+            >)]
+          </div>
+
+          <h3>2. Vấn đề tham chiếu (Reference)</h3>
+          <div class="important-box">
+            <p>
+              <b>Cảnh báo:</b> Tránh dùng <code>[[0]*3]*3</code> vì khi bạn thay
+              đổi một phần tử, cả cột đó sẽ thay đổi theo do lỗi tham chiếu cùng
+              một đối tượng List.
+            </p>
+          </div>
+          <p>Nên dùng thư viện <code>copy</code> để nhân bản mảng 2 chiều:</p>
+          <div class="code-block">
+            <span class="code-keyword">import</span> copy<br />
+            new_matrix = copy.<span class="code-func">deepcopy</span
+            >(old_matrix)
+          </div>
+        </div>
+        <div class="step-footer">
+          <button class="btn btn-outline" onclick="showSection('edit')">
+            Quay lại
+          </button>
+          <button class="btn btn-primary" onclick="showSection('practice')">
+            Vào Đấu Trường 🎖️
+          </button>
+        </div>
+      </div>
+
+      <!-- SECTION: PRACTICE -->
+      <div id="section-practice" class="section">
+        <h2><i class="fas fa-trophy"></i> Đấu trường Python</h2>
+
+        <!-- Bài tập 4 -->
+        <div class="card">
+          <h3>Bài 4: Đường chéo chính</h3>
+          <p>
+            Cho ma trận vuông 3x3. Hãy in ra các phần tử nằm trên đường chéo
+            chính (nơi hàng == cột).
+          </p>
+          <div class="playground">
+            <div class="editor-wrap">
+              <div class="editor-label">
+                Python Editor <span>Exercise 4</span>
+              </div>
+              <textarea id="code-4">
+matrix = [
+    [1, 0, 0],
+    [0, 5, 0],
+    [0, 0, 9]
+]
+# In ra các số 1, 5, 9
+for i in range(3):
+    print(matrix[i][i])</textarea
+              >
+              <div class="editor-actions">
+                <button class="btn btn-outline" onclick="showHint(4)">
+                  Gợi ý
+                </button>
+                <button class="btn btn-primary" onclick="runCode(4, '1\n5\n9')">
+                  Kiểm tra kết quả
+                </button>
+              </div>
+            </div>
+            <div class="console-wrap">
+              <div class="editor-label">Console</div>
+              <div id="output-4" class="console">>_ Đang đợi...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bài tập 5 -->
+        <div class="card" style="border-top: 4px solid var(--accent)">
+          <h3>Bài 5: Tìm "Trùm" ma trận (Max) 🎖️</h3>
+          <p>
+            Tìm và in ra giá trị lớn nhất trong ma trận
+            <code>[[10, 50], [20, 80], [30, 40]]</code>.
+          </p>
+          <div class="playground">
+            <div class="editor-wrap">
+              <div class="editor-label">
+                Python Editor <span>Final Boss</span>
+              </div>
+              <textarea id="code-5">
+data = [[10, 50], [20, 80], [30, 40]]
+max_val = data[0][0]
+# Viết logic tìm max tại đây
+
+print(max_val)</textarea
+              >
+              <div class="editor-actions">
+                <button class="btn btn-outline" onclick="showHint(5)">
+                  Gợi ý
+                </button>
+                <button class="btn btn-primary" onclick="runCode(5, '80')">
+                  Nộp bài luyện tập
+                </button>
+              </div>
+            </div>
+            <div class="console-wrap">
+              <div class="editor-label">Console</div>
+              <div id="output-5" class="console">>_ Thử thách cuối cùng...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Progress tracking
+      const sections = [
+        "intro",
+        "basic",
+        "loops",
+        "edit",
+        "advanced",
+        "practice",
+      ];
+
+      function showSection(sectionId) {
+        document
+          .querySelectorAll(".section")
+          .forEach((s) => s.classList.remove("active"));
+        document.getElementById("section-" + sectionId).classList.add("active");
+
+        document
+          .querySelectorAll(".nav-links a")
+          .forEach((a) => a.classList.remove("active"));
+        document.getElementById("link-" + sectionId).classList.add("active");
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        updateRobotMsg(sectionId);
+
+        // Update progress
+        const idx = sections.indexOf(sectionId);
+        const progress = ((idx + 1) / sections.length) * 100;
+        document.getElementById("progress-bar").style.width = progress + "%";
+      }
+
+      function updateRobotMsg(sectionId) {
+        const title = document.getElementById("ai-title");
+        const msg = document.getElementById("ai-msg");
+
+        const messages = {
+          intro: [
+            "Bắt đầu thôi!",
+            "Mảng 2 chiều là nền tảng của mọi cấu trúc dữ liệu dạng bảng. Hãy nắm vững lý thuyết nhé!",
+          ],
+          basic: [
+            "Cẩn thận chỉ số!",
+            "Trong Python, chỉ số (index) bắt đầu từ 0. Matrix[0][0] là phần tử đầu tiên đấy.",
+          ],
+          loops: [
+            "Lặp và Lặp!",
+            "Vòng lặp lồng nhau là chìa khóa để xử lý mọi ma trận. Hãy tập trung vào biến i và j.",
+          ],
+          edit: [
+            "Thay đổi linh hoạt",
+            "Bạn có thể thêm cả một hàng mới chỉ với hàm .append(). Rất tiện lợi đúng không?",
+          ],
+          advanced: [
+            "Trình độ Master",
+            "Dùng List Comprehension sẽ giúp code của bạn trông chuyên nghiệp và ngắn gọn hơn nhiều.",
+          ],
+          practice: [
+            "Đấu trường thực tế",
+            "Đừng bỏ cuộc! Các bài tập này sẽ giúp bạn thực sự làm chủ mảng 2 chiều.",
+          ],
+        };
+
+        title.innerText = messages[sectionId][0];
+        msg.innerText = messages[sectionId][1];
+      }
+
+      function runCode(id, expected) {
+        const output = document.getElementById("output-" + id);
+        const codeInput = document.getElementById("code-" + id).value;
+
+        output.innerHTML =
+          "Đang kiểm tra code... <i class='fas fa-sync fa-spin'></i>";
+
+        setTimeout(() => {
+          // Mock execution logic for demo
+          let userOutput = "";
+
+          // Simple logic check for demo purposes
+          if (id === 1) {
+            if (codeInput.includes("print(data[1][2])")) userOutput = "30";
+            else userOutput = "Kết quả sai hoặc chưa đúng cú pháp!";
+          } else if (id === 2) {
+            if (codeInput.includes("6")) userOutput = "6";
+            else userOutput = "Tổng chưa đúng!";
+          } else if (id === 3) {
+            userOutput = "[[1, 2], [3, 4]]";
+          } else if (id === 4) {
+            userOutput = "1\n5\n9";
+          } else if (id === 5) {
+            userOutput = "80";
+          }
+
+          if (userOutput.trim() === expected.trim()) {
+            output.innerHTML = `<span style="color: #10b981">>_ ${userOutput}\n\n[CHÍNH XÁC!]</span>`;
+            showToast();
+          } else {
+            output.innerHTML = `<span style="color: #f59e0b">>_ ${userOutput}\n\n[HÃY THỬ LẠI]</span>`;
+          }
+        }, 800);
+      }
+
+      function showHint(id) {
+        const hints = {
+          1: "Phần tử hàng 1, cột 2 là: data[1][2].",
+          2: "Dùng 2 vòng lặp: 'for row in matrix:' sau đó 'for x in row:' rồi cộng x vào biến total.",
+          3: "Sử dụng m.append([3, 4]) để thêm hàng mới.",
+          4: "Dùng một vòng lặp i chạy từ 0 đến 2, in ra matrix[i][i].",
+          5: "Trong vòng lặp cột, dùng câu lệnh: if x > max_val: max_val = x",
+        };
+        const output = document.getElementById("output-" + id);
+        output.innerHTML = `<span style="color: #94a3b8">>_ Gợi ý: ${hints[id]}</span>`;
+      }
+
+      function showToast() {
+        const t = document.getElementById("toast");
+        t.style.display = "block";
+        setTimeout(() => (t.style.display = "none"), 3000);
+      }
+
+      window.onload = () => showSection("intro");
+    </script>
+  </body>
+</html>
