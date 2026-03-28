@@ -1,4 +1,4 @@
-const apiKey = "";
+
 const chatWindow = document.getElementById("chat-window");
 const chatForm = document.getElementById("chat-form");
 const userInput = document.getElementById("user-input");
@@ -7,7 +7,32 @@ const imagePreview = document.getElementById("image-preview");
 const previewImg = document.getElementById("preview-img");
 
 let currentImageData = null;
+chatForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const text = userInput.value;
 
+    try {
+        // Gọi lên server.js của chính mình
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            // Đẩy tin nhắn (và currentImageData nếu có) lên server xử lý
+            body: JSON.stringify({ 
+                message: text,
+                image: currentImageData 
+            }) 
+        });
+
+        const data = await response.json();
+        console.log("AI trả lời:", data.reply); 
+        // Viết code append data.reply vào chatWindow ở đây...
+
+    } catch (error) {
+        console.error("Lỗi gọi API:", error);
+    }
+});
 // --- System Prompt with the knowledge base you provided ---
 const SYSTEM_PROMPT = `Bạn là "EduMatter AI", chuyên gia tư vấn giáo dục chuyên sâu về Hóa học tại Việt Nam. 
     Nhiệm vụ: Giải đáp kiến thức hóa học, giải bài tập, cân bằng phản ứng.
