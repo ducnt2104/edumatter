@@ -1,9 +1,4 @@
-const res = await fetch("/.netlify/functions/chat", {
-  method: "POST",
-  body: JSON.stringify({
-    contents: [{ parts: [{ text: userMessage }] }]
-  })
-});
+const apiKey = "";
 const chatWindow = document.getElementById("chat-window");
 const chatForm = document.getElementById("chat-form");
 const userInput = document.getElementById("user-input");
