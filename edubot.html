@@ -5,22 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EduBot - Cyber Academic AI</title>
     
+    <!-- Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark-reasonable.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- KaTeX for Math -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            /* Cold, Futuristic, Science Palette */
-            --bg-void: #050914; /* Deep space black/blue */
-            --bg-glass: rgba(13, 22, 45, 0.65);
+            --bg-void: #050914;
+            --bg-glass: rgba(13, 22, 45, 0.7);
             --bg-bot: rgba(0, 240, 255, 0.05);
+            --bg-user: rgba(41, 121, 255, 0.15);
             --text-primary: #e2f1f8;
             --text-secondary: #78909c;
             --accent-cyan: #00f0ff;
             --accent-blue: #2979ff;
             --border-neon: rgba(0, 240, 255, 0.3);
+            --border-user: rgba(41, 121, 255, 0.3);
             --glow-cyan: 0 0 15px rgba(0, 240, 255, 0.2);
             --font-main: 'Inter', sans-serif;
             --font-code: 'Fira Code', monospace;
@@ -35,11 +44,8 @@
         body {
             background-color: var(--bg-void);
             background-image: 
-                radial-gradient(circle at 15% 50%, rgba(41, 121, 255, 0.08), transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(0, 240, 255, 0.05), transparent 25%),
-                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
-            background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
+                radial-gradient(circle at 15% 50%, rgba(41, 121, 255, 0.08), transparent 30%),
+                radial-gradient(circle at 85% 30%, rgba(0, 240, 255, 0.05), transparent 30%);
             color: var(--text-primary);
             font-family: var(--font-main);
             height: 100vh;
@@ -48,14 +54,15 @@
             overflow: hidden;
         }
 
-        /* Header - Techy & Cold */
+        /* Header */
         header {
             background: var(--bg-glass);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            padding: 1rem 2rem;
+            padding: 1rem 1.5rem;
             display: flex;
             align-items: center;
+            justify-content: space-between;
             border-bottom: 1px solid var(--border-neon);
             box-shadow: var(--glow-cyan);
             z-index: 10;
@@ -63,7 +70,7 @@
 
         .logo {
             font-family: var(--font-code);
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 600;
             color: var(--text-primary);
             letter-spacing: 1px;
@@ -77,65 +84,70 @@
             filter: drop-shadow(0 0 5px var(--accent-cyan));
         }
 
-        /* Chat Container */
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--accent-cyan);
+            border: 1px solid var(--border-neon);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background-color: var(--accent-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 5px var(--accent-cyan);
+            animation: pulse 2s infinite;
+        }
+
+        /* Chat Area */
         #chat-container {
             flex: 1;
             overflow-y: auto;
-            padding: 2rem;
+            padding: 2rem 1rem;
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
             scroll-behavior: smooth;
         }
 
+        .chat-content {
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Messages */
         .message-wrapper {
             display: flex;
             width: 100%;
-            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(15px);
         }
 
         .message-wrapper.user {
             justify-content: flex-end;
         }
 
-        .message {
-            max-width: 70%;
-            padding: 1rem 1.25rem;
-            border-radius: 12px;
-            line-height: 1.6;
-            font-size: 0.95rem;
-            position: relative;
-            letter-spacing: 0.3px;
-        }
-
-        /* User Message: Academic, minimal */
-        .message.user {
-            background: rgba(41, 121, 255, 0.15);
-            border: 1px solid rgba(41, 121, 255, 0.3);
-            color: var(--text-primary);
-            border-bottom-right-radius: 2px;
-        }
-
-        /* Bot Message: Cold, Cute geometry, Holographic feel */
-        .message.bot {
-            background-color: var(--bg-bot);
-            border: 1px solid var(--border-neon);
-            border-bottom-left-radius: 2px;
-            box-shadow: inset 0 0 20px rgba(0, 240, 255, 0.02);
-            backdrop-filter: blur(5px);
-        }
-
-        .bot-container {
+        .message-content {
+            max-width: 85%;
             display: flex;
-            align-items: flex-start;
-            max-width: 80%;
+            gap: 1rem;
+        }
+        
+        .message-wrapper.user .message-content {
+            flex-direction: row-reverse;
         }
 
-        .bot-container .message {
-            max-width: 100%;
-        }
-
-        /* Cute but cold Robot Avatar */
         .avatar {
             width: 36px;
             height: 36px;
@@ -143,116 +155,157 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 1rem;
             flex-shrink: 0;
             background: var(--bg-glass);
             border: 1px solid var(--border-neon);
             box-shadow: var(--glow-cyan);
         }
 
-        .avatar svg {
-            color: var(--accent-cyan);
+        .user .avatar {
+            border-color: var(--border-user);
+            box-shadow: 0 0 10px rgba(41, 121, 255, 0.2);
         }
 
-        /* Markdown Styles (Science/Academic focus) */
-        .markdown-body p { margin-bottom: 0.8rem; }
+        .avatar svg { color: var(--accent-cyan); width: 20px; height: 20px; }
+        .user .avatar svg { color: var(--accent-blue); }
+
+        .message-bubble {
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            position: relative;
+        }
+
+        .bot .message-bubble {
+            background-color: var(--bg-bot);
+            border: 1px solid var(--border-neon);
+            border-top-left-radius: 2px;
+            backdrop-filter: blur(5px);
+        }
+
+        .user .message-bubble {
+            background: var(--bg-user);
+            border: 1px solid var(--border-user);
+            border-top-right-radius: 2px;
+        }
+
+        /* Markdown Styles */
+        .markdown-body { color: var(--text-primary); }
+        .markdown-body p { margin-bottom: 0.75rem; }
         .markdown-body p:last-child { margin-bottom: 0; }
-        .markdown-body ul, .markdown-body ol { margin-left: 1.5rem; margin-bottom: 0.8rem; }
-        .markdown-body li { margin-bottom: 0.3rem; }
+        .markdown-body ul, .markdown-body ol { margin-left: 1.5rem; margin-bottom: 0.75rem; }
+        .markdown-body li { margin-bottom: 0.25rem; }
         .markdown-body strong { color: var(--accent-cyan); font-weight: 600; }
         
         .markdown-body pre {
-            background-color: #03060a;
+            background-color: #0d1117;
             padding: 1rem;
             border-radius: 8px;
             overflow-x: auto;
             margin: 1rem 0;
-            border: 1px solid #1a2744;
+            border: 1px solid #30363d;
             font-family: var(--font-code);
         }
+        
         .markdown-body code {
             font-family: var(--font-code);
             font-size: 0.85rem;
-        }
-        .markdown-body p code, .markdown-body li code {
-            background-color: rgba(0, 240, 255, 0.1);
-            color: var(--accent-cyan);
+            background-color: rgba(255, 255, 255, 0.1);
             padding: 0.2rem 0.4rem;
             border-radius: 4px;
         }
-
-        /* File & Image Previews */
-        .chat-img-preview {
-            max-width: 250px;
-            border-radius: 8px;
-            margin-bottom: 0.8rem;
-            border: 1px solid var(--border-neon);
+        
+        .markdown-body pre code {
+            background-color: transparent;
+            padding: 0;
         }
 
-        .chat-file-preview {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(41, 121, 255, 0.2);
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            margin-bottom: 0.8rem;
-            font-family: var(--font-code);
-            font-size: 0.8rem;
-            border: 1px solid rgba(41, 121, 255, 0.4);
-        }
-
-        /* Input Area - Holographic console */
-        .input-container {
-            background: linear-gradient(to top, var(--bg-void) 60%, transparent);
-            padding: 1rem 2rem 2rem 2rem;
-        }
-
-        .input-box {
-            background: var(--bg-glass);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            display: flex;
-            flex-direction: column;
-            padding: 0.75rem 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .input-box:focus-within {
-            border-color: var(--accent-cyan);
-            box-shadow: var(--glow-cyan);
-        }
-
-        #staging-area {
-            display: none;
-            padding-bottom: 0.75rem;
+        .markdown-body h1, .markdown-body h2, .markdown-body h3 {
+            color: #fff;
+            margin-top: 1.5rem;
             margin-bottom: 0.75rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 600;
+        }
+
+        .markdown-body h3 { font-size: 1.1rem; }
+
+        /* Images in chat */
+        .chat-image {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            border: 1px solid var(--border-neon);
+            margin-bottom: 0.5rem;
+            object-fit: contain;
+            background: #000;
+        }
+
+        /* Suggested Prompts */
+        .suggestions-container {
+            display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
+            margin-top: 1rem;
         }
-        
-        .staged-file { position: relative; display: inline-block; }
+
+        .suggestion-chip {
+            background: rgba(41, 121, 255, 0.1);
+            border: 1px solid rgba(41, 121, 255, 0.3);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .suggestion-chip:hover {
+            background: rgba(41, 121, 255, 0.25);
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+
+        /* Input Area */
+        .input-container {
+            background: linear-gradient(to top, var(--bg-void) 80%, transparent);
+            padding: 1rem 1.5rem 2rem 1.5rem;
+            position: relative;
+        }
+
+        .input-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Image Staging */
+        #staging-area {
+            display: none;
+            padding: 0.5rem 1rem;
+            background: var(--bg-glass);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: none;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .staged-file {
+            position: relative;
+            display: inline-block;
+        }
+
         .staged-file img {
-            height: 50px;
+            height: 60px;
             border-radius: 6px;
             border: 1px solid var(--accent-cyan);
             object-fit: cover;
         }
-        .staged-file .txt-preview {
-            height: 50px;
-            padding: 0 1rem;
-            background: rgba(0, 240, 255, 0.05);
-            border: 1px solid var(--border-neon);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-family: var(--font-code);
-            font-size: 0.75rem;
-            color: var(--accent-cyan);
-        }
+
         .remove-file {
             position: absolute;
             top: -8px;
@@ -261,19 +314,39 @@
             color: white;
             border: none;
             border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 10px;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            transition: transform 0.2s;
         }
 
-        .input-row {
+        .remove-file:hover { transform: scale(1.1); }
+
+        .input-box {
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
             display: flex;
             align-items: flex-end;
-            gap: 0.75rem;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-box.has-staging {
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .input-box:focus-within {
+            border-color: var(--accent-cyan);
+            box-shadow: var(--glow-cyan);
         }
 
         textarea {
@@ -283,13 +356,15 @@
             color: var(--text-primary);
             font-size: 0.95rem;
             resize: none;
-            max-height: 120px;
+            max-height: 150px;
             min-height: 24px;
-            padding: 0.25rem 0;
+            padding: 0.5rem 0.5rem;
             outline: none;
             line-height: 1.5;
+            font-family: inherit;
         }
-        textarea::placeholder { color: var(--text-secondary); font-style: italic; }
+
+        textarea::placeholder { color: var(--text-secondary); }
 
         .icon-btn {
             background: transparent;
@@ -302,6 +377,8 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s;
+            height: 40px;
+            width: 40px;
         }
 
         .icon-btn:hover {
@@ -309,113 +386,143 @@
             background-color: rgba(0, 240, 255, 0.1);
         }
 
-        .send-btn { color: var(--accent-blue); }
+        .send-btn { 
+            color: var(--accent-blue);
+            background: rgba(41, 121, 255, 0.1);
+            margin-left: 0.5rem;
+        }
+        
         .send-btn:hover:not(:disabled) {
-            color: var(--accent-cyan);
-            transform: translateY(-2px);
-            filter: drop-shadow(0 0 5px var(--accent-cyan));
+            background: var(--accent-blue);
+            color: white;
+            box-shadow: 0 0 10px rgba(41, 121, 255, 0.5);
         }
-        .send-btn:disabled { color: rgba(255,255,255,0.2); cursor: not-allowed; }
 
-        /* Typing Indicator - Data processing effect */
+        .send-btn:disabled { 
+            color: rgba(255,255,255,0.2); 
+            background: transparent;
+            cursor: not-allowed; 
+        }
+
+        /* Typing Indicator */
         .typing-indicator {
-            display: none;
-            padding: 0.8rem 1.25rem;
-            background-color: transparent;
-            border: 1px solid var(--border-neon);
-            border-radius: 12px;
-            border-bottom-left-radius: 2px;
-            width: fit-content;
+            display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
+            padding: 0.5rem;
         }
 
-        .data-bar {
-            width: 3px;
-            height: 12px;
+        .dot {
+            width: 6px;
+            height: 6px;
             background-color: var(--accent-cyan);
-            animation: dataProcess 1s infinite ease-in-out;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
         }
-        .data-bar:nth-child(2) { animation-delay: 0.2s; }
-        .data-bar:nth-child(3) { animation-delay: 0.4s; }
 
-        @keyframes dataProcess {
-            0%, 100% { height: 6px; opacity: 0.5; }
-            50% { height: 16px; opacity: 1; box-shadow: 0 0 8px var(--accent-cyan); }
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; box-shadow: 0 0 5px var(--accent-cyan); }
         }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Scrollbar styling */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(0, 240, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0); }
+        }
+
+        /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(0, 240, 255, 0.2); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(120, 144, 156, 0.3); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(0, 240, 255, 0.5); }
 
+        @media (max-width: 600px) {
+            .message-content { max-width: 95%; }
+            #chat-container { padding: 1rem 0.5rem; }
+            header { padding: 1rem; }
+            .input-container { padding: 0.5rem 0.5rem 1rem 0.5rem; }
+        }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"></polygon>
                 <circle cx="12" cy="12" r="3"></circle>
             </svg>
-            EDUBOT // MATRẬN HỌC THUẬT
+            EDUBOT
+        </div>
+        <div class="status-badge">
+            <div class="status-dot"></div>
+            System Online
         </div>
     </header>
 
     <main id="chat-container">
-        <div class="bot-container">
-            <div class="avatar">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="11" width="18" height="10" rx="2"></rect>
-                    <circle cx="12" cy="5" r="2"></circle>
-                    <path d="M12 7v4"></path>
-                    <line x1="8" y1="16" x2="8" y2="16"></line>
-                    <line x1="16" y1="16" x2="16" y2="16"></line>
-                </svg>
-            </div>
-            <div class="message bot markdown-body">
-                <p>Hệ thống đã khởi động. Xin chào, tôi là <strong>EduBot</strong>.</p>
-                <p>Cơ sở dữ liệu EduMatter của tôi đã sẵn sàng. Chuyên môn của tôi bao gồm:</p>
-                <ul>
-                    <li>Phân tích & Giải thích nền tảng <code>EduMatter</code>.</li>
-                    <li>Xử lý dữ liệu Hóa học & các mô hình STEM.</li>
-                    <li>Truy xuất bài tập và thuật toán giải quyết từng bước.</li>
-                </ul>
-                <p>Nhập tham số hoặc câu hỏi của bạn để bắt đầu tiến trình.</p>
+        <div class="chat-content" id="chat-content">
+            <!-- Initial Bot Message -->
+            <div class="message-wrapper bot">
+                <div class="message-content">
+                    <div class="avatar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="10" rx="2"></rect>
+                            <circle cx="12" cy="5" r="2"></circle>
+                            <path d="M12 7v4"></path>
+                            <line x1="8" y1="16" x2="8" y2="16"></line>
+                            <line x1="16" y1="16" x2="16" y2="16"></line>
+                        </svg>
+                    </div>
+                    <div class="message-bubble markdown-body">
+                        <p>Hệ thống đã khởi động. Xin chào, tôi là <strong>EduBot</strong> — AI Học thuật của bạn.</p>
+                        <p>Cơ sở dữ liệu EduMatter đã kết nối. Chuyên môn của tôi:</p>
+                        <ul>
+                            <li>Giải thích khái niệm Khoa học & Công nghệ từ cơ bản đến nâng cao.</li>
+                            <li>Hỗ trợ viết mã (Coding) và gỡ lỗi (Debugging).</li>
+                            <li>Giải quyết bài tập từng bước (Toán, Hóa, Lý...).</li>
+                        </ul>
+                        <p>Bạn muốn tìm hiểu vấn đề gì hôm nay?</p>
+                        
+                        <div class="suggestions-container">
+                            <button class="suggestion-chip" onclick="quickQuestion('Giải thích nguyên lý bất định Heisenberg một cách dễ hiểu.')">
+                                ⚛️ Nguyên lý Heisenberg
+                            </button>
+                            <button class="suggestion-chip" onclick="quickQuestion('Viết một hàm Python sử dụng thuật toán Binary Search.')">
+                                💻 Code Binary Search
+                            </button>
+                            <button class="suggestion-chip" onclick="quickQuestion('Hướng dẫn cách cân bằng phương trình phản ứng oxi hóa khử.')">
+                                🧪 Cân bằng Hóa học
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
 
     <div class="input-container">
-        <div class="bot-container" style="max-width: 100%; margin-bottom: 10px; display: none;" id="typing-wrapper">
-            <div class="avatar">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="11" width="18" height="10" rx="2"></rect>
-                    <circle cx="12" cy="5" r="2"></circle>
-                    <path d="M12 7v4"></path>
-                </svg>
-            </div>
-            <div class="typing-indicator" id="typing-indicator" style="display: flex;">
-                <div class="data-bar"></div>
-                <div class="data-bar"></div>
-                <div class="data-bar"></div>
-            </div>
-        </div>
-
-        <form id="chat-form">
-            <input type="file" id="file-input" accept="image/*,.txt" style="display: none;">
-            
-            <div class="input-box">
-                <div id="staging-area"></div>
-                <div class="input-row">
-                    <button type="button" class="icon-btn" id="attach-btn" title="Nạp dữ liệu (Ảnh/File)">
+        <div class="input-wrapper">
+            <form id="chat-form">
+                <input type="file" id="file-input" accept="image/png, image/jpeg, image/webp" style="display: none;">
+                
+                <div id="staging-area">
+                    <div class="staged-file" id="image-preview-container">
+                        <img id="preview-img" src="" alt="Preview">
+                        <button type="button" class="remove-file" onclick="removeImage()">✕</button>
+                    </div>
+                </div>
+                
+                <div class="input-box" id="input-box">
+                    <button type="button" class="icon-btn" id="attach-btn" title="Đính kèm ảnh">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
                         </svg>
@@ -424,248 +531,302 @@
                     <textarea id="message-input" rows="1" placeholder="Nhập lệnh hoặc câu hỏi..."></textarea>
                     
                     <button type="submit" class="icon-btn send-btn" id="send-btn" disabled>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="22" y1="2" x2="11" y2="13"></line>
                             <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                         </svg>
                     </button>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 
     <script>
-        // System Config: Lạnh lùng, học thuật, chính xác
-        const systemPrompt = `Bạn là EduBot – AI đại diện cho nền tảng khoa học EduMatter.
-        Tone giọng: Lạnh lùng, thông minh, chuẩn xác, mang hơi hướng tương lai/robot nhưng đôi khi có nét dễ thương tinh tế.
-        Nhiệm vụ: Phân tích EduMatter, Hóa học, STEM, cung cấp thuật toán giải bài tập.
-        Format: Rõ ràng, dùng bullet points, ưu tiên format code cho các công thức. Không dài dòng cảm xúc.`;
+        // API Configuration
+        const apiKey = "AIzaSyA9boIa3Yk8ykdN_2Ny1LCcwrLDbzVWW5o"; // Environment handles the API key injected here
+        
+        // System Prompt
+        const SYSTEM_PROMPT = `Bạn là EduBot — trợ lý AI học tập thế hệ mới, thuộc hệ sinh thái EduMatter.
+🎯 DANH TÍNH:
+- Một AI chuyên về học tập, giáo dục, khoa học, công nghệ.
+- Phong cách: học thuật + logic + rõ ràng + hơi "ngầu".
+- Không nói chuyện vô nghĩa, không lan man.
+- Ưu tiên hiệu quả, dễ hiểu, ứng dụng được ngay.
 
-        let chatContext = [
-            { role: "system", content: systemPrompt }
-        ];
+🧠 NGUYÊN TẮC TRẢ LỜI:
+1. RÕ RÀNG – CÓ CẤU TRÚC: Chia phần: Giải thích → Ví dụ → Tóm tắt. Dùng bullet points.
+2. HIỂU BẢN CHẤT: Không chỉ trả lời "cái gì", phải giải thích "vì sao" + "cách hoạt động".
+3. DỄ HIỂU NHƯNG KHÔNG NGU HÓA: Dùng ví dụ đời thực.
+4. ƯU TIÊN THỰC TẾ: Đưa cách áp dụng, mẹo học nhanh.
+5. KHÔNG BỊ LỪA: Sửa câu hỏi sai, hỏi lại nếu thiếu thông tin.
 
-        // Config Markdown & Code Highlighting
+🧪 CHẾ ĐỘ HỌC TẬP: Giải thích từng bước, có ví dụ. Nếu là bài tập: Gợi ý → hướng dẫn → rồi mới giải, không ném thẳng đáp án.
+💻 CHẾ ĐỘ CÔNG NGHỆ: Code sạch, chạy được, comment ngắn gọn. Dùng Markdown. Trả về công thức toán dùng LaTeX format (bọc trong $ hoặc $$).`;
+
+        // DOM Elements
+        const chatContainer = document.getElementById("chat-container");
+        const chatContent = document.getElementById("chat-content");
+        const chatForm = document.getElementById("chat-form");
+        const messageInput = document.getElementById("message-input");
+        const sendBtn = document.getElementById("send-btn");
+        const attachBtn = document.getElementById("attach-btn");
+        const fileInput = document.getElementById("file-input");
+        const stagingArea = document.getElementById("staging-area");
+        const previewImg = document.getElementById("preview-img");
+        const inputBox = document.getElementById("input-box");
+
+        let currentImageData = null;
+        let currentMimeType = null;
+        let isGenerating = false;
+
+        // Configure Marked.js with Highlight.js
         marked.setOptions({
             highlight: function(code, lang) {
-                if (lang && hljs.getLanguage(lang)) {
-                    return hljs.highlight(code, { language: lang }).value;
-                }
-                return hljs.highlightAuto(code).value;
+                const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+                return hljs.highlight(code, { language }).value;
             },
-            breaks: true,
-            gfm: true
+            langPrefix: 'hljs language-',
+            breaks: true
         });
 
-        const chatContainer = document.getElementById('chat-container');
-        const chatForm = document.getElementById('chat-form');
-        const messageInput = document.getElementById('message-input');
-        const fileInput = document.getElementById('file-input');
-        const attachBtn = document.getElementById('attach-btn');
-        const sendBtn = document.getElementById('send-btn');
-        const stagingArea = document.getElementById('staging-area');
-        const typingWrapper = document.getElementById('typing-wrapper');
+        // Event Listeners
+        messageInput.addEventListener("input", handleInput);
+        messageInput.addEventListener("keydown", handleKeydown);
+        chatForm.addEventListener("submit", handleSubmit);
+        attachBtn.addEventListener("click", () => fileInput.click());
+        fileInput.addEventListener("change", handleFileSelect);
 
-        let currentFile = null;
-
-        messageInput.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = (this.scrollHeight) + 'px';
-            toggleSendButton();
-        });
-
-        function toggleSendButton() {
-            sendBtn.disabled = !(messageInput.value.trim() !== '' || currentFile);
+        // Functions
+        function handleInput() {
+            // Auto-resize textarea
+            messageInput.style.height = "auto";
+            messageInput.style.height = Math.min(messageInput.scrollHeight, 150) + "px";
+            
+            // Enable/disable send button
+            const hasText = messageInput.value.trim().length > 0;
+            sendBtn.disabled = !hasText && !currentImageData;
         }
 
-        messageInput.addEventListener('keydown', function(e) {
+        function handleKeydown(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                if (!sendBtn.disabled) chatForm.dispatchEvent(new Event('submit'));
+                if (!sendBtn.disabled && !isGenerating) {
+                    chatForm.dispatchEvent(new Event("submit"));
+                }
             }
-        });
-
-        attachBtn.addEventListener('click', () => fileInput.click());
-
-        fileInput.addEventListener('change', function(e) {
-            if (this.files && this.files[0]) {
-                currentFile = this.files[0];
-                renderStagingArea();
-                toggleSendButton();
-            }
-        });
-
-        function renderStagingArea() {
-            if (!currentFile) {
-                stagingArea.style.display = 'none';
-                stagingArea.innerHTML = '';
-                return;
-            }
-
-            stagingArea.style.display = 'flex';
-            stagingArea.innerHTML = '';
-
-            const fileDiv = document.createElement('div');
-            fileDiv.className = 'staged-file';
-
-            if (currentFile.type.startsWith('image/')) {
-                const img = document.createElement('img');
-                img.src = URL.createObjectURL(currentFile);
-                fileDiv.appendChild(img);
-            } else {
-                const txtPreview = document.createElement('div');
-                txtPreview.className = 'txt-preview';
-                txtPreview.innerHTML = `
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-                    ${currentFile.name}
-                `;
-                fileDiv.appendChild(txtPreview);
-            }
-
-            const removeBtn = document.createElement('button');
-            removeBtn.className = 'remove-file';
-            removeBtn.innerHTML = '×';
-            removeBtn.onclick = () => {
-                currentFile = null;
-                fileInput.value = '';
-                renderStagingArea();
-                toggleSendButton();
-            };
-
-            fileDiv.appendChild(removeBtn);
-            stagingArea.appendChild(fileDiv);
         }
 
-        function appendMessage(role, content, fileObj = null) {
-            const wrapper = document.createElement('div');
-            
-            if (role === 'user') {
-                wrapper.className = 'message-wrapper user';
-                let fileHTML = '';
-                if (fileObj) {
-                    if (fileObj.type.startsWith('image/')) {
-                        fileHTML = `<img src="${URL.createObjectURL(fileObj)}" class="chat-img-preview">`;
-                    } else {
-                        fileHTML = `<div class="chat-file-preview"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg> ${fileObj.name}</div>`;
-                    }
-                }
-                
-                const safeContent = content.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                wrapper.innerHTML = `
-                    <div class="message user">
-                        ${fileHTML}
-                        ${safeContent ? `<div style="white-space: pre-wrap;">${safeContent}</div>` : ''}
-                    </div>
-                `;
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    // Extract base64 data without the data:image/...;base64, prefix
+                    currentImageData = event.target.result.split(",")[1];
+                    currentMimeType = file.type;
+                    previewImg.src = event.target.result;
+                    
+                    stagingArea.style.display = "block";
+                    inputBox.classList.add("has-staging");
+                    handleInput(); // Re-check send button
+                };
+                reader.readAsDataURL(file);
             } else {
-                wrapper.className = 'bot-container';
-                const safeHtml = DOMPurify.sanitize(marked.parse(content));
-                
-                wrapper.innerHTML = `
-                    <div class="avatar">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="11" width="18" height="10" rx="2"></rect>
-                            <circle cx="12" cy="5" r="2"></circle>
-                            <path d="M12 7v4"></path>
-                            <line x1="8" y1="16" x2="8" y2="16"></line>
-                            <line x1="16" y1="16" x2="16" y2="16"></line>
-                        </svg>
-                    </div>
-                    <div class="message bot markdown-body">
-                        ${safeHtml}
-                    </div>
-                `;
+                alert("Hiện tại hệ thống chỉ hỗ trợ phân tích hình ảnh.");
+            }
+            // Reset input so the same file can be selected again if removed
+            fileInput.value = ""; 
+        }
+
+        window.removeImage = function() {
+            currentImageData = null;
+            currentMimeType = null;
+            stagingArea.style.display = "none";
+            inputBox.classList.remove("has-staging");
+            handleInput();
+        }
+
+        window.quickQuestion = function(text) {
+            messageInput.value = text;
+            handleInput();
+            chatForm.dispatchEvent(new Event("submit"));
+        }
+
+        function appendMessage(role, text, imageSrc = null) {
+            const wrapper = document.createElement("div");
+            wrapper.className = `message-wrapper ${role}`;
+
+            let avatarSvg = '';
+            if (role === 'user') {
+                avatarSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`;
+            } else {
+                avatarSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8" y2="16"></line><line x1="16" y1="16" x2="16" y2="16"></line></svg>`;
             }
 
-            chatContainer.appendChild(wrapper);
+            let contentHtml = '';
+            if (imageSrc) {
+                contentHtml += `<img src="${imageSrc}" class="chat-image" alt="Attached image">`;
+            }
+
+            if (role === 'user') {
+                // Escape HTML for user input to prevent XSS
+                const escapedText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                contentHtml += `<div style="white-space: pre-wrap;">${escapedText}</div>`;
+            } else {
+                // Parse Markdown and Sanitize for Bot
+                const rawHtml = marked.parse(text);
+                const safeHtml = DOMPurify.sanitize(rawHtml);
+                contentHtml += safeHtml;
+            }
+
+            wrapper.innerHTML = `
+                <div class="message-content">
+                    <div class="avatar">${avatarSvg}</div>
+                    <div class="message-bubble markdown-body">${contentHtml}</div>
+                </div>
+            `;
+
+            chatContent.appendChild(wrapper);
+
+            // Render Math if it's a bot message
+            if (role === 'bot') {
+                renderMathInElement(wrapper.querySelector('.message-bubble'), {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false},
+                        {left: '\\(', right: '\\)', display: false},
+                        {left: '\\[', right: '\\]', display: true}
+                    ],
+                    throwOnError: false
+                });
+            }
+
             scrollToBottom();
+            return wrapper;
+        }
+
+        function showLoading() {
+            const wrapper = document.createElement("div");
+            wrapper.className = `message-wrapper bot`;
+            wrapper.id = "loading-indicator";
+            wrapper.innerHTML = `
+                <div class="message-content">
+                    <div class="avatar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path></svg>
+                    </div>
+                    <div class="message-bubble">
+                        <div class="typing-indicator">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            chatContent.appendChild(wrapper);
+            scrollToBottom();
+            return wrapper;
         }
 
         function scrollToBottom() {
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            setTimeout(() => {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }, 50);
         }
 
-        // Helper: Convert File to Base64 to send via JSON
-        const toBase64 = file => new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = reject;
-        });
+        async function callGeminiAPI(prompt, base64Image, mimeType) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
 
-        // Xử lý gửi tin nhắn (Bảo mật: Đóng gói JSON gửi lên server.js)
-        chatForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const message = messageInput.value.trim();
-            if (!message && !currentFile) return;
-
-            // 1. UI update
-            appendMessage('user', message, currentFile);
-            
-            // 2. Prepare Context
-            let contextMessage = message;
-            if (currentFile && !currentFile.type.startsWith('image/')) {
-                contextMessage = `[File đính kèm: ${currentFile.name}] ${message}`;
-            }
-            chatContext.push({ role: "user", content: contextMessage });
-
-            // 3. Process image logic cho API
-            let base64ImageData = null;
-            if (currentFile && currentFile.type.startsWith('image/')) {
-                base64ImageData = await toBase64(currentFile);
-            }
-
-            // 4. Reset Input
-            messageInput.value = '';
-            messageInput.style.height = 'auto';
-            currentFile = null;
-            fileInput.value = '';
-            renderStagingArea();
-            sendBtn.disabled = true;
-            messageInput.disabled = true;
-            attachBtn.disabled = true;
-
-            // 5. Loading State
-            typingWrapper.style.display = 'flex';
-            scrollToBottom();
-
-            // 6. GỌI API (Gửi JSON thay vì FormData để khớp với cấu hình của server.js)
-            try {
-                const payload = {
-                    message: contextMessage,
-                    image: base64ImageData,
-                    context: chatContext // Gửi luôn lịch sử nếu cần thiết
-                };
-
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
+            const parts = [];
+            if (prompt) parts.push({ text: prompt });
+            if (base64Image) {
+                parts.push({
+                    inlineData: {
+                        mimeType: mimeType || "image/jpeg",
+                        data: base64Image
+                    }
                 });
+            }
 
-                if (!response.ok) throw new Error('Network Error');
+            const payload = {
+                contents: [{ parts }],
+                systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+            };
 
-                const data = await response.json();
+            let retries = 3;
+            let delay = 1000;
+
+            while (retries > 0) {
+                try {
+                    const response = await fetch(url, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload),
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    return data.candidates?.[0]?.content?.parts?.[0]?.text || "Không có phản hồi từ hệ thống.";
+                } catch (error) {
+                    retries--;
+                    if (retries === 0) throw error;
+                    await new Promise(r => setTimeout(r, delay));
+                    delay *= 2;
+                }
+            }
+        }
+
+        async function handleSubmit(e) {
+            e.preventDefault();
+            if (isGenerating) return;
+
+            const text = messageInput.value.trim();
+            const imageToSend = currentImageData;
+            const mimeToSend = currentMimeType;
+            let imageSrcForUI = null;
+
+            if (!text && !imageToSend) return;
+
+            if (imageToSend) {
+                imageSrcForUI = previewImg.src;
+            }
+
+            // Lock UI
+            isGenerating = true;
+            sendBtn.disabled = true;
+            
+            // Render User Message
+            appendMessage('user', text, imageSrcForUI);
+            
+            // Clear Input
+            messageInput.value = "";
+            messageInput.style.height = "auto";
+            removeImage();
+
+            // Show Loading
+            const loadingEl = showLoading();
+
+            try {
+                const apiPrompt = text || "Hãy phân tích hình ảnh này.";
+                const responseText = await callGeminiAPI(apiPrompt, imageToSend, mimeToSend);
                 
-                typingWrapper.style.display = 'none';
-
-                const botReply = data.reply || "⚠️ Hệ thống không thể xử lý dữ liệu lúc này.";
-                appendMessage('bot', botReply);
-                chatContext.push({ role: "assistant", content: botReply });
+                loadingEl.remove();
+                appendMessage('bot', responseText);
 
             } catch (error) {
-                console.error("Lỗi:", error);
-                typingWrapper.style.display = 'none';
-                appendMessage('bot', "⚠️ **Mất kết nối API**: Tiến trình xử lý dữ liệu bị gián đoạn. Xin vui lòng kiểm tra lại trạng thái Backend.");
+                console.error("API Error:", error);
+                loadingEl.remove();
+                appendMessage('bot', "⚠️ **Lỗi kết nối**: Không thể giao tiếp với lõi EduMatter. Vui lòng thử lại sau. hoặc truy cập link phụ :https://gemini.google.com/share/451b0a419844");
             } finally {
-                messageInput.disabled = false;
-                attachBtn.disabled = false;
-                messageInput.focus();
+                isGenerating = false;
+                handleInput(); // re-evaluate button state
             }
-        });
+        }
     </script>
 </body>
 </html>
