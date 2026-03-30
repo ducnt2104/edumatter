@@ -3375,7 +3375,7 @@ chatForm.onsubmit = async (e) => {
   try {
     const aiResponse = await callGemini(
       text || "Hãy giải bài tập trong hình ảnh này.",
-      imgToSend
+      imgToSend,
     );
     indicator.remove();
     appendMessage("ai", aiResponse);
