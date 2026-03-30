@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduBot - Cyber Academic AI</title>
+    
+    <!-- Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    
+    <!-- KaTeX for Math -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-void: #050914;
+            --bg-glass: rgba(13, 22, 45, 0.7);
+            --bg-bot: rgba(0, 240, 255, 0.05);
+            --bg-user: rgba(41, 121, 255, 0.15);
+            --text-primary: #e2f1f8;
+            --text-secondary: #78909c;
+            --accent-cyan: #00f0ff;
+            --accent-blue: #2979ff;
+            --border-neon: rgba(0, 240, 255, 0.3);
+            --border-user: rgba(41, 121, 255, 0.3);
+            --glow-cyan: 0 0 15px rgba(0, 240, 255, 0.2);
+            --font-main: 'Inter', sans-serif;
+            --font-code: 'Fira Code', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(41, 121, 255, 0.08), transparent 30%),
+                radial-gradient(circle at 85% 30%, rgba(0, 240, 255, 0.05), transparent 30%);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Header */
+        header {
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-neon);
+            box-shadow: var(--glow-cyan);
+            z-index: 10;
+        }
+
+        .logo {
+            font-family: var(--font-code);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo svg {
+            color: var(--accent-cyan);
+            filter: drop-shadow(0 0 5px var(--accent-cyan));
+        }
+
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--accent-cyan);
+            border: 1px solid var(--border-neon);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background-color: var(--accent-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 5px var(--accent-cyan);
+            animation: pulse 2s infinite;
+        }
+
+        /* Chat Area */
+        #chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            scroll-behavior: smooth;
+        }
+
+        .chat-content {
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Messages */
+        .message-wrapper {
+            display: flex;
+            width: 100%;
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(15px);
+        }
+
+        .message-wrapper.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 85%;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .message-wrapper.user .message-content {
+            flex-direction: row-reverse;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-neon);
+            box-shadow: var(--glow-cyan);
+        }
+
+        .user .avatar {
+            border-color: var(--border-user);
+            box-shadow: 0 0 10px rgba(41, 121, 255, 0.2);
+        }
+
+        .avatar svg { color: var(--accent-cyan); width: 20px; height: 20px; }
+        .user .avatar svg { color: var(--accent-blue); }
+
+        .message-bubble {
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            position: relative;
+        }
+
+        .bot .message-bubble {
+            background-color: var(--bg-bot);
+            border: 1px solid var(--border-neon);
+            border-top-left-radius: 2px;
+            backdrop-filter: blur(5px);
+        }
+
+        .user .message-bubble {
+            background: var(--bg-user);
+            border: 1px solid var(--border-user);
+            border-top-right-radius: 2px;
+        }
+
+        /* Markdown Styles */
+        .markdown-body { color: var(--text-primary); }
+        .markdown-body p { margin-bottom: 0.75rem; }
+        .markdown-body p:last-child { margin-bottom: 0; }
+        .markdown-body ul, .markdown-body ol { margin-left: 1.5rem; margin-bottom: 0.75rem; }
+        .markdown-body li { margin-bottom: 0.25rem; }
+        .markdown-body strong { color: var(--accent-cyan); font-weight: 600; }
+        
+        .markdown-body pre {
+            background-color: #0d1117;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border: 1px solid #30363d;
+            font-family: var(--font-code);
+        }
+        
+        .markdown-body code {
+            font-family: var(--font-code);
+            font-size: 0.85rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+        
+        .markdown-body pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+
+        .markdown-body h1, .markdown-body h2, .markdown-body h3 {
+            color: #fff;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .markdown-body h3 { font-size: 1.1rem; }
+
+        /* Images in chat */
+        .chat-image {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            border: 1px solid var(--border-neon);
+            margin-bottom: 0.5rem;
+            object-fit: contain;
+            background: #000;
+        }
+
+        /* Suggested Prompts */
+        .suggestions-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .suggestion-chip {
+            background: rgba(41, 121, 255, 0.1);
+            border: 1px solid rgba(41, 121, 255, 0.3);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .suggestion-chip:hover {
+            background: rgba(41, 121, 255, 0.25);
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+
+        /* Input Area */
+        .input-container {
+            background: linear-gradient(to top, var(--bg-void) 80%, transparent);
+            padding: 1rem 1.5rem 2rem 1.5rem;
+            position: relative;
+        }
+
+        .input-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Image Staging */
+        #staging-area {
+            display: none;
+            padding: 0.5rem 1rem;
+            background: var(--bg-glass);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: none;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .staged-file {
+            position: relative;
+            display: inline-block;
+        }
+
+        .staged-file img {
+            height: 60px;
+            border-radius: 6px;
+            border: 1px solid var(--accent-cyan);
+            object-fit: cover;
+        }
+
+        .remove-file {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff1744;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            transition: transform 0.2s;
+        }
+
+        .remove-file:hover { transform: scale(1.1); }
+
+        .input-box {
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            display: flex;
+            align-items: flex-end;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-box.has-staging {
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .input-box:focus-within {
+            border-color: var(--accent-cyan);
+            box-shadow: var(--glow-cyan);
+        }
+
+        textarea {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            resize: none;
+            max-height: 150px;
+            min-height: 24px;
+            padding: 0.5rem 0.5rem;
+            outline: none;
+            line-height: 1.5;
+            font-family: inherit;
+        }
+
+        textarea::placeholder { color: var(--text-secondary); }
+
+        .icon-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            height: 40px;
+            width: 40px;
+        }
+
+        .icon-btn:hover {
+            color: var(--accent-cyan);
+            background-color: rgba(0, 240, 255, 0.1);
+        }
+
+        .send-btn { 
+            color: var(--accent-blue);
+            background: rgba(41, 121, 255, 0.1);
+            margin-left: 0.5rem;
+        }
+        
+        .send-btn:hover:not(:disabled) {
+            background: var(--accent-blue);
+            color: white;
+            box-shadow: 0 0 10px rgba(41, 121, 255, 0.5);
+        }
+
+        .send-btn:disabled { 
+            color: rgba(255,255,255,0.2); 
+            background: transparent;
+            cursor: not-allowed; 
+        }
+
+        /* Typing Indicator */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 0.5rem;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            background-color: var(--accent-cyan);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; box-shadow: 0 0 5px var(--accent-cyan); }
+        }
+
+        @keyframes slideUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(0, 240, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0); }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(120, 144, 156, 0.3); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0, 240, 255, 0.5); }
+
+        @media (max-width: 600px) {
+            .message-content { max-width: 95%; }
+            #chat-container { padding: 1rem 0.5rem; }
+            header { padding: 1rem; }
+            .input-container { padding: 0.5rem 0.5rem 1rem 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"></polygon>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            EDUBOT
+        </div>
+        <div class="status-badge">
+            <div class="status-dot"></div>
+            System Online
+        </div>
+    </header>
+
+    <main id="chat-container">
+        <div class="chat-content" id="chat-content">
+            <!-- Initial Bot Message -->
+            <div class="message-wrapper bot">
+                <div class="message-content">
+                    <div class="avatar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="10" rx="2"></rect>
+                            <circle cx="12" cy="5" r="2"></circle>
+                            <path d="M12 7v4"></path>
+                            <line x1="8" y1="16" x2="8" y2="16"></line>
+                            <line x1="16" y1="16" x2="16" y2="16"></line>
+                        </svg>
+                    </div>
+                    <div class="message-bubble markdown-body">
+                        <p>Hệ thống đã khởi động. Xin chào, tôi là <strong>EduBot</strong> — AI Học thuật của bạn.</p>
+                        <p>Cơ sở dữ liệu EduMatter đã kết nối. Chuyên môn của tôi:</p>
+                        <ul>
+                            <li>Giải thích khái niệm Khoa học & Công nghệ từ cơ bản đến nâng cao.</li>
+                            <li>Hỗ trợ viết mã (Coding) và gỡ lỗi (Debugging).</li>
+                            <li>Giải quyết bài tập từng bước (Toán, Hóa, Lý...).</li>
+                        </ul>
+                        <p>Bạn muốn tìm hiểu vấn đề gì hôm nay?</p>
+                        
+                        <div class="suggestions-container">
+                            <button class="suggestion-chip" onclick="quickQuestion('Giải thích nguyên lý bất định Heisenberg một cách dễ hiểu.')">
+                                ⚛️ Nguyên lý Heisenberg
+                            </button>
+                            <button class="suggestion-chip" onclick="quickQuestion('Viết một hàm Python sử dụng thuật toán Binary Search.')">
+                                💻 Code Binary Search
+                            </button>
+                            <button class="suggestion-chip" onclick="quickQuestion('Hướng dẫn cách cân bằng phương trình phản ứng oxi hóa khử.')">
+                                🧪 Cân bằng Hóa học
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="input-container">
+        <div class="input-wrapper">
+            <form id="chat-form">
+                <input type="file" id="file-input" accept="image/png, image/jpeg, image/webp" style="display: none;">
+                
+                <div id="staging-area">
+                    <div class="staged-file" id="image-preview-container">
+                        <img id="preview-img" src="" alt="Preview">
+                        <button type="button" class="remove-file" onclick="removeImage()">✕</button>
+                    </div>
+                </div>
+                
+                <div class="input-box" id="input-box">
+                    <button type="button" class="icon-btn" id="attach-btn" title="Đính kèm ảnh">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+                        </svg>
+                    </button>
+                    
+                    <textarea id="message-input" rows="1" placeholder="Nhập lệnh hoặc câu hỏi..."></textarea>
+                    
+                    <button type="submit" class="icon-btn send-btn" id="send-btn" disabled>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // API Configuration
+        const apiKey = "AIzaSyA9boIa3Yk8ykdN_2Ny1LCcwrLDbzVWW5o"; // Environment handles the API key injected here
+        
+        // System Prompt
+        const SYSTEM_PROMPT = `Bạn là EduBot — trợ lý AI học tập thế hệ mới, thuộc hệ sinh thái EduMatter.
+🎯 DANH TÍNH:
+- Một AI chuyên về học tập, giáo dục, khoa học, công nghệ.
+- Phong cách: học thuật + logic + rõ ràng + hơi "ngầu".
+- Không nói chuyện vô nghĩa, không lan man.
+- Ưu tiên hiệu quả, dễ hiểu, ứng dụng được ngay.
+
+🧠 NGUYÊN TẮC TRẢ LỜI:
+1. RÕ RÀNG – CÓ CẤU TRÚC: Chia phần: Giải thích → Ví dụ → Tóm tắt. Dùng bullet points.
+2. HIỂU BẢN CHẤT: Không chỉ trả lời "cái gì", phải giải thích "vì sao" + "cách hoạt động".
+3. DỄ HIỂU NHƯNG KHÔNG NGU HÓA: Dùng ví dụ đời thực.
+4. ƯU TIÊN THỰC TẾ: Đưa cách áp dụng, mẹo học nhanh.
+5. KHÔNG BỊ LỪA: Sửa câu hỏi sai, hỏi lại nếu thiếu thông tin.
+
+🧪 CHẾ ĐỘ HỌC TẬP: Giải thích từng bước, có ví dụ. Nếu là bài tập: Gợi ý → hướng dẫn → rồi mới giải, không ném thẳng đáp án.
+💻 CHẾ ĐỘ CÔNG NGHỆ: Code sạch, chạy được, comment ngắn gọn. Dùng Markdown. Trả về công thức toán dùng LaTeX format (bọc trong $ hoặc $$).`;
+
+        // DOM Elements
+        const chatContainer = document.getElementById("chat-container");
+        const chatContent = document.getElementById("chat-content");
+        const chatForm = document.getElementById("chat-form");
+        const messageInput = document.getElementById("message-input");
+        const sendBtn = document.getElementById("send-btn");
+        const attachBtn = document.getElementById("attach-btn");
+        const fileInput = document.getElementById("file-input");
+        const stagingArea = document.getElementById("staging-area");
+        const previewImg = document.getElementById("preview-img");
+        const inputBox = document.getElementById("input-box");
+
+        let currentImageData = null;
+        let currentMimeType = null;
+        let isGenerating = false;
+
+        // Configure Marked.js with Highlight.js
+        marked.setOptions({
+            highlight: function(code, lang) {
+                const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+                return hljs.highlight(code, { language }).value;
+            },
+            langPrefix: 'hljs language-',
+            breaks: true
+        });
+
+        // Event Listeners
+        messageInput.addEventListener("input", handleInput);
+        messageInput.addEventListener("keydown", handleKeydown);
+        chatForm.addEventListener("submit", handleSubmit);
+        attachBtn.addEventListener("click", () => fileInput.click());
+        fileInput.addEventListener("change", handleFileSelect);
+
+        // Functions
+        function handleInput() {
+            // Auto-resize textarea
+            messageInput.style.height = "auto";
+            messageInput.style.height = Math.min(messageInput.scrollHeight, 150) + "px";
+            
+            // Enable/disable send button
+            const hasText = messageInput.value.trim().length > 0;
+            sendBtn.disabled = !hasText && !currentImageData;
+        }
+
+        function handleKeydown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (!sendBtn.disabled && !isGenerating) {
+                    chatForm.dispatchEvent(new Event("submit"));
+                }
+            }
+        }
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    // Extract base64 data without the data:image/...;base64, prefix
+                    currentImageData = event.target.result.split(",")[1];
+                    currentMimeType = file.type;
+                    previewImg.src = event.target.result;
+                    
+                    stagingArea.style.display = "block";
+                    inputBox.classList.add("has-staging");
+                    handleInput(); // Re-check send button
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert("Hiện tại hệ thống chỉ hỗ trợ phân tích hình ảnh.");
+            }
+            // Reset input so the same file can be selected again if removed
+            fileInput.value = ""; 
+        }
+
+        window.removeImage = function() {
+            currentImageData = null;
+            currentMimeType = null;
+            stagingArea.style.display = "none";
+            inputBox.classList.remove("has-staging");
+            handleInput();
+        }
+
+        window.quickQuestion = function(text) {
+            messageInput.value = text;
+            handleInput();
+            chatForm.dispatchEvent(new Event("submit"));
+        }
+
+        function appendMessage(role, text, imageSrc = null) {
+            const wrapper = document.createElement("div");
+            wrapper.className = `message-wrapper ${role}`;
+
+            let avatarSvg = '';
+            if (role === 'user') {
+                avatarSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`;
+            } else {
+                avatarSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8" y2="16"></line><line x1="16" y1="16" x2="16" y2="16"></line></svg>`;
+            }
+
+            let contentHtml = '';
+            if (imageSrc) {
+                contentHtml += `<img src="${imageSrc}" class="chat-image" alt="Attached image">`;
+            }
+
+            if (role === 'user') {
+                // Escape HTML for user input to prevent XSS
+                const escapedText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                contentHtml += `<div style="white-space: pre-wrap;">${escapedText}</div>`;
+            } else {
+                // Parse Markdown and Sanitize for Bot
+                const rawHtml = marked.parse(text);
+                const safeHtml = DOMPurify.sanitize(rawHtml);
+                contentHtml += safeHtml;
+            }
+
+            wrapper.innerHTML = `
+                <div class="message-content">
+                    <div class="avatar">${avatarSvg}</div>
+                    <div class="message-bubble markdown-body">${contentHtml}</div>
+                </div>
+            `;
+
+            chatContent.appendChild(wrapper);
+
+            // Render Math if it's a bot message
+            if (role === 'bot') {
+                renderMathInElement(wrapper.querySelector('.message-bubble'), {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false},
+                        {left: '\\(', right: '\\)', display: false},
+                        {left: '\\[', right: '\\]', display: true}
+                    ],
+                    throwOnError: false
+                });
+            }
+
+            scrollToBottom();
+            return wrapper;
+        }
+
+        function showLoading() {
+            const wrapper = document.createElement("div");
+            wrapper.className = `message-wrapper bot`;
+            wrapper.id = "loading-indicator";
+            wrapper.innerHTML = `
+                <div class="message-content">
+                    <div class="avatar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path></svg>
+                    </div>
+                    <div class="message-bubble">
+                        <div class="typing-indicator">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            chatContent.appendChild(wrapper);
+            scrollToBottom();
+            return wrapper;
+        }
+
+        function scrollToBottom() {
+            setTimeout(() => {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }, 50);
+        }
+
+        async function callGeminiAPI(prompt, base64Image, mimeType) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+            const parts = [];
+            if (prompt) parts.push({ text: prompt });
+            if (base64Image) {
+                parts.push({
+                    inlineData: {
+                        mimeType: mimeType || "image/jpeg",
+                        data: base64Image
+                    }
+                });
+            }
+
+            const payload = {
+                contents: [{ parts }],
+                systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+            };
+
+            let retries = 3;
+            let delay = 1000;
+
+            while (retries > 0) {
+                try {
+                    const response = await fetch(url, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload),
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    return data.candidates?.[0]?.content?.parts?.[0]?.text || "Không có phản hồi từ hệ thống.";
+                } catch (error) {
+                    retries--;
+                    if (retries === 0) throw error;
+                    await new Promise(r => setTimeout(r, delay));
+                    delay *= 2;
+                }
+            }
+        }
+
+        async function handleSubmit(e) {
+            e.preventDefault();
+            if (isGenerating) return;
+
+            const text = messageInput.value.trim();
+            const imageToSend = currentImageData;
+            const mimeToSend = currentMimeType;
+            let imageSrcForUI = null;
+
+            if (!text && !imageToSend) return;
+
+            if (imageToSend) {
+                imageSrcForUI = previewImg.src;
+            }
+
+            // Lock UI
+            isGenerating = true;
+            sendBtn.disabled = true;
+            
+            // Render User Message
+            appendMessage('user', text, imageSrcForUI);
+            
+            // Clear Input
+            messageInput.value = "";
+            messageInput.style.height = "auto";
+            removeImage();
+
+            // Show Loading
+            const loadingEl = showLoading();
+
+            try {
+                const apiPrompt = text || "Hãy phân tích hình ảnh này.";
+                const responseText = await callGeminiAPI(apiPrompt, imageToSend, mimeToSend);
+                
+                loadingEl.remove();
+                appendMessage('bot', responseText);
+
+            } catch (error) {
+                console.error("API Error:", error);
+                loadingEl.remove();
+                appendMessage('bot', "⚠️ **Lỗi kết nối**: Không thể giao tiếp với lõi EduMatter. Vui lòng thử lại sau. hoặc truy cập link phụ :https://gemini.google.com/share/451b0a419844");
+            } finally {
+                isGenerating = false;
+                handleInput(); // re-evaluate button state
+            }
+        }
+    </script>
+</body>
+</html>
