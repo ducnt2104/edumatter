@@ -1,0 +1,2505 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Defence Chemistry</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@400;700&display=swap");
+
+      :root {
+        --bg-color: #0b0c10;
+        --panel-bg: #1f2833;
+        --text-main: #66fcf1;
+        --text-sec: #c5c6c7;
+        --accent: #45a29e;
+        --danger: #ff4757;
+        --warning: #ffa502;
+        --success: #2ed573;
+      }
+
+      * {
+        box-sizing: border-box;
+        user-select: none;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: var(--bg-color);
+        color: var(--text-sec);
+        font-family: "Roboto", sans-serif;
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      /* --- UI LAYOUT --- */
+      #game-container {
+        flex: 1;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: radial-gradient(circle at center, #1a1f25 0%, #000 100%);
+      }
+
+      canvas {
+        background-color: #111;
+        box-shadow: 0 0 30px rgba(102, 252, 241, 0.2);
+        cursor: crosshair;
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+
+      #ui-panel {
+        width: 320px;
+        background-color: var(--panel-bg);
+        border-left: 2px solid var(--text-main);
+        display: flex;
+        flex-direction: column;
+        z-index: 10;
+        box-shadow: -5px 0 20px rgba(0, 0, 0, 0.8);
+      }
+
+      /* --- HEADER & STATS --- */
+      .header {
+        padding: 20px;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.3);
+        border-bottom: 2px solid var(--accent);
+      }
+      .header h1 {
+        margin: 0;
+        font-family: "Orbitron", sans-serif;
+        color: var(--text-main);
+        text-shadow: 0 0 10px rgba(102, 252, 241, 0.5);
+        font-size: 24px;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        padding: 15px;
+        background: rgba(0, 0, 0, 0.2);
+      }
+      .stat-box {
+        background: rgba(0, 0, 0, 0.4);
+        padding: 10px;
+        border-radius: 5px;
+        text-align: center;
+        font-family: "Orbitron", sans-serif;
+        font-weight: bold;
+      }
+      .stat-box.health {
+        color: var(--danger);
+      }
+      .stat-box.money {
+        color: var(--warning);
+      }
+      .stat-box.wave {
+        color: var(--text-main);
+        grid-column: span 2;
+        font-size: 1.2em;
+      }
+
+      /* --- SHOP --- */
+      .shop-title {
+        padding: 10px 15px;
+        margin: 0;
+        font-family: "Orbitron", sans-serif;
+        color: var(--text-main);
+        border-bottom: 1px solid #333;
+      }
+      #shop {
+        flex: 1;
+        overflow-y: auto;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .tower-card {
+        display: flex;
+        align-items: center;
+        background: #2a3644;
+        border: 1px solid #3a4a5a;
+        border-radius: 8px;
+        padding: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .tower-card:hover {
+        background: #354455;
+        border-color: var(--text-main);
+      }
+      .tower-card.selected {
+        background: #203a38;
+        border-color: var(--text-main);
+        box-shadow: 0 0 15px rgba(102, 252, 241, 0.4);
+      }
+      .tower-card.disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        filter: grayscale(1);
+      }
+
+      .t-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "Orbitron", sans-serif;
+        font-weight: bold;
+        font-size: 16px;
+        margin-right: 15px;
+        border: 2px solid white;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+        text-shadow: 1px 1px 2px black;
+      }
+      .t-info {
+        flex: 1;
+      }
+      .t-name {
+        font-weight: bold;
+        font-size: 16px;
+        color: white;
+        margin-bottom: 3px;
+      }
+      .t-cost {
+        color: var(--warning);
+        font-family: "Orbitron", sans-serif;
+        font-size: 14px;
+      }
+
+      /* --- ACTION PANEL (UPGRADE/SELL) --- */
+      #action-panel {
+        padding: 15px;
+        background: #11161d;
+        border-top: 2px solid var(--accent);
+        display: none;
+      }
+      #action-panel h3 {
+        margin: 0 0 10px 0;
+        color: white;
+        font-family: "Orbitron", sans-serif;
+      }
+      .action-stats {
+        font-size: 14px;
+        margin-bottom: 10px;
+        line-height: 1.5;
+        color: #aaa;
+      }
+      .action-stats span {
+        color: white;
+        font-weight: bold;
+      }
+      .btn {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 8px;
+        border: none;
+        border-radius: 5px;
+        font-family: "Orbitron", sans-serif;
+        font-weight: bold;
+        cursor: pointer;
+        text-transform: uppercase;
+        transition: 0.2s;
+      }
+      .btn-upgrade {
+        background: var(--success);
+        color: #000;
+      }
+      .btn-upgrade:hover {
+        background: #26b360;
+        box-shadow: 0 0 10px var(--success);
+      }
+      .btn-sell {
+        background: var(--danger);
+        color: white;
+      }
+      .btn-sell:hover {
+        background: #ff3344;
+        box-shadow: 0 0 10px var(--danger);
+      }
+      .btn:disabled {
+        background: #555 !important;
+        color: #888 !important;
+        cursor: not-allowed;
+        box-shadow: none !important;
+      }
+
+      /* --- TOOLTIP --- */
+      #tooltip {
+        position: absolute;
+        background: rgba(15, 20, 25, 0.95);
+        border: 1px solid var(--text-main);
+        color: white;
+        padding: 15px;
+        border-radius: 8px;
+        pointer-events: none;
+        display: none;
+        z-index: 100;
+        min-width: 250px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
+        transform: translate(15px, 15px);
+      }
+      .tt-title {
+        font-family: "Orbitron", sans-serif;
+        font-size: 18px;
+        border-bottom: 1px solid #444;
+        padding-bottom: 5px;
+        margin-bottom: 10px;
+      }
+      .tt-desc {
+        font-size: 13px;
+        color: #aaa;
+        margin-bottom: 10px;
+        font-style: italic;
+      }
+      .tt-react-title {
+        font-weight: bold;
+        color: var(--warning);
+        margin-bottom: 5px;
+        font-size: 14px;
+      }
+      .tt-react-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        font-size: 13px;
+      }
+      .tt-react-list li {
+        padding: 3px 0;
+        border-bottom: 1px dashed #333;
+      }
+      .react-strong {
+        color: var(--success);
+      }
+      .react-weak {
+        color: var(--danger);
+      }
+
+      /* --- SCREENS (MENU / GAMEOVER) --- */
+      .screen-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(11, 12, 16, 0.9);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        backdrop-filter: blur(5px);
+      }
+      .screen-content {
+        background: #1f2833;
+        padding: 40px;
+        border-radius: 15px;
+        border: 2px solid var(--text-main);
+        text-align: center;
+        max-width: 600px;
+        box-shadow: 0 0 50px rgba(102, 252, 241, 0.2);
+      }
+      .screen-title {
+        font-family: "Orbitron", sans-serif;
+        font-size: 40px;
+        color: var(--text-main);
+        margin: 0 0 20px 0;
+        text-shadow: 0 0 15px var(--text-main);
+      }
+
+      /* Tutorial Specifics */
+      .tutorial-box {
+        text-align: left;
+        margin: 20px 0;
+        color: #ddd;
+        font-size: 16px;
+        line-height: 1.6;
+      }
+      .tut-hl {
+        color: var(--warning);
+        font-weight: bold;
+      }
+      .tut-reaction {
+        background: #111;
+        padding: 10px;
+        border-left: 3px solid var(--success);
+        margin: 10px 0;
+        font-family: monospace;
+      }
+
+      .start-btn {
+        background: transparent;
+        color: var(--text-main);
+        border: 2px solid var(--text-main);
+        padding: 15px 40px;
+        font-size: 24px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: "Orbitron", sans-serif;
+        transition: 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+      .start-btn:hover {
+        background: var(--text-main);
+        color: #000;
+        box-shadow: 0 0 20px var(--text-main);
+      }
+
+      #game-over-screen {
+        display: none;
+      }
+      .go-stats {
+        font-size: 20px;
+        color: white;
+        margin-bottom: 30px;
+      }
+      .go-title {
+        color: var(--danger);
+        border-color: var(--danger);
+        text-shadow: 0 0 20px red;
+      }
+
+      /* Combo Text Animation */
+      @keyframes floatUp {
+        0% {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-30px) scale(1.2);
+        }
+      }
+      .floating-text-html {
+        position: absolute;
+        pointer-events: none;
+        font-weight: bold;
+        font-family: "Orbitron", sans-serif;
+        animation: floatUp 1s ease-out forwards;
+        text-shadow: 2px 2px 4px black;
+        z-index: 50;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- UI Overlay for floating texts outside canvas bounds if needed -->
+    <div id="game-container">
+      <canvas id="gameCanvas" width="960" height="640"></canvas>
+      <div id="tooltip"></div>
+
+      <!-- MENU / TUTORIAL SCREEN -->
+      <div id="start-screen" class="screen-overlay">
+        <div class="screen-content">
+          <h1 class="screen-title">DEFENCE CHEMISTRY</h1>
+          <div class="tutorial-box">
+            <p>
+              Chào mừng đến phòng thí nghiệm! Căn cứ đang bị tấn công bởi các
+              hợp chất nguy hiểm.
+            </p>
+            <hr style="border-color: #333" />
+            <h3>📖 HƯỚNG DẪN NHANH (10s):</h3>
+            <ol>
+              <li>
+                <span class="tut-hl">CHỌN NGUYÊN TỐ</span> ở bảng bên phải.
+              </li>
+              <li>
+                <span class="tut-hl">ĐẶT TRỤ (CLICK)</span> lên các ô màu tối
+                cạnh đường đi.
+              </li>
+              <li>
+                <span class="tut-hl">TẠO PHẢN ỨNG HÓA HỌC</span>: Sát thương phụ
+                thuộc vào logic hóa học. Đánh bừa sẽ rất yếu!
+              </li>
+            </ol>
+            <div class="tut-reaction">
+              💡 Ví dụ:<br />
+              - <span style="color: #f1c40f">Na</span> (Natri) ném vào
+              <span style="color: #3498db">H2O</span> ➔ NỔ DIỆN RỘNG<br />
+              - <span style="color: #2ecc71">HCl</span> (Axit) gặp
+              <span style="color: #9b59b6">Base</span> ➔ TRUNG HÒA (Làm chậm)<br />
+              - <span class="tut-hl">COMBO:</span> Trụ cùng loại đánh liên tục =
+              Tăng sát thương!
+            </div>
+          </div>
+          <button class="start-btn" onclick="startGame()">CHƠI NGAY</button>
+        </div>
+      </div>
+
+      <!-- GAME OVER SCREEN -->
+      <div id="game-over-screen" class="screen-overlay">
+        <div class="screen-content" style="border-color: var(--danger)">
+          <h1 class="screen-title go-title">THÍ NGHIỆM THẤT BẠI</h1>
+          <div class="go-stats">
+            <p>
+              Sống sót đến Wave:
+              <span
+                id="final-wave"
+                style="color: var(--text-main); font-weight: bold"
+                >0</span
+              >
+            </p>
+            <p>Căn cứ đã bị phá hủy hoàn toàn.</p>
+          </div>
+          <button
+            class="start-btn"
+            style="color: var(--warning); border-color: var(--warning)"
+            onclick="location.reload()"
+          >
+            THỬ LẠI
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDE UI PANEL -->
+    <div id="ui-panel">
+      <div class="header">
+        <h1>LAB CONTROL</h1>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-box health">❤️ HP: <span id="ui-hp">20</span></div>
+        <div class="stat-box money">💰 $<span id="ui-money">250</span></div>
+        <div class="stat-box wave">WAVE: <span id="ui-wave">1</span></div>
+      </div>
+
+      <h3 class="shop-title">NGUYÊN TỐ</h3>
+      <div id="shop">
+        <!-- Populated by JS -->
+      </div>
+
+      <div id="action-panel">
+        <h3 id="ap-name">Trụ Na</h3>
+        <div class="action-stats">
+          Cấp độ: <span id="ap-level">1</span><br />
+          Sát thương gốc: <span id="ap-dmg">20</span><br />
+          Tầm bắn: <span id="ap-range">100</span>
+        </div>
+        <button
+          class="btn btn-upgrade"
+          id="btn-upgrade"
+          onclick="upgradeTower()"
+        >
+          NÂNG CẤP ($<span id="ap-upcost">50</span>)
+        </button>
+        <button class="btn btn-sell" onclick="sellTower()">
+          BÁN ($<span id="ap-sellval">15</span>)
+        </button>
+      </div>
+    </div>
+
+    <script>
+      /** =========================================================================
+       * CORE CONFIGURATION & STATE
+       * ========================================================================= */
+      const canvas = document.getElementById("gameCanvas");
+      const ctx = canvas.getContext("2d");
+      const container = document.getElementById("game-container");
+
+      // Grid Config
+      const TILE_SIZE = 40; // 960x640 => 24 cols x 16 rows
+      const COLS = Math.floor(canvas.width / TILE_SIZE);
+      const ROWS = Math.floor(canvas.height / TILE_SIZE);
+
+      let GAME = {
+        state: "MENU", // MENU, PLAYING, GAMEOVER
+        money: 250,
+        hp: 20,
+        wave: 1,
+        frame: 0,
+        selectedShopItem: null,
+        selectedTowerOnGrid: null,
+        errorMsgTimer: 0,
+      };
+
+      // Map Data: 0=Empty, 1=Path, 2=Tower
+      let grid = Array(ROWS)
+        .fill()
+        .map(() => Array(COLS).fill(0));
+
+      // Path defined by grid coordinates
+      const PATH_GRIDS = [
+        { x: 0, y: 2 },
+        { x: 5, y: 2 },
+        { x: 5, y: 7 },
+        { x: 12, y: 7 },
+        { x: 12, y: 3 },
+        { x: 18, y: 3 },
+        { x: 18, y: 12 },
+        { x: 10, y: 12 },
+        { x: 10, y: 14 },
+        { x: 23, y: 14 },
+      ];
+
+      // Calculate precise pixel waypoints
+      const WAYPOINTS = [];
+      for (let i = 0; i < PATH_GRIDS.length - 1; i++) {
+        let curr = PATH_GRIDS[i];
+        let next = PATH_GRIDS[i + 1];
+
+        // Fill grid path
+        let minX = Math.min(curr.x, next.x),
+          maxX = Math.max(curr.x, next.x);
+        let minY = Math.min(curr.y, next.y),
+          maxY = Math.max(curr.y, next.y);
+        for (let r = minY; r <= maxY; r++) {
+          for (let c = minX; c <= maxX; c++) {
+            grid[r][c] = 1;
+          }
+        }
+
+        if (i === 0)
+          WAYPOINTS.push({
+            x: curr.x * TILE_SIZE + TILE_SIZE / 2,
+            y: curr.y * TILE_SIZE + TILE_SIZE / 2,
+          });
+        WAYPOINTS.push({
+          x: next.x * TILE_SIZE + TILE_SIZE / 2,
+          y: next.y * TILE_SIZE + TILE_SIZE / 2,
+        });
+      }
+
+      // Entity Arrays
+      let towers = [];
+      let enemies = [];
+      let projectiles = [];
+      let particles = [];
+      let floatingTexts = [];
+
+      /** =========================================================================
+       * CHEMISTRY DICTIONARY (THE CORE MECHANIC)
+       * ========================================================================= */
+      const TOWERS_DB = {
+        Na: {
+          color: "#f1c40f",
+          bg: "#4a3b00",
+          cost: 50,
+          range: 100,
+          cooldown: 60,
+          damage: 20,
+          desc: "Kim loại mạnh. Phản ứng cực kỳ mãnh liệt với Nước và Axit tạo vụ nổ.",
+        },
+        HCl: {
+          color: "#2ecc71",
+          bg: "#0b3d1b",
+          cost: 40,
+          range: 120,
+          cooldown: 30,
+          damage: 10,
+          desc: "Axit mạnh. Dùng để phá giáp Kim loại và Trung hòa Base.",
+        },
+        NaOH: {
+          color: "#9b59b6",
+          bg: "#2b0f38",
+          cost: 40,
+          range: 120,
+          cooldown: 40,
+          damage: 15,
+          desc: "Base (Kiềm). Sát thương ổn, dùng để Trung hòa Axit gây làm chậm.",
+        },
+        O2: {
+          color: "#e74c3c",
+          bg: "#4a0b0b",
+          cost: 60,
+          range: 150,
+          cooldown: 50,
+          damage: 15,
+          desc: "Chất oxy hóa. Gây cháy liên tục (Sát thương theo thời gian) lên đa số kẻ địch.",
+        },
+        Fe: {
+          color: "#95a5a6",
+          bg: "#2a2f30",
+          cost: 90,
+          range: 180,
+          cooldown: 100,
+          damage: 50,
+          desc: "Khối sắt nặng. Tốc độ bắn chậm nhưng sát thương vật lý gốc rất cao.",
+        },
+        H2O: {
+          color: "#3498db",
+          bg: "#0b2742",
+          cost: 30,
+          range: 110,
+          cooldown: 25,
+          damage: 8,
+          desc: "Nước. Bắn nhanh, sát thương thấp. Tốt để làm chất xúc tác cho Na.",
+        },
+        H2SO4: {
+          color: "#c0392b",
+          bg: "#3a0d0d",
+          cost: 70,
+          range: 130,
+          cooldown: 45,
+          damage: 25,
+          desc: "Axit sulfuric đậm đặc. Ăn mòn cực mạnh, gây sát thương theo thời gian và phá giáp mạnh.",
+        },
+
+        NH3: {
+          color: "#1abc9c",
+          bg: "#0b3a36",
+          cost: 35,
+          range: 110,
+          cooldown: 30,
+          damage: 12,
+          desc: "Amoniac. Base yếu, có thể trung hòa axit và gây hiệu ứng làm rối loạn kẻ địch.",
+        },
+
+        CO2: {
+          color: "#7f8c8d",
+          bg: "#1f2a2b",
+          cost: 30,
+          range: 140,
+          cooldown: 35,
+          damage: 8,
+          desc: "Khí CO2. Không gây sát thương mạnh nhưng làm giảm hiệu quả cháy và làm chậm.",
+        },
+
+        Cl2: {
+          color: "#27ae60",
+          bg: "#0b2f1b",
+          cost: 65,
+          range: 130,
+          cooldown: 50,
+          damage: 18,
+          desc: "Khí clo độc. Gây độc liên tục và phản ứng mạnh với kim loại và hydro.",
+        },
+
+        H2: {
+          color: "#ecf0f1",
+          bg: "#2c3e50",
+          cost: 50,
+          range: 100,
+          cooldown: 20,
+          damage: 5,
+          desc: "Khí hydro. Bản thân yếu nhưng kết hợp với O2 gây nổ cực mạnh.",
+        },
+
+        Cu: {
+          color: "#e67e22",
+          bg: "#3a1f0d",
+          cost: 80,
+          range: 160,
+          cooldown: 80,
+          damage: 35,
+          desc: "Đồng. Dẫn điện tốt, tăng hiệu quả khi kết hợp với các chất điện ly.",
+        },
+
+        AgNO3: {
+          color: "#bdc3c7",
+          bg: "#2c2c2c",
+          cost: 75,
+          range: 140,
+          cooldown: 60,
+          damage: 20,
+          desc: "Bạc nitrat. Tạo kết tủa với halogen, gây hiệu ứng làm mù tạm thời.",
+        },
+
+        CaO: {
+          color: "#f39c12",
+          bg: "#3a2a05",
+          cost: 50,
+          range: 120,
+          cooldown: 40,
+          damage: 15,
+          desc: "Vôi sống. Phản ứng mạnh với nước tạo nhiệt, gây sát thương diện rộng.",
+        },
+
+        CH4: {
+          color: "#f1c40f",
+          bg: "#3a3005",
+          cost: 45,
+          range: 130,
+          cooldown: 35,
+          damage: 12,
+          desc: "Metan. Dễ cháy, kết hợp với O2 gây nổ diện rộng.",
+        },
+
+        K: {
+          color: "#d35400",
+          bg: "#3a1405",
+          cost: 55,
+          range: 100,
+          cooldown: 55,
+          damage: 22,
+          desc: "Kali. Kim loại kiềm mạnh hơn Na, phản ứng cực mạnh với nước gây nổ lớn.",
+        },
+        Pt: {
+          color: "#bdc3c7",
+          bg: "#1e1e1e",
+          cost: 100,
+          range: 140,
+          isAura: true,
+          aura: {
+            reactionMult: 2,
+          },
+          desc: "Bạch kim. Tăng gấp đôi hiệu ứng phản ứng.",
+        },
+
+        MnO2: {
+          color: "#636e72",
+          bg: "#2d3436",
+          cost: 60,
+          range: 130,
+          isAura: true,
+          aura: {
+            reactionSpeed: 1.5,
+          },
+          desc: "Xúc tác. Tăng tốc phản ứng.",
+        },
+        Heat: {
+          color: "#e17055",
+          bg: "#2d0c0c",
+          cost: 50,
+          range: 150,
+          isAura: true,
+          aura: {
+            damageMult: 1.3,
+            enableReaction: true,
+          },
+          desc: "Nhiệt. Tăng damage + kích hoạt phản ứng.",
+        },
+        UV: {
+          color: "#6c5ce7",
+          bg: "#1a0f3a",
+          cost: 55,
+          range: 140,
+          isAura: true,
+          aura: {
+            radicalBoost: true,
+          },
+          desc: "UV. Kích hoạt phản ứng gốc tự do.",
+        },
+
+        Electric: {
+          color: "#00cec9",
+          bg: "#003b3b",
+          cost: 70,
+          range: 160,
+          isAura: true,
+          aura: {
+            conductivity: true,
+            stunChance: 0.15,
+          },
+          desc: "Điện. Tăng tương tác dung dịch + có stun.",
+        },
+        NO2: {
+          color: "#d63031",
+          bg: "#2d0b0b",
+          cost: 75,
+          range: 150,
+          cooldown: 35,
+          damage: 22,
+          dot: 8, // damage theo thời gian
+          dotDuration: 120,
+          weaken: 0.2, // giảm 20% kháng
+          desc: "NO2. Khí độc mạnh, gây DoT + làm kẻ địch yếu đi.",
+        },
+
+        SO2: {
+          color: "#636e72",
+          bg: "#1f2a2b",
+          cost: 65,
+          range: 140,
+          cooldown: 35,
+          damage: 16,
+          acidCloud: true,
+          desc: "SO2. Gặp H2O tạo mưa axit gây AoE + DoT.",
+        },
+      };
+
+      const ENEMY_TYPES = {
+        H: { color: "#bdc3c7", hp: 40, speed: 1.5, radius: 10, reward: 2 },
+        O2: { color: "#e74c3c", hp: 60, speed: 1.2, radius: 12, reward: 3 },
+        H2O: { color: "#3498db", hp: 120, speed: 1.0, radius: 14, reward: 5 },
+        Acid: { color: "#2ecc71", hp: 180, speed: 1.1, radius: 15, reward: 6 },
+        Base: { color: "#9b59b6", hp: 150, speed: 1.2, radius: 15, reward: 6 },
+        Al: {
+          color: "#dfe6e9",
+          hp: 260,
+          speed: 1.2,
+          radius: 16,
+          reward: 8,
+          oxideLayer: true,
+        },
+
+        Oil: {
+          color: "#2d3436",
+          hp: 180,
+          speed: 1.0,
+          radius: 15,
+          reward: 7,
+          flammable: true,
+        },
+
+        Ice: {
+          color: "#74b9ff",
+          hp: 200,
+          speed: 0.7,
+          radius: 16,
+          reward: 8,
+          freezeResist: true,
+        },
+
+        Plasma: {
+          color: "#fd79a8",
+          hp: 300,
+          speed: 1.6,
+          radius: 18,
+          reward: 10,
+          energyForm: true,
+        },
+
+        Boss_Catalyst: {
+          color: "#00cec9",
+          hp: 2800,
+          speed: 0.7,
+          radius: 28,
+          reward: 70,
+          boss: true,
+          reactionResist: true,
+        },
+
+        Boss_Reactor: {
+          color: "#e17055",
+          hp: 3500,
+          speed: 0.5,
+          radius: 30,
+          reward: 80,
+          boss: true,
+          explodeOnDeath: true,
+        },
+        Fe: {
+          color: "#95a5a6",
+          hp: 350,
+          speed: 0.8,
+          radius: 18,
+          reward: 10,
+          armor: true,
+        },
+        H2SO4: {
+          color: "#f39c12",
+          hp: 2000,
+          speed: 0.5,
+          radius: 25,
+          reward: 50,
+          boss: true,
+        },
+        Na: {
+          color: "#f1c40f",
+          hp: 90,
+          speed: 1.3,
+          radius: 12,
+          reward: 4,
+          explodeOnDeath: true,
+        },
+        K: {
+          color: "#d35400",
+          hp: 110,
+          speed: 1.4,
+          radius: 13,
+          reward: 5,
+          explodeOnDeath: true,
+        },
+
+        Cl2: {
+          color: "#27ae60",
+          hp: 140,
+          speed: 1.1,
+          radius: 14,
+          reward: 6,
+          poison: true,
+        },
+        NH3: {
+          color: "#1abc9c",
+          hp: 130,
+          speed: 1.3,
+          radius: 13,
+          reward: 5,
+          debuffResist: true,
+        },
+
+        CO2: {
+          color: "#7f8c8d",
+          hp: 160,
+          speed: 1.0,
+          radius: 14,
+          reward: 6,
+          fireResist: true,
+        },
+        CH4: {
+          color: "#f1c40f",
+          hp: 100,
+          speed: 1.5,
+          radius: 12,
+          reward: 5,
+          explodeOnDeath: true,
+        },
+
+        Cu: {
+          color: "#e67e22",
+          hp: 300,
+          speed: 0.9,
+          radius: 17,
+          reward: 9,
+          conductive: true,
+        },
+        AgNO3: {
+          color: "#bdc3c7",
+          hp: 180,
+          speed: 1.1,
+          radius: 15,
+          reward: 7,
+          blindResist: true,
+        },
+
+        CaO: {
+          color: "#f39c12",
+          hp: 220,
+          speed: 0.8,
+          radius: 16,
+          reward: 8,
+          reactWithWater: true,
+        },
+
+        Boss_NaK: {
+          color: "#ff6b00",
+          hp: 2500,
+          speed: 0.6,
+          radius: 26,
+          reward: 60,
+          boss: true,
+          explodeOnDeath: true,
+        }, // Boss
+      };
+
+      // "TowerType_EnemyType" -> Reaction Logic
+      // IF A REACTION IS NOT HERE, IT DEFAULTS TO WEAK DAMAGE (mult: 0.5)
+      const REACTIONS = {
+        // Na Reactions (Explosions)
+        NO2_O2: {
+          mult: 2.5,
+          dot: 25,
+          ticks: 6,
+          weaken: 0.25,
+          text: "KHÍ ĐỘC ĐẬM ĐẶC!",
+          color: "#c0392b",
+        },
+        NO2_NH3: {
+          mult: 3.2,
+          dot: 30,
+          ticks: 5,
+          stun: 10,
+          text: "KHÍ ĐỘC HỖN HỢP!",
+          color: "#2f3640",
+        },
+        NO2_CH4: {
+          mult: 3.8,
+          aoe: 130,
+          effect: "explosion",
+          dot: 20,
+          ticks: 5,
+          text: "CHÁY KHÍ ĐỘC!",
+          color: "#e84118",
+        },
+        NO2_UV: {
+          mult: 2.8,
+          dot: 35,
+          ticks: 7,
+          weaken: 0.3,
+          text: "GỐC TỰ DO ĐỘC!",
+          color: "#8e44ad",
+        },
+        NO2_H2O: {
+          mult: 3.2,
+          dot: 28,
+          ticks: 7,
+          aoe: 100,
+          text: "MƯA AXIT NẶNG!",
+          color: "#e74c3c",
+        },
+        SO2_O2: {
+          mult: 2.6,
+          dot: 22,
+          ticks: 6,
+          text: "OXI HÓA!",
+          color: "#95a5a6",
+        },
+        SO2_H2O: {
+          mult: 3.0,
+          dot: 24,
+          ticks: 7,
+          aoe: 110,
+          text: "MƯA AXIT!",
+          color: "#f1c40f",
+        },
+        SO2_NH3: {
+          mult: 2.2,
+          slow: 0.5,
+          duration: 180,
+          text: "KẾT TINH!",
+          color: "#bdc3c7",
+        },
+        SO2_CaO: {
+          mult: 2.4,
+          aoe: 90,
+          effect: "explosion",
+          text: "TRUNG HÒA TỎA NHIỆT!",
+          color: "#d35400",
+        },
+        SO2_Heat: {
+          mult: 3.5,
+          aoe: 140,
+          effect: "explosion",
+          dot: 18,
+          ticks: 5,
+          text: "KHÍ NÓNG ĐỘC!",
+          color: "#e67e22",
+        },
+        SO2_NO2: {
+          mult: 4.5,
+          dot: 40,
+          ticks: 8,
+          weaken: 0.4,
+          aoe: 150,
+          text: "ĐỊA NGỤC KHÍ ĐỘC!",
+          color: "#2d3436",
+        },
+        Electric_SO2: {
+          mult: 2.5,
+          chain: true,
+          dot: 15,
+          ticks: 4,
+          text: "LAN KHÍ ĐỘC!",
+          color: "#00cec9",
+        },
+        Pt_NO2: {
+          mult: 2.2,
+          dot: 30,
+          ticks: 6,
+          catalyst: true,
+          text: "XÚC TÁC ĐỘC!",
+        },
+        Na_H2O: {
+          mult: 3.5,
+          aoe: 120,
+          effect: "explosion",
+          text: "BÙM! (Na+H2O)",
+          color: "#ff9f43",
+        },
+        Na_Acid: {
+          mult: 4.5,
+          aoe: 150,
+          effect: "explosion",
+          text: "SIÊU NỔ!",
+          color: "#ff4757",
+        },
+        Na_H2SO4: {
+          mult: 5.0,
+          aoe: 200,
+          effect: "explosion",
+          text: "NỔ HẠT NHÂN!",
+          color: "#ff0000",
+        },
+        Pt_H2: {
+          mult: 2.0,
+          text: "XÚC TÁC!",
+          catalyst: true,
+        },
+
+        Pt_O2: {
+          mult: 2.0,
+          text: "ĐẨY NHANH PHẢN ỨNG!",
+          catalyst: true,
+        },
+        Heat_CaO: {
+          mult: 2.5,
+          aoe: 120,
+          effect: "explosion",
+          text: "NHIỆT PHẢN ỨNG!",
+        },
+
+        UV_Cl2: {
+          mult: 2.0,
+          text: "GỐC TỰ DO!",
+        },
+        Electric_Cu: {
+          mult: 2.5,
+          chain: true,
+          text: "DẪN ĐIỆN!",
+        },
+
+        Electric_H2O: {
+          mult: 2.2,
+          spawn: ["H2", "O2"],
+          text: "ĐIỆN PHÂN!",
+        },
+        NO2_H2O: {
+          mult: 2.8,
+          dot: 20,
+          ticks: 6,
+          text: "MƯA AXIT!",
+        },
+
+        SO2_H2O: {
+          mult: 2.5,
+          dot: 18,
+          ticks: 5,
+          text: "AXIT SUNFURO!",
+        },
+        CH4_Heat: {
+          mult: 2.0,
+          text: "KÍCH HOẠT CHÁY!",
+        },
+
+        Oil_O2: {
+          mult: 3.5,
+          dot: 20,
+          ticks: 6,
+          text: "CHÁY DẦU!",
+        },
+        Al_HCl: {
+          mult: 3.0,
+          text: "PHÁ LỚP OXIT!",
+        },
+
+        Fe_O2: {
+          mult: 1.2,
+          slow: 0.7,
+          duration: 200,
+          text: "RỈ SÉT!",
+        },
+        // Acid-Base Neutralization (Slow)
+        HCl_Base: {
+          mult: 2.5,
+          slow: 0.3,
+          duration: 180,
+          text: "TRUNG HÒA!",
+          color: "#7bed9f",
+        },
+        NaOH_Acid: {
+          mult: 2.5,
+          slow: 0.3,
+          duration: 180,
+          text: "TRUNG HÒA!",
+          color: "#7bed9f",
+        },
+        NaOH_H2SO4: {
+          mult: 1.5,
+          slow: 0.6,
+          duration: 120,
+          text: "GIẢM TỐC!",
+          color: "#7bed9f",
+        },
+
+        // Oxygen (Burning DoT)
+        O2_H: { mult: 2.0, dot: 10, ticks: 5, text: "CHÁY!", color: "#ff6b81" },
+        O2_Fe: {
+          mult: 1.5,
+          slow: 0.5,
+          duration: 200,
+          text: "RỈ SÉT!",
+          color: "#d35400",
+        }, // O2 oxidizes Fe, slowing it down
+        O2_Base: {
+          mult: 1.5,
+          dot: 5,
+          ticks: 3,
+          text: "CHÁY LÂY!",
+          color: "#ff6b81",
+        },
+
+        // Acid + Metal (Armor Pierce)
+        HCl_Fe: {
+          mult: 3.0,
+          armorPierce: true,
+          text: "PHÁ GIÁP!",
+          color: "#feca57",
+        },
+
+        // Fe Physical impacts
+        Fe_H2O: { mult: 1.5, stun: 15, text: "SÓNG ÂM!", color: "#34ace0" }, // Heavy impact on water
+
+        // Water specifics
+        H2O_Acid: { mult: 1.8, text: "PHA LOÃNG!", color: "#70a1ff" },
+        H2O_H2SO4: {
+          mult: 2.5,
+          effect: "explosion",
+          aoe: 80,
+          text: "TỎA NHIỆT MẠNH!",
+          color: "#ffa502",
+        }, // Water into conc acid
+        Na_Cl2: {
+          mult: 3.8,
+          aoe: 130,
+          effect: "explosion",
+          text: "NỔ MUỐI!",
+          color: "#ff7f50",
+        },
+        K_H2O: {
+          mult: 4.5,
+          aoe: 160,
+          effect: "explosion",
+          text: "K BÙM!",
+          color: "#ff3f34",
+        },
+        K_Acid: {
+          mult: 5.0,
+          aoe: 180,
+          effect: "explosion",
+          text: "SIÊU NỔ K!",
+          color: "#ff0000",
+        },
+
+        H2_O2: {
+          mult: 4.0,
+          aoe: 170,
+          effect: "explosion",
+          text: "NỔ HYDRO!",
+          color: "#ffa502",
+        },
+        CH4_O2: {
+          mult: 4.5,
+          aoe: 200,
+          effect: "explosion",
+          text: "CHÁY NỔ!",
+          color: "#ff6348",
+        },
+
+        CH4_Cl2: {
+          mult: 3.5,
+          aoe: 140,
+          effect: "explosion",
+          text: "PHẢN ỨNG GỐC!",
+          color: "#ff9f43",
+        },
+        Cl2_H2O: {
+          mult: 2.0,
+          dot: 12,
+          ticks: 6,
+          text: "KHÍ ĐỘC!",
+          color: "#2ed573",
+        },
+        Cl2_H2: {
+          mult: 2.5,
+          dot: 15,
+          ticks: 5,
+          text: "HCl KHÍ!",
+          color: "#1e90ff",
+        },
+
+        NH3_Cl2: {
+          mult: 3.0,
+          dot: 20,
+          ticks: 4,
+          text: "KHÍ ĐỘC NẶNG!",
+          color: "#2f3542",
+        },
+        NH3_HCl: {
+          mult: 2.2,
+          slow: 0.4,
+          duration: 160,
+          text: "MUỐI HÓA!",
+          color: "#7bed9f",
+        },
+        NH3_H2SO4: {
+          mult: 2.5,
+          slow: 0.5,
+          duration: 180,
+          text: "TRUNG HÒA MẠNH!",
+          color: "#7bed9f",
+        },
+
+        CO2_NaOH: {
+          mult: 2.0,
+          slow: 0.6,
+          duration: 200,
+          text: "TẠO MUỐI!",
+          color: "#70a1ff",
+        },
+        CaO_H2O: {
+          mult: 3.2,
+          aoe: 100,
+          effect: "explosion",
+          text: "TỎA NHIỆT!",
+          color: "#ffa502",
+        },
+
+        O2_CH4: {
+          mult: 4.2,
+          dot: 15,
+          ticks: 5,
+          text: "CHÁY DỮ DỘI!",
+          color: "#ff4757",
+        },
+        O2_H2: {
+          mult: 3.8,
+          aoe: 150,
+          effect: "explosion",
+          text: "BÙNG CHÁY!",
+          color: "#ff6b81",
+        },
+        H2SO4_Cu: {
+          mult: 2.5,
+          armorPierce: true,
+          dot: 8,
+          ticks: 4,
+          text: "ĂN MÒN!",
+          color: "#eccc68",
+        },
+        Cl2_Cu: {
+          mult: 2.8,
+          armorPierce: true,
+          text: "OXI HÓA!",
+          color: "#badc58",
+        },
+
+        AgNO3_Cl2: { mult: 3.0, stun: 25, text: "KẾT TỦA!", color: "#dfe4ea" },
+        AgNO3_HCl: { mult: 3.2, stun: 30, text: "AgCl!", color: "#ced6e0" },
+        H2O_CaO: {
+          mult: 3.0,
+          aoe: 90,
+          effect: "explosion",
+          text: "SÔI!",
+          color: "#ffa502",
+        },
+
+        H2O_NH3: {
+          mult: 1.5,
+          slow: 0.3,
+          duration: 120,
+          text: "HÒA TAN!",
+          color: "#70a1ff",
+        },
+
+        H2O_CO2: {
+          mult: 1.6,
+          slow: 0.4,
+          duration: 150,
+          text: "AXIT NHẸ!",
+          color: "#74b9ff",
+        },
+        Cu_O2: {
+          mult: 1.8,
+          dot: 6,
+          ticks: 6,
+          text: "OXI HÓA CHẬM!",
+          color: "#d35400",
+        },
+
+        Cu_H2SO4: {
+          mult: 2.2,
+          armorPierce: true,
+          dot: 10,
+          ticks: 5,
+          text: "ĂN MÒN ĐIỆN!",
+          color: "#fbc531",
+        },
+      };
+
+      /** =========================================================================
+       * CLASSES
+       * ========================================================================= */
+      class Enemy {
+        constructor(type, hpMult) {
+          this.type = type;
+          let base = ENEMY_TYPES[type];
+          this.maxHp = base.hp * hpMult;
+          this.hp = this.maxHp;
+          this.baseSpeed = base.speed;
+          this.speed = this.baseSpeed;
+          this.radius = base.radius;
+          this.color = base.color;
+          this.reward = base.reward;
+          this.isBoss = base.boss || false;
+          this.armor = base.armor || false;
+
+          this.pathIndex = 0;
+          this.x = WAYPOINTS[0].x;
+          this.y = WAYPOINTS[0].y;
+
+          this.debuffs = []; // {type, duration, value, ticksLeft}
+
+          // Combo System
+          this.lastHitTowerType = null;
+          this.comboCount = 0;
+        }
+
+        update() {
+          // Reset dynamic stats
+          this.speed = this.baseSpeed;
+
+          // Apply Debuffs
+          for (let i = this.debuffs.length - 1; i >= 0; i--) {
+            let d = this.debuffs[i];
+            d.duration--;
+
+            if (d.type === "slow") {
+              this.speed *= d.value;
+            } else if (d.type === "stun") {
+              this.speed = 0;
+            } else if (d.type === "dot") {
+              // Apply dot every 30 frames (~0.5s)
+              if (d.duration % 30 === 0 && d.ticksLeft > 0) {
+                this.hp -= d.value;
+                d.ticksLeft--;
+                createParticles(this.x, this.y, "#ff4757", 3, 2); // Fire particles
+              }
+            }
+
+            if (d.duration <= 0) this.debuffs.splice(i, 1);
+          }
+
+          // Movement
+          if (this.pathIndex < WAYPOINTS.length - 1) {
+            let target = WAYPOINTS[this.pathIndex + 1];
+            let dx = target.x - this.x;
+            let dy = target.y - this.y;
+            let dist = Math.hypot(dx, dy);
+
+            if (dist <= this.speed) {
+              this.x = target.x;
+              this.y = target.y;
+              this.pathIndex++;
+            } else {
+              this.x += (dx / dist) * this.speed;
+              this.y += (dy / dist) * this.speed;
+            }
+          } else {
+            // Reached End
+            GAME.hp -= this.isBoss ? 10 : 1;
+            updateUI();
+            screenShake(10);
+            if (GAME.hp <= 0) triggerGameOver();
+            return false; // Dead
+          }
+
+          return this.hp > 0;
+        }
+
+        draw() {
+          ctx.save();
+          ctx.translate(this.x, this.y);
+
+          // Boss Pulsing
+          let r = this.radius;
+          if (this.isBoss) r += Math.sin(GAME.frame * 0.1) * 3;
+
+          // Shadow/Glow
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = this.color;
+
+          // Armor Visual
+          if (this.armor) {
+            ctx.beginPath();
+            ctx.arc(0, 0, r + 3, 0, Math.PI * 2);
+            ctx.fillStyle = "#555";
+            ctx.fill();
+          }
+
+          // Body
+          ctx.beginPath();
+          ctx.arc(0, 0, r, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.fill();
+
+          ctx.shadowBlur = 0;
+
+          // Text
+          ctx.fillStyle = "#fff";
+          ctx.font = `bold ${this.isBoss ? 16 : 12}px Orbitron`;
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(this.type, 0, 0);
+
+          // HP Bar
+          let hpY = -r - 10;
+          ctx.fillStyle = "#ff4757";
+          ctx.fillRect(-15, hpY, 30, 4);
+          ctx.fillStyle = "#2ed573";
+          ctx.fillRect(-15, hpY, 30 * Math.max(0, this.hp / this.maxHp), 4);
+
+          // Combo Counter display above HP
+          if (this.comboCount > 1) {
+            ctx.fillStyle = "#f39c12";
+            ctx.font = "bold 10px Orbitron";
+            ctx.fillText(`x${this.comboCount}`, 0, hpY - 8);
+          }
+
+          ctx.restore();
+        }
+
+        takeDamage(amount, sourceTower, isReaction = false, isAOE = false) {
+          // Combo Logic (Only apply if direct hit, not AOE splash, to be fair)
+          let comboMult = 1.0;
+          if (!isAOE) {
+            if (this.lastHitTowerType === sourceTower.type) {
+              this.comboCount++;
+              if (this.comboCount > 5) this.comboCount = 5; // Max combo cap
+              comboMult = 1 + this.comboCount * 0.2; // +20% dmg per combo
+
+              if (this.comboCount >= 3) {
+                showHTMLFloatingText(
+                  this.x,
+                  this.y - 20,
+                  `COMBO x${this.comboCount}`,
+                  "#f39c12",
+                );
+              }
+            } else {
+              this.comboCount = 1;
+              this.lastHitTowerType = sourceTower.type;
+            }
+          }
+
+          let finalDamage = amount * comboMult;
+
+          // Armor reduction (unless reaction pierces)
+          if (this.armor && !sourceTower.armorPierceFlag) {
+            finalDamage *= 0.3; // 70% damage reduction!
+            if (!isReaction && !isAOE)
+              showHTMLFloatingText(this.x, this.y, "BỊ CHẶN!", "#95a5a6");
+          }
+
+          this.hp -= finalDamage;
+
+          if (this.hp <= 0) {
+            GAME.money += this.reward;
+            updateUI();
+            createParticles(
+              this.x,
+              this.y,
+              this.color,
+              this.isBoss ? 50 : 15,
+              this.isBoss ? 4 : 2,
+            );
+            showHTMLFloatingText(this.x, this.y, `+$${this.reward}`, "#2ed573");
+          }
+        }
+      }
+
+      class Tower {
+        constructor(c, r, type) {
+          this.c = c;
+          this.r = r;
+          this.x = c * TILE_SIZE + TILE_SIZE / 2;
+          this.y = r * TILE_SIZE + TILE_SIZE / 2;
+          this.type = type;
+
+          let def = TOWERS_DB[type];
+          this.color = def.color;
+          this.bg = def.bg;
+          this.range = def.range;
+          this.cooldownMax = def.cooldown;
+          this.cooldown = 0;
+          this.damage = def.damage;
+
+          this.level = 1;
+          this.totalSpent = def.cost;
+          this.target = null;
+          this.angle = 0;
+        }
+
+        update() {
+          if (this.cooldown > 0) this.cooldown--;
+
+          // Find nearest target
+          this.target = null;
+          let minDist = this.range;
+
+          for (let e of enemies) {
+            let dist = Math.hypot(this.x - e.x, this.y - e.y);
+            if (dist < minDist) {
+              minDist = dist;
+              this.target = e;
+            }
+          }
+
+          if (this.target) {
+            // Rotate towards target
+            this.angle = Math.atan2(
+              this.target.y - this.y,
+              this.target.x - this.x,
+            );
+
+            if (this.cooldown === 0) {
+              this.fire();
+              this.cooldown = this.cooldownMax;
+            }
+          }
+        }
+
+        fire() {
+          projectiles.push(new Projectile(this.x, this.y, this.target, this));
+
+          // Recoil effect
+          createParticles(
+            this.x + Math.cos(this.angle) * 15,
+            this.y + Math.sin(this.angle) * 15,
+            this.color,
+            3,
+            1,
+          );
+        }
+
+        draw() {
+          ctx.save();
+          ctx.translate(this.x, this.y);
+
+          // Selection Highlight
+          if (GAME.selectedTowerOnGrid === this) {
+            ctx.beginPath();
+            ctx.arc(0, 0, this.range, 0, Math.PI * 2);
+            ctx.fillStyle = "rgba(102, 252, 241, 0.1)";
+            ctx.fill();
+            ctx.strokeStyle = "rgba(102, 252, 241, 0.5)";
+            ctx.setLineDash([5, 5]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Highlight base
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = varColor("--text-main");
+          }
+
+          // Base
+          ctx.beginPath();
+          ctx.rect(
+            -TILE_SIZE / 2 + 2,
+            -TILE_SIZE / 2 + 2,
+            TILE_SIZE - 4,
+            TILE_SIZE - 4,
+          );
+          ctx.fillStyle = this.bg;
+          ctx.fill();
+          ctx.strokeStyle = this.color;
+          ctx.lineWidth = 2;
+          ctx.stroke();
+
+          // Turret rotation
+          ctx.rotate(this.angle);
+
+          // Gun barrel
+          ctx.fillStyle = "#7f8fa6";
+          ctx.fillRect(0, -4, 20, 8);
+
+          // Inner Element Core
+          ctx.beginPath();
+          ctx.arc(0, 0, 10 + (this.level - 1) * 2, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.fill();
+          ctx.strokeStyle = "#fff";
+          ctx.lineWidth = 1;
+          ctx.stroke();
+
+          ctx.restore();
+
+          // Text (unrotated)
+          ctx.fillStyle = "white";
+          ctx.font = "bold 11px Arial";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(this.type, this.x, this.y);
+
+          // Level Indicators
+          ctx.fillStyle = varColor("--warning");
+          for (let i = 0; i < this.level; i++) {
+            ctx.beginPath();
+            ctx.arc(this.x - 8 + i * 8, this.y + 14, 2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+
+      class Projectile {
+        constructor(x, y, target, tower) {
+          this.x = x;
+          this.y = y;
+          this.target = target;
+          this.tower = tower;
+          this.speed = 10;
+          this.active = true;
+        }
+
+        update() {
+          if (!this.target || this.target.hp <= 0) {
+            this.active = false;
+            return;
+          }
+
+          let dx = this.target.x - this.x;
+          let dy = this.target.y - this.y;
+          let dist = Math.hypot(dx, dy);
+
+          if (dist <= this.speed) {
+            this.hit(this.target);
+            this.active = false;
+          } else {
+            this.x += (dx / dist) * this.speed;
+            this.y += (dy / dist) * this.speed;
+
+            // Trail
+            if (GAME.frame % 2 === 0) {
+              createParticles(this.x, this.y, this.tower.color, 1, 0.5);
+            }
+          }
+        }
+
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, 4, 0, Math.PI * 2);
+          ctx.fillStyle = "#fff";
+          ctx.fill();
+
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = this.tower.color;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, 5, 0, Math.PI * 2);
+          ctx.fillStyle = this.tower.color;
+          ctx.globalAlpha = 0.5;
+          ctx.fill();
+          ctx.globalAlpha = 1.0;
+          ctx.shadowBlur = 0;
+        }
+
+        hit(enemy) {
+          let baseDmg = this.tower.damage;
+          let reactionKey = this.tower.type + "_" + enemy.type;
+          let react = REACTIONS[reactionKey];
+
+          let finalDamage = baseDmg;
+          let isReaction = false;
+
+          if (react) {
+            isReaction = true;
+            // STRONG REACTION
+            finalDamage = baseDmg * react.mult;
+
+            if (react.text) {
+              showHTMLFloatingText(
+                enemy.x,
+                enemy.y,
+                react.text,
+                react.color,
+                24,
+              );
+            }
+
+            if (react.effect === "explosion") {
+              createExplosion(enemy.x, enemy.y, react.aoe, react.color);
+              screenShake(5);
+
+              // AOE Damage Application
+              enemies.forEach((e) => {
+                if (
+                  e !== enemy &&
+                  Math.hypot(e.x - enemy.x, e.y - enemy.y) <= react.aoe
+                ) {
+                  // Pass sourceTower to trigger armor check, but flag as AOE to bypass combo increment
+                  this.tower.armorPierceFlag = true; // Explosions pierce armor usually
+                  e.takeDamage(finalDamage * 0.5, this.tower, true, true);
+                  this.tower.armorPierceFlag = false;
+                }
+              });
+            }
+
+            if (react.slow) {
+              enemy.debuffs.push({
+                type: "slow",
+                duration: react.duration,
+                value: react.slow,
+              });
+            }
+
+            if (react.dot) {
+              enemy.debuffs.push({
+                type: "dot",
+                duration: react.ticks * 30,
+                ticksLeft: react.ticks,
+                value: react.dot,
+              });
+            }
+
+            if (react.stun) {
+              enemy.debuffs.push({ type: "stun", duration: react.stun });
+            }
+
+            if (react.armorPierce) {
+              this.tower.armorPierceFlag = true;
+            }
+          } else {
+            // WEAK REACTION (Penalty for wrong chemistry)
+            finalDamage = baseDmg * 0.5;
+            showHTMLFloatingText(enemy.x, enemy.y, "Yếu...", "#888", 12);
+          }
+
+          // Apply primary damage
+          enemy.takeDamage(finalDamage, this.tower, isReaction, false);
+          this.tower.armorPierceFlag = false; // Reset
+
+          createParticles(this.x, this.y, this.tower.color, 8, 2);
+        }
+      }
+
+      class Particle {
+        constructor(x, y, color, speedScale) {
+          this.x = x;
+          this.y = y;
+          this.color = color;
+          let angle = Math.random() * Math.PI * 2;
+          let speed = Math.random() * 2 * speedScale;
+          this.vx = Math.cos(angle) * speed;
+          this.vy = Math.sin(angle) * speed;
+          this.life = 1.0;
+          this.decay = Math.random() * 0.05 + 0.02;
+          this.size = Math.random() * 4 + 1;
+        }
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          this.life -= this.decay;
+          this.size *= 0.95;
+        }
+        draw() {
+          ctx.globalAlpha = Math.max(0, this.life);
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.fill();
+          ctx.globalAlpha = 1.0;
+        }
+      }
+
+      /** =========================================================================
+       * GAME SYSTEMS (WAVES, INPUT, RENDER)
+       * ========================================================================= */
+      let spawnQueue = [];
+      let spawnTimer = 0;
+      let shakeAmount = 0;
+
+      function generateWave() {
+        let w = GAME.wave;
+
+        // Scale thông minh hơn
+        let hpMult = 1 + w * 0.25;
+        let count = 6 + Math.floor(w * 1.8);
+
+        let pool = [];
+
+        // ===== EARLY GAME =====
+        if (w >= 1) pool.push("H");
+        if (w >= 2) pool.push("O2");
+        if (w >= 3) pool.push("H2O");
+
+        // ===== BASIC CHEM =====
+        if (w >= 4) pool.push("Base");
+        if (w >= 5) pool.push("Acid");
+        if (w >= 6) pool.push("Na");
+        if (w >= 7) pool.push("K");
+
+        // ===== MID GAME =====
+        if (w >= 8) pool.push("Cl2");
+        if (w >= 9) pool.push("NH3");
+        if (w >= 10) pool.push("CO2");
+        if (w >= 11) pool.push("CH4");
+
+        // ===== DEFENSIVE / SPECIAL =====
+        if (w >= 12) pool.push("Fe");
+        if (w >= 13) pool.push("Al");
+        if (w >= 14) pool.push("Ice");
+
+        // ===== ADVANCED =====
+        if (w >= 15) pool.push("Oil");
+        if (w >= 16) pool.push("Cu");
+        if (w >= 17) pool.push("AgNO3");
+        if (w >= 18) pool.push("CaO");
+
+        // ===== CHAOS MODE =====
+        if (w >= 20) pool.push("Plasma");
+
+        // ===== BOSS LOGIC =====
+        if (w % 10 === 0) {
+          let bossPool = [];
+
+          if (w >= 10) bossPool.push("Boss_NaK");
+          if (w >= 20) bossPool.push("Boss_Catalyst");
+          if (w >= 30) bossPool.push("Boss_Reactor");
+
+          // fallback nếu chưa đủ
+          if (bossPool.length === 0) bossPool.push("H2SO4");
+
+          let bossType = bossPool[Math.floor(Math.random() * bossPool.length)];
+
+          spawnQueue.push({
+            type: bossType,
+            hpMult: hpMult * 2.5,
+          });
+
+          count = 0;
+
+          showHTMLFloatingText(
+            canvas.width / 2,
+            canvas.height / 2,
+            "⚠️ BOSS: " + bossType,
+            "#ff4757",
+            42,
+          );
+
+          screenShake(25);
+        }
+
+        // ===== SPAWN NORMAL =====
+        for (let i = 0; i < count; i++) {
+          let type = pool[Math.floor(Math.random() * pool.length)];
+
+          // Tăng tỉ lệ enemy khó ở wave cao
+          let extraMult = 1;
+          if (w > 15 && Math.random() < 0.3) extraMult = 1.5;
+          if (w > 25 && Math.random() < 0.2) extraMult = 2;
+
+          spawnQueue.push({
+            type: type,
+            hpMult: hpMult * extraMult,
+          });
+        }
+      }
+
+      function gameLoop() {
+        if (GAME.state !== "PLAYING") {
+          requestAnimationFrame(gameLoop);
+          return;
+        }
+
+        update();
+        draw();
+
+        GAME.frame++;
+        requestAnimationFrame(gameLoop);
+      }
+      function getAuraBuffs(x, y) {
+        let buffs = {
+          damageMult: 1,
+          reactionMult: 1,
+          reactionSpeed: 1,
+          weaken: 0,
+          radicalBoost: false,
+          conductivity: false,
+        };
+
+        GAME.towers.forEach((t) => {
+          if (!t.isAura) return;
+
+          let dx = t.x - x;
+          let dy = t.y - y;
+          let dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist <= t.range) {
+            let a = t.aura;
+
+            if (a.damageMult) buffs.damageMult *= a.damageMult;
+            if (a.reactionMult) buffs.reactionMult *= a.reactionMult;
+            if (a.reactionSpeed) buffs.reactionSpeed *= a.reactionSpeed;
+            if (a.weaken) buffs.weaken += a.weaken;
+            if (a.radicalBoost) buffs.radicalBoost = true;
+            if (a.conductivity) buffs.conductivity = true;
+          }
+        });
+
+        return buffs;
+      }
+      function update() {
+        // Spawner
+        if (spawnQueue.length > 0) {
+          if (spawnTimer <= 0) {
+            let next = spawnQueue.shift();
+            enemies.push(new Enemy(next.type, next.hpMult));
+            spawnTimer = 45; // Delay between spawns
+          } else {
+            spawnTimer--;
+          }
+        } else if (enemies.length === 0) {
+          // Wave Clear
+          GAME.wave++;
+          GAME.money += 30 + GAME.wave * 5;
+          updateUI();
+          showHTMLFloatingText(
+            canvas.width / 2,
+            canvas.height / 2,
+            `WAVE ${GAME.wave}`,
+            "#66fcf1",
+            40,
+          );
+          generateWave();
+          spawnTimer = 150; // Pause between waves
+        }
+
+        // Update Entities
+        towers.forEach((t) => t.update());
+
+        for (let i = projectiles.length - 1; i >= 0; i--) {
+          projectiles[i].update();
+          if (!projectiles[i].active) projectiles.splice(i, 1);
+        }
+
+        for (let i = enemies.length - 1; i >= 0; i--) {
+          if (!enemies[i].update()) enemies.splice(i, 1);
+        }
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+          particles[i].update();
+          if (particles[i].life <= 0) particles.splice(i, 1);
+        }
+
+        if (shakeAmount > 0) shakeAmount -= 0.5;
+        if (GAME.errorMsgTimer > 0) GAME.errorMsgTimer--;
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        ctx.save();
+        if (shakeAmount > 0) {
+          let dx = (Math.random() - 0.5) * shakeAmount;
+          let dy = (Math.random() - 0.5) * shakeAmount;
+          ctx.translate(dx, dy);
+        }
+
+        // Draw Map
+        drawMap();
+
+        // Draw Entities
+        towers.forEach((t) => t.draw());
+        enemies.forEach((e) => e.draw());
+        projectiles.forEach((p) => p.draw());
+        particles.forEach((p) => p.draw());
+
+        // Draw UI Overlays (Placement Preview)
+        if (GAME.selectedShopItem && hoverC !== null && hoverR !== null) {
+          let canPlace = grid[hoverR][hoverC] === 0;
+          let x = hoverC * TILE_SIZE;
+          let y = hoverR * TILE_SIZE;
+          let cx = x + TILE_SIZE / 2;
+          let cy = y + TILE_SIZE / 2;
+          let towerDef = TOWERS_DB[GAME.selectedShopItem];
+
+          // Highlight Cell
+          ctx.fillStyle = canPlace
+            ? "rgba(46, 213, 115, 0.4)"
+            : "rgba(255, 71, 87, 0.4)";
+          ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+
+          if (canPlace) {
+            // Draw Range
+            ctx.beginPath();
+            ctx.arc(cx, cy, towerDef.range, 0, Math.PI * 2);
+            ctx.fillStyle = "rgba(102, 252, 241, 0.1)";
+            ctx.fill();
+            ctx.strokeStyle = towerDef.color;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            // Draw ghost tower
+            ctx.globalAlpha = 0.5;
+            ctx.beginPath();
+            ctx.arc(cx, cy, 10, 0, Math.PI * 2);
+            ctx.fillStyle = towerDef.color;
+            ctx.fill();
+            ctx.globalAlpha = 1.0;
+          }
+        }
+
+        // Draw insufficient funds error
+        if (GAME.errorMsgTimer > 0) {
+          ctx.fillStyle = "rgba(255, 71, 87, " + GAME.errorMsgTimer / 60 + ")";
+          ctx.font = "bold 24px Orbitron";
+          ctx.textAlign = "center";
+          ctx.fillText("KHÔNG ĐỦ TIỀN!", canvas.width / 2, 50);
+        }
+
+        ctx.restore();
+      }
+
+      function drawMap() {
+        // Grid Lines (Subtle)
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.03)";
+        ctx.lineWidth = 1;
+        for (let c = 0; c <= COLS; c++) {
+          ctx.beginPath();
+          ctx.moveTo(c * TILE_SIZE, 0);
+          ctx.lineTo(c * TILE_SIZE, canvas.height);
+          ctx.stroke();
+        }
+        for (let r = 0; r <= ROWS; r++) {
+          ctx.beginPath();
+          ctx.moveTo(0, r * TILE_SIZE);
+          ctx.lineTo(canvas.width, r * TILE_SIZE);
+          ctx.stroke();
+        }
+
+        // Path
+        ctx.fillStyle = "#1e272e";
+        for (let r = 0; r < ROWS; r++) {
+          for (let c = 0; c < COLS; c++) {
+            if (grid[r][c] === 1) {
+              ctx.fillRect(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+            }
+          }
+        }
+
+        // Path Inner Line
+        ctx.beginPath();
+        ctx.moveTo(WAYPOINTS[0].x, WAYPOINTS[0].y);
+        for (let i = 1; i < WAYPOINTS.length; i++)
+          ctx.lineTo(WAYPOINTS[i].x, WAYPOINTS[i].y);
+        ctx.strokeStyle = "rgba(102, 252, 241, 0.2)";
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 5]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Base/End Marker
+        let end = WAYPOINTS[WAYPOINTS.length - 1];
+        ctx.beginPath();
+        ctx.arc(end.x, end.y, 20, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255, 71, 87, 0.3)";
+        ctx.fill();
+        ctx.strokeStyle = varColor("--danger");
+        ctx.stroke();
+      }
+
+      /** =========================================================================
+       * UTILS & EFFECTS
+       * ========================================================================= */
+      function varColor(name) {
+        return getComputedStyle(document.documentElement)
+          .getPropertyValue(name)
+          .trim();
+      }
+
+      function createParticles(x, y, color, count, speed = 1) {
+        for (let i = 0; i < count; i++) {
+          particles.push(new Particle(x, y, color, speed));
+        }
+      }
+
+      function createExplosion(x, y, radius, color) {
+        createParticles(x, y, color, 30, 3);
+        // Draw immediate blast wave logic handled in `Particle` but visual flash here:
+        let flash = new Particle(x, y, color, 0);
+        flash.size = radius;
+        flash.decay = 0.1;
+        particles.push(flash);
+      }
+
+      function screenShake(amt) {
+        shakeAmount = amt;
+      }
+
+      // Uses DOM elements for better text rendering and CSS animations
+      function showHTMLFloatingText(x, y, text, color, fontSize = 16) {
+        let el = document.createElement("div");
+        el.className = "floating-text-html";
+        el.innerText = text;
+        el.style.color = color;
+        el.style.fontSize = fontSize + "px";
+
+        // Convert canvas coords to viewport coords
+        let rect = canvas.getBoundingClientRect();
+        let scaleX = rect.width / canvas.width;
+        let scaleY = rect.height / canvas.height;
+
+        el.style.left = rect.left + x * scaleX + "px";
+        el.style.top = rect.top + y * scaleY + "px";
+
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 1000); // Remove after animation
+      }
+
+      /** =========================================================================
+       * INPUT & UI
+       * ========================================================================= */
+      let hoverC = null,
+        hoverR = null;
+
+      canvas.addEventListener("mousemove", (e) => {
+        let rect = canvas.getBoundingClientRect();
+        let scaleX = canvas.width / rect.width;
+        let scaleY = canvas.height / rect.height;
+        let x = (e.clientX - rect.left) * scaleX;
+        let y = (e.clientY - rect.top) * scaleY;
+
+        hoverC = Math.floor(x / TILE_SIZE);
+        hoverR = Math.floor(y / TILE_SIZE);
+
+        if (hoverC < 0 || hoverC >= COLS || hoverR < 0 || hoverR >= ROWS) {
+          hoverC = null;
+          hoverR = null;
+        }
+      });
+
+      canvas.addEventListener("mouseout", () => {
+        hoverC = null;
+        hoverR = null;
+      });
+
+      canvas.addEventListener("click", () => {
+        if (GAME.state !== "PLAYING" || hoverC === null || hoverR === null)
+          return;
+
+        // Check click on existing tower
+        let clickedTower = null;
+        for (let t of towers) {
+          if (t.c === hoverC && t.r === hoverR) {
+            clickedTower = t;
+            break;
+          }
+        }
+
+        if (clickedTower) {
+          GAME.selectedTowerOnGrid = clickedTower;
+          GAME.selectedShopItem = null;
+          updateUI();
+          return;
+        }
+
+        // Placing new tower
+        if (GAME.selectedShopItem) {
+          if (grid[hoverR][hoverC] === 0) {
+            // If empty
+            let cost = TOWERS_DB[GAME.selectedShopItem].cost;
+            if (GAME.money >= cost) {
+              GAME.money -= cost;
+              towers.push(new Tower(hoverC, hoverR, GAME.selectedShopItem));
+              grid[hoverR][hoverC] = 2;
+              GAME.selectedShopItem = null; // Auto deselect
+              createParticles(
+                hoverC * TILE_SIZE + 20,
+                hoverR * TILE_SIZE + 20,
+                varColor("--text-main"),
+                15,
+                2,
+              );
+              updateUI();
+            } else {
+              GAME.errorMsgTimer = 60;
+              screenShake(3);
+            }
+          } else {
+            // Cannot place here
+            screenShake(2);
+          }
+        } else {
+          GAME.selectedTowerOnGrid = null;
+          updateUI();
+        }
+      });
+
+      function buildShop() {
+        let shop = document.getElementById("shop");
+        shop.innerHTML = "";
+
+        for (let type in TOWERS_DB) {
+          let t = TOWERS_DB[type];
+          let card = document.createElement("div");
+          card.className = "tower-card";
+          card.id = "shop-" + type;
+
+          card.innerHTML = `
+            <div class="t-icon" style="background: ${t.bg}; border-color: ${t.color}; color: ${t.color}">${type}</div>
+            <div class="t-info">
+                <div class="t-name">${type}</div>
+                <div class="t-cost">$${t.cost}</div>
+            </div>
+        `;
+
+          card.onclick = () => {
+            GAME.selectedShopItem =
+              GAME.selectedShopItem === type ? null : type;
+            GAME.selectedTowerOnGrid = null;
+            updateUI();
+          };
+
+          // Tooltip Event
+          card.onmouseover = (e) => showTooltip(e, type);
+          card.onmouseout = hideTooltip;
+
+          shop.appendChild(card);
+        }
+      }
+
+      function showTooltip(e, towerType) {
+        let tt = document.getElementById("tooltip");
+        let t = TOWERS_DB[towerType];
+
+        // Generate Reaction List dynamically based on REACTIONS dict
+        let reactsHtml = "";
+        for (let key in REACTIONS) {
+          if (key.startsWith(towerType + "_")) {
+            let enemyT = key.split("_")[1];
+            let logic = REACTIONS[key];
+            reactsHtml += `<li><span style="color:#fff">${towerType}</span> + <span style="color:#ccc">${enemyT}</span> ➔ <span class="react-strong" style="color:${logic.color}">${logic.text}</span></li>`;
+          }
+        }
+        if (reactsHtml === "")
+          reactsHtml =
+            "<li>Sát thương vật lý/cơ bản. Không có phản ứng đặc biệt.</li>";
+
+        tt.innerHTML = `
+        <div class="tt-title" style="color:${t.color}">${towerType} Tower</div>
+        <div class="tt-desc">${t.desc}</div>
+        <div class="tt-react-title">Phản ứng Hóa học:</div>
+        <ul class="tt-react-list">
+            ${reactsHtml}
+        </ul>
+        <div style="margin-top: 10px; font-size: 12px; color: #888;">
+            * Đánh sai nguyên tố ➔ Sát thương giảm 50%
+        </div>
+    `;
+
+        tt.style.display = "block";
+
+        // Position
+        let rect = tt.getBoundingClientRect();
+        let x = e.clientX + 15;
+        let y = e.clientY + 15;
+        if (y + rect.height > window.innerHeight)
+          y = window.innerHeight - rect.height - 10;
+
+        tt.style.left = x + "px";
+        tt.style.top = y + "px";
+      }
+
+      function hideTooltip() {
+        document.getElementById("tooltip").style.display = "none";
+      }
+
+      function upgradeTower() {
+        let t = GAME.selectedTowerOnGrid;
+
+        if (!t) return;
+
+        // ✅ mỗi tower max 3 level (level 1 → 3)
+        if (t.level >= 3) return;
+
+        let baseCost = TOWERS_DB[t.type].cost;
+        let cost = baseCost * t.level;
+
+        if (GAME.money < cost) {
+          GAME.errorMsgTimer = 60;
+          screenShake(3);
+          return;
+        }
+
+        // 💸 trừ tiền
+        GAME.money -= cost;
+        t.totalSpent += cost;
+
+        // 🔼 upgrade
+        t.level++;
+
+        // ⚔️ stat scaling
+        t.damage = Math.floor(t.damage * 1.5);
+        t.range += 10;
+        t.cooldownMax = Math.max(20, t.cooldownMax - 3);
+
+        // ✨ hiệu ứng
+        if (particles.length < 200) {
+          createParticles(t.x, t.y, varColor("--success"), 10, 2);
+        }
+
+        updateMoneyUI();
+        updateTowerInfoUI();
+      }
+
+      function sellTower() {
+        let t = GAME.selectedTowerOnGrid;
+        if (!t) return;
+
+        let refund = Math.floor(t.totalSpent * 0.7);
+        GAME.money += refund;
+        grid[t.r][t.c] = 0; // Free cell
+        towers = towers.filter((tw) => tw !== t); // Remove
+
+        createParticles(t.x, t.y, "#888", 20, 2);
+        showHTMLFloatingText(t.x, t.y, `+$${refund}`, varColor("--warning"));
+
+        GAME.selectedTowerOnGrid = null;
+        updateUI();
+      }
+
+      function updateUI() {
+        document.getElementById("ui-hp").innerText = GAME.hp;
+        document.getElementById("ui-money").innerText = GAME.money;
+        document.getElementById("ui-wave").innerText = GAME.wave;
+
+        // Update Shop Cards
+        for (let type in TOWERS_DB) {
+          let card = document.getElementById("shop-" + type);
+          if (!card) continue;
+
+          card.classList.remove("selected", "disabled");
+          if (GAME.selectedShopItem === type) card.classList.add("selected");
+          if (GAME.money < TOWERS_DB[type].cost) card.classList.add("disabled");
+        }
+
+        // Update Action Panel
+        let ap = document.getElementById("action-panel");
+        if (GAME.selectedTowerOnGrid) {
+          ap.style.display = "block";
+          let t = GAME.selectedTowerOnGrid;
+          document.getElementById("ap-name").innerText = `Trụ ${t.type}`;
+          document.getElementById("ap-name").style.color = t.color;
+          document.getElementById("ap-level").innerText =
+            t.level + (t.level >= 3 ? " (MAX)" : "");
+          document.getElementById("ap-dmg").innerText = t.damage;
+          document.getElementById("ap-range").innerText = t.range;
+
+          let btnUp = document.getElementById("btn-upgrade");
+          if (t.level < 3) {
+            let cost = TOWERS_DB[t.type].cost * t.level;
+            document.getElementById("ap-upcost").innerText = cost;
+            btnUp.disabled = GAME.money < cost;
+            btnUp.innerText = `NÂNG CẤP ($${cost})`;
+          } else {
+            btnUp.disabled = true;
+            btnUp.innerText = "ĐÃ TỐI ĐA";
+          }
+
+          document.getElementById("ap-sellval").innerText = Math.floor(
+            t.totalSpent * 0.7,
+          );
+        } else {
+          ap.style.display = "none";
+        }
+      }
+
+      function startGame() {
+        document.getElementById("start-screen").style.display = "none";
+        GAME.state = "PLAYING";
+        buildShop();
+        updateUI();
+        generateWave();
+        requestAnimationFrame(gameLoop);
+      }
+
+      function triggerGameOver() {
+        GAME.state = "GAMEOVER";
+        document.getElementById("game-over-screen").style.display = "flex";
+        document.getElementById("final-wave").innerText = GAME.wave;
+      }
+
+      // Initial draw behind menu
+      drawMap();
+    </script>
+  </body>
+</html>
