@@ -227,6 +227,32 @@ async function broadcastRooms() {
 }
 
 io.on("connection", (socket) => {
+  // --- THÊM ĐOẠN NÀY ĐỂ TẠO PHÒNG ---
+  socket.on("create_room", async (data) => {
+    try {
+      const newRoom = new Room({
+        name: data.name,
+        password: data.password || "",
+        owner: data.owner,
+        category: data.category || "general",
+        className: data.className || "",
+        tags: data.tags || [],
+        history: [],
+      });
+
+      await newRoom.save();
+      console.log(`✨ Phòng mới được tạo: ${data.name}`);
+
+      // Gửi phản hồi lại cho người tạo thành công
+      socket.emit("create_room_success", { roomId: newRoom._id });
+
+      // Cập nhật lại danh sách phòng cho tất cả mọi người
+      await broadcastRooms();
+    } catch (err) {
+      console.error("Lỗi khi tạo phòng:", err);
+      socket.emit("error_msg", "Không thể tạo phòng. Vui lòng thử lại!");
+    }
+  });
   socket.on("get_initial_rooms", broadcastRooms);
 
   socket.on("join_room", async (data) => {
