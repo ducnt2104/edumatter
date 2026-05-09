@@ -1,11 +1,12 @@
-// models/User.js
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true }, // Sẽ được băm (hash)
-  progress: { type: Object, default: {} }, // Lưu tiến độ học tập EduMatter
+  password: { type: String }, // Không bắt buộc nếu dùng Google/FB
+  avatar: { type: String, default: "🎓" },
+  googleId: { type: String }, // Để đăng nhập bằng Google
+  facebookId: { type: String }, // Để đăng nhập bằng FB
   createdAt: { type: Date, default: Date.now },
 });
 

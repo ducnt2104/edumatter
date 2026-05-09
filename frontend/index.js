@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   "use strict";
-
+  // Ví dụ: Khi nhấn nút Login
+  // navigateTo('login');
   /* SYSTEM CORE CONFIGURATION */
   const CONFIG = {
     mascot: {
@@ -111,6 +112,35 @@ document.addEventListener("DOMContentLoaded", () => {
         status: "active",
         link: "eduoj/eduoj.html",
         curriculum: ["C++ Algorithms", "Python Data Science", "Java Backend"],
+      },
+      // Thêm vào bên trong CONFIG.subjects
+      forum: {
+        title: "EDUFORUM - Cộng Đồng",
+        color: "#7d5fff",
+        content:
+          "Kết nối đam mê. Nơi trao đổi kiến thức, thảo luận dự án và cùng nhau xây dựng mạng lưới khoa học bền vững.",
+        features: [
+          "Phòng chat thảo luận Real-time",
+          "Chia sẻ tài liệu & mã nguồn",
+          "Hệ thống câu hỏi & trả lời (Q&A)",
+          "Tìm kiếm đồng đội làm dự án",
+          "Thông báo sự kiện khoa học mới nhất",
+        ],
+        status: "active",
+        link: "page/forum.html", // Đường dẫn đến file HTML của forum
+        curriculum: [
+          "Thảo luận Hóa học",
+          "Giải đáp Lập trình",
+          "Góc dự án STEM",
+          "Tin tức EduMatter",
+        ],
+        gamification: {
+          badges: [
+            "Thành viên tích cực",
+            "Chuyên gia thảo luận",
+            "Người truyền lửa",
+          ],
+        },
       },
       edualge: {
         title: "EDUALGE - Đại Số",

@@ -751,7 +751,7 @@
       // --- CẤU HÌNH API ---
       // Ở môi trường platform, biến này sẽ được tự động điền.
       // NẾU BẠN CHẠY LOCAL: Hãy điền API Key của bạn vào dấu ngoặc kép bên dưới (VD: "AIzaSy...")
-      const apiKey = "";
+      const apiKey = "AIzaSyCOxLiZXz1Ry_C4wdjFYmZOCcYSUSBflMo";
 
       // --- CẤU HÌNH SYSTEM PROMPT ---
       const SYSTEM_PROMPT = `Bạn là EduBot — trợ lý AI học tập thế hệ mới, thuộc hệ sinh thái EduMatter.
@@ -1053,16 +1053,24 @@
         const loadingEl = showLoading();
 
         try {
-          // Nếu chỉ gửi ảnh không có text, tự động tạo prompt
           const apiPrompt =
             text || "Vui lòng phân tích chi tiết hình ảnh này giúp tôi.";
 
-          // Gọi API
-          const responseText = await callGeminiAPI(
-            apiPrompt,
-            imageToSend,
-            mimeToSend,
-          );
+          // GỌI VỀ BACKEND CỦA BẠN THAY VÌ GOOGLE
+          const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              message: apiPrompt,
+              image: imageToSend
+                ? `data:${mimeToSend};base64,${imageToSend}`
+                : null,
+            }),
+          });
+
+          const data = await response.json();
+          loadingEl.remove();
+          appendMessage("bot", data.reply);
 
           // Nhận kết quả
           loadingEl.remove();
