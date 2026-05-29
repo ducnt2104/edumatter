@@ -332,45 +332,45 @@ app.post("/api/auth/verify-otp", async (req, res) => {
 });
 
 // --- 7. ROUTES HTML & UPLOAD FILE ---
-app.get("/", (_, res) =>
-  res.sendFile(path.join(__dirname, "../frontend/index.html")),
-);
-app.get("/forum", (_, res) =>
-  res.sendFile(path.join(__dirname, "../frontend/page/forum.html")),
-);
-app.get("/bot", (_, res) =>
-  res.sendFile(path.join(__dirname, "../frontend/page/bot.html")),
-);
-app.get("/chem", (_, res) =>
-  res.sendFile(path.join(__dirname, "../frontend/modules/chem/educhem.html")),
-);
-app.get("/phys", (_, res) =>
-  res.sendFile(path.join(__dirname, "../frontend/modules/phys/eduphys.html")),
-);
-app.get("/biol", (_, res) =>
-  res.sendFile(path.join(__dirname, "../frontend/modules/biol/edubiol.html")),
-);
-app.get("/tech", (_, res) =>
-  res.sendFile(path.join(__dirname, "../frontend/modules/tech/edutech.html")),
-);
-app.get("/alge", (_, res) =>
-  res.sendFile(path.join(__dirname, "../frontend/modules/alge/edualge.html")),
-);
-app.get("/geom", (_, res) =>
-  res.sendFile(path.join(__dirname, "../frontend/modules/geom/edugeom.html")),
-);
-app.get("/oj", (_, res) =>
-  res.sendFile(path.join(__dirname, "../frontend/modules/oj/eduoj.html")),
-);
-app.get("/his", (_, res) =>
-  res.sendFile(path.join(__dirname, "../frontend/modules/his/eduhis.html")),
-);
-// Hóa
-app.get("/chem_verse", (_, res) =>
-  res.sendFile(
-    path.join(__dirname, "../frontend/modules/chem/chemverse/chemverse.html"),
-  ),
-);
+// app.get("/", (_, res) =>
+//   res.sendFile(path.join(__dirname, "../frontend/index.html")),
+// );
+// app.get("/forum", (_, res) =>
+//   res.sendFile(path.join(__dirname, "../frontend/page/forum.html")),
+// );
+// app.get("/bot", (_, res) =>
+//   res.sendFile(path.join(__dirname, "../frontend/page/bot.html")),
+// );
+// app.get("/chem", (_, res) =>
+//   res.sendFile(path.join(__dirname, "../frontend/modules/chem/educhem.html")),
+// );
+// app.get("/phys", (_, res) =>
+//   res.sendFile(path.join(__dirname, "../frontend/modules/phys/eduphys.html")),
+// );
+// app.get("/biol", (_, res) =>
+//   res.sendFile(path.join(__dirname, "../frontend/modules/biol/edubiol.html")),
+// );
+// app.get("/tech", (_, res) =>
+//   res.sendFile(path.join(__dirname, "../frontend/modules/tech/edutech.html")),
+// );
+// app.get("/alge", (_, res) =>
+//   res.sendFile(path.join(__dirname, "../frontend/modules/alge/edualge.html")),
+// );
+// app.get("/geom", (_, res) =>
+//   res.sendFile(path.join(__dirname, "../frontend/modules/geom/edugeom.html")),
+// );
+// app.get("/oj", (_, res) =>
+//   res.sendFile(path.join(__dirname, "../frontend/modules/oj/eduoj.html")),
+// );
+// app.get("/his", (_, res) =>
+//   res.sendFile(path.join(__dirname, "../frontend/modules/his/eduhis.html")),
+// );
+// // Hóa
+// app.get("/chem_verse", (_, res) =>
+//   res.sendFile(
+//     path.join(__dirname, "../frontend/modules/chem/chemverse/chemverse.html"),
+//   ),
+// );
 
 const upload = multer({
   storage: multer.diskStorage({
