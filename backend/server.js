@@ -102,6 +102,9 @@ const server = http.createServer(app);
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../frontend")));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/login.html"));
+});
 
 const UPLOAD_DIR = path.join(__dirname, "../uploads");
 if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
@@ -163,24 +166,44 @@ async function sendOtpEmail(email, otpCode, displayName) {
 // --- 6. API ROUTES ---
 
 // 6.1 Đăng nhập
+const jwt = require("jsonwebtoken");
+
 app.post("/api/auth/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    if (!email || !password)
-      return res.status(400).json({ message: "Thiếu email hoặc mật khẩu" });
+  const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
-    if (!user || user.password !== password)
-      return res
-        .status(401)
-        .json({ message: "Email hoặc mật khẩu không đúng" });
-
-    res.json({ success: true, user: safeUser(user) });
-  } catch (err) {
-    res.status(500).json({ message: "Lỗi hệ thống" });
+  const user = await User.findOne({ email });
+  if (!user || user.password !== password) {
+    return res.status(401).json({ message: "Sai tài khoản" });
   }
-});
 
+  const token = jwt.sign({ id: user._id, email: user.email }, "SECRET_KEY", {
+    expiresIn: "7d",
+  });
+
+  res.json({
+    success: true,
+    token,
+    user: safeUser(user),
+  });
+});
+function authMiddleware(req, res, next) {
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({ message: "Chưa đăng nhập" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, "SECRET_KEY");
+    req.user = decoded;
+    next();
+  } catch {
+    return res.status(403).json({ message: "Token lỗi" });
+  }
+}
+app.get("/forum", authMiddleware, (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/page/forum.html"));
+});
 // 6.2 Đăng ký
 // Chỉ lưu tạm vào RAM + gửi OTP, CHƯA tạo tài khoản trong DB
 app.post("/api/auth/register", async (req, res) => {

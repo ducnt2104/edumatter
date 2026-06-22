@@ -1,0 +1,816 @@
+<!doctype html>
+<html lang="vi" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EDUPHYS JUNIOR - Hệ Thống Học Tập Vật Lý THCS</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- FontAwesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Be Vietnam Pro"', "sans-serif"],
+              tech: ["Orbitron", "sans-serif"],
+            },
+            colors: {
+              phys: {
+                50: "#ecfeff",
+                100: "#cffafe",
+                200: "#a5f3fc",
+                300: "#67e8f9",
+                400: "#22d3ee",
+                500: "#06b6d4", // Cyan chủ đạo
+                600: "#0891b2",
+                700: "#0e7490",
+                800: "#155e75",
+                900: "#164e63",
+              },
+            },
+            animation: {
+              "gradient-x": "gradient-x 15s ease infinite",
+              float: "float 6s ease-in-out infinite",
+            },
+            keyframes: {
+              "gradient-x": {
+                "0%, 100%": {
+                  "background-size": "200% 200%",
+                  "background-position": "left center",
+                },
+                "50%": {
+                  "background-size": "200% 200%",
+                  "background-position": "right center",
+                },
+              },
+              float: {
+                "0%, 100%": { transform: "translateY(0)" },
+                "50%": { transform: "translateY(-10px)" },
+              },
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      /* Base styles */
+      body {
+        font-family: "Be Vietnam Pro", sans-serif;
+        background-color: #f8fafc;
+        color: #0f172a;
+        transition:
+          background-color 0.3s,
+          color 0.3s;
+        overflow-x: hidden;
+      }
+
+      .dark body {
+        background-color: #020617; /* Dark slate */
+        color: #f8fafc;
+      }
+
+      /* Grid Background */
+      .bg-grid {
+        background-size: 40px 40px;
+        background-image:
+          linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+        mask-image: linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 1) 40%,
+          rgba(0, 0, 0, 0) 100%
+        );
+        -webkit-mask-image: linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 1) 40%,
+          rgba(0, 0, 0, 0) 100%
+        );
+      }
+
+      .dark .bg-grid {
+        background-image:
+          linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0.05) 1px,
+            transparent 1px
+          ),
+          linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.05) 1px,
+            transparent 1px
+          );
+      }
+
+      /* Particle Canvas */
+      #particles-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      /* Text Gradient */
+      .text-gradient {
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-image: linear-gradient(to right, #06b6d4, #3b82f6);
+      }
+
+      .dark .text-gradient {
+        background-image: linear-gradient(to right, #22d3ee, #60a5fa);
+      }
+
+      /* Hide scrollbar for tabs */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+  </head>
+  <body class="antialiased flex flex-col min-h-screen relative">
+    <!-- Particle Background Canvas -->
+    <canvas id="particles-bg"></canvas>
+
+    <!-- Background Effects -->
+    <div class="fixed inset-0 z-[-1] pointer-events-none">
+      <div class="absolute inset-0 bg-grid"></div>
+      <div
+        class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-phys-400/20 blur-[120px] mix-blend-multiply dark:mix-blend-screen transition-all duration-700"
+      ></div>
+      <div
+        class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-blue-400/20 blur-[120px] mix-blend-multiply dark:mix-blend-screen transition-all duration-700"
+      ></div>
+    </div>
+
+    <!-- HEADER (FIXED) -->
+    <header
+      class="fixed top-0 w-full z-50 transition-all duration-300"
+      id="header"
+    >
+      <div
+        class="absolute inset-0 bg-white/70 dark:bg-slate-900/70 backdrop-blur-lg border-b border-slate-200/50 dark:border-slate-800/50"
+      ></div>
+      <div class="container mx-auto px-4 lg:px-8 relative z-10">
+        <div class="flex items-center justify-between h-20">
+          <!-- Logo & Subtitle -->
+          <div class="flex items-center gap-3">
+            <a href="#" class="flex flex-col">
+              <span
+                class="font-tech text-2xl font-bold text-gradient tracking-wider"
+                >EDUPHYS</span
+              >
+              <span
+                class="text-[0.65rem] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-[0.2em] -mt-1"
+                >PhysStudy-Junior</span
+              >
+            </a>
+          </div>
+
+          <!-- Desktop Navigation -->
+          <nav
+            class="hidden md:flex items-center gap-1 bg-slate-100/50 dark:bg-slate-800/50 p-1 rounded-full border border-slate-200 dark:border-slate-700 backdrop-blur-sm"
+          >
+            <a
+              href="../physstudyexpert/physstudyexpert.html"
+              class="px-5 py-2 rounded-full text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-phys-600 dark:hover:text-phys-300 transition-colors"
+              >EDUPHYS EXPERT</a
+            >
+            <a
+              href="../physstudyjunior/physstudyjunior.html"
+              class="px-5 py-2 rounded-full text-sm font-medium bg-white dark:bg-slate-700 text-phys-600 dark:text-phys-400 shadow-sm transition-colors border border-slate-200 dark:border-slate-600"
+              >EDUPHYS JUNIOR</a
+            >
+            <a
+              href="../eduphys.html"
+              class="px-5 py-2 rounded-full text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-phys-600 dark:hover:text-phys-300 transition-colors"
+              >EDUPHYS</a
+            >
+            <a
+              href="../phystudyverse/physverse.html"
+              class="px-5 py-2 rounded-full text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-phys-600 dark:hover:text-phys-300 transition-colors"
+              >EDUPHYS VERSE</a
+            >
+          </nav>
+
+          <!-- Right Actions -->
+          <div class="flex items-center gap-4">
+            <!-- Dark Mode Toggle -->
+            <button
+              id="theme-toggle"
+              class="w-10 h-10 rounded-full flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors border border-slate-200 dark:border-slate-700"
+            >
+              <i class="fa-solid fa-moon dark:hidden text-lg"></i>
+              <i
+                class="fa-solid fa-sun hidden dark:block text-lg text-yellow-400"
+              ></i>
+            </button>
+
+            <!-- Mobile Menu Button -->
+            <button
+              id="mobile-menu-btn"
+              class="md:hidden w-10 h-10 rounded-xl flex flex-col items-center justify-center gap-[5px] bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+            >
+              <span
+                class="w-5 h-[2px] bg-slate-600 dark:bg-slate-300 transition-all duration-300"
+                id="bar1"
+              ></span>
+              <span
+                class="w-5 h-[2px] bg-slate-600 dark:bg-slate-300 transition-all duration-300"
+                id="bar2"
+              ></span>
+              <span
+                class="w-5 h-[2px] bg-slate-600 dark:bg-slate-300 transition-all duration-300"
+                id="bar3"
+              ></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Navigation Menu -->
+      <div
+        id="mobile-menu"
+        class="absolute top-20 left-0 w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 transition-all duration-300 origin-top scale-y-0 opacity-0 overflow-hidden shadow-2xl"
+      >
+        <nav class="flex flex-col p-4 space-y-2">
+          <a
+            href="../physstudysexpert/physstudysexpert.html"
+            class="px-4 py-3 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+          >
+            <i class="fa-solid fa-graduation-cap w-6 text-slate-400"></i>
+            EDUPHYS EXPERT
+          </a>
+          <a
+            href="../physstudyjunior/physstudyjunior.html"
+            class="px-4 py-3 rounded-xl text-sm font-medium bg-phys-50 dark:bg-phys-500/10 text-phys-600 dark:text-phys-400 transition-colors border border-phys-100 dark:border-phys-500/20"
+          >
+            <i class="fa-solid fa-atom w-6"></i> EDUPHYS JUNIOR
+          </a>
+          <a
+            href="../eduphys/eduphys.html"
+            class="px-4 py-3 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+          >
+            <i class="fa-solid fa-book w-6 text-slate-400"></i> EDUPHYS
+          </a>
+          <a
+            href="../physverse/physverse.html"
+            class="px-4 py-3 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+          >
+            <i class="fa-solid fa-vr-cardboard w-6 text-slate-400"></i> EDUPHYS
+            VERSE
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-grow pt-32 pb-20 relative z-10">
+      <div class="container mx-auto px-4 lg:px-8">
+        <!-- HERO SECTION -->
+        <section class="text-center max-w-4xl mx-auto mb-16 animate-float">
+          <div
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-phys-100 dark:bg-phys-500/10 text-phys-600 dark:text-phys-400 text-sm font-medium mb-6 border border-phys-200 dark:border-phys-500/20"
+          >
+            <i class="fa-solid fa-rocket"></i> Nền tảng học tập tương tác
+          </div>
+          <h1
+            class="text-4xl md:text-6xl font-tech font-bold text-slate-900 dark:text-white mb-6 leading-tight"
+          >
+            Chào mừng đến với <br />
+            <span class="text-gradient">PhysStudy Junior</span>
+          </h1>
+          <p
+            class="text-lg text-slate-600 dark:text-slate-400 mb-10 max-w-2xl mx-auto"
+          >
+            Khám phá Vật lý THCS: Từ lực đến điện học một cách trực quan, sinh
+            động và dễ hiểu nhất.
+          </p>
+
+          <!-- Progress Bar -->
+          <div
+            class="max-w-md mx-auto bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-lg"
+          >
+            <div class="flex justify-between items-center mb-2">
+              <span
+                class="text-sm font-semibold text-slate-700 dark:text-slate-300"
+                >Tiến độ học tập</span
+              >
+              <span class="text-sm font-bold text-phys-600 dark:text-phys-400"
+                >0%</span
+              >
+            </div>
+            <div
+              class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3 overflow-hidden"
+            >
+              <div
+                class="bg-gradient-to-r from-phys-400 to-blue-500 h-3 rounded-full transition-all duration-1000 ease-out"
+                style="width: 0%"
+              ></div>
+            </div>
+            <p
+              class="text-xs text-slate-500 dark:text-slate-400 mt-3 text-left"
+            >
+              <i class="fa-solid fa-circle-info text-phys-500 mr-1"></i> Bắt đầu
+              hành trình khám phá ngay hôm nay!
+            </p>
+          </div>
+        </section>
+
+        <!-- FILTER TABS -->
+        <section class="mb-12">
+          <div
+            class="flex justify-start md:justify-center overflow-x-auto no-scrollbar pb-4 gap-3 border-b border-slate-200 dark:border-slate-800"
+          >
+            <button
+              class="filter-btn active whitespace-nowrap px-6 py-3 rounded-t-xl text-sm font-semibold transition-all duration-300 relative text-phys-600 dark:text-phys-400 bg-phys-50 dark:bg-phys-500/10 border border-b-0 border-phys-200 dark:border-phys-500/20"
+              data-grade="all"
+            >
+              <i class="fa-solid fa-layer-group mr-2"></i> Tổng quan
+            </button>
+            <button
+              class="filter-btn whitespace-nowrap px-6 py-3 rounded-t-xl text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-300 border border-transparent border-b-0"
+              data-grade="6"
+            >
+              Lớp 6
+            </button>
+            <button
+              class="filter-btn whitespace-nowrap px-6 py-3 rounded-t-xl text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-300 border border-transparent border-b-0"
+              data-grade="7"
+            >
+              Lớp 7
+            </button>
+            <button
+              class="filter-btn whitespace-nowrap px-6 py-3 rounded-t-xl text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-300 border border-transparent border-b-0"
+              data-grade="8"
+            >
+              Lớp 8
+            </button>
+            <button
+              class="filter-btn whitespace-nowrap px-6 py-3 rounded-t-xl text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-300 border border-transparent border-b-0"
+              data-grade="9"
+            >
+              Lớp 9
+            </button>
+          </div>
+        </section>
+
+        <!-- COURSE GRID -->
+        <section>
+          <div
+            id="course-grid"
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          >
+            <!-- Course cards will be rendered here by JavaScript -->
+          </div>
+
+          <!-- Empty state (hidden by default) -->
+          <div
+            id="empty-state"
+            class="hidden flex-col items-center justify-center py-20 text-center"
+          >
+            <div
+              class="w-24 h-24 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center text-4xl text-slate-400 mb-4"
+            >
+              <i class="fa-solid fa-ghost"></i>
+            </div>
+            <h3
+              class="text-xl font-semibold text-slate-800 dark:text-slate-200"
+            >
+              Không tìm thấy bài học
+            </h3>
+            <p class="text-slate-500 dark:text-slate-400 mt-2">
+              Vui lòng chọn danh mục khác.
+            </p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer
+      class="mt-auto border-t border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md relative z-10"
+    >
+      <div class="container mx-auto px-4 py-8">
+        <div
+          class="flex flex-col md:flex-row justify-between items-center gap-4"
+        >
+          <div class="flex items-center gap-2 text-slate-800 dark:text-white">
+            <i class="fa-solid fa-atom text-phys-500 text-xl"></i>
+            <span class="font-tech font-bold text-lg">EDUMATTER</span>
+          </div>
+          <div class="text-sm text-slate-500 dark:text-slate-400">
+            &copy; <span id="year">2026</span> EDUMATTER Platform. All rights
+            reserved.
+          </div>
+          <div class="flex gap-4">
+            <a
+              href="#"
+              class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-phys-500 hover:text-white dark:hover:bg-phys-500 transition-colors"
+            >
+              <i class="fa-brands fa-facebook-f"></i>
+            </a>
+            <a
+              href="#"
+              class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-phys-500 hover:text-white dark:hover:bg-phys-500 transition-colors"
+            >
+              <i class="fa-brands fa-youtube"></i>
+            </a>
+            <a
+              href="#"
+              class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-phys-500 hover:text-white dark:hover:bg-phys-500 transition-colors"
+            >
+              <i class="fa-brands fa-github"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+      // 1. DATA CẤU TRÚC (COURSE DATA)
+      const coursesData = [
+        // LỚP 6
+        {
+          title: "Lực trong cuộc sống",
+          grade: "6",
+          slug: "luctrongcuocsong",
+          icon: "fa-hand-fist",
+        },
+        { title: "Năng lượng", grade: "6", slug: "nangluong", icon: "fa-bolt" },
+        {
+          title: "Trái đất và bầu trời",
+          grade: "6",
+          slug: "traidatvabautroi",
+          icon: "fa-earth-americas",
+        },
+        // LỚP 7
+        { title: "Tốc độ", grade: "7", slug: "tocdo", icon: "fa-gauge-high" },
+        {
+          title: "Âm thanh",
+          grade: "7",
+          slug: "amthanh",
+          icon: "fa-volume-high",
+        },
+        {
+          title: "Ánh sáng",
+          grade: "7",
+          slug: "anhsang",
+          icon: "fa-lightbulb",
+        },
+        { title: "Từ", grade: "7", slug: "tu", icon: "fa-magnet" },
+        // LỚP 8
+        {
+          title: "Khối lượng riêng và áp suất",
+          grade: "8",
+          slug: "khoiluongrieng",
+          icon: "fa-weight-scale",
+        },
+        {
+          title: "Tác dụng làm quay của lực",
+          grade: "8",
+          slug: "tacdungluc",
+          icon: "fa-rotate",
+        },
+        { title: "Điện", grade: "8", slug: "dien", icon: "fa-plug" },
+        {
+          title: "Nhiệt",
+          grade: "8",
+          slug: "nhiet",
+          icon: "fa-temperature-half",
+        },
+        // LỚP 9
+        {
+          title: "Năng lượng cơ học",
+          grade: "9",
+          slug: "nangluongcohoc",
+          icon: "fa-gears",
+        },
+        { title: "Ánh sáng", grade: "9", slug: "anhsang9", icon: "fa-sun" },
+        {
+          title: "Điện",
+          grade: "9",
+          slug: "dien9",
+          icon: "fa-plug-circle-bolt",
+        },
+        { title: "Điện tử", grade: "9", slug: "dientu", icon: "fa-microchip" },
+        {
+          title: "Năng lượng với cuộc sống",
+          grade: "9",
+          slug: "nangluongcs",
+          icon: "fa-leaf",
+        },
+      ];
+
+      // 2. RENDER LOGIC
+      const gridContainer = document.getElementById("course-grid");
+      const emptyState = document.getElementById("empty-state");
+
+      function renderCourses(gradeFilter = "all") {
+        // Lọc dữ liệu
+        const filteredData =
+          gradeFilter === "all"
+            ? coursesData
+            : coursesData.filter((course) => course.grade === gradeFilter);
+
+        // Clear grid
+        gridContainer.innerHTML = "";
+
+        if (filteredData.length === 0) {
+          gridContainer.style.display = "none";
+          emptyState.style.display = "flex";
+          return;
+        }
+
+        gridContainer.style.display = "grid";
+        emptyState.style.display = "none";
+
+        // Hiệu ứng delay xuất hiện
+        filteredData.forEach((course, index) => {
+          const delay = index * 50; // 50ms stagger effect
+
+          // Tạo thẻ a (link)
+          const card = document.createElement("a");
+          card.href = `./${course.slug}/${course.slug}.html`;
+          card.className = `group block relative p-6 rounded-2xl bg-white/70 dark:bg-slate-800/70 backdrop-blur-md border border-slate-200 dark:border-slate-700 hover:border-phys-400 dark:hover:border-phys-400 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_30px_-10px_rgba(6,182,212,0.4)] opacity-0 animate-[fadeIn_0.5s_ease-out_forwards]`;
+          card.style.animationDelay = `${delay}ms`;
+
+          // Cấu trúc Card HTML
+          card.innerHTML = `
+                    <!-- Background Glow Hover -->
+                    <div class="absolute inset-0 bg-gradient-to-br from-phys-400/5 to-blue-500/5 dark:from-phys-400/10 dark:to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
+                    
+                    <div class="relative z-10 flex flex-col items-center text-center space-y-4">
+                        <!-- Icon Container -->
+                        <div class="w-16 h-16 rounded-2xl flex items-center justify-center bg-phys-100 dark:bg-phys-500/20 text-phys-600 dark:text-phys-400 group-hover:scale-110 group-hover:bg-phys-500 group-hover:text-white dark:group-hover:bg-phys-400 dark:group-hover:text-slate-900 transition-all duration-300 shadow-sm">
+                            <i class="fa-solid ${course.icon} text-2xl"></i>
+                        </div>
+                        
+                        <!-- Content -->
+                        <div class="flex-grow flex flex-col justify-between">
+                            <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 group-hover:text-phys-600 dark:group-hover:text-phys-400 transition-colors mb-2 leading-tight">
+                                ${course.title}
+                            </h3>
+                            <div>
+                                <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600">
+                                    Lớp ${course.grade}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Arrow -->
+                        <div class="absolute bottom-4 right-4 text-slate-300 dark:text-slate-600 group-hover:text-phys-500 dark:group-hover:text-phys-400 transform translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
+                `;
+
+          gridContainer.appendChild(card);
+        });
+      }
+
+      // Add Keyframe for fade in
+      const styleSheet = document.createElement("style");
+      styleSheet.textContent = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        `;
+      document.head.appendChild(styleSheet);
+
+      // Khởi tạo render lần đầu
+      renderCourses();
+
+      // 3. FILTER TABS LOGIC
+      const filterBtns = document.querySelectorAll(".filter-btn");
+
+      filterBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          // Remove active class from all
+          filterBtns.forEach((b) => {
+            b.classList.remove(
+              "active",
+              "text-phys-600",
+              "dark:text-phys-400",
+              "bg-phys-50",
+              "dark:bg-phys-500/10",
+              "border-phys-200",
+              "dark:border-phys-500/20",
+            );
+            b.classList.add(
+              "text-slate-500",
+              "dark:text-slate-400",
+              "border-transparent",
+            );
+          });
+
+          // Add active class to clicked button
+          btn.classList.add(
+            "active",
+            "text-phys-600",
+            "dark:text-phys-400",
+            "bg-phys-50",
+            "dark:bg-phys-500/10",
+            "border-phys-200",
+            "dark:border-phys-500/20",
+          );
+          btn.classList.remove(
+            "text-slate-500",
+            "dark:text-slate-400",
+            "border-transparent",
+          );
+
+          // Render dữ liệu
+          const grade = btn.getAttribute("data-grade");
+          renderCourses(grade);
+        });
+      });
+
+      // 4. DARK MODE LOGIC
+      const themeToggleBtn = document.getElementById("theme-toggle");
+      const htmlElement = document.documentElement;
+
+      // Kiểm tra preference đã lưu
+      if (localStorage.getItem("theme") === "light") {
+        htmlElement.classList.remove("dark");
+      }
+
+      themeToggleBtn.addEventListener("click", () => {
+        htmlElement.classList.toggle("dark");
+        if (htmlElement.classList.contains("dark")) {
+          localStorage.setItem("theme", "dark");
+        } else {
+          localStorage.setItem("theme", "light");
+        }
+      });
+
+      // 5. MOBILE MENU LOGIC
+      const mobileMenuBtn = document.getElementById("mobile-menu-btn");
+      const mobileMenu = document.getElementById("mobile-menu");
+      const bar1 = document.getElementById("bar1");
+      const bar2 = document.getElementById("bar2");
+      const bar3 = document.getElementById("bar3");
+      let isMenuOpen = false;
+
+      mobileMenuBtn.addEventListener("click", () => {
+        isMenuOpen = !isMenuOpen;
+
+        if (isMenuOpen) {
+          // Mở menu
+          mobileMenu.classList.remove("scale-y-0", "opacity-0");
+          mobileMenu.classList.add("scale-y-100", "opacity-100");
+
+          // Animation Hamburger to X
+          bar1.style.transform = "rotate(45deg) translate(5px, 5px)";
+          bar2.style.opacity = "0";
+          bar3.style.transform = "rotate(-45deg) translate(5px, -5px)";
+        } else {
+          // Đóng menu
+          mobileMenu.classList.remove("scale-y-100", "opacity-100");
+          mobileMenu.classList.add("scale-y-0", "opacity-0");
+
+          // Animation X to Hamburger
+          bar1.style.transform = "none";
+          bar2.style.opacity = "1";
+          bar3.style.transform = "none";
+        }
+      });
+
+      // Cập nhật năm ở Footer
+      document.getElementById("year").textContent = new Date().getFullYear();
+
+      // 6. HEADER SCROLL EFFECT
+      const header = document.getElementById("header");
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 20) {
+          header.classList.add("shadow-md");
+        } else {
+          header.classList.remove("shadow-md");
+        }
+      });
+
+      // 7. PARTICLES BACKGROUND ANIMATION
+      const canvas = document.getElementById("particles-bg");
+      const ctx = canvas.getContext("2d");
+
+      let width, height;
+      let particles = [];
+
+      function resizeCanvas() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      }
+
+      window.addEventListener("resize", resizeCanvas);
+      resizeCanvas();
+
+      class Particle {
+        constructor() {
+          this.x = Math.random() * width;
+          this.y = Math.random() * height;
+          this.size = Math.random() * 2;
+          this.speedX = Math.random() * 0.5 - 0.25;
+          this.speedY = Math.random() * 0.5 - 0.25;
+          // Màu sắc hạt mang tính vật lý (Cyan/Blue nhạt)
+          this.color = document.documentElement.classList.contains("dark")
+            ? `rgba(6, 182, 212, ${Math.random() * 0.3})`
+            : `rgba(6, 182, 212, ${Math.random() * 0.5})`;
+        }
+
+        update() {
+          this.x += this.speedX;
+          this.y += this.speedY;
+
+          if (this.x > width) this.x = 0;
+          else if (this.x < 0) this.x = width;
+
+          if (this.y > height) this.y = 0;
+          else if (this.y < 0) this.y = height;
+        }
+
+        draw() {
+          ctx.fillStyle = this.color;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      function initParticles() {
+        particles = [];
+        const particleCount = Math.min(window.innerWidth / 15, 100); // Tối ưu số lượng hạt trên mobile
+        for (let i = 0; i < particleCount; i++) {
+          particles.push(new Particle());
+        }
+      }
+
+      function animateParticles() {
+        ctx.clearRect(0, 0, width, height);
+
+        // Cập nhật lại màu hạt nếu đổi theme
+        const isDark = document.documentElement.classList.contains("dark");
+
+        particles.forEach((p) => {
+          // Update opacity based on theme dynamically
+          const currentAlpha = parseFloat(p.color.split(",")[3]);
+          p.color = isDark
+            ? `rgba(34, 211, 238, ${Math.min(currentAlpha, 0.3)})`
+            : `rgba(8, 145, 178, ${Math.max(currentAlpha, 0.2)})`;
+
+          p.update();
+          p.draw();
+        });
+
+        // Vẽ đường nối các hạt gần nhau
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < 100) {
+              ctx.beginPath();
+              ctx.strokeStyle = isDark
+                ? `rgba(34, 211, 238, ${0.1 - distance / 1000})`
+                : `rgba(8, 145, 178, ${0.1 - distance / 1000})`;
+              ctx.lineWidth = 0.5;
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+
+        requestAnimationFrame(animateParticles);
+      }
+
+      initParticles();
+      animateParticles();
+    </script>
+  </body>
+</html>

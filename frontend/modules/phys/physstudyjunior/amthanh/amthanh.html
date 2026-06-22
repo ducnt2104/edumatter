@@ -1,0 +1,3364 @@
+<!doctype html>
+<html lang="vi" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EduPhys - Chương 4: Âm Thanh | Học liệu số STEM EduMatter</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+              display: ["Space Grotesk", "sans-serif"],
+            },
+            colors: {
+              brand: {
+                50: "#f5f7ff",
+                100: "#ebf0ff",
+                200: "#d6e0ff",
+                500: "#3b82f6",
+                600: "#2563eb",
+                700: "#1d4ed8",
+                900: "#1e3a8a",
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <!-- Font Awesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- GSAP (GreenSock Animation Platform) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+      /* Aurora & Glassmorphism Styles */
+      .aurora-bg {
+        background:
+          radial-gradient(
+            circle at 10% 20%,
+            rgba(59, 130, 246, 0.15) 0%,
+            transparent 40%
+          ),
+          radial-gradient(
+            circle at 90% 80%,
+            rgba(147, 51, 234, 0.15) 0%,
+            transparent 45%
+          ),
+          radial-gradient(
+            circle at 50% 50%,
+            rgba(16, 185, 129, 0.08) 0%,
+            transparent 50%
+          );
+      }
+      .dark .aurora-bg {
+        background:
+          radial-gradient(
+            circle at 10% 20%,
+            rgba(29, 78, 216, 0.25) 0%,
+            transparent 40%
+          ),
+          radial-gradient(
+            circle at 90% 80%,
+            rgba(109, 40, 217, 0.25) 0%,
+            transparent 45%
+          ),
+          radial-gradient(
+            circle at 50% 50%,
+            rgba(6, 95, 70, 0.12) 0%,
+            transparent 50%
+          );
+      }
+      .glassmorphism {
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+      }
+      .dark .glassmorphism {
+        background: rgba(15, 23, 42, 0.65);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 1rem;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        transition: all 0.3s ease;
+      }
+      .dark .glass-card {
+        background: rgba(30, 41, 59, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.03);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+      }
+      .glass-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 40px rgba(59, 130, 246, 0.1);
+        border-color: rgba(59, 130, 246, 0.3);
+      }
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(156, 163, 175, 0.5);
+        border-radius: 9999px;
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: rgba(75, 85, 99, 0.5);
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(107, 114, 128, 0.7);
+      }
+      /* Floating animations */
+      @keyframes float-slow {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-10px) rotate(2deg);
+        }
+      }
+      .animate-float {
+        animation: float-slow 6s ease-in-out infinite;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 aurora-bg min-h-screen"
+  >
+    <!-- HEADER (FIXED) -->
+    <header
+      class="fixed top-0 left-0 right-0 z-50 glassmorphism shadow-sm transition-all duration-300"
+    >
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between"
+      >
+        <div class="flex items-center gap-3">
+          <span
+            class="text-2xl font-bold font-display tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500 dark:from-blue-400 dark:to-indigo-300 flex items-center gap-2"
+          >
+            <i class="fa-solid fa-bolt text-amber-500 animate-pulse"></i>
+            EduPhys
+          </span>
+          <span
+            class="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 font-medium"
+            >STEM KHTN 7</span
+          >
+        </div>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex items-center gap-6">
+          <a
+            href="#overview"
+            class="text-sm font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            >Tổng quan</a
+          >
+          <a
+            href="#bai-12"
+            class="text-sm font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            >Bài 12: Sóng âm</a
+          >
+          <a
+            href="#bai-13"
+            class="text-sm font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            >Bài 13: Độ cao & To</a
+          >
+          <a
+            href="#bai-14"
+            class="text-sm font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            >Bài 14: Phản xạ & Tiếng ồn</a
+          >
+          <a
+            href="#detailed-content"
+            class="text-sm font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            >Nội dung chi tiết</a
+          >
+        </nav>
+
+        <div class="flex items-center gap-4">
+          <!-- Theme Toggle -->
+          <button
+            id="theme-toggle"
+            class="p-2 rounded-full hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all text-slate-600 dark:text-slate-300"
+            aria-label="Toggle Dark Mode"
+          >
+            <i class="fa-solid fa-moon dark:hidden text-lg"></i>
+            <i
+              class="fa-solid fa-sun hidden dark:block text-lg text-amber-400"
+            ></i>
+          </button>
+          <!-- Mobile Menu Button -->
+          <button
+            id="mobile-menu-btn"
+            class="md:hidden p-2 rounded-lg hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all text-slate-600 dark:text-slate-300"
+          >
+            <i class="fa-solid fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+      <!-- Mobile Dropdown Navigation -->
+      <div
+        id="mobile-menu"
+        class="hidden md:hidden glassmorphism border-t border-slate-200/50 dark:border-slate-800/50 px-4 py-4 flex flex-col gap-3"
+      >
+        <a
+          href="#overview"
+          class="mobile-nav-link text-sm font-medium py-2 px-3 rounded-lg hover:bg-blue-500/10 transition-all"
+          >Tổng quan chương</a
+        >
+        <a
+          href="#bai-12"
+          class="mobile-nav-link text-sm font-medium py-2 px-3 rounded-lg hover:bg-blue-500/10 transition-all"
+          >Bài 12: Sóng âm</a
+        >
+        <a
+          href="#bai-13"
+          class="mobile-nav-link text-sm font-medium py-2 px-3 rounded-lg hover:bg-blue-500/10 transition-all"
+          >Bài 13: Độ cao & To</a
+        >
+        <a
+          href="#bai-14"
+          class="mobile-nav-link text-sm font-medium py-2 px-3 rounded-lg hover:bg-blue-500/10 transition-all"
+          >Bài 14: Phản xạ & Tiếng ồn</a
+        >
+        <a
+          href="#detailed-content"
+          class="mobile-nav-link text-sm font-medium py-2 px-3 rounded-lg hover:bg-blue-500/10 transition-all"
+          >Nội dung chi tiết</a
+        >
+      </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section
+      class="relative min-h-screen pt-16 flex flex-col items-center justify-center overflow-hidden px-4 md:px-8 border-b border-slate-200/30 dark:border-slate-800/30"
+    >
+      <!-- Background Canvas animation for Sound Wave Speaker -->
+      <canvas
+        id="hero-canvas"
+        class="absolute inset-0 z-0 pointer-events-none w-full h-full opacity-40 dark:opacity-20"
+      ></canvas>
+
+      <div
+        class="relative z-10 max-w-5xl mx-auto text-center flex flex-col items-center gap-6 py-12"
+      >
+        <span
+          class="px-4 py-1.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider animate-bounce"
+        >
+          Hệ sinh thái EduMatter • KHTN Vật Lý 7
+        </span>
+        <h1
+          class="text-5xl md:text-8xl font-black font-display leading-tight tracking-tight text-slate-900 dark:text-white drop-shadow-sm"
+        >
+          CHƯƠNG 4<br />
+          <span
+            class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400"
+            >ÂM THANH</span
+          >
+        </h1>
+        <p
+          class="text-lg md:text-2xl text-slate-600 dark:text-slate-300 max-w-3xl font-light leading-relaxed"
+        >
+          Khám phá thế giới dao động kỳ thú, sự lan truyền của sóng âm, các hiện
+          tượng phản xạ âm và ứng dụng giảm thiểu ô nhiễm tiếng ồn trong đời
+          sống thực tế.
+        </p>
+
+        <div
+          class="flex flex-col sm:flex-row gap-4 mt-4 w-full justify-center max-w-md"
+        >
+          <a
+            href="#overview"
+            class="flex-1 px-8 py-4 rounded-xl font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-center shadow-lg hover:shadow-indigo-500/30 transition-all transform hover:-translate-y-0.5"
+          >
+            <i class="fa-solid fa-compass mr-2"></i> Bắt đầu khám phá
+          </a>
+          <a
+            href="#detailed-content"
+            class="flex-1 px-8 py-4 rounded-xl font-semibold glassmorphism border border-slate-300 dark:border-slate-700 hover:bg-slate-200/40 text-center transition-all"
+          >
+            📚 Lý thuyết chi tiết
+          </a>
+        </div>
+
+        <!-- Dashboard statistics widget to spark interest -->
+        <div
+          class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full mt-12 bg-white/20 dark:bg-slate-900/30 p-4 rounded-2xl border border-slate-200/50 dark:border-slate-800/50 backdrop-blur-md"
+        >
+          <div class="p-3 text-center">
+            <div
+              class="text-3xl font-bold text-blue-600 dark:text-blue-400 font-display"
+            >
+              15
+            </div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">
+              Học phần tương tác
+            </div>
+          </div>
+          <div class="p-3 text-center">
+            <div
+              class="text-3xl font-bold text-indigo-600 dark:text-indigo-400 font-display"
+            >
+              30+
+            </div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">
+              Mô phỏng động
+            </div>
+          </div>
+          <div class="p-3 text-center">
+            <div
+              class="text-3xl font-bold text-purple-600 dark:text-purple-400 font-display"
+            >
+              75+
+            </div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">
+              Câu hỏi ôn luyện
+            </div>
+          </div>
+          <div class="p-3 text-center">
+            <div
+              class="text-3xl font-bold text-emerald-600 dark:text-emerald-400 font-display"
+            >
+              Web Audio
+            </div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">
+              Trải nghiệm âm thanh thật
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-1 opacity-70"
+      >
+        <span class="text-xs font-semibold tracking-widest uppercase"
+          >Cuộn xuống</span
+        >
+        <i class="fa-solid fa-chevron-down animate-bounce text-sm"></i>
+      </div>
+    </section>
+
+    <!-- TỔNG QUAN CHƯƠNG: Sơ đồ tư duy tương tác (Interactive Mindmap) -->
+    <section
+      id="overview"
+      class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-b border-slate-200/30 dark:border-slate-800/30"
+    >
+      <div class="text-center mb-16">
+        <span
+          class="text-blue-600 dark:text-blue-400 font-bold text-sm tracking-wider uppercase"
+          >Bản đồ kiến thức</span
+        >
+        <h2 class="text-3xl md:text-5xl font-extrabold font-display mt-2">
+          SƠ ĐỒ TƯ DUY CHƯƠNG 4
+        </h2>
+        <p class="text-slate-500 dark:text-slate-400 mt-4 max-w-2xl mx-auto">
+          Click vào các nút chủ đề để chuyển nhanh đến phân hệ học tập tương ứng
+          và bắt đầu thí nghiệm thực hành.
+        </p>
+      </div>
+
+      <!-- Mindmap Canvas Container -->
+      <div class="relative w-full overflow-x-auto py-8">
+        <div class="min-w-[900px] flex justify-center">
+          <div
+            class="relative w-[850px] h-[500px] bg-slate-100/50 dark:bg-slate-950/40 border border-slate-300/50 dark:border-slate-800/50 rounded-3xl overflow-hidden p-6 shadow-inner"
+          >
+            <div
+              class="absolute inset-0 bg-grid-slate-200 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-800 opacity-20"
+            ></div>
+
+            <!-- SVG Connecting Lines -->
+            <svg
+              class="absolute inset-0 w-full h-full pointer-events-none"
+              id="mindmap-lines"
+            >
+              <!-- Lines are drawn dynamically via Javascript or predefined here for absolute reliability -->
+              <line
+                x1="425"
+                y1="250"
+                x2="160"
+                y2="100"
+                stroke="#3b82f6"
+                stroke-width="2.5"
+                stroke-dasharray="4,4"
+              />
+              <line
+                x1="425"
+                y1="250"
+                x2="160"
+                y2="250"
+                stroke="#3b82f6"
+                stroke-width="2.5"
+              />
+              <line
+                x1="425"
+                y1="250"
+                x2="160"
+                y2="400"
+                stroke="#3b82f6"
+                stroke-width="2.5"
+                stroke-dasharray="4,4"
+              />
+
+              <line
+                x1="425"
+                y1="250"
+                x2="690"
+                y2="100"
+                stroke="#6366f1"
+                stroke-width="2.5"
+                stroke-dasharray="4,4"
+              />
+              <line
+                x1="425"
+                y1="250"
+                x2="690"
+                y2="250"
+                stroke="#6366f1"
+                stroke-width="2.5"
+              />
+              <line
+                x1="425"
+                y1="250"
+                x2="690"
+                y2="400"
+                stroke="#6366f1"
+                stroke-width="2.5"
+                stroke-dasharray="4,4"
+              />
+            </svg>
+
+            <!-- Central Node -->
+            <div
+              class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20"
+            >
+              <div
+                class="px-8 py-5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-2xl font-display font-bold text-xl text-center border-2 border-white/20 animate-pulse"
+              >
+                <i class="fa-solid fa-volume-high mb-1 block text-3xl"></i>
+                ÂM THANH
+              </div>
+            </div>
+
+            <!-- Left Nodes (Bài 12) -->
+            <div class="absolute left-10 top-12 z-10">
+              <a
+                href="#sec-1"
+                class="block px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-blue-500/30 hover:border-blue-500 hover:scale-105 transition-all shadow-md text-sm font-semibold"
+              >
+                🌱 Dao động
+              </a>
+            </div>
+            <div class="absolute left-5 top-[150px] z-10">
+              <a
+                href="#sec-2"
+                class="block px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-blue-500/30 hover:border-blue-500 hover:scale-105 transition-all shadow-md text-sm font-semibold"
+              >
+                〰️ Sóng & Sóng âm
+              </a>
+            </div>
+            <div class="absolute left-12 top-[230px] z-10">
+              <a
+                href="#sec-3"
+                class="block px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-blue-500/30 hover:border-blue-500 hover:scale-105 transition-all shadow-md text-sm font-semibold"
+              >
+                🔊 Nguồn âm
+              </a>
+            </div>
+            <div class="absolute left-10 top-[310px] z-10">
+              <a
+                href="#sec-5"
+                class="block px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-blue-500/30 hover:border-blue-500 hover:scale-105 transition-all shadow-md text-sm font-semibold"
+              >
+                🪨💧 Môi trường truyền âm
+              </a>
+            </div>
+
+            <!-- Right Nodes (Bài 13) -->
+            <div class="absolute right-10 top-12 z-10">
+              <a
+                href="#sec-6"
+                class="block px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-indigo-500/30 hover:border-indigo-500 hover:scale-105 transition-all shadow-md text-sm font-semibold"
+              >
+                📏 Biên độ dao động
+              </a>
+            </div>
+            <div class="absolute right-5 top-[150px] z-10">
+              <a
+                href="#sec-7"
+                class="block px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-indigo-500/30 hover:border-indigo-500 hover:scale-105 transition-all shadow-md text-sm font-semibold"
+              >
+                📢 Độ to của âm (dB)
+              </a>
+            </div>
+            <div class="absolute right-12 top-[230px] z-10">
+              <a
+                href="#sec-8"
+                class="block px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-indigo-500/30 hover:border-indigo-500 hover:scale-105 transition-all shadow-md text-sm font-semibold"
+              >
+                🌀 Tần số dao động (Hz)
+              </a>
+            </div>
+            <div class="absolute right-10 top-[310px] z-10">
+              <a
+                href="#sec-9"
+                class="block px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-indigo-500/30 hover:border-indigo-500 hover:scale-105 transition-all shadow-md text-sm font-semibold"
+              >
+                🎹 Độ cao của âm
+              </a>
+            </div>
+
+            <!-- Bottom Nodes (Bài 14) -->
+            <div class="absolute left-1/4 bottom-8 z-10 -translate-x-1/2">
+              <a
+                href="#sec-10"
+                class="block px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-purple-500/30 hover:border-purple-500 hover:scale-105 transition-all shadow-md text-sm font-semibold"
+              >
+                🪞 Phản xạ âm & Tiếng vang
+              </a>
+            </div>
+            <div class="absolute right-1/4 bottom-8 z-10 translate-x-1/2">
+              <a
+                href="#sec-14"
+                class="block px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-purple-500/30 hover:border-purple-500 hover:scale-105 transition-all shadow-md text-sm font-semibold"
+              >
+                🔇 Chống ô nhiễm tiếng ồn
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LESSON HEADER WRAPPER -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 space-y-32">
+      <!-- ================================================== -->
+      <!-- BÀI 12: SÓNG ÂM -->
+      <!-- ID: PHYS70412_18052026 -->
+      <!-- ================================================== -->
+      <div id="bai-12" class="space-y-24 scroll-mt-20">
+        <div class="border-l-4 border-blue-500 pl-4 py-2">
+          <span
+            class="text-xs uppercase font-bold tracking-widest text-blue-500"
+            >Bài 12</span
+          >
+          <h2
+            class="text-4xl md:text-6xl font-black font-display text-slate-900 dark:text-white"
+          >
+            SÓNG ÂM
+          </h2>
+          <p class="text-slate-500 dark:text-slate-400 mt-2">
+            Học về cơ chế sinh ra âm thanh, bản chất sóng âm và cách sóng âm lan
+            truyền qua các trạng thái môi trường vật chất.
+          </p>
+        </div>
+
+        <!-- SECTION 1: DAO ĐỘNG -->
+        <section id="sec-1" class="scroll-mt-24 space-y-12">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <!-- Theory Block -->
+            <div class="lg:col-span-4 space-y-6">
+              <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 text-xs font-semibold"
+              >
+                <span>Phần 1</span> • <span>Khái niệm cốt lõi</span>
+              </div>
+              <h3 class="text-2xl font-bold font-display">Dao Động Là Gì?</h3>
+              <div class="prose prose-slate dark:prose-invert">
+                <p class="leading-relaxed">
+                  Trong đời sống hàng ngày, chúng ta liên tục chứng kiến các
+                  chuyển động lặp đi lặp lại. Vật lý học định nghĩa:
+                </p>
+                <blockquote
+                  class="border-l-4 border-blue-500 pl-4 py-1 my-4 bg-blue-500/5 rounded-r-lg font-medium"
+                >
+                  <b class="text-blue-600 dark:text-blue-400">Dao động</b> là sự
+                  chuyển động qua lại của một vật xung quanh một vị trí xác định
+                  gọi là
+                  <b class="text-blue-600 dark:text-blue-400">vị trí cân bằng</b
+                  >.
+                </blockquote>
+                <p class="text-sm text-slate-500">
+                  Ví dụ: Chiếc võng đung đưa, chiếc lá rơi chao đảo trước gió,
+                  hay dây đàn rung động khi gảy đều được coi là dao động vật lý.
+                </p>
+              </div>
+            </div>
+
+            <!-- Visual and Sim Layout -->
+            <div class="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Visual 1 & 2 combined into dynamic Pendulum and Spring Canvas -->
+              <div class="glass-card p-6 flex flex-col justify-between">
+                <h4
+                  class="font-bold text-sm text-slate-500 uppercase tracking-wider mb-4"
+                >
+                  <i class="fa-solid fa-shapes mr-2"></i>Mô hình Con lắc & Lò xo
+                </h4>
+                <canvas
+                  id="pendulum-spring-canvas"
+                  class="w-full h-48 bg-slate-100 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800"
+                ></canvas>
+                <div class="mt-4 flex gap-2">
+                  <button
+                    onclick="setSimType('pendulum')"
+                    class="flex-1 py-2 text-xs font-bold rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                  >
+                    Con lắc
+                  </button>
+                  <button
+                    onclick="setSimType('spring')"
+                    class="flex-1 py-2 text-xs font-bold rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors"
+                  >
+                    Lò xo
+                  </button>
+                </div>
+              </div>
+
+              <!-- Interactive 1 & 2 controls -->
+              <div class="glass-card p-6 flex flex-col justify-between">
+                <h4
+                  class="font-bold text-sm text-slate-500 uppercase tracking-wider mb-4"
+                >
+                  <i class="fa-solid fa-sliders mr-2"></i>Bảng điều khiển động
+                </h4>
+                <div class="space-y-4">
+                  <div>
+                    <div
+                      class="flex justify-between text-xs font-semibold mb-1"
+                    >
+                      <span>Biên độ (A)</span>
+                      <span id="amp-val-1">50px</span>
+                    </div>
+                    <input
+                      type="range"
+                      id="amp-slider-1"
+                      min="10"
+                      max="100"
+                      value="50"
+                      class="w-full accent-blue-600"
+                    />
+                  </div>
+                  <div>
+                    <div
+                      class="flex justify-between text-xs font-semibold mb-1"
+                    >
+                      <span>Tần số (f)</span>
+                      <span id="freq-val-1">1.5 Hz</span>
+                    </div>
+                    <input
+                      type="range"
+                      id="freq-slider-1"
+                      min="0.5"
+                      max="4.0"
+                      step="0.1"
+                      value="1.5"
+                      class="w-full accent-blue-600"
+                    />
+                  </div>
+                </div>
+                <div
+                  class="mt-6 p-3 bg-blue-500/10 rounded-xl text-xs text-blue-700 dark:text-blue-300 border border-blue-500/20"
+                >
+                  <p class="font-semibold">
+                    <i class="fa-solid fa-lightbulb mr-1"></i> Quan sát:
+                  </p>
+                  <p>
+                    Tần số cao khiến vật chuyển động nhanh hơn. Biên độ lớn
+                    khiến khoảng cách dịch chuyển xa vị trí cân bằng hơn.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Simulation & Practice Area -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="glass-card p-6 flex flex-col justify-between">
+              <h4
+                class="font-bold text-sm text-slate-500 uppercase tracking-wider mb-2"
+              >
+                Sim 1: Thước thép dao động
+              </h4>
+              <canvas
+                id="ruler-sim-canvas"
+                class="w-full h-40 bg-slate-100 dark:bg-slate-900/50 rounded-xl"
+              ></canvas>
+              <button
+                onclick="triggerRulerPluck()"
+                class="mt-4 w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-xs"
+              >
+                <i class="fa-solid fa-hand-pointer mr-1"></i>Gảy thước thép
+              </button>
+            </div>
+
+            <div class="glass-card p-6 flex flex-col justify-between">
+              <h4
+                class="font-bold text-sm text-slate-500 uppercase tracking-wider mb-2"
+              >
+                Sim 2: Âm thoa dao động
+              </h4>
+              <canvas
+                id="tuning-fork-canvas"
+                class="w-full h-40 bg-slate-100 dark:bg-slate-900/50 rounded-xl"
+              ></canvas>
+              <button
+                onclick="triggerTuningFork()"
+                class="mt-4 w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold text-xs"
+              >
+                <i class="fa-solid fa-gavel mr-1"></i>Gõ âm thoa
+              </button>
+            </div>
+
+            <div class="glass-card p-6 flex flex-col justify-between">
+              <h4
+                class="font-bold text-sm text-slate-500 uppercase tracking-wider mb-2"
+              >
+                Nhận diện chuyển động
+              </h4>
+              <p class="text-xs text-slate-500 mb-4">
+                Kéo thả các chuyển động vào đúng phân loại để đạt điểm số hoàn
+                hảo.
+              </p>
+              <div id="drag-drop-sec1" class="space-y-3">
+                <div
+                  class="drag-item p-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg cursor-grab active:cursor-grabbing text-xs font-semibold"
+                  draggable="true"
+                  data-type="dao-dong"
+                >
+                  Con lắc đồng hồ đung đưa
+                </div>
+                <div
+                  class="drag-item p-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg cursor-grab active:cursor-grabbing text-xs font-semibold"
+                  draggable="true"
+                  data-type="chuyen-dong-thang"
+                >
+                  Ô tô đi thẳng trên đường
+                </div>
+                <div
+                  class="drag-item p-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg cursor-grab active:cursor-grabbing text-xs font-semibold"
+                  draggable="true"
+                  data-type="dao-dong"
+                >
+                  Dây đàn guitar đang rung động
+                </div>
+              </div>
+              <div class="mt-4 grid grid-cols-2 gap-2">
+                <div
+                  id="target-daodong"
+                  class="p-3 border-2 border-dashed border-blue-400 rounded-xl text-center text-xs font-bold min-h-16 flex flex-col justify-center bg-blue-50/20"
+                >
+                  Dao động
+                </div>
+                <div
+                  id="target-khac"
+                  class="p-3 border-2 border-dashed border-slate-400 rounded-xl text-center text-xs font-bold min-h-16 flex flex-col justify-center bg-slate-50/20"
+                >
+                  Chuyển động khác
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quiz Block -->
+          <div class="glass-card p-8 border-l-4 border-indigo-500">
+            <h4 class="text-xl font-bold font-display mb-4">
+              <i class="fa-solid fa-graduation-cap mr-2 text-indigo-500"></i>Thử
+              thách nhanh: Dao động
+            </h4>
+            <div class="space-y-4">
+              <p class="text-sm font-semibold">
+                Câu hỏi: Khi một vật dao động xung quanh vị trí cân bằng, khoảng
+                cách lớn nhất từ vị trí cân bằng đến vị trí biên được gọi là gì?
+              </p>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <button
+                  onclick="checkQuizAnswer(this, true)"
+                  class="quiz-btn text-left p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-indigo-50 dark:hover:bg-indigo-950/20 transition-all text-xs"
+                >
+                  A. Biên độ dao động
+                </button>
+                <button
+                  onclick="checkQuizAnswer(this, false)"
+                  class="quiz-btn text-left p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-indigo-50 dark:hover:bg-indigo-950/20 transition-all text-xs"
+                >
+                  B. Tần số dao động
+                </button>
+                <button
+                  onclick="checkQuizAnswer(this, false)"
+                  class="quiz-btn text-left p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-indigo-50 dark:hover:bg-indigo-950/20 transition-all text-xs"
+                >
+                  C. Chu kỳ dao động
+                </button>
+                <button
+                  onclick="checkQuizAnswer(this, false)"
+                  class="quiz-btn text-left p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-indigo-50 dark:hover:bg-indigo-950/20 transition-all text-xs"
+                >
+                  D. Quỹ đạo chuyển động
+                </button>
+              </div>
+              <p class="quiz-feedback hidden text-xs font-bold mt-2"></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 2: SÓNG -->
+        <section id="sec-2" class="scroll-mt-24 space-y-12">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div class="lg:col-span-4 space-y-6">
+              <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300 text-xs font-semibold"
+              >
+                <span>Phần 2</span> • <span>Sự lan truyền</span>
+              </div>
+              <h3 class="text-2xl font-bold font-display">Bản chất của Sóng</h3>
+              <div class="prose prose-slate dark:prose-invert">
+                <p class="leading-relaxed">
+                  Sóng xuất hiện khi dao động tại một điểm lan truyền ra toàn bộ
+                  không gian xung quanh thông qua các liên kết vật chất.
+                </p>
+                <blockquote
+                  class="border-l-4 border-indigo-500 pl-4 py-1 my-4 bg-indigo-500/5 rounded-r-lg font-medium"
+                >
+                  <b class="text-indigo-600 dark:text-indigo-400">Sóng</b> là sự
+                  lan truyền dao động trong môi trường theo thời gian. Khi sóng
+                  truyền đi, các phần tử môi trường chỉ dao động tại chỗ chứ
+                  không chuyển dịch theo chiều lan truyền của sóng.
+                </blockquote>
+              </div>
+            </div>
+
+            <div class="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Wave Simulator 2D & 3D representation -->
+              <div
+                class="glass-card p-6 flex flex-col justify-between col-span-1 md:col-span-2"
+              >
+                <div class="flex justify-between items-center mb-4">
+                  <h4
+                    class="font-bold text-sm text-slate-500 uppercase tracking-wider"
+                  >
+                    <i class="fa-solid fa-wave-square mr-2"></i>Bộ phát sóng
+                    liên tục (Wave Generator)
+                  </h4>
+                  <div class="flex gap-2">
+                    <button
+                      id="wave-mode-transverse"
+                      onclick="setWaveType('transverse')"
+                      class="px-3 py-1 rounded bg-blue-600 text-white text-xs font-semibold"
+                    >
+                      Sóng ngang (Sóng nước)
+                    </button>
+                    <button
+                      id="wave-mode-longitudinal"
+                      onclick="setWaveType('longitudinal')"
+                      class="px-3 py-1 rounded bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold"
+                    >
+                      Sóng dọc (Sóng lò xo)
+                    </button>
+                  </div>
+                </div>
+                <canvas
+                  id="wave-canvas"
+                  class="w-full h-52 bg-slate-100 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800"
+                ></canvas>
+                <div class="grid grid-cols-3 gap-4 mt-4">
+                  <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1"
+                      >Bước sóng (λ)</label
+                    >
+                    <input
+                      type="range"
+                      id="wave-len-slider"
+                      min="30"
+                      max="150"
+                      value="80"
+                      class="w-full accent-indigo-600"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1"
+                      >Biên độ (A)</label
+                    >
+                    <input
+                      type="range"
+                      id="wave-amp-slider"
+                      min="5"
+                      max="45"
+                      value="25"
+                      class="w-full accent-indigo-600"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1"
+                      >Tần số (f)</label
+                    >
+                    <input
+                      type="range"
+                      id="wave-freq-slider"
+                      min="1"
+                      max="10"
+                      value="5"
+                      class="w-full accent-indigo-600"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quiz Block -->
+          <div class="glass-card p-8 border-l-4 border-emerald-500">
+            <h4 class="text-xl font-bold font-display mb-4">
+              <i class="fa-solid fa-graduation-cap mr-2 text-emerald-500"></i
+              >Thử thách nhanh: Sóng cơ
+            </h4>
+            <div class="space-y-4">
+              <p class="text-sm font-semibold">
+                Câu hỏi: Khi sóng lan truyền trên mặt nước, các phân tử nước sẽ
+                di chuyển như thế nào?
+              </p>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <button
+                  onclick="checkQuizAnswer(this, false)"
+                  class="quiz-btn text-left p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 transition-all text-xs"
+                >
+                  A. Di chuyển liên tục từ nguồn sóng ra xa
+                </button>
+                <button
+                  onclick="checkQuizAnswer(this, true)"
+                  class="quiz-btn text-left p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 transition-all text-xs"
+                >
+                  B. Chỉ dao động tại chỗ quanh vị trí cân bằng
+                </button>
+                <button
+                  onclick="checkQuizAnswer(this, false)"
+                  class="quiz-btn text-left p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 transition-all text-xs"
+                >
+                  C. Di chuyển xoay tròn dọc theo lòng sông
+                </button>
+                <button
+                  onclick="checkQuizAnswer(this, false)"
+                  class="quiz-btn text-left p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 transition-all text-xs"
+                >
+                  D. Đứng yên hoàn toàn không chuyển động
+                </button>
+              </div>
+              <p class="quiz-feedback hidden text-xs font-bold mt-2"></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 3: NGUỒN ÂM -->
+        <section id="sec-3" class="scroll-mt-24 space-y-12">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div class="lg:col-span-4 space-y-6">
+              <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-100 dark:bg-teal-900/40 text-teal-800 dark:text-teal-300 text-xs font-semibold"
+              >
+                <span>Phần 3</span> • <span>Khởi tạo âm</span>
+              </div>
+              <h3 class="text-2xl font-bold font-display">Nguồn Âm Là Gì?</h3>
+              <div class="prose prose-slate dark:prose-invert">
+                <p class="leading-relaxed">
+                  Xung quanh ta có muôn vàn âm thanh khác nhau. Vật lý học nhóm
+                  các vật phát ra âm vào một khái niệm thống nhất.
+                </p>
+                <blockquote
+                  class="border-l-4 border-teal-500 pl-4 py-1 my-4 bg-teal-500/5 rounded-r-lg font-medium"
+                >
+                  <b class="text-teal-600 dark:text-teal-400">Nguồn âm</b> là
+                  những vật phát ra âm thanh. Đặc điểm chung của mọi nguồn âm là
+                  khi phát ra âm, chúng đều
+                  <b class="text-teal-600 dark:text-teal-400">dao động</b>.
+                </blockquote>
+              </div>
+            </div>
+
+            <!-- Interactive Instrument Lab (Guitar, Tuning Fork, Drum) with sound -->
+            <div class="lg:col-span-8 glass-card p-6">
+              <h4
+                class="font-bold text-sm text-slate-500 uppercase tracking-wider mb-6"
+              >
+                <i class="fa-solid fa-guitar mr-2"></i>Phòng Thử Nghiệm Nguồn Âm
+                (Web Audio API)
+              </h4>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div
+                  class="instrument-card border border-slate-200 dark:border-slate-800 p-4 rounded-xl text-center cursor-pointer hover:bg-teal-50 dark:hover:bg-teal-950/20 transition-all"
+                  onclick="playInstrument('guitar')"
+                >
+                  <span class="text-4xl block mb-2">🎸</span>
+                  <span class="font-bold text-sm block">Dây đàn Guitar</span>
+                  <span class="text-[10px] text-slate-400"
+                    >Gảy để rung phát âm</span
+                  >
+                </div>
+
+                <div
+                  class="instrument-card border border-slate-200 dark:border-slate-800 p-4 rounded-xl text-center cursor-pointer hover:bg-teal-50 dark:hover:bg-teal-950/20 transition-all"
+                  onclick="playInstrument('fork')"
+                >
+                  <span class="text-4xl block mb-2">🍴</span>
+                  <span class="font-bold text-sm block"
+                    >Âm thoa thí nghiệm</span
+                  >
+                  <span class="text-[10px] text-slate-400"
+                    >Gõ để dao động cộng hưởng</span
+                  >
+                </div>
+
+                <div
+                  class="instrument-card border border-slate-200 dark:border-slate-800 p-4 rounded-xl text-center cursor-pointer hover:bg-teal-50 dark:hover:bg-teal-950/20 transition-all"
+                  onclick="playInstrument('drum')"
+                >
+                  <span class="text-4xl block mb-2">🥁</span>
+                  <span class="font-bold text-sm block">Mặt trống da</span>
+                  <span class="text-[10px] text-slate-400"
+                    >Đập để dao động nén khí</span
+                  >
+                </div>
+              </div>
+
+              <!-- Real-time Visualizer of the selected instrument -->
+              <div
+                class="mt-6 bg-slate-900/90 rounded-xl p-4 border border-slate-800"
+              >
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs text-slate-400 font-semibold"
+                    ><i class="fa-solid fa-desktop mr-1"></i>Máy hiện sóng nguồn
+                    âm (Oscilloscope)</span
+                  >
+                  <span
+                    id="active-instrument-label"
+                    class="text-xs text-teal-400 font-bold"
+                    >Chưa kích hoạt</span
+                  >
+                </div>
+                <canvas
+                  id="oscilloscope-canvas"
+                  class="w-full h-24 bg-slate-950 rounded"
+                ></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 4: SÓNG ÂM (BẢN CHẤT KHÔNG KHÍ) -->
+        <section id="sec-4" class="scroll-mt-24 space-y-12">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div class="lg:col-span-4 space-y-6">
+              <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-100 dark:bg-violet-900/40 text-violet-800 dark:text-violet-300 text-xs font-semibold"
+              >
+                <span>Phần 4</span> • <span>Sóng âm</span>
+              </div>
+              <h3 class="text-2xl font-bold font-display">
+                Bản chất của Sóng Âm
+              </h3>
+              <div class="prose prose-slate dark:prose-invert">
+                <p class="leading-relaxed">
+                  Khi nguồn âm dao động, nó nén và giãn các lớp không khí liền
+                  kề, tạo ra chuỗi sóng nén - giãn tuần hoàn truyền đi xa.
+                </p>
+                <blockquote
+                  class="border-l-4 border-violet-500 pl-4 py-1 my-4 bg-violet-500/5 rounded-r-lg font-medium"
+                >
+                  <b class="text-violet-600 dark:text-violet-400">Sóng âm</b> là
+                  sóng dọc lan truyền trong môi trường vật chất đàn hồi. Cơ chế
+                  truyền là sự thay đổi mật độ phân tử khí biến thiên điều hòa
+                  theo thời gian.
+                </blockquote>
+              </div>
+            </div>
+
+            <!-- 2D Particle Compression Wave Simulator (Super Scientific) -->
+            <div class="lg:col-span-8 glass-card p-6">
+              <h4
+                class="font-bold text-sm text-slate-500 uppercase tracking-wider mb-4 flex items-center justify-between"
+              >
+                <span
+                  ><i class="fa-solid fa-wind mr-2"></i>Mô phỏng mật độ hạt
+                  không khí (Compression & Rarefaction)</span
+                >
+                <span
+                  class="text-xs px-2 py-0.5 rounded bg-violet-500/10 text-violet-500 font-mono"
+                  >2D Gas Kinetic</span
+                >
+              </h4>
+              <canvas
+                id="particle-wave-canvas"
+                class="w-full h-52 bg-slate-950 rounded-xl"
+              ></canvas>
+              <div class="mt-4 flex gap-4 items-center">
+                <div class="flex-1">
+                  <label class="block text-xs font-bold text-slate-500 mb-1"
+                    >Tần số dao động màng loa</label
+                  >
+                  <input
+                    type="range"
+                    id="particle-freq"
+                    min="2"
+                    max="15"
+                    value="6"
+                    class="w-full accent-violet-600"
+                  />
+                </div>
+                <div class="flex-1">
+                  <label class="block text-xs font-bold text-slate-500 mb-1"
+                    >Biên độ đẩy phân tử</label
+                  >
+                  <input
+                    type="range"
+                    id="particle-amp"
+                    min="5"
+                    max="25"
+                    value="12"
+                    class="w-full accent-violet-600"
+                  />
+                </div>
+              </div>
+              <p class="text-xs text-slate-400 mt-3 text-center">
+                Lớp khí chuyển màu đỏ biểu diễn vùng khí nén, màu xanh biểu diễn
+                vùng khí giãn cực đại.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 5: MÔI TRƯỜNG TRUYỀN ÂM -->
+        <section id="sec-5" class="scroll-mt-24 space-y-12">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div class="lg:col-span-4 space-y-6">
+              <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-100 dark:bg-rose-900/40 text-rose-800 dark:text-rose-300 text-xs font-semibold"
+              >
+                <span>Phần 5</span> • <span>Truyền dẫn</span>
+              </div>
+              <h3 class="text-2xl font-bold font-display">
+                Môi trường truyền âm
+              </h3>
+              <div class="prose prose-slate dark:prose-invert">
+                <p class="leading-relaxed">
+                  Sóng âm cần vật chất để lan truyền cơ năng. Do đó, môi trường
+                  truyền dẫn ảnh hưởng trực tiếp đến tốc độ và hiệu suất truyền
+                  âm.
+                </p>
+                <ul class="list-disc pl-5 text-sm space-y-2">
+                  <li>
+                    Âm truyền được qua <b>Chất rắn, Chất lỏng và Chất khí</b>.
+                  </li>
+                  <li>Tốc độ truyền âm giảm dần: <b>Rắn > Lỏng > Khí</b>.</li>
+                  <li>
+                    Âm <b>KHÔNG</b> truyền được trong môi trường chân không (do
+                    không có phân tử vật chất dao động).
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Realtime medium speed visualizer and simulation -->
+            <div class="lg:col-span-8 glass-card p-6">
+              <h4
+                class="font-bold text-sm text-slate-500 uppercase tracking-wider mb-4"
+              >
+                <i class="fa-solid fa-chart-bar mr-2"></i>So sánh tốc độ & Thí
+                nghiệm chuông chân không
+              </h4>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Chart.js Speed comparing -->
+                <div
+                  class="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200 dark:border-slate-800"
+                >
+                  <span class="text-xs font-bold text-slate-400 block mb-2"
+                    >Tốc độ truyền âm (m/s)</span
+                  >
+                  <div class="h-44">
+                    <canvas id="mediumChart"></canvas>
+                  </div>
+                </div>
+
+                <!-- Bell jar simulation (Chân không) -->
+                <div
+                  class="flex flex-col justify-between bg-slate-50 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200 dark:border-slate-800 text-center"
+                >
+                  <span
+                    class="text-xs font-bold text-slate-400 block text-left mb-2"
+                    >Thí nghiệm bình chuông úp</span
+                  >
+                  <div
+                    class="relative w-full h-32 bg-slate-950 rounded-lg flex items-center justify-center overflow-hidden"
+                  >
+                    <div
+                      id="bell-jar-outer"
+                      class="border-4 border-slate-500 rounded-t-full w-24 h-24 flex items-center justify-center relative"
+                    >
+                      <span id="vacuum-bell" class="text-3xl animate-bounce"
+                        >🔔</span
+                      >
+                      <div
+                        id="sound-ripples-vacuum"
+                        class="absolute inset-0 border-4 border-teal-400/40 rounded-full animate-ping"
+                      ></div>
+                    </div>
+                    <span
+                      id="vacuum-label"
+                      class="absolute bottom-1 right-2 text-[10px] bg-red-600 text-white px-1.5 py-0.5 rounded font-mono"
+                      >Bầu khí quyển</span
+                    >
+                  </div>
+                  <button
+                    id="btn-vacuum-toggle"
+                    onclick="toggleVacuum()"
+                    class="mt-4 w-full py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-bold text-xs"
+                  >
+                    Bơm hút chân không
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ================================================== -->
+      <!-- BÀI 13: ĐỘ CAO VÀ ĐỘ TO CỦA ÂM -->
+      <!-- ID: PHYS70413_18052026 -->
+      <!-- ================================================== -->
+      <div id="bai-13" class="space-y-24 scroll-mt-20">
+        <div class="border-l-4 border-indigo-500 pl-4 py-2">
+          <span
+            class="text-xs uppercase font-bold tracking-widest text-indigo-500"
+            >Bài 13</span
+          >
+          <h2
+            class="text-4xl md:text-6xl font-black font-display text-slate-900 dark:text-white"
+          >
+            ĐỘ CAO & ĐỘ TO
+          </h2>
+          <p class="text-slate-500 dark:text-slate-400 mt-2">
+            Nghiên cứu các đặc trưng sinh lý của âm thanh: Biên độ quyết định độ
+            to (dB), Tần số quyết định độ cao (Hz).
+          </p>
+        </div>
+
+        <!-- SECTION 6 & 7: BIÊN ĐỘ VÀ ĐỘ TO CỦA ÂM -->
+        <section id="sec-6" class="scroll-mt-24 space-y-12">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div class="lg:col-span-4 space-y-6">
+              <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 text-xs font-semibold"
+              >
+                <span>Phần 6 & 7</span> • <span>Năng lượng âm</span>
+              </div>
+              <h3 class="text-2xl font-bold font-display">
+                Biên Độ & Độ To Của ÂM
+              </h3>
+              <div class="prose prose-slate dark:prose-invert">
+                <p class="leading-relaxed">
+                  Biên độ dao động biểu diễn khoảng cách cực đại từ vị trí cân
+                  bằng đến điểm lệch lớn nhất. Biên độ tỉ lệ thuận với năng
+                  lượng âm.
+                </p>
+                <blockquote
+                  class="border-l-4 border-blue-500 pl-4 py-1 my-4 bg-blue-500/5 rounded-r-lg font-medium"
+                >
+                  Biên độ dao động của nguồn âm càng <b>lớn</b>, âm phát ra càng
+                  <b>to</b>. Độ to của âm được đo bằng đơn vị
+                  <b>Decibel (dB)</b>.
+                </blockquote>
+              </div>
+            </div>
+
+            <!-- Decibel Meter simulator with sound examples -->
+            <div class="lg:col-span-8 glass-card p-6">
+              <h4
+                class="font-bold text-sm text-slate-500 uppercase tracking-wider mb-4"
+              >
+                <i class="fa-solid fa-volume-up mr-2"></i>Thư viện âm thanh và
+                máy đo Decibel (dB)
+              </h4>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Interactive Decibel Meter Visualizer -->
+                <div
+                  class="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between"
+                >
+                  <span
+                    class="text-xs font-bold text-slate-400 block mb-2 text-center"
+                    >Decibel Meter Realtime</span
+                  >
+                  <div class="flex flex-col items-center justify-center py-4">
+                    <div
+                      id="decibel-value"
+                      class="text-5xl font-black font-display text-blue-600 dark:text-blue-400"
+                    >
+                      20 dB
+                    </div>
+                    <div
+                      id="decibel-severity"
+                      class="text-xs font-semibold mt-1 px-2.5 py-0.5 rounded bg-blue-500/10 text-blue-500 uppercase"
+                    >
+                      Thì thầm nhỏ nhẹ
+                    </div>
+                  </div>
+                  <div
+                    class="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-3 overflow-hidden"
+                  >
+                    <div
+                      id="decibel-bar"
+                      class="bg-gradient-to-r from-emerald-500 via-yellow-500 to-red-500 h-full w-[20%] transition-all duration-300"
+                    ></div>
+                  </div>
+                </div>
+
+                <!-- Interactive Sound Library -->
+                <div class="space-y-2">
+                  <span class="text-xs font-bold text-slate-400 block mb-2"
+                    >Chọn mẫu âm thanh để đo</span
+                  >
+                  <button
+                    onclick="selectDecibelSample(20, 'Thì thầm', 'whisper')"
+                    class="w-full text-left p-2 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs flex justify-between items-center"
+                  >
+                    <span>🤫 Tiếng thì thầm lá cây</span
+                    ><span class="font-bold font-mono">20 dB</span>
+                  </button>
+                  <button
+                    onclick="
+                      selectDecibelSample(
+                        50,
+                        'Nói chuyện bình thường',
+                        'normal',
+                      )
+                    "
+                    class="w-full text-left p-2 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs flex justify-between items-center"
+                  >
+                    <span>🗣️ Cuộc trò chuyện văn phòng</span
+                    ><span class="font-bold font-mono">50 dB</span>
+                  </button>
+                  <button
+                    onclick="
+                      selectDecibelSample(85, 'Giao thông tấp nập', 'traffic')
+                    "
+                    class="w-full text-left p-2 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs flex justify-between items-center"
+                  >
+                    <span>🚗 Giao thông đường phố</span
+                    ><span class="font-bold font-mono">85 dB</span>
+                  </button>
+                  <button
+                    onclick="
+                      selectDecibelSample(
+                        120,
+                        'Đau tai - Nguy hiểm',
+                        'jackhammer',
+                      )
+                    "
+                    class="w-full text-left p-2 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs flex justify-between items-center"
+                  >
+                    <span>🚧 Máy khoan búa phá bê tông</span
+                    ><span class="font-bold font-mono">120 dB</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 8 & 9: TẦN SỐ VÀ ĐỘ CAO CỦA ÂM -->
+        <section id="sec-8" class="scroll-mt-24 space-y-12">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div class="lg:col-span-4 space-y-6">
+              <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-100 dark:bg-violet-900/40 text-violet-800 dark:text-violet-300 text-xs font-semibold"
+              >
+                <span>Phần 8 & 9</span> • <span>Đặc tính âm sắc</span>
+              </div>
+              <h3 class="text-2xl font-bold font-display">
+                Tần Số & Độ Cao Của Âm
+              </h3>
+              <div class="prose prose-slate dark:prose-invert">
+                <p class="leading-relaxed">
+                  Tần số là số chu kỳ dao động hoàn toàn được thực hiện trong 1
+                  giây.
+                </p>
+                <p
+                  class="text-sm font-semibold text-violet-600 dark:text-violet-400 mb-2"
+                >
+                  Công thức tính tần số:
+                </p>
+                <div
+                  class="p-3 bg-violet-500/5 rounded-xl border border-violet-500/20 text-center font-mono text-lg mb-4"
+                >
+                  f = n / t
+                </div>
+                <p class="text-xs text-slate-500">
+                  Trong đó n là số dao động, t là thời gian (s), f là tần số đơn
+                  vị Hertz (Hz).
+                </p>
+                <blockquote
+                  class="border-l-4 border-violet-500 pl-4 py-1 my-4 bg-violet-500/5 rounded-r-lg font-medium"
+                >
+                  Tần số càng <b>lớn</b>, âm phát ra càng <b>cao (bổng)</b>. Tần
+                  số càng <b>nhỏ</b>, âm phát ra càng <b>thấp (trầm)</b>. Tai
+                  người nghe được tần số từ 20Hz đến 20000Hz.
+                </blockquote>
+              </div>
+            </div>
+
+            <!-- Piano / String Audio Sandbox (Using Web Audio API Oscillator) -->
+            <div class="lg:col-span-8 glass-card p-6">
+              <div class="flex justify-between items-center mb-6">
+                <h4
+                  class="font-bold text-sm text-slate-500 uppercase tracking-wider"
+                >
+                  <i class="fa-solid fa-keyboard mr-2"></i>Dụng cụ tạo tần số &
+                  Piano Synth tương tác
+                </h4>
+                <span
+                  class="text-xs px-2 py-0.5 rounded bg-violet-500/10 text-violet-500 font-mono"
+                  >Web Audio Engine</span
+                >
+              </div>
+
+              <!-- Realtime Audio Generator Slider -->
+              <div
+                class="p-4 bg-slate-100 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 mb-6"
+              >
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500"
+                    >Bộ phát tần số liên tục (Tùy chỉnh Hz)</span
+                  >
+                  <span
+                    id="custom-hz-label"
+                    class="text-sm font-bold font-mono text-violet-600 dark:text-violet-400"
+                    >440 Hz (Nốt La)</span
+                  >
+                </div>
+                <input
+                  type="range"
+                  id="hz-generator-slider"
+                  min="100"
+                  max="2000"
+                  value="440"
+                  class="w-full accent-violet-600"
+                />
+                <div class="flex gap-2 mt-3">
+                  <button
+                    onclick="startHzOscillator()"
+                    class="flex-1 py-1.5 bg-violet-600 text-white rounded text-xs font-bold hover:bg-violet-700 transition-colors"
+                  >
+                    Bật sóng liên tục
+                  </button>
+                  <button
+                    onclick="stopHzOscillator()"
+                    class="flex-1 py-1.5 bg-slate-300 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded text-xs font-bold hover:bg-slate-400 dark:hover:bg-slate-700 transition-colors"
+                  >
+                    Tắt sóng
+                  </button>
+                </div>
+              </div>
+
+              <!-- Mini Interactive Piano Keyboard -->
+              <div class="space-y-2">
+                <span class="text-xs font-bold text-slate-500 block"
+                  >Bấm các phím đàn bên dưới để so sánh độ cao nốt nhạc:</span
+                >
+                <div
+                  class="flex justify-between gap-1 select-none overflow-x-auto py-2"
+                >
+                  <div
+                    onclick="playPianoKey(261.63, 'Đô (C4)')"
+                    class="flex-1 min-w-10 h-24 bg-white border border-slate-300 rounded-b shadow-md hover:bg-slate-100 active:bg-slate-200 flex flex-col justify-end items-center pb-2 cursor-pointer text-slate-800"
+                  >
+                    <span class="text-xs font-bold font-mono">C4</span>
+                  </div>
+                  <div
+                    onclick="playPianoKey(293.66, 'Rê (D4)')"
+                    class="flex-1 min-w-10 h-24 bg-white border border-slate-300 rounded-b shadow-md hover:bg-slate-100 active:bg-slate-200 flex flex-col justify-end items-center pb-2 cursor-pointer text-slate-800"
+                  >
+                    <span class="text-xs font-bold font-mono">D4</span>
+                  </div>
+                  <div
+                    onclick="playPianoKey(329.63, 'Mi (E4)')"
+                    class="flex-1 min-w-10 h-24 bg-white border border-slate-300 rounded-b shadow-md hover:bg-slate-100 active:bg-slate-200 flex flex-col justify-end items-center pb-2 cursor-pointer text-slate-800"
+                  >
+                    <span class="text-xs font-bold font-mono">E4</span>
+                  </div>
+                  <div
+                    onclick="playPianoKey(349.23, 'Fa (F4)')"
+                    class="flex-1 min-w-10 h-24 bg-white border border-slate-300 rounded-b shadow-md hover:bg-slate-100 active:bg-slate-200 flex flex-col justify-end items-center pb-2 cursor-pointer text-slate-800"
+                  >
+                    <span class="text-xs font-bold font-mono">F4</span>
+                  </div>
+                  <div
+                    onclick="playPianoKey(392.0, 'Sol (G4)')"
+                    class="flex-1 min-w-10 h-24 bg-white border border-slate-300 rounded-b shadow-md hover:bg-slate-100 active:bg-slate-200 flex flex-col justify-end items-center pb-2 cursor-pointer text-slate-800"
+                  >
+                    <span class="text-xs font-bold font-mono">G4</span>
+                  </div>
+                  <div
+                    onclick="playPianoKey(440.0, 'La (A4)')"
+                    class="flex-1 min-w-10 h-24 bg-white border border-slate-300 rounded-b shadow-md hover:bg-slate-100 active:bg-slate-200 flex flex-col justify-end items-center pb-2 cursor-pointer text-slate-800"
+                  >
+                    <span class="text-xs font-bold font-mono">A4</span>
+                  </div>
+                  <div
+                    onclick="playPianoKey(493.88, 'Si (B4)')"
+                    class="flex-1 min-w-10 h-24 bg-white border border-slate-300 rounded-b shadow-md hover:bg-slate-100 active:bg-slate-200 flex flex-col justify-end items-center pb-2 cursor-pointer text-slate-800"
+                  >
+                    <span class="text-xs font-bold font-mono">B4</span>
+                  </div>
+                  <div
+                    onclick="playPianoKey(523.25, 'Đô (C5)')"
+                    class="flex-1 min-w-10 h-24 bg-white border border-slate-300 rounded-b shadow-md hover:bg-slate-100 active:bg-slate-200 flex flex-col justify-end items-center pb-2 cursor-pointer text-slate-800"
+                  >
+                    <span class="text-xs font-bold font-mono">C5</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ================================================== -->
+      <!-- BÀI 14: PHẢN XẠ ÂM, CHỐNG Ô NHIỄM TIẾNG ỒN -->
+      <!-- ID: PHYS70414_18052026 -->
+      <!-- ================================================== -->
+      <div id="bai-14" class="space-y-24 scroll-mt-20">
+        <div class="border-l-4 border-purple-500 pl-4 py-2">
+          <span
+            class="text-xs uppercase font-bold tracking-widest text-purple-500"
+            >Bài 14</span
+          >
+          <h2
+            class="text-4xl md:text-6xl font-black font-display text-slate-900 dark:text-white"
+          >
+            PHẢN XẠ ÂM & CHỐNG Ô NHIỄM TIẾNG ỒN
+          </h2>
+          <p class="text-slate-500 dark:text-slate-400 mt-2">
+            Tìm hiểu tương tác sóng âm với bề mặt vật cản, tính toán tiếng vang
+            và giải pháp cách âm quy chuẩn đô thị.
+          </p>
+        </div>
+
+        <!-- SECTION 10 & 11: PHẢN XẠ ÂM & TIẾNG VANG -->
+        <section id="sec-10" class="scroll-mt-24 space-y-12">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div class="lg:col-span-4 space-y-6">
+              <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300 text-xs font-semibold"
+              >
+                <span>Phần 10 & 11</span> • <span>Phản xạ cơ học</span>
+              </div>
+              <h3 class="text-2xl font-bold font-display">
+                Phản Xạ Âm & Tiếng Vang
+              </h3>
+              <div class="prose prose-slate dark:prose-invert">
+                <p class="leading-relaxed">
+                  Khi sóng âm lan truyền và va chạm với một ranh giới vật chất
+                  có mật độ khác biệt, một phần năng lượng âm sẽ bị hắt dội
+                  ngược trở lại.
+                </p>
+                <blockquote
+                  class="border-l-4 border-indigo-500 pl-4 py-1 my-4 bg-indigo-500/5 rounded-r-lg font-medium"
+                >
+                  <b class="text-indigo-600 dark:text-indigo-400">Tiếng vang</b>
+                  xuất hiện khi tai ta nghe thấy âm phản xạ cách biệt với âm
+                  trực tiếp một khoảng thời gian tối thiểu là
+                  <b>1/15 giây</b> (xấp xỉ 0,067s).
+                </blockquote>
+                <p
+                  class="text-sm font-semibold text-indigo-600 dark:text-indigo-400"
+                >
+                  Công thức tính khoảng cách giới hạn để có tiếng vang (với v =
+                  340m/s):
+                </p>
+                <div
+                  class="p-3 bg-indigo-500/5 rounded-xl border border-indigo-500/20 text-center font-mono text-sm"
+                >
+                  s ≥ (340 * 1/15) / 2 ≈ 11.3 mét
+                </div>
+              </div>
+            </div>
+
+            <!-- Ray Tracing Reflection and Distance Estimator Simulator -->
+            <div class="lg:col-span-8 glass-card p-6">
+              <h4
+                class="font-bold text-sm text-slate-500 uppercase tracking-wider mb-4"
+              >
+                <i class="fa-solid fa-mountain mr-2"></i>Bộ mô phỏng Echo & Ray
+                Tracing phản xạ âm
+              </h4>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Reflection Ray Tracing Canvas -->
+                <div class="flex flex-col justify-between">
+                  <span class="text-xs font-bold text-slate-400 block mb-2"
+                    >Đường đi sóng âm (Góc tới = Góc phản xạ)</span
+                  >
+                  <canvas
+                    id="raytracing-canvas"
+                    class="w-full h-44 bg-slate-950 rounded-xl"
+                  ></canvas>
+                  <div class="mt-4">
+                    <label class="block text-xs font-bold text-slate-500 mb-1"
+                      >Góc chiếu sóng âm tới (độ)</label
+                    >
+                    <input
+                      type="range"
+                      id="ray-angle-slider"
+                      min="15"
+                      max="75"
+                      value="45"
+                      class="w-full accent-indigo-600"
+                    />
+                  </div>
+                </div>
+
+                <!-- Echo Distance Interactive Calculator -->
+                <div
+                  class="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between"
+                >
+                  <span
+                    class="text-xs font-bold text-slate-400 block mb-2 text-left"
+                    >Đo khoảng cách tạo tiếng vang</span
+                  >
+                  <div class="space-y-4">
+                    <div>
+                      <label class="block text-xs font-bold text-slate-500 mb-1"
+                        >Khoảng cách tới vách núi (mét)</label
+                      >
+                      <input
+                        type="number"
+                        id="echo-dist-input"
+                        value="15"
+                        min="1"
+                        class="w-full p-2 rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-mono text-sm"
+                      />
+                    </div>
+                    <button
+                      onclick="calculateEcho()"
+                      class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded font-bold text-xs"
+                    >
+                      Phát âm & Tính toán
+                    </button>
+
+                    <div
+                      id="echo-result"
+                      class="p-3 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-xs text-indigo-700 dark:text-indigo-300"
+                    >
+                      Nhập khoảng cách và bấm nút để phân tích sự phản xạ âm.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 12 & 13: VẬT PHẢN XẠ ÂM TỐT VÀ KÉM -->
+        <section id="sec-12" class="scroll-mt-24 space-y-12">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div class="lg:col-span-4 space-y-6">
+              <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300 text-xs font-semibold"
+              >
+                <span>Phần 12 & 13</span> • <span>Thí nghiệm bề mặt</span>
+              </div>
+              <h3 class="text-2xl font-bold font-display">
+                Vật liệu Phản Xạ & Hấp Thụ
+              </h3>
+              <div class="prose prose-slate dark:prose-invert">
+                <p class="leading-relaxed">
+                  Tùy thuộc vào cấu trúc mật độ phân tử và độ gồ ghề của bề mặt,
+                  vật chất có thể phản xạ phần lớn âm thanh hoặc hấp thụ, triệt
+                  tiêu chúng.
+                </p>
+                <ul class="list-disc pl-5 text-sm space-y-2">
+                  <li>
+                    <b>Vật phản xạ âm tốt:</b> Các vật có bề mặt cứng, phẳng,
+                    nhẵn (ví dụ: gương kính, tấm đá hoa, tường gạch).
+                  </li>
+                  <li>
+                    <b>Vật phản xạ âm kém (hấp thụ âm tốt):</b> Các vật có bề
+                    mặt mềm, xốp, gồ ghề, nhiều lỗ rỗng (ví dụ: mút cách âm, rèm
+                    nhung, thảm nỉ).
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Material Absorption Realtime Chart and simulation -->
+            <div class="lg:col-span-8 glass-card p-6">
+              <h4
+                class="font-bold text-sm text-slate-500 uppercase tracking-wider mb-4"
+              >
+                <i class="fa-solid fa-layer-group mr-2"></i>Lab vật liệu hấp thụ
+                âm (Acoustic Absorption Coefficient)
+              </h4>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Visual comparison of materials -->
+                <div class="space-y-4">
+                  <span class="text-xs font-bold text-slate-400 block"
+                    >Chọn vật liệu thử nghiệm va đập sóng âm:</span
+                  >
+                  <div class="grid grid-cols-2 gap-2">
+                    <button
+                      onclick="testMaterial('concrete', 0.95)"
+                      class="p-3 border border-slate-200 dark:border-slate-800 rounded-lg text-center hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold"
+                    >
+                      Tường bê tông phẳng
+                    </button>
+                    <button
+                      onclick="testMaterial('glass', 0.9)"
+                      class="p-3 border border-slate-200 dark:border-slate-800 rounded-lg text-center hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold"
+                    >
+                      Cửa kính cường lực
+                    </button>
+                    <button
+                      onclick="testMaterial('foam', 0.1)"
+                      class="p-3 border border-slate-200 dark:border-slate-800 rounded-lg text-center hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold"
+                    >
+                      Tấm mút xốp trứng
+                    </button>
+                    <button
+                      onclick="testMaterial('velvet', 0.15)"
+                      class="p-3 border border-slate-200 dark:border-slate-800 rounded-lg text-center hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold"
+                    >
+                      Rèm nhung dày
+                    </button>
+                  </div>
+                  <div
+                    id="material-status"
+                    class="p-3 bg-indigo-500/10 border border-indigo-500/20 text-xs rounded-lg text-indigo-700 dark:text-indigo-300"
+                  >
+                    Click vật liệu phía trên để hiển thị hiệu năng triệt tiêu
+                    sóng âm phản xạ.
+                  </div>
+                </div>
+
+                <!-- Performance Chart.js representation -->
+                <div
+                  class="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200 dark:border-slate-800"
+                >
+                  <span class="text-xs font-bold text-slate-400 block mb-2"
+                    >Hệ số phản xạ âm (%)</span
+                  >
+                  <div class="h-44">
+                    <canvas id="materialChart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 14 & 15: TIẾNG ỒN VÀ BIỆN PHÁP GIẢM THIỂU -->
+        <section id="sec-14" class="scroll-mt-24 space-y-12">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div class="lg:col-span-4 space-y-6">
+              <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-100 dark:bg-rose-900/40 text-rose-800 dark:text-rose-300 text-xs font-semibold"
+              >
+                <span>Phần 14 & 15</span> • <span>Ứng dụng thực tế</span>
+              </div>
+              <h3 class="text-2xl font-bold font-display">
+                Ô Nhiễm Tiếng Ồn & Giải Pháp
+              </h3>
+              <div class="prose prose-slate dark:prose-invert">
+                <p class="leading-relaxed">
+                  Tiếng ồn to và kéo dài gây ảnh hưởng nghiêm trọng đến sức
+                  khỏe, tâm sinh lý và năng suất làm việc của con người gọi là
+                  <b>ô nhiễm tiếng ồn</b>.
+                </p>
+                <p
+                  class="text-sm font-semibold text-rose-600 dark:text-rose-400"
+                >
+                  Các nhóm giải pháp kỹ thuật tiêu chuẩn:
+                </p>
+                <ul class="list-disc pl-5 text-xs space-y-2">
+                  <li>
+                    <b>Hạn chế nguồn phát:</b> Treo biển "Cấm bóp còi", giảm âm
+                    lượng máy móc.
+                  </li>
+                  <li>
+                    <b>Phân tán sóng âm trên đường truyền:</b> Trồng nhiều cây
+                    xanh xung quanh khu dân cư.
+                  </li>
+                  <li>
+                    <b>Ngăn chặn đường truyền âm:</b> Xây tường bao cách âm dày,
+                    lắp đặt cửa kính hai lớp.
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Urban Acoustic Simulator and mitigation lab -->
+            <div class="lg:col-span-8 glass-card p-6">
+              <h4
+                class="font-bold text-sm text-slate-500 uppercase tracking-wider mb-4"
+              >
+                <i class="fa-solid fa-city mr-2"></i>Mô phỏng đô thị thông minh
+                (Acoustic Smart City)
+              </h4>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- City visual with audio level meter -->
+                <div
+                  class="md:col-span-2 bg-slate-900 rounded-xl p-4 border border-slate-800 relative overflow-hidden flex flex-col justify-between min-h-64"
+                >
+                  <div class="flex justify-between items-center z-10">
+                    <span class="text-xs text-white/70 font-semibold"
+                      ><i
+                        class="fa-solid fa-map-location-dot mr-1 text-emerald-500"
+                      ></i
+                      >Bản đồ âm thanh khu dân cư</span
+                    >
+                    <span
+                      id="city-noise-status"
+                      class="px-2 py-0.5 rounded bg-red-600/20 text-red-500 text-[10px] font-bold"
+                      >Ô NHIỄM CỰC HẠN</span
+                    >
+                  </div>
+
+                  <!-- Canvas Drawing active noise mitigation elements -->
+                  <canvas
+                    id="city-noise-canvas"
+                    class="absolute inset-0 w-full h-full opacity-60 pointer-events-none"
+                  ></canvas>
+
+                  <div class="z-10 flex justify-between items-end mt-24">
+                    <div class="text-white text-left">
+                      <div class="text-xs text-slate-400">Độ ồn hiện tại</div>
+                      <div
+                        id="city-db-val"
+                        class="text-4xl font-black font-display text-emerald-400"
+                      >
+                        95 dB
+                      </div>
+                    </div>
+                    <div
+                      class="bg-black/40 px-3 py-1 rounded text-[10px] text-white"
+                    >
+                      Nguồn: Công trường thi công
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Interactive mitigation toggle lists -->
+                <div class="space-y-3 flex flex-col justify-center">
+                  <span class="text-xs font-bold text-slate-400 block"
+                    >Kích hoạt giải pháp triệt tiêu âm thanh:</span
+                  >
+
+                  <button
+                    onclick="toggleCityMitigation('trees')"
+                    id="btn-mitigate-trees"
+                    class="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 text-left text-xs font-semibold flex justify-between items-center hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
+                  >
+                    <span>🌳 Trồng dải cây xanh</span>
+                    <span class="text-slate-400">Tắt</span>
+                  </button>
+
+                  <button
+                    onclick="toggleCityMitigation('barrier')"
+                    id="btn-mitigate-barrier"
+                    class="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 text-left text-xs font-semibold flex justify-between items-center hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
+                  >
+                    <span>🧱 Xây tường chắn âm</span>
+                    <span class="text-slate-400">Tắt</span>
+                  </button>
+
+                  <button
+                    onclick="toggleCityMitigation('windows')"
+                    id="btn-mitigate-windows"
+                    class="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 text-left text-xs font-semibold flex justify-between items-center hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
+                  >
+                    <span>🪟 Kính cách âm chân không</span>
+                    <span class="text-slate-400">Tắt</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ================================================== -->
+      <!-- 📚 NỘI DUNG CHI TIẾT (ACCORDION & SEARCH) -->
+      <!-- ================================================== -->
+      <section
+        id="detailed-content"
+        class="py-24 border-t border-slate-200/50 dark:border-slate-800/50"
+      >
+        <div class="max-w-4xl mx-auto space-y-8">
+          <div class="text-center">
+            <span
+              class="text-blue-600 dark:text-blue-400 font-bold text-sm tracking-wider uppercase"
+              >Thư viện tra cứu</span
+            >
+            <h2 class="text-3xl md:text-5xl font-extrabold font-display mt-2">
+              📚 NỘI DUNG CHI TIẾT
+            </h2>
+            <p class="text-slate-500 dark:text-slate-400 mt-4">
+              Tra cứu toàn diện hệ thống định lý, định nghĩa khoa học chuẩn Bộ
+              Giáo Dục & Đào Tạo theo từng chương học.
+            </p>
+          </div>
+
+          <!-- Live Search Box -->
+          <div class="relative max-w-md mx-auto">
+            <i
+              class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+            ></i>
+            <input
+              type="text"
+              id="theory-search-input"
+              onkeyup="filterTheoryContent()"
+              placeholder="Tìm kiếm khái niệm, từ khóa (ví dụ: tần số, âm phản xạ...)"
+              class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm"
+            />
+          </div>
+
+          <!-- Theory Accordion List -->
+          <div class="space-y-4" id="theory-accordion-container">
+            <!-- Item 1 -->
+            <div
+              class="accordion-item border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-white/50 dark:bg-slate-900/50"
+            >
+              <button
+                onclick="toggleAccordion(this)"
+                class="w-full px-6 py-4 text-left flex justify-between items-center font-bold text-sm md:text-base hover:bg-slate-100/50 dark:hover:bg-slate-800/50 transition-colors"
+              >
+                <span>Bài 12: Khái niệm dao động và các tham số đặc trưng</span>
+                <i
+                  class="fa-solid fa-chevron-down transition-transform duration-300"
+                ></i>
+              </button>
+              <div
+                class="accordion-content hidden px-6 pb-6 pt-2 border-t border-slate-100 dark:border-slate-800 text-sm text-slate-600 dark:text-slate-300 space-y-3"
+              >
+                <p>
+                  <b>1. Dao động cơ học:</b> Chuyển động lặp đi lặp lại tuần
+                  hoàn quanh vị trí cân bằng. Khi nguồn âm dao động, nó truyền
+                  cơ năng này sang môi trường liên đới kế cận để hình thành sóng
+                  âm.
+                </p>
+                <p>
+                  <b>2. Biên độ (A):</b> Độ lệch cực đại của vật dao động so với
+                  vị trí cân bằng của nó. Biên độ quyết định năng lượng dao động
+                  và mức cường độ âm truyền đi.
+                </p>
+                <p>
+                  <b>3. Tần số (f):</b> Số lần dao động hoàn thành trong một đơn
+                  vị thời gian (giây). Ký hiệu đơn vị chuẩn quốc tế là Hz
+                  (Hertz).
+                </p>
+              </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div
+              class="accordion-item border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-white/50 dark:bg-slate-900/50"
+            >
+              <button
+                onclick="toggleAccordion(this)"
+                class="w-full px-6 py-4 text-left flex justify-between items-center font-bold text-sm md:text-base hover:bg-slate-100/50 dark:hover:bg-slate-800/50 transition-colors"
+              >
+                <span>Bài 12: Bản chất và cơ chế lan truyền sóng âm</span>
+                <i
+                  class="fa-solid fa-chevron-down transition-transform duration-300"
+                ></i>
+              </button>
+              <div
+                class="accordion-content hidden px-6 pb-6 pt-2 border-t border-slate-100 dark:border-slate-800 text-sm text-slate-600 dark:text-slate-300 space-y-3"
+              >
+                <p>
+                  <b>1. Bản chất sóng âm:</b> Sóng dọc cơ học. Khi nguồn phát
+                  rung động, nó tác động lực nén cơ học tuần hoàn lên các phần
+                  tử môi trường, tạo ra chuỗi sóng nén - giãn đàn hồi.
+                </p>
+                <p>
+                  <b>2. Môi trường lan truyền:</b> Rắn, Lỏng, Khí. Tốc độ truyền
+                  âm phụ thuộc vào mật độ phân tử của môi trường. Chất rắn liên
+                  kết phân tử chặt chẽ nhất nên tốc độ truyền âm lớn nhất, tiếp
+                  theo là chất lỏng và chậm nhất là chất khí.
+                </p>
+                <p>
+                  <b>3. Chân không:</b> Không chứa vật chất đàn hồi nên hoàn
+                  toàn không thể dẫn truyền sóng âm cơ học.
+                </p>
+              </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div
+              class="accordion-item border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-white/50 dark:bg-slate-900/50"
+            >
+              <button
+                onclick="toggleAccordion(this)"
+                class="w-full px-6 py-4 text-left flex justify-between items-center font-bold text-sm md:text-base hover:bg-slate-100/50 dark:hover:bg-slate-800/50 transition-colors"
+              >
+                <span
+                  >Bài 13: Cường độ âm, Decibel (dB) và tần số âm thanh nghe
+                  thấy</span
+                >
+                <i
+                  class="fa-solid fa-chevron-down transition-transform duration-300"
+                ></i>
+              </button>
+              <div
+                class="accordion-content hidden px-6 pb-6 pt-2 border-t border-slate-100 dark:border-slate-800 text-sm text-slate-600 dark:text-slate-300 space-y-3"
+              >
+                <p>
+                  <b>1. Độ to của âm:</b> Được cảm nhận trực quan dựa trên biên
+                  độ sóng âm. Giá trị vật lý biểu diễn bằng mức cường độ âm đo
+                  bằng decibel (dB).
+                </p>
+                <p>
+                  <b>2. Ngưỡng nghe và ngưỡng đau:</b> Mức âm tối thiểu tai
+                  người cảm thụ là 0dB. Ngưỡng đau và có hại cho màng nhĩ bắt
+                  đầu từ 130dB trở lên.
+                </p>
+                <p>
+                  <b>3. Hạ âm và Siêu âm:</b> <br />• Hạ âm (Infrasound): Âm có
+                  tần số < 20Hz. <br />• Siêu âm (Ultrasound): Âm có tần số >
+                  20000Hz.
+                </p>
+              </div>
+            </div>
+
+            <!-- Item 4 -->
+            <div
+              class="accordion-item border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-white/50 dark:bg-slate-900/50"
+            >
+              <button
+                onclick="toggleAccordion(this)"
+                class="w-full px-6 py-4 text-left flex justify-between items-center font-bold text-sm md:text-base hover:bg-slate-100/50 dark:hover:bg-slate-800/50 transition-colors"
+              >
+                <span
+                  >Bài 14: Hiện tượng phản xạ và kiểm soát ô nhiễm tiếng ồn đô
+                  thị</span
+                >
+                <i
+                  class="fa-solid fa-chevron-down transition-transform duration-300"
+                ></i>
+              </button>
+              <div
+                class="accordion-content hidden px-6 pb-6 pt-2 border-t border-slate-100 dark:border-slate-800 text-sm text-slate-600 dark:text-slate-300 space-y-3"
+              >
+                <p>
+                  <b>1. Phản xạ âm:</b> Sóng âm bị phản hồi ngược lại khi chạm
+                  bề mặt có trở kháng âm khác biệt. Góc phản xạ luôn bằng góc
+                  tới.
+                </p>
+                <p>
+                  <b>2. Tiếng vang (Echo):</b> Âm phản xạ nghe được sau âm trực
+                  tiếp tối thiểu 1/15 giây. Nếu khoảng cách phản xạ quá ngắn, âm
+                  trực tiếp và phản xạ bị chập lại làm âm nghe to hơn nhưng
+                  không tạo ra tiếng vang phân biệt.
+                </p>
+                <p>
+                  <b>3. Ô nhiễm tiếng ồn:</b> Xảy ra khi độ ồn trung bình lớn
+                  hơn 70dB kéo dài liên tục, gây ảnh hưởng trực tiếp đến sức
+                  khỏe sinh lý con người.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- BUTTON BẮT BUỘC (KHÔNG CHỈNH SỬA) -->
+    <div class="fixed bottom-6 right-6 z-50">
+      <a
+        href="https://edumatter.vn"
+        target="_blank"
+        class="flex items-center gap-2 px-4 py-3 rounded-full bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xl hover:scale-105 active:scale-95 transition-all text-xs font-bold border border-slate-200/20"
+      >
+        <img
+          src="https://static.edumatter.vn/logo/edumatter-square.png"
+          alt="EduMatter"
+          class="w-5 h-5 rounded-md object-contain"
+        />
+        Học liệu số chất lượng cao của EduMatter
+      </a>
+    </div>
+
+    <!-- FOOTER BẮT BUỘC (KHÔNG CHỈNH SỬA) -->
+    <footer
+      class="border-t border-slate-200/50 dark:border-slate-800/50 bg-white dark:bg-slate-950 py-16 transition-all duration-300 relative z-10"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+          <div class="md:col-span-4 space-y-4">
+            <img
+              src="https://static.edumatter.vn/logo/edumatter-full-horizontal.png"
+              alt="EduMatter"
+              class="h-10 object-contain dark:invert"
+            />
+            <p
+              class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed"
+            >
+              Hệ sinh thái học liệu số tương tác hàng đầu Việt Nam. Phát triển
+              bởi đội ngũ kỹ sư và chuyên gia sư phạm STEM tối ưu hóa trải
+              nghiệm giáo dục thế hệ mới.
+            </p>
+          </div>
+          <div class="md:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-8">
+            <div>
+              <h4
+                class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4"
+              >
+                Sản phẩm
+              </h4>
+              <ul class="space-y-2 text-xs text-slate-500 dark:text-slate-400">
+                <li>
+                  <a href="#" class="hover:text-blue-500">Mô phỏng Vật Lý</a>
+                </li>
+                <li>
+                  <a href="#" class="hover:text-blue-500">Học liệu STEM</a>
+                </li>
+                <li>
+                  <a href="#" class="hover:text-blue-500">EduMatter LMS</a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4
+                class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4"
+              >
+                Hỗ trợ
+              </h4>
+              <ul class="space-y-2 text-xs text-slate-500 dark:text-slate-400">
+                <li>
+                  <a href="#" class="hover:text-blue-500">Tài liệu hướng dẫn</a>
+                </li>
+                <li>
+                  <a href="#" class="hover:text-blue-500"
+                    >Cộng đồng giáo viên</a
+                  >
+                </li>
+                <li>
+                  <a href="#" class="hover:text-blue-500">Phản hồi lỗi</a>
+                </li>
+              </ul>
+            </div>
+            <div class="col-span-2 sm:col-span-1">
+              <h4
+                class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4"
+              >
+                Kết nối
+              </h4>
+              <div class="flex gap-4">
+                <a
+                  href="#"
+                  class="p-2.5 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-blue-500 transition-colors"
+                  ><i class="fa-brands fa-facebook-f"></i
+                ></a>
+                <a
+                  href="#"
+                  class="p-2.5 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-blue-500 transition-colors"
+                  ><i class="fa-brands fa-youtube"></i
+                ></a>
+                <a
+                  href="#"
+                  class="p-2.5 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-blue-500 transition-colors"
+                  ><i class="fa-solid fa-envelope"></i
+                ></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="border-t border-slate-200/50 dark:border-slate-800/50 mt-12 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4"
+        >
+          <p class="text-xs text-slate-400">
+            &copy; 2026 EduMatter. Tất cả quyền được bảo lưu.
+          </p>
+          <div class="flex gap-4 text-xs text-slate-400">
+            <a href="#" class="hover:underline">Điều khoản dịch vụ</a>
+            <a href="#" class="hover:underline">Chính sách bảo mật</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- REAL SCIENTIFIC JS CODE FOR RUNNING SIMULATIONS -->
+    <script>
+      // State management
+      const state = {
+        theme: "light",
+        sec1: {
+          simType: "pendulum", // 'pendulum' or 'spring'
+          amplitude: 50,
+          frequency: 1.5,
+          rulerActive: false,
+          rulerTime: 0,
+          forkActive: false,
+          forkTime: 0,
+        },
+        sec2: {
+          waveType: "transverse", // 'transverse' or 'longitudinal'
+          wavelength: 80,
+          amplitude: 25,
+          frequency: 5,
+          time: 0,
+        },
+        sec3: {
+          activeOscillator: null,
+          audioContext: null,
+          analyser: null,
+          dataArray: null,
+          animationId: null,
+        },
+        sec4: {
+          amplitude: 12,
+          frequency: 6,
+          particles: [],
+          time: 0,
+        },
+        sec5: {
+          vacuumActive: false,
+          bellAnimId: null,
+        },
+        sec10: {
+          angle: 45,
+          rayTime: 0,
+        },
+        sec14: {
+          mitigations: {
+            trees: false,
+            barrier: false,
+            windows: false,
+          },
+        },
+      };
+
+      // Theme Toggle Logic
+      const themeToggleBtn = document.getElementById("theme-toggle");
+
+      function applyTheme(theme) {
+        if (theme === "dark") {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+        localStorage.setItem("theme", theme);
+        state.theme = theme;
+      }
+
+      themeToggleBtn.addEventListener("click", () => {
+        const nextTheme = state.theme === "dark" ? "light" : "dark";
+        applyTheme(nextTheme);
+      });
+
+      // Initialize local theme storage
+      const savedTheme = localStorage.getItem("theme") || "light";
+      applyTheme(savedTheme);
+
+      // Mobile Menu Logic
+      const mobileMenuBtn = document.getElementById("mobile-menu-btn");
+      const mobileMenu = document.getElementById("mobile-menu");
+      mobileMenuBtn.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden");
+      });
+      document.querySelectorAll(".mobile-nav-link").forEach((link) => {
+        link.addEventListener("click", () =>
+          mobileMenu.classList.add("hidden"),
+        );
+      });
+
+      // Web Audio API Initializer (User interaction safeguard)
+      function getAudioContext() {
+        if (!state.sec3.audioContext) {
+          state.sec3.audioContext = new (
+            window.AudioContext || window.webkitAudioContext
+          )();
+          setupOscilloscope();
+        }
+        if (state.sec3.audioContext.state === "suspended") {
+          state.sec3.audioContext.resume();
+        }
+        return state.sec3.audioContext;
+      }
+
+      // Setup oscilloscope visualization canvas
+      function setupOscilloscope() {
+        const ctx = state.sec3.audioContext;
+        state.sec3.analyser = ctx.createAnalyser();
+        state.sec3.analyser.fftSize = 256;
+        const bufferLength = state.sec3.analyser.frequencyBinCount;
+        state.sec3.dataArray = new Uint8Array(bufferLength);
+
+        const canvas = document.getElementById("oscilloscope-canvas");
+        const canvasCtx = canvas.getContext("2d");
+
+        function draw() {
+          requestAnimationFrame(draw);
+          if (!state.sec3.analyser) return;
+
+          state.sec3.analyser.getByteTimeDomainData(state.sec3.dataArray);
+          canvasCtx.fillStyle = "#0f172a";
+          canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+          canvasCtx.lineWidth = 2;
+          canvasCtx.strokeStyle = "#2dd4bf";
+          canvasCtx.beginPath();
+
+          const sliceWidth = (canvas.width * 1.0) / state.sec3.dataArray.length;
+          let x = 0;
+
+          for (let i = 0; i < state.sec3.dataArray.length; i++) {
+            const v = state.sec3.dataArray[i] / 128.0;
+            const y = (v * canvas.height) / 2;
+
+            if (i === 0) {
+              canvasCtx.moveTo(x, y);
+            } else {
+              canvasCtx.lineTo(x, y);
+            }
+            x += sliceWidth;
+          }
+
+          canvasCtx.lineTo(canvas.width, canvas.height / 2);
+          canvasCtx.stroke();
+        }
+        draw();
+      }
+
+      // Play Instrument Synthesizer
+      function playInstrument(type) {
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.connect(gain);
+        gain.connect(state.sec3.analyser);
+        state.sec3.analyser.connect(ctx.destination);
+
+        const label = document.getElementById("active-instrument-label");
+
+        if (type === "guitar") {
+          osc.type = "sawtooth";
+          osc.frequency.setValueAtTime(146.83, ctx.currentTime); // D3 frequency
+          gain.gain.setValueAtTime(0.5, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 1.5);
+          osc.start();
+          osc.stop(ctx.currentTime + 1.5);
+          label.innerText = "Guitar (Dây Re - 146.83 Hz)";
+        } else if (type === "fork") {
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(440, ctx.currentTime); // A4 tuning fork
+          gain.gain.setValueAtTime(0.6, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 2.5);
+          osc.start();
+          osc.stop(ctx.currentTime + 2.5);
+          label.innerText = "Âm thoa chuẩn (Nốt La - 440 Hz)";
+        } else if (type === "drum") {
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(80, ctx.currentTime); // Low drum rumble
+          osc.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + 0.5);
+          gain.gain.setValueAtTime(1.0, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.6);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.6);
+          label.innerText = "Trống trầm (80 Hz)";
+        }
+      }
+
+      // Continuous frequency generator
+      function startHzOscillator() {
+        const ctx = getAudioContext();
+        if (state.sec3.continuousOsc) {
+          state.sec3.continuousOsc.stop();
+        }
+        const hz = document.getElementById("hz-generator-slider").value;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(hz, ctx.currentTime);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+
+        state.sec3.continuousOsc = osc;
+      }
+
+      function stopHzOscillator() {
+        if (state.sec3.continuousOsc) {
+          state.sec3.continuousOsc.stop();
+          state.sec3.continuousOsc = null;
+        }
+      }
+
+      // Piano keyboard player
+      function playPianoKey(freq, name) {
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.4, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 1.0);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 1.0);
+      }
+
+      // HZ slider dynamic label updater
+      document
+        .getElementById("hz-generator-slider")
+        .addEventListener("input", (e) => {
+          const hz = e.target.value;
+          document.getElementById("custom-hz-label").innerText = hz + " Hz";
+          if (state.sec3.continuousOsc) {
+            state.sec3.continuousOsc.frequency.setValueAtTime(
+              hz,
+              state.sec3.audioContext.currentTime,
+            );
+          }
+        });
+
+      // 1. HERO CANVAS ANIMATION (Speaker pulsing waves)
+      const heroCanvas = document.getElementById("hero-canvas");
+      const heroCtx = heroCanvas.getContext("2d");
+      let heroFrameId;
+
+      function resizeHeroCanvas() {
+        heroCanvas.width = heroCanvas.parentElement.clientWidth;
+        heroCanvas.height = heroCanvas.parentElement.clientHeight;
+      }
+      window.addEventListener("resize", resizeHeroCanvas);
+      resizeHeroCanvas();
+
+      let heroTime = 0;
+      function animateHero() {
+        heroCtx.clearRect(0, 0, heroCanvas.width, heroCanvas.height);
+        heroTime += 0.05;
+
+        const cx = 100;
+        const cy = heroCanvas.height / 2;
+
+        // Draw speaker body outline
+        heroCtx.fillStyle = "#4f46e5";
+        heroCtx.beginPath();
+        heroCtx.moveTo(20, cy - 30);
+        heroCtx.lineTo(cx - 30, cy - 30);
+        heroCtx.lineTo(cx, cy - 60);
+        heroCtx.lineTo(cx, cy + 60);
+        heroCtx.lineTo(cx - 30, cy + 30);
+        heroCtx.lineTo(20, cy + 30);
+        heroCtx.closePath();
+        heroCtx.fill();
+
+        // Speaker front pulsing membrane
+        const pulse = Math.sin(heroTime * 3) * 8;
+        heroCtx.fillStyle = "#6366f1";
+        heroCtx.beginPath();
+        heroCtx.ellipse(cx, cy, 15 + pulse, 45 + pulse, 0, 0, Math.PI * 2);
+        heroCtx.fill();
+
+        // Emission waves expanding
+        heroCtx.strokeStyle = "#3b82f6";
+        heroCtx.lineWidth = 3;
+        for (let i = 0; i < 6; i++) {
+          const radius = (heroTime * 30 + i * 80) % 400;
+          const alpha = 1 - radius / 400;
+          heroCtx.strokeStyle = `rgba(59, 130, 246, ${alpha})`;
+          heroCtx.beginPath();
+          heroCtx.arc(cx, cy, radius, -Math.PI / 3, Math.PI / 3);
+          heroCtx.stroke();
+        }
+
+        heroFrameId = requestAnimationFrame(animateHero);
+      }
+      window.onload = function () {
+        animateHero();
+        // Start particle physics simulator
+        initSec4Particles();
+        animateSec4Particles();
+      };
+
+      // 2. SECTION 1: Pendulum and Spring Canvas Animation
+      const pendSpringCanvas = document.getElementById(
+        "pendulum-spring-canvas",
+      );
+      const pendSpringCtx = pendSpringCanvas.getContext("2d");
+      let psTime = 0;
+
+      function setSimType(type) {
+        state.sec1.simType = type;
+      }
+
+      document.getElementById("amp-slider-1").addEventListener("input", (e) => {
+        state.sec1.amplitude = parseInt(e.target.value);
+        document.getElementById("amp-val-1").innerText = e.target.value + " px";
+      });
+
+      document
+        .getElementById("freq-slider-1")
+        .addEventListener("input", (e) => {
+          state.sec1.frequency = parseFloat(e.target.value);
+          document.getElementById("freq-val-1").innerText =
+            e.target.value + " Hz";
+        });
+
+      function animatePendulumSpring() {
+        pendSpringCtx.clearRect(
+          0,
+          0,
+          pendSpringCanvas.width,
+          pendSpringCanvas.height,
+        );
+        psTime += 0.016 * state.sec1.frequency * Math.PI * 2;
+
+        const cx = pendSpringCanvas.width / 2;
+        const cy = 30;
+
+        if (state.sec1.simType === "pendulum") {
+          const angle = (state.sec1.amplitude / 100) * Math.sin(psTime);
+          const len = 120;
+          const bx = cx + len * Math.sin(angle);
+          const by = cy + len * Math.cos(angle);
+
+          // Draw stand line
+          pendSpringCtx.strokeStyle = "#94a3b8";
+          pendSpringCtx.lineWidth = 4;
+          pendSpringCtx.beginPath();
+          pendSpringCtx.moveTo(cx - 30, cy);
+          pendSpringCtx.lineTo(cx + 30, cy);
+          pendSpringCtx.stroke();
+
+          // Draw string
+          pendSpringCtx.strokeStyle = "#3b82f6";
+          pendSpringCtx.lineWidth = 2;
+          pendSpringCtx.beginPath();
+          pendSpringCtx.moveTo(cx, cy);
+          pendSpringCtx.lineTo(bx, by);
+          pendSpringCtx.stroke();
+
+          // Draw bob
+          pendSpringCtx.fillStyle = "#1d4ed8";
+          pendSpringCtx.beginPath();
+          pendSpringCtx.arc(bx, by, 16, 0, Math.PI * 2);
+          pendSpringCtx.fill();
+        } else {
+          // Spring simulator
+          const ext = state.sec1.amplitude * 0.6 * Math.sin(psTime);
+          const startY = cy;
+          const endY = cy + 100 + ext;
+
+          // Draw base stand
+          pendSpringCtx.strokeStyle = "#94a3b8";
+          pendSpringCtx.lineWidth = 4;
+          pendSpringCtx.beginPath();
+          pendSpringCtx.moveTo(cx - 40, cy);
+          pendSpringCtx.lineTo(cx + 40, cy);
+          pendSpringCtx.stroke();
+
+          // Draw spring coil spiral
+          pendSpringCtx.strokeStyle = "#3b82f6";
+          pendSpringCtx.lineWidth = 3;
+          pendSpringCtx.beginPath();
+          pendSpringCtx.moveTo(cx, startY);
+          const coils = 12;
+          const step = (endY - startY) / coils;
+          for (let i = 0; i < coils; i++) {
+            const y = startY + i * step + step / 2;
+            const x = cx + (i % 2 === 0 ? 15 : -15);
+            pendSpringCtx.lineTo(x, y);
+          }
+          pendSpringCtx.lineTo(cx, endY);
+          pendSpringCtx.stroke();
+
+          // Draw hanging weight block
+          pendSpringCtx.fillStyle = "#4f46e5";
+          pendSpringCtx.fillRect(cx - 15, endY, 30, 20);
+        }
+
+        requestAnimationFrame(animatePendulumSpring);
+      }
+      animatePendulumSpring();
+
+      // 3. SEC 1 SIM 1 & 2: Metal Ruler and Tuning Fork physics
+      const rulerCanvas = document.getElementById("ruler-sim-canvas");
+      const rulerCtx = rulerCanvas.getContext("2d");
+      function animateRuler() {
+        rulerCtx.clearRect(0, 0, rulerCanvas.width, rulerCanvas.height);
+        const cy = rulerCanvas.height / 2;
+        let offset = 0;
+
+        if (state.sec1.rulerActive) {
+          state.sec1.rulerTime += 0.2;
+          // Exponential decay of oscillation
+          offset =
+            35 *
+            Math.sin(state.sec1.rulerTime) *
+            Math.exp(-state.sec1.rulerTime * 0.05);
+          if (Math.abs(offset) < 0.2) {
+            state.sec1.rulerActive = false;
+            offset = 0;
+          }
+        }
+
+        // Draw desk edge
+        rulerCtx.fillStyle = "#64748b";
+        rulerCtx.fillRect(0, cy, 100, 40);
+
+        // Draw steel ruler bending
+        rulerCtx.strokeStyle = "#cbd5e1";
+        rulerCtx.lineWidth = 8;
+        rulerCtx.beginPath();
+        rulerCtx.moveTo(10, cy);
+        rulerCtx.lineTo(95, cy);
+        rulerCtx.quadraticCurveTo(150, cy, 200, cy + offset);
+        rulerCtx.stroke();
+
+        // Handle tip indicator
+        rulerCtx.fillStyle = "#ef4444";
+        rulerCtx.beginPath();
+        rulerCtx.arc(200, cy + offset, 6, 0, Math.PI * 2);
+        rulerCtx.fill();
+
+        requestAnimationFrame(animateRuler);
+      }
+      function triggerRulerPluck() {
+        state.sec1.rulerActive = true;
+        state.sec1.rulerTime = 0;
+      }
+      animateRuler();
+
+      // Tuning fork simulator Canvas drawing
+      const tfCanvas = document.getElementById("tuning-fork-canvas");
+      const tfCtx = tfCanvas.getContext("2d");
+      function animateTuningFork() {
+        tfCtx.clearRect(0, 0, tfCanvas.width, tfCanvas.height);
+        const cx = tfCanvas.width / 2;
+        let ripple = 0;
+
+        if (state.sec1.forkActive) {
+          state.sec1.forkTime += 0.3;
+          ripple =
+            Math.sin(state.sec1.forkTime) *
+            6 *
+            Math.exp(-state.sec1.forkTime * 0.04);
+          if (Math.abs(ripple) < 0.1) {
+            state.sec1.forkActive = false;
+          }
+        }
+
+        // Base handle stem
+        tfCtx.strokeStyle = "#94a3b8";
+        tfCtx.lineWidth = 6;
+        tfCtx.beginPath();
+        tfCtx.moveTo(cx, 130);
+        tfCtx.lineTo(cx, 80);
+        tfCtx.stroke();
+
+        // U-shape fork body
+        tfCtx.beginPath();
+        tfCtx.arc(cx, 80, 20, 0, Math.PI, false);
+        tfCtx.stroke();
+
+        // Two fork tines extending up
+        tfCtx.beginPath();
+        tfCtx.moveTo(cx - 20, 80);
+        tfCtx.lineTo(cx - 20 + ripple, 30);
+        tfCtx.moveTo(cx + 20, 80);
+        tfCtx.lineTo(cx + 20 - ripple, 30);
+        tfCtx.stroke();
+
+        // Sound waves radiating outwards from active tines
+        if (state.sec1.forkActive && ripple > 0.5) {
+          tfCtx.strokeStyle = `rgba(147, 51, 234, ${0.8 - state.sec1.forkTime * 0.01})`;
+          tfCtx.lineWidth = 2;
+          tfCtx.beginPath();
+          tfCtx.arc(
+            cx - 30,
+            30,
+            state.sec1.forkTime * 1.5,
+            Math.PI * 0.5,
+            Math.PI * 1.5,
+          );
+          tfCtx.stroke();
+          tfCtx.beginPath();
+          tfCtx.arc(
+            cx + 30,
+            30,
+            state.sec1.forkTime * 1.5,
+            -Math.PI * 0.5,
+            Math.PI * 0.5,
+          );
+          tfCtx.stroke();
+        }
+
+        requestAnimationFrame(animateTuningFork);
+      }
+      function triggerTuningFork() {
+        state.sec1.forkActive = true;
+        state.sec1.forkTime = 0;
+        playInstrument("fork");
+      }
+      animateTuningFork();
+
+      // 4. Drag & Drop Quiz Section 1
+      const dragItems = document.querySelectorAll(".drag-item");
+      dragItems.forEach((item) => {
+        item.addEventListener("dragstart", (e) => {
+          e.dataTransfer.setData(
+            "text/plain",
+            e.target.getAttribute("data-type"),
+          );
+          e.dataTransfer.setData("element-id", e.target.innerText);
+          e.target.classList.add("opacity-50");
+        });
+        item.addEventListener("dragend", (e) => {
+          e.target.classList.remove("opacity-50");
+        });
+      });
+
+      const targets = [
+        document.getElementById("target-daodong"),
+        document.getElementById("target-khac"),
+      ];
+      targets.forEach((target) => {
+        target.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          target.classList.add("bg-blue-200/50");
+        });
+        target.addEventListener("dragleave", () => {
+          target.classList.remove("bg-blue-200/50");
+        });
+        target.addEventListener("drop", (e) => {
+          e.preventDefault();
+          target.classList.remove("bg-blue-200/50");
+          const dataType = e.dataTransfer.getData("text/plain");
+          const text = e.dataTransfer.getData("element-id");
+
+          // Validate target association
+          const targetId = target.id;
+          let correct = false;
+          if (targetId === "target-daodong" && dataType === "dao-dong")
+            correct = true;
+          if (targetId === "target-khac" && dataType === "chuyen-dong-thang")
+            correct = true;
+
+          if (correct) {
+            target.innerHTML += `<div class="p-1 mt-1 bg-emerald-500 text-white rounded text-[10px]">${text} ✓</div>`;
+            // Remove item from pool
+            dragItems.forEach((i) => {
+              if (i.innerText === text) i.remove();
+            });
+          } else {
+            target.classList.add("border-red-500");
+            setTimeout(() => target.classList.remove("border-red-500"), 1000);
+          }
+        });
+      });
+
+      // Universal quick quiz corrector
+      function checkQuizAnswer(btn, isCorrect) {
+        const container = btn.parentElement.parentElement;
+        const feedback = container.querySelector(".quiz-feedback");
+        const buttons = container.querySelectorAll(".quiz-btn");
+
+        buttons.forEach((b) => (b.disabled = true));
+
+        if (isCorrect) {
+          btn.classList.add(
+            "bg-emerald-500",
+            "text-white",
+            "border-emerald-500",
+          );
+          feedback.innerText = "Tuyệt vời! Câu trả lời hoàn toàn chính xác.";
+          feedback.classList.add("text-emerald-500");
+        } else {
+          btn.classList.add("bg-red-500", "text-white", "border-red-500");
+          feedback.innerText =
+            "Sai rồi! Bạn hãy đọc kỹ phần lý thuyết và thử lại nhé.";
+          feedback.classList.add("text-red-500");
+        }
+        feedback.classList.remove("hidden");
+      }
+
+      // 5. SECTION 2: Continuous Wave Generator (Transverse & Longitudinal)
+      const waveCanvas = document.getElementById("wave-canvas");
+      const waveCtx = waveCanvas.getContext("2d");
+
+      function setWaveType(type) {
+        state.sec2.waveType = type;
+        const btnT = document.getElementById("wave-mode-transverse");
+        const btnL = document.getElementById("wave-mode-longitudinal");
+
+        if (type === "transverse") {
+          btnT.classList.replace("bg-slate-200", "bg-blue-600");
+          btnT.classList.add("text-white");
+          btnL.classList.replace("bg-blue-600", "bg-slate-200");
+          btnL.classList.remove("text-white");
+        } else {
+          btnL.classList.replace("bg-slate-200", "bg-blue-600");
+          btnL.classList.add("text-white");
+          btnT.classList.replace("bg-blue-600", "bg-slate-200");
+          btnT.classList.remove("text-white");
+        }
+      }
+
+      // Add real slider synchronization
+      document
+        .getElementById("wave-len-slider")
+        .addEventListener(
+          "input",
+          (e) => (state.sec2.wavelength = parseInt(e.target.value)),
+        );
+      document
+        .getElementById("wave-amp-slider")
+        .addEventListener(
+          "input",
+          (e) => (state.sec2.amplitude = parseInt(e.target.value)),
+        );
+      document
+        .getElementById("wave-freq-slider")
+        .addEventListener(
+          "input",
+          (e) => (state.sec2.frequency = parseInt(e.target.value)),
+        );
+
+      function animateWave() {
+        waveCtx.clearRect(0, 0, waveCanvas.width, waveCanvas.height);
+        state.sec2.time += 0.05 * state.sec2.frequency;
+
+        const cy = waveCanvas.height / 2;
+
+        if (state.sec2.waveType === "transverse") {
+          waveCtx.strokeStyle = "#4f46e5";
+          waveCtx.lineWidth = 3;
+          waveCtx.beginPath();
+          for (let x = 0; x < waveCanvas.width; x++) {
+            const y =
+              cy +
+              state.sec2.amplitude *
+                Math.sin(
+                  (x / state.sec2.wavelength) * Math.PI * 2 - state.sec2.time,
+                );
+            if (x === 0) waveCtx.moveTo(x, y);
+            else waveCtx.lineTo(x, y);
+          }
+          waveCtx.stroke();
+
+          // Draw floating particles on the wave to show they don't move horizontally
+          for (let i = 1; i <= 5; i++) {
+            const x = (waveCanvas.width / 6) * i;
+            const y =
+              cy +
+              state.sec2.amplitude *
+                Math.sin(
+                  (x / state.sec2.wavelength) * Math.PI * 2 - state.sec2.time,
+                );
+            waveCtx.fillStyle = "#ef4444";
+            waveCtx.beginPath();
+            waveCtx.arc(x, y, 6, 0, Math.PI * 2);
+            waveCtx.fill();
+          }
+        } else {
+          // Longitudinal (Sound wave compression layers)
+          waveCtx.fillStyle = "rgba(79, 70, 229, 0.4)";
+          const linesCount = 60;
+          for (let i = 0; i < linesCount; i++) {
+            const baseRegX = (waveCanvas.width / linesCount) * i;
+            // Phase displacement shifts
+            const displacement =
+              state.sec2.amplitude *
+              0.8 *
+              Math.sin(
+                (baseRegX / state.sec2.wavelength) * Math.PI * 2 -
+                  state.sec2.time,
+              );
+            const currentX = baseRegX + displacement;
+
+            waveCtx.fillRect(currentX, 20, 2, waveCanvas.height - 40);
+          }
+        }
+
+        requestAnimationFrame(animateWave);
+      }
+      animateWave();
+
+      // 6. SECTION 4: 2D Gas kinetic model
+      const pWaveCanvas = document.getElementById("particle-wave-canvas");
+      const pWaveCtx = pWaveCanvas.getContext("2d");
+
+      document
+        .getElementById("particle-freq")
+        .addEventListener(
+          "input",
+          (e) => (state.sec4.frequency = parseInt(e.target.value)),
+        );
+      document
+        .getElementById("particle-amp")
+        .addEventListener(
+          "input",
+          (e) => (state.sec4.amplitude = parseInt(e.target.value)),
+        );
+
+      function initSec4Particles() {
+        state.sec4.particles = [];
+        const count = 300;
+        for (let i = 0; i < count; i++) {
+          state.sec4.particles.push({
+            baseX: Math.random() * pWaveCanvas.width,
+            y: Math.random() * pWaveCanvas.height,
+            size: 2 + Math.random() * 2,
+          });
+        }
+      }
+
+      function animateSec4Particles() {
+        pWaveCtx.fillStyle = "rgba(15, 23, 42, 0.2)"; // Persistent trails
+        pWaveCtx.fillRect(0, 0, pWaveCanvas.width, pWaveCanvas.height);
+
+        state.sec4.time += 0.05 * state.sec4.frequency;
+
+        // Draw sound speaker piston on left boundary
+        const pistonX = 20 + state.sec4.amplitude * Math.sin(state.sec4.time);
+        pWaveCtx.fillStyle = "#64748b";
+        pWaveCtx.fillRect(0, 0, pistonX, pWaveCanvas.height);
+
+        // Compute and draw particles with longitudinal compression displacement mapping
+        state.sec4.particles.forEach((p) => {
+          const waveK = 0.03; // wave number constant
+          const shift =
+            state.sec4.amplitude * Math.sin(waveK * p.baseX - state.sec4.time);
+          const drawX = p.baseX + shift;
+
+          // Color code based on compression density
+          const densityFactor = Math.cos(waveK * p.baseX - state.sec4.time);
+          if (densityFactor > 0.5) {
+            pWaveCtx.fillStyle = "#ef4444"; // Dense / Hot
+          } else if (densityFactor < -0.5) {
+            pWaveCtx.fillStyle = "#3b82f6"; // Sparse / Cold
+          } else {
+            pWaveCtx.fillStyle = "#e2e8f0";
+          }
+
+          pWaveCtx.beginPath();
+          pWaveCtx.arc(drawX, p.y, p.size, 0, Math.PI * 2);
+          pWaveCtx.fill();
+        });
+
+        requestAnimationFrame(animateSec4Particles);
+      }
+
+      // 7. SECTION 5: Chart.js Medium comparison & Bell Jar Simulator
+      const mediumCtx = document.getElementById("mediumChart").getContext("2d");
+      const speedData = {
+        labels: ["Không khí", "Nước", "Thép", "Chân không"],
+        datasets: [
+          {
+            label: "Tốc độ âm thanh (m/s)",
+            data: [340, 1500, 5940, 0],
+            backgroundColor: [
+              "rgba(59, 130, 246, 0.7)",
+              "rgba(6, 182, 212, 0.7)",
+              "rgba(147, 51, 234, 0.7)",
+              "rgba(239, 68, 68, 0.7)",
+            ],
+            borderRadius: 8,
+          },
+        ],
+      };
+      const speedChart = new Chart(mediumCtx, {
+        type: "bar",
+        data: speedData,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+          },
+          scales: {
+            y: { beginAtZero: true },
+          },
+        },
+      });
+
+      function toggleVacuum() {
+        state.sec5.vacuumActive = !state.sec5.vacuumActive;
+        const label = document.getElementById("vacuum-label");
+        const ripple = document.getElementById("sound-ripples-vacuum");
+        const btn = document.getElementById("btn-vacuum-toggle");
+
+        if (state.sec5.vacuumActive) {
+          label.innerText = "CHÂN KHÔNG";
+          label.classList.replace("bg-red-600", "bg-slate-800");
+          ripple.classList.add("hidden");
+          btn.innerText = "Bơm xả khí trở lại";
+          btn.classList.replace("bg-rose-600", "bg-emerald-600");
+        } else {
+          label.innerText = "Bầu khí quyển";
+          label.classList.replace("bg-slate-800", "bg-red-600");
+          ripple.classList.remove("hidden");
+          btn.innerText = "Bơm hút chân không";
+          btn.classList.replace("bg-emerald-600", "bg-rose-600");
+        }
+      }
+
+      // 8. SECTION 6 & 7: Decibel severity levels
+      function selectDecibelSample(db, title, type) {
+        document.getElementById("decibel-value").innerText = db + " dB";
+        const severity = document.getElementById("decibel-severity");
+        const bar = document.getElementById("decibel-bar");
+
+        bar.style.width = `${(db / 130) * 100}%`;
+        severity.innerText = title;
+
+        if (db <= 30) {
+          severity.className =
+            "text-xs font-semibold mt-1 px-2.5 py-0.5 rounded bg-emerald-500/10 text-emerald-500 uppercase";
+        } else if (db <= 70) {
+          severity.className =
+            "text-xs font-semibold mt-1 px-2.5 py-0.5 rounded bg-yellow-500/10 text-yellow-500 uppercase";
+        } else {
+          severity.className =
+            "text-xs font-semibold mt-1 px-2.5 py-0.5 rounded bg-red-500/10 text-red-500 uppercase";
+        }
+
+        // Synthesize the corresponding volume sound effect
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(300, ctx.currentTime);
+        // Translate decibel directly to linear Web Audio gain mapping
+        const volumeLinear = Math.pow(10, (db - 90) / 20);
+        gain.gain.setValueAtTime(volumeLinear, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 1.2);
+      }
+
+      // 9. SECTION 10: Reflection Ray Tracing
+      const rtCanvas = document.getElementById("raytracing-canvas");
+      const rtCtx = rtCanvas.getContext("2d");
+
+      document
+        .getElementById("ray-angle-slider")
+        .addEventListener("input", (e) => {
+          state.sec10.angle = parseInt(e.target.value);
+        });
+
+      function animateRayTracing() {
+        rtCtx.clearRect(0, 0, rtCanvas.width, rtCanvas.height);
+        state.sec10.rayTime += 0.02;
+
+        const startX = 20;
+        const startY = rtCanvas.height - 20;
+        const rBoundaryX = rtCanvas.width - 40;
+
+        // Draw solid wall barrier
+        rtCtx.fillStyle = "#64748b";
+        rtCtx.fillRect(rBoundaryX, 10, 30, rtCanvas.height - 20);
+
+        // Compute intersection height based on incidence angle
+        const theta = (state.sec10.angle * Math.PI) / 180;
+        const distanceX = rBoundaryX - startX;
+        const targetY = startY - distanceX * Math.tan(theta);
+
+        // Bounds protection
+        const constrainedY = Math.max(20, targetY);
+
+        // Draw incident wave ray
+        rtCtx.strokeStyle = "#3b82f6";
+        rtCtx.lineWidth = 3;
+        rtCtx.beginPath();
+        rtCtx.moveTo(startX, startY);
+        rtCtx.lineTo(rBoundaryX, constrainedY);
+        rtCtx.stroke();
+
+        // Draw reflected wave ray
+        rtCtx.strokeStyle = "#ef4444";
+        rtCtx.beginPath();
+        rtCtx.moveTo(rBoundaryX, constrainedY);
+        // Reflecting backward symmetrically
+        rtCtx.lineTo(startX, constrainedY - (constrainedY - targetY));
+        rtCtx.stroke();
+
+        // Normal normal line
+        rtCtx.strokeStyle = "#94a3b8";
+        rtCtx.setLineDash([5, 5]);
+        rtCtx.beginPath();
+        rtCtx.moveTo(rBoundaryX, constrainedY);
+        rtCtx.lineTo(100, constrainedY);
+        rtCtx.stroke();
+        rtCtx.setLineDash([]); // Reset line dash
+
+        requestAnimationFrame(animateRayTracing);
+      }
+      animateRayTracing();
+
+      // Echo calculation lab
+      function calculateEcho() {
+        const dist = parseFloat(
+          document.getElementById("echo-dist-input").value,
+        );
+        const resBox = document.getElementById("echo-result");
+
+        if (isNaN(dist) || dist <= 0) {
+          resBox.innerText = "Vui lòng nhập khoảng cách lớn hơn 0.";
+          return;
+        }
+
+        // Round trip time: t = 2s / v
+        const time = (2 * dist) / 340;
+        const hasEcho = time >= 1 / 15;
+
+        resBox.innerHTML = `
+                <p>• Thời gian phản hồi: <b>${time.toFixed(4)} giây</b></p>
+                <p>• Phân tích tiếng vang: <b>${hasEcho ? "CÓ TIẾNG VANG" : "KHÔNG CÓ TIẾNG VANG"}</b></p>
+                <p class="mt-1 text-[10px] text-slate-400">Giải thích: Vì thời gian phản hồi ${hasEcho ? "lớn hơn hoặc bằng" : "nhỏ hơn"} 1/15 giây (0,067s).</p>
+            `;
+
+        // Synthesis echo audio simulation
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.frequency.setValueAtTime(500, ctx.currentTime);
+        gain.gain.setValueAtTime(0.5, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.3);
+
+        // Program the delayed reflection chime
+        setTimeout(() => {
+          const rOsc = ctx.createOscillator();
+          const rGain = ctx.createGain();
+
+          rOsc.frequency.setValueAtTime(500, ctx.currentTime);
+          // Lower volume for echo absorption
+          rGain.gain.setValueAtTime(0.15, ctx.currentTime);
+          rGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+
+          rOsc.connect(rGain);
+          rGain.connect(ctx.destination);
+          rOsc.start();
+          rOsc.stop(ctx.currentTime + 0.3);
+        }, time * 1000);
+      }
+
+      // 10. SECTION 12 & 13: Material Absorption Chart
+      const materialCtx = document
+        .getElementById("materialChart")
+        .getContext("2d");
+      const materialChart = new Chart(materialCtx, {
+        type: "pie",
+        data: {
+          labels: ["Bị hấp thụ", "Phản xạ lại"],
+          datasets: [
+            {
+              data: [5, 95],
+              backgroundColor: [
+                "rgba(239, 68, 68, 0.7)",
+                "rgba(59, 130, 246, 0.7)",
+              ],
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+        },
+      });
+
+      function testMaterial(type, reflCoeff) {
+        const status = document.getElementById("material-status");
+        const absCoeff = (1 - reflCoeff).toFixed(2);
+
+        status.innerHTML = `
+                <p class="font-bold">Kết quả kiểm thử:</p>
+                <p>• Hệ số phản xạ: <b>${(reflCoeff * 100).toFixed(0)}%</b></p>
+                <p>• Hệ số hấp thụ âm: <b>${(absCoeff * 100).toFixed(0)}%</b></p>
+            `;
+
+        // Update pie chart
+        materialChart.data.datasets[0].data = [
+          Math.round(absCoeff * 100),
+          Math.round(reflCoeff * 100),
+        ];
+        materialChart.update();
+      }
+
+      // 11. SECTION 14 & 15: Acoustic Smart City Simulator
+      const cityCanvas = document.getElementById("city-noise-canvas");
+      const cityCtx = cityCanvas.getContext("2d");
+      let cityTime = 0;
+
+      function resizeCityCanvas() {
+        cityCanvas.width = cityCanvas.parentElement.clientWidth;
+        cityCanvas.height = cityCanvas.parentElement.clientHeight;
+      }
+      window.addEventListener("resize", resizeCityCanvas);
+      resizeCityCanvas();
+
+      function toggleCityMitigation(type) {
+        state.sec14.mitigations[type] = !state.sec14.mitigations[type];
+        const btn = document.getElementById(`btn-mitigate-${type}`);
+
+        if (state.sec14.mitigations[type]) {
+          btn.classList.replace("border-slate-200", "border-emerald-500");
+          btn.querySelector("span:last-child").innerText = "Đã bật";
+          btn.querySelector("span:last-child").className =
+            "text-emerald-500 font-bold";
+        } else {
+          btn.classList.replace("border-emerald-500", "border-slate-200");
+          btn.querySelector("span:last-child").innerText = "Tắt";
+          btn.querySelector("span:last-child").className = "text-slate-400";
+        }
+
+        // Recalculate decibel based on mitigations active
+        let db = 95;
+        if (state.sec14.mitigations.trees) db -= 15;
+        if (state.sec14.mitigations.barrier) db -= 25;
+        if (state.sec14.mitigations.windows) db -= 20;
+
+        const dbValLabel = document.getElementById("city-db-val");
+        const statusLabel = document.getElementById("city-noise-status");
+
+        dbValLabel.innerText = db + " dB";
+
+        if (db <= 45) {
+          statusLabel.innerText = "AN TOÀN YÊN TĨNH";
+          statusLabel.className =
+            "px-2 py-0.5 rounded bg-emerald-600/20 text-emerald-500 text-[10px] font-bold";
+          dbValLabel.className =
+            "text-4xl font-black font-display text-emerald-400";
+        } else if (db <= 70) {
+          statusLabel.innerText = "CHẤP NHẬN ĐƯỢC";
+          statusLabel.className =
+            "px-2 py-0.5 rounded bg-yellow-600/20 text-yellow-500 text-[10px] font-bold";
+          dbValLabel.className =
+            "text-4xl font-black font-display text-yellow-400";
+        } else {
+          statusLabel.innerText = "Ô NHIỄM CỰC HẠN";
+          statusLabel.className =
+            "px-2 py-0.5 rounded bg-red-600/20 text-red-500 text-[10px] font-bold";
+          dbValLabel.className =
+            "text-4xl font-black font-display text-red-400";
+        }
+      }
+
+      function animateCityAcoustics() {
+        cityCtx.clearRect(0, 0, cityCanvas.width, cityCanvas.height);
+        cityTime += 0.05;
+
+        // Sources coordinates
+        const sourceX = 40;
+        const sourceY = cityCanvas.height / 2;
+
+        // Draw industrial soundwave ripple propagation
+        const dbVal = parseInt(
+          document.getElementById("city-db-val").innerText,
+        );
+        cityCtx.strokeStyle =
+          dbVal > 70 ? "rgba(239, 68, 68, 0.4)" : "rgba(52, 211, 153, 0.4)";
+        cityCtx.lineWidth = 2;
+
+        for (let i = 0; i < 5; i++) {
+          const radius = (cityTime * 20 + i * 50) % 250;
+          cityCtx.beginPath();
+          cityCtx.arc(sourceX, sourceY, radius, -Math.PI / 2, Math.PI / 2);
+          cityCtx.stroke();
+        }
+
+        // Draw trees block if active
+        if (state.sec14.mitigations.trees) {
+          cityCtx.fillStyle = "#22c55e";
+          cityCtx.fillRect(120, 20, 30, cityCanvas.height - 40);
+          cityCtx.fillStyle = "#ffffff";
+          cityCtx.font = "12px sans-serif";
+          cityCtx.fillText("🌳 Cây", 122, cityCanvas.height / 2);
+        }
+
+        // Draw concrete wall barrier if active
+        if (state.sec14.mitigations.barrier) {
+          cityCtx.fillStyle = "#64748b";
+          cityCtx.fillRect(200, 10, 20, cityCanvas.height - 20);
+          cityCtx.fillStyle = "#ffffff";
+          cityCtx.font = "12px sans-serif";
+          cityCtx.fillText("🧱 Tường", 202, cityCanvas.height / 2);
+        }
+
+        requestAnimationFrame(animateCityAcoustics);
+      }
+      animateCityAcoustics();
+
+      // 12. Accordion Mechanism
+      function toggleAccordion(btn) {
+        const content = btn.nextElementSibling;
+        const icon = btn.querySelector("i");
+
+        content.classList.toggle("hidden");
+        icon.classList.toggle("rotate-180");
+      }
+
+      // Live Theory Search Filter
+      function filterTheoryContent() {
+        const query = document
+          .getElementById("theory-search-input")
+          .value.toLowerCase();
+        const items = document.querySelectorAll(".accordion-item");
+
+        items.forEach((item) => {
+          const text = item.innerText.toLowerCase();
+          if (text.includes(query)) {
+            item.style.display = "block";
+          } else {
+            item.style.display = "none";
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EDUPHYS - Chọn Không Gian Học Tập</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <style>
+      /* ================= GLOBAL & THEME ================= */
+      :root {
+        --bg-color: #0f172a; /* Slate 900 */
+        --text-main: #f8fafc;
+        --text-muted: #94a3b8;
+        --card-bg: rgba(30, 41, 59, 0.6);
+
+        /* Glow Colors */
+        --glow-junior: #10b981; /* Emerald */
+        --glow-expert: #f59e0b; /* Amber */
+        --glow-verse: #8b5cf6; /* Violet */
+
+        /* Footer Variables */
+        --footer-bg: #020617;
+        --footer-text: #f8fafc;
+        --p-primary: #38bdf8; /* Blue light cho đồng bộ theme Lý */
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-main);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      .brand-font {
+        font-family: "Space Grotesk", sans-serif;
+      }
+
+      /* ================= BACKGROUND EFFECTS ================= */
+      .bg-grid {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-size: 50px 50px;
+        background-image:
+          linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0.03) 1px,
+            transparent 1px
+          ),
+          linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.03) 1px,
+            transparent 1px
+          );
+        z-index: -2;
+        pointer-events: none;
+      }
+
+      .bg-glow-blob {
+        position: fixed;
+        top: -20%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80vw;
+        height: 80vh;
+        background: radial-gradient(
+          circle,
+          rgba(56, 189, 248, 0.08) 0%,
+          transparent 60%
+        );
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      /* ================= HEADER & NAVIGATION ================= */
+      header {
+        padding: 24px 5%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        z-index: 10;
+      }
+
+      .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--text-muted);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 1rem;
+        padding: 10px 20px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.3s ease;
+      }
+
+      .btn-back:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateX(-5px);
+      }
+
+      .header-logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        background: linear-gradient(135deg, #38bdf8, #818cf8);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      /* ================= MAIN CONTENT ================= */
+      main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 5% 100px;
+        z-index: 5;
+      }
+
+      .hero-section {
+        text-align: center;
+        max-width: 700px;
+        margin-bottom: 60px;
+        animation: fadeInDown 0.8s ease-out;
+      }
+
+      .hero-section h1 {
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        margin-bottom: 16px;
+        line-height: 1.2;
+      }
+
+      .hero-section p {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        line-height: 1.6;
+      }
+
+      /* ================= CARDS SYSTEM ================= */
+      .portal-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        width: 100%;
+        max-width: 1100px;
+      }
+
+      .portal-card {
+        background: var(--card-bg);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 24px;
+        padding: 40px 30px;
+        text-decoration: none;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        animation: fadeInUp 0.8s ease-out backwards;
+      }
+
+      /* Sequential Animation Delays */
+      .portal-card:nth-child(1) {
+        animation-delay: 0.2s;
+      }
+      .portal-card:nth-child(2) {
+        animation-delay: 0.4s;
+      }
+      .portal-card:nth-child(3) {
+        animation-delay: 0.6s;
+      }
+
+      /* Premium Mouse Tracking Glow Effect */
+      .portal-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: inherit;
+        background: radial-gradient(
+          600px circle at var(--mouse-x) var(--mouse-y),
+          rgba(255, 255, 255, 0.06),
+          transparent 40%
+        );
+        z-index: 0;
+        opacity: 0;
+        transition: opacity 0.5s;
+      }
+
+      .portal-card:hover::before {
+        opacity: 1;
+      }
+
+      .portal-card > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      .card-icon-wrapper {
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2.2rem;
+        margin-bottom: 24px;
+        transition: all 0.4s ease;
+      }
+
+      .portal-card h2 {
+        font-size: 1.5rem;
+        margin-bottom: 12px;
+        transition: color 0.3s;
+      }
+
+      .portal-card p {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        line-height: 1.6;
+      }
+
+      .card-action {
+        margin-top: 24px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.4s ease;
+      }
+
+      /* Hover States & Specific Card Styling */
+      .portal-card:hover {
+        transform: translateY(-10px);
+        background: rgba(30, 41, 59, 0.8);
+      }
+
+      .portal-card:hover .card-icon-wrapper {
+        transform: scale(1.1) translateY(-5px);
+      }
+
+      .portal-card:hover .card-action {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* 1. Junior Card */
+      .card-junior .card-icon-wrapper {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--glow-junior);
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
+      }
+      .card-junior:hover {
+        border-color: rgba(16, 185, 129, 0.4);
+        box-shadow: 0 20px 40px rgba(16, 185, 129, 0.15);
+      }
+      .card-junior .card-action {
+        color: var(--glow-junior);
+      }
+
+      /* 2. Expert Card */
+      .card-expert .card-icon-wrapper {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--glow-expert);
+        box-shadow: 0 0 20px rgba(245, 158, 11, 0.1);
+      }
+      .card-expert:hover {
+        border-color: rgba(245, 158, 11, 0.4);
+        box-shadow: 0 20px 40px rgba(245, 158, 11, 0.15);
+      }
+      .card-expert .card-action {
+        color: var(--glow-expert);
+      }
+
+      /* 3. Verse Card */
+      .card-verse .card-icon-wrapper {
+        background: rgba(139, 92, 246, 0.1);
+        color: var(--glow-verse);
+        box-shadow: 0 0 20px rgba(139, 92, 246, 0.1);
+      }
+      .card-verse:hover {
+        border-color: rgba(139, 92, 246, 0.4);
+        box-shadow: 0 20px 40px rgba(139, 92, 246, 0.15);
+      }
+      .card-verse .card-action {
+        color: var(--glow-verse);
+      }
+
+      /* ================= KEYFRAMES ================= */
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ================= FOOTER CSS (TỪ YÊU CẦU) ================= */
+      /* 10. FOOTER */
+      footer {
+        background: var(--footer-bg);
+        color: var(--footer-text);
+        padding: 100px 5% 40px;
+        position: relative;
+        overflow: hidden;
+        -webkit-transition:
+          background-color 0.8s ease,
+          color 0.8s ease;
+        -o-transition:
+          background-color 0.8s ease,
+          color 0.8s ease;
+        transition:
+          background-color 0.8s ease,
+          color 0.8s ease;
+      }
+
+      .footer-waves {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        background: var(--footer-bg);
+        -webkit-clip-path: polygon(
+          0% 45%,
+          16% 44%,
+          33% 50%,
+          54% 60%,
+          70% 61%,
+          84% 59%,
+          100% 52%,
+          100% 100%,
+          0% 100%
+        );
+        clip-path: polygon(
+          0% 45%,
+          16% 44%,
+          33% 50%,
+          54% 60%,
+          70% 61%,
+          84% 59%,
+          100% 52%,
+          100% 100%,
+          0% 100%
+        );
+        -webkit-transition: background-color 0.8s;
+        -o-transition: background-color 0.8s;
+        transition: background-color 0.8s;
+      }
+
+      .footer-grid {
+        display: -ms-grid;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 60px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .footer-brand h2 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 2rem;
+        margin-bottom: 20px;
+      }
+
+      .footer-links h4,
+      h3 {
+        margin-bottom: 25px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--p-primary);
+      }
+
+      .contact-item {
+        margin-bottom: 15px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        gap: 15px;
+        color: #94a3b8;
+        -webkit-transition: 0.3s;
+        -o-transition: 0.3s;
+        transition: 0.3s;
+      }
+      .contact-item i {
+        color: var(--p-primary);
+      }
+      .contact-item:hover {
+        color: white;
+        -webkit-transform: translateX(5px);
+        -ms-transform: translateX(5px);
+        transform: translateX(5px);
+      }
+
+      .copyright {
+        margin-top: 80px;
+        text-align: center;
+        padding-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        color: #475569;
+        font-size: 0.9rem;
+      }
+
+      /* Responsive Footer */
+      @media (max-width: 768px) {
+        header {
+          padding: 20px;
+        }
+        .site-title {
+          font-size: 1.4rem;
+        }
+        .grid-container {
+          -ms-grid-columns: 1fr;
+          grid-template-columns: 1fr;
+        }
+        #sidebar {
+          width: 100%;
+          right: -100%;
+        }
+        .mascot-container {
+          display: none;
+        }
+        .audio-control {
+          bottom: 20px;
+          left: 20px;
+          padding: 8px 12px;
+        }
+      }
+
+      @-webkit-keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .floating {
+        -webkit-animation: floating 3s ease-in-out infinite;
+        animation: floating 3s ease-in-out infinite;
+      }
+      @-webkit-keyframes floating {
+        0%,
+        100% {
+          -webkit-transform: translateY(0);
+          transform: translateY(0);
+        }
+        50% {
+          -webkit-transform: translateY(-15px);
+          transform: translateY(-15px);
+        }
+      }
+      @keyframes floating {
+        0%,
+        100% {
+          -webkit-transform: translateY(0);
+          transform: translateY(0);
+        }
+        50% {
+          -webkit-transform: translateY(-15px);
+          transform: translateY(-15px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Background Elements -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow-blob"></div>
+
+    <!-- Header -->
+    <header>
+      <a href="../../page/index.html" class="btn-back">
+        <i class="fas fa-arrow-left"></i> Quay lại Menu
+      </a>
+      <div class="header-logo brand-font">EDUPHYS</div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <section class="hero-section">
+        <h1>Chọn phân hệ học tập</h1>
+        <p>
+          Khám phá hệ sinh thái học Vật lý kỹ thuật số. Chọn cấp độ phù hợp để
+          bắt đầu hành trình chinh phục tri thức của bạn.
+        </p>
+      </section>
+
+      <section class="portal-grid">
+        <!-- Card 1: Junior -->
+        <div
+          onclick="
+            window.location.href = 'physstudyjunior/physstudyjunior.html'
+          "
+          class="portal-card card-junior"
+        >
+          <div class="card-icon-wrapper">
+            <i class="fa-solid fa-rocket"></i>
+          </div>
+          <h2>PhysStudy Junior</h2>
+          <p>
+            Khởi đầu vững chắc với nền tảng Vật lý cơ bản. Trải nghiệm bài giảng
+            trực quan, vui nhộn và dễ hiểu dành cho người mới bắt đầu.
+          </p>
+          <div class="card-action">
+            Khám phá ngay <i class="fas fa-arrow-right"></i>
+          </div>
+        </div>
+
+        <!-- Card 2: Expert -->
+        <div
+          onclick="
+            window.location.href = 'physstudyexpert/physstudyexpert.html'
+          "
+          class="portal-card card-expert"
+        >
+          <div class="card-icon-wrapper">
+            <i class="fa-solid fa-atom"></i>
+          </div>
+          <h2>PhysStudy Expert</h2>
+          <p>
+            Nâng tầm tư duy với các chuyên đề Vật lý chuyên sâu. Rèn luyện kỹ
+            năng giải quyết vấn đề phức tạp và ôn thi học thuật.
+          </p>
+          <div class="card-action">
+            Vào khu chuyên gia <i class="fas fa-arrow-right"></i>
+          </div>
+        </div>
+
+        <!-- Card 3: Verse -->
+        <div
+          onclick="window.location.href = 'physverse/physverse.html'"
+          class="portal-card card-verse"
+        >
+          <div class="card-icon-wrapper">
+            <i class="fa-solid fa-vr-cardboard"></i>
+          </div>
+          <h2>Phys Verse</h2>
+          <p>
+            Bước vào không gian mô phỏng đa chiều. Tương tác với các thí nghiệm
+            ảo, quan sát hiện tượng Vật lý sống động như thật.
+          </p>
+          <div class="card-action">
+            Tiến vào không gian <i class="fas fa-arrow-right"></i>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer (TỪ YÊU CẦU) -->
+    <footer>
+      <div class="footer-grid">
+        <div class="footer-brand" data-aos="fade-right">
+          <h2>EDUMATTER</h2>
+          <p style="color: #94a3b8; line-height: 1.8">
+            Kiến tạo môi trường học tập cảm xúc, nơi tri thức được số hóa và
+            truyền tải đầy cảm hứng.
+          </p>
+          <div style="display: flex; gap: 15px; margin-top: 30px">
+            <a
+              href="https://www.facebook.com/ducnt214"
+              class="icon-btn"
+              style="color: #94a3b8; font-size: 1.2rem; transition: 0.3s"
+              ><i class="fab fa-facebook" alt="facebook"></i
+            ></a>
+            <a
+              href="https://github.com/ducnt2104"
+              class="icon-btn"
+              alt="github"
+              style="color: #94a3b8; font-size: 1.2rem; transition: 0.3s"
+              ><i class="fab fa-github"></i
+            ></a>
+            <a
+              href="https://www.tiktok.com/@ktbtcthm210"
+              class="icon-btn"
+              alt="tiktok"
+              style="color: #94a3b8; font-size: 1.2rem; transition: 0.3s"
+              ><i class="fab fa-tiktok"></i
+            ></a>
+          </div>
+        </div>
+        <div class="footer-links" data-aos="fade-up">
+          <h3>Liên hệ nhanh</h3>
+          <div class="contact-item">
+            <i class="fas fa-envelope"></i>
+            <span>ducnt21042010@gmail.com</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-phone"></i>
+            <span>034 226 6204</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-location-dot"></i>
+            <span>THPT Tôn Đức Thắng, Đồng Nai</span>
+          </div>
+        </div>
+        <div class="footer-links" data-aos="fade-left">
+          <h4>Đội ngũ DNT</h4>
+          <p style="color: #94a3b8">
+            "Sáng tạo không ngừng - Vươn tầm tri thức"
+          </p>
+          <div
+            style="
+              margin-top: 20px;
+              padding: 15px;
+              background: rgba(255, 255, 255, 0.05);
+              border-radius: 15px;
+            "
+          >
+            <p style="font-size: 0.8rem; color: #fff">
+              Dự án được phát triển bởi các thành viên đam mê công nghệ tại Việt
+              Nam.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="copyright">
+        <p>
+          © 2024 EDUMATTER Educational Ecosystem. Designed with
+          <i class="fas fa-heart" style="color: #ef4444"></i> by DNT Team.
+        </p>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+      // Hiệu ứng ánh sáng (Glow) di chuyển theo trỏ chuột trên các Card
+      document.getElementById("cards-container");
+      const cards = document.querySelectorAll(".portal-card");
+
+      cards.forEach((card) => {
+        card.addEventListener("mousemove", (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          // Set CSS variables for the mouse position relative to the card
+          card.style.setProperty("--mouse-x", `${x}px`);
+          card.style.setProperty("--mouse-y", `${y}px`);
+        });
+      });
+    </script>
+  </body>
+</html>
