@@ -1,0 +1,1959 @@
+<!doctype html>
+<html lang="vi" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BÀI 16: NĂNG LƯỢNG VỚI CUỘC SỐNG | EduMatter</title>
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+              display: ["Space Grotesk", "sans-serif"],
+            },
+            colors: {
+              primary: "#10b981", // Emerald 500
+              secondary: "#3b82f6", // Blue 500
+              accent: "#f59e0b", // Amber 500
+              dark: "#0f172a", // Slate 900
+              dark_card: "#1e293b", // Slate 800
+              dark_border: "#334155", // Slate 700
+            },
+            animation: {
+              "spin-slow": "spin 8s linear infinite",
+              float: "float 3s ease-in-out infinite",
+              "pulse-glow":
+                "pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+            },
+            keyframes: {
+              float: {
+                "0%, 100%": { transform: "translateY(0)" },
+                "50%": { transform: "translateY(-10px)" },
+              },
+              "pulse-glow": {
+                "0%, 100%": { opacity: 1, filter: "brightness(1)" },
+                "50%": { opacity: 0.7, filter: "brightness(1.5)" },
+              },
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+      /* Custom Styles & Glassmorphism */
+      :root {
+        --glass-bg: rgba(30, 41, 59, 0.7);
+        --glass-border: rgba(255, 255, 255, 0.1);
+      }
+
+      body {
+        overflow: hidden; /* App-like feel */
+      }
+
+      .glass-panel {
+        background: var(--glass-bg);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--glass-border);
+        box-shadow:
+          0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #475569;
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #64748b;
+      }
+
+      /* Canvas container */
+      #hero-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
+      /* Interactive ranges */
+      input[type="range"] {
+        -webkit-appearance: none;
+        width: 100%;
+        background: transparent;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        background: #10b981;
+        cursor: pointer;
+        margin-top: -6px;
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+      }
+      input[type="range"]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+        background: #334155;
+        border-radius: 2px;
+      }
+
+      /* SVG Animations */
+      .svg-turbine-blade {
+        transform-origin: center;
+      }
+      .water-flow {
+        stroke-dasharray: 10;
+        animation: flow 1s linear infinite;
+      }
+      @keyframes flow {
+        to {
+          stroke-dashoffset: -20;
+        }
+      }
+
+      /* Toast */
+      .toast-enter {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      .toast-active {
+        transform: translateX(0);
+        opacity: 1;
+        transition: all 0.3s ease-out;
+      }
+      .toast-exit {
+        transform: translateX(100%);
+        opacity: 0;
+        transition: all 0.3s ease-in;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-slate-50 text-slate-900 dark:bg-dark dark:text-white transition-colors duration-300 flex h-screen"
+  >
+    <!-- Global Background Canvas -->
+    <canvas id="hero-canvas"></canvas>
+
+    <!-- Sidebar Navigation -->
+    <aside
+      class="w-64 glass-panel border-r border-slate-200 dark:border-dark_border flex flex-col h-full z-20 shrink-0 transform transition-transform duration-300 md:translate-x-0 absolute md:relative -translate-x-full"
+      id="sidebar"
+    >
+      <div
+        class="p-4 border-b border-slate-200 dark:border-dark_border flex justify-between items-center"
+      >
+        <div
+          class="font-display font-bold text-xl text-primary flex items-center gap-2"
+        >
+          <i data-lucide="zap"></i> EduMatter
+        </div>
+        <button
+          class="md:hidden text-slate-400 hover:text-white"
+          onclick="toggleSidebar()"
+        >
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <!-- User Stats -->
+      <div class="p-4 border-b border-slate-200 dark:border-dark_border">
+        <div class="flex items-center gap-3 mb-2">
+          <div
+            class="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-secondary flex items-center justify-center font-bold text-white shadow-lg"
+          >
+            <i data-lucide="user"></i>
+          </div>
+          <div>
+            <div class="text-sm font-semibold">Nhà Khoa Học Trẻ</div>
+            <div class="text-xs text-primary font-bold">
+              Cấp <span id="user-level">1</span>
+            </div>
+          </div>
+        </div>
+        <div class="w-full bg-slate-700 rounded-full h-1.5 mt-2">
+          <div
+            class="bg-gradient-to-r from-primary to-secondary h-1.5 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.5)] transition-all duration-500"
+            id="xp-bar"
+            style="width: 0%"
+          ></div>
+        </div>
+        <div class="text-[10px] text-slate-400 text-right mt-1">
+          <span id="user-xp">0</span> / <span id="user-next-xp">1000</span> XP
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="flex-1 overflow-y-auto p-2 space-y-1" id="nav-menu">
+        <!-- Dynamically populated via JS -->
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-full relative z-10 w-full">
+      <!-- Top Header -->
+      <header
+        class="h-16 glass-panel border-b border-slate-200 dark:border-dark_border flex items-center justify-between px-4 sticky top-0 z-30"
+      >
+        <div class="flex items-center gap-3">
+          <button
+            class="md:hidden text-slate-400 hover:text-white"
+            onclick="toggleSidebar()"
+          >
+            <i data-lucide="menu"></i>
+          </button>
+          <h1
+            class="font-display font-bold text-lg hidden sm:block truncate"
+            id="header-title"
+          >
+            BÀI 16: NĂNG LƯỢNG VỚI CUỘC SỐNG
+          </h1>
+        </div>
+        <div class="flex items-center gap-4">
+          <button
+            id="btn-achievements"
+            class="text-slate-400 hover:text-accent transition-colors relative"
+            onclick="App.showModal('achievement-modal')"
+          >
+            <i data-lucide="award"></i>
+            <span
+              class="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] font-bold px-1 rounded-full hidden"
+              id="badge-notify"
+              >!</span
+            >
+          </button>
+          <button
+            id="theme-toggle"
+            class="text-slate-400 hover:text-primary transition-colors"
+          >
+            <i data-lucide="sun" id="icon-light" class="hidden"></i>
+            <i data-lucide="moon" id="icon-dark"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Scrollable Content View -->
+      <div
+        class="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth"
+        id="main-scroll"
+      >
+        <div class="max-w-6xl mx-auto" id="content-container">
+          <!-- Rendered Content Goes Here -->
+        </div>
+      </div>
+    </main>
+
+    <!-- Modals -->
+    <!-- Achievement Modal -->
+    <div
+      id="achievement-modal"
+      class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center opacity-0 transition-opacity"
+    >
+      <div
+        class="glass-panel border-slate-700 w-full max-w-2xl rounded-2xl p-6 m-4 transform scale-95 transition-transform"
+        id="achievement-modal-content"
+      >
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-display font-bold flex items-center gap-2">
+            <i data-lucide="award" class="text-accent"></i> Bộ Sưu Tập Huy Hiệu
+          </h2>
+          <button
+            onclick="App.hideModal('achievement-modal')"
+            class="text-slate-400 hover:text-white"
+          >
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div
+          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"
+          id="badges-grid"
+        >
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div
+      id="toast-container"
+      class="fixed bottom-4 right-4 z-50 flex flex-col gap-2"
+    ></div>
+
+    <!-- MAIN APPLICATION LOGIC -->
+    <script>
+      // --- 1. CORE DATA STRUCTURE (The Brain of the SPA) ---
+      const COURSE_DATA = {
+        id: "PHYS_9_CH5_15062026",
+        title: "Năng Lượng Với Cuộc Sống",
+        chapters: [
+          {
+            id: "intro",
+            title: "Khởi động",
+            icon: "rocket",
+            sections: [
+              {
+                id: "hero",
+                title: "Tổng quan bài học",
+                type: "hero",
+                content: {
+                  subtitle:
+                    "Khám phá hành trình năng lượng từ Mặt Trời đến sự sống và tương lai xanh của nhân loại.",
+                  stats: [
+                    { label: "Mô phỏng", value: "10+" },
+                    { label: "Thử thách", value: "24" },
+                    { label: "Lab", value: "9" },
+                  ],
+                },
+              },
+            ],
+          },
+          {
+            id: "part1",
+            title: "Phần I: Vòng Năng Lượng",
+            icon: "sun",
+            sections: [
+              {
+                id: "s1",
+                title: "1. Nguồn Gốc Năng Lượng",
+                type: "theory_interactive",
+                theory:
+                  "Mọi hoạt động sống trên Trái Đất đều cần năng lượng. Hầu như toàn bộ năng lượng này có nguồn gốc từ Mặt Trời. Năng lượng bức xạ từ Mặt Trời truyền đến Trái Đất, khởi nguồn cho các vòng tuần hoàn năng lượng.",
+                simType: "solar_origin",
+                quiz: [
+                  {
+                    q: "Nguồn gốc chủ yếu của năng lượng trên Trái Đất là từ đâu?",
+                    options: [
+                      "Lõi Trái Đất",
+                      "Mặt Trời",
+                      "Mặt Trăng",
+                      "Các vì sao",
+                    ],
+                    correct: 1,
+                    type: "mcq",
+                  },
+                ],
+              },
+              {
+                id: "s3", // Merging S2 concept into a powerful lab for demonstration
+                title: "2. Quang Hợp & Chuỗi Thức Ăn",
+                type: "lab",
+                theory:
+                  "Thực vật chuyển hóa quang năng thành hóa năng qua quang hợp. Năng lượng này truyền qua chuỗi thức ăn, nhưng luôn có sự hao hụt dưới dạng nhiệt năng.",
+                simType: "photosynthesis_lab",
+                quiz: [
+                  {
+                    q: "Trong quá trình quang hợp, cây xanh chuyển hóa loại năng lượng nào thành hóa năng?",
+                    options: [
+                      "Nhiệt năng",
+                      "Động năng",
+                      "Quang năng",
+                      "Điện năng",
+                    ],
+                    correct: 2,
+                    type: "mcq",
+                  },
+                ],
+              },
+              {
+                id: "s4",
+                title: "3. Vòng Tuần Hoàn Nước",
+                type: "theory_interactive",
+                theory:
+                  "Nhiệt năng từ Mặt Trời làm nước bay hơi. Hơi nước ngưng tụ thành mây, tạo mưa, chảy thành sông. Đây là sự chuyển hóa từ Nhiệt năng -> Thế năng -> Động năng.",
+                simType: "water_cycle",
+                quiz: [
+                  {
+                    q: "Nước trên cao có dạng năng lượng cơ học nào chủ yếu?",
+                    options: [
+                      "Động năng",
+                      "Thế năng",
+                      "Nhiệt năng",
+                      "Hóa năng",
+                    ],
+                    correct: 1,
+                    type: "mcq",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            id: "part2",
+            title: "Phần II: Năng Lượng Hóa Thạch",
+            icon: "flame",
+            sections: [
+              {
+                id: "s7",
+                title: "4. Hình Thành Nhiên Liệu Hóa Thạch",
+                type: "lab",
+                theory:
+                  "Than đá, dầu mỏ, khí thiên nhiên được hình thành từ xác sinh vật qua hàng triệu năm dưới áp suất và nhiệt độ cao. Chúng là nguồn năng lượng KHÔNG tái tạo.",
+                simType: "fossil_timeline",
+                quiz: [
+                  {
+                    q: "Nhiên liệu hóa thạch mất bao lâu để hình thành?",
+                    options: [
+                      "Vài năm",
+                      "Vài trăm năm",
+                      "Hàng triệu năm",
+                      "Vài ngày",
+                    ],
+                    correct: 2,
+                    type: "mcq",
+                  },
+                ],
+              },
+              {
+                id: "s10",
+                title: "5. Biến Đổi Khí Hậu",
+                type: "lab",
+                theory:
+                  "Đốt nhiên liệu hóa thạch thải ra lượng lớn CO2, gây hiệu ứng nhà kính, làm nhiệt độ Trái Đất tăng lên và mực nước biển dâng.",
+                simType: "climate_simulator",
+                quiz: [
+                  {
+                    q: "Khí nào sau đây là nguyên nhân chính gây hiệu ứng nhà kính khi đốt than?",
+                    options: ["O2", "N2", "CO2", "H2"],
+                    correct: 2,
+                    type: "mcq",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            id: "part3",
+            title: "Phần III: Năng Lượng Tái Tạo",
+            icon: "wind",
+            sections: [
+              {
+                id: "s14",
+                title: "6. Phòng Thí Nghiệm Năng Lượng",
+                type: "lab",
+                theory:
+                  "Năng lượng tái tạo là năng lượng từ những nguồn liên tục được bổ sung tự nhiên. Khám phá các máy phát điện từ tự nhiên.",
+                simType: "renewable_lab", // Combined Solar, Wind, Hydro
+                quiz: [
+                  {
+                    q: "Đâu KHÔNG phải là nguồn năng lượng tái tạo?",
+                    options: ["Gió", "Mặt Trời", "Thủy triều", "Khí tự nhiên"],
+                    correct: 3,
+                    type: "mcq",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            id: "part4",
+            title: "Phần IV: Thành Phố Tương Lai",
+            icon: "leaf",
+            sections: [
+              {
+                id: "s24",
+                title: "7. Smart City Lab",
+                type: "master_lab",
+                theory:
+                  "Sử dụng năng lượng tiết kiệm, hiệu quả và chuyển đổi sang năng lượng tái tạo là chìa khóa phát triển bền vững. Trở thành kỹ sư năng lượng để thiết kế thành phố của bạn.",
+                simType: "smart_city",
+                quiz: [
+                  {
+                    q: "Biện pháp nào giúp tiết kiệm điện năng trong gia đình?",
+                    options: [
+                      "Bật điều hòa 16 độ",
+                      "Dùng đèn sợi đốt",
+                      "Tắt thiết bị khi không sử dụng",
+                      "Mở tủ lạnh liên tục",
+                    ],
+                    correct: 2,
+                    type: "mcq",
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        badges: [
+          {
+            id: "b1",
+            name: "Người Khởi Đầu",
+            icon: "play",
+            desc: "Hoàn thành phần Tổng quan",
+            req: "hero",
+          },
+          {
+            id: "b2",
+            name: "Nhà Sinh Học",
+            icon: "leaf",
+            desc: "Hoàn thành Lab Quang Hợp",
+            req: "s3",
+          },
+          {
+            id: "b3",
+            name: "Chuyên Gia Khí Hậu",
+            icon: "thermometer-sun",
+            desc: "Hoàn thành Lab Biến đổi khí hậu",
+            req: "s10",
+          },
+          {
+            id: "b4",
+            name: "Kỹ Sư Năng Lượng",
+            icon: "zap",
+            desc: "Đạt hiệu suất cao trong Renewable Lab",
+            req: "s14",
+          },
+          {
+            id: "b5",
+            name: "Thị Trưởng Xanh",
+            icon: "building",
+            desc: "Xây dựng thành phố xanh thành công",
+            req: "s24",
+          },
+        ],
+      };
+
+      // --- 2. STATE MANAGEMENT ---
+      const State = {
+        currentSection: "hero",
+        xp: 0,
+        level: 1,
+        completedSections: [],
+        unlockedBadges: [],
+
+        load() {
+          const saved = localStorage.getItem("edumatter_phys9_state");
+          if (saved) {
+            const data = JSON.parse(saved);
+            this.xp = data.xp || 0;
+            this.level = data.level || 1;
+            this.completedSections = data.completedSections || [];
+            this.unlockedBadges = data.unlockedBadges || [];
+          }
+          this.updateUI();
+        },
+
+        save() {
+          localStorage.setItem(
+            "edumatter_phys9_state",
+            JSON.stringify({
+              xp: this.xp,
+              level: this.level,
+              completedSections: this.completedSections,
+              unlockedBadges: this.unlockedBadges,
+            }),
+          );
+        },
+
+        addXP(amount, reason) {
+          this.xp += amount;
+          const nextLevelXP = this.level * 1000;
+
+          App.showToast(`+${amount} XP: ${reason}`, "success");
+
+          if (this.xp >= nextLevelXP) {
+            this.level++;
+            this.xp -= nextLevelXP;
+            App.showToast(`🎉 LÊN CẤP ${this.level}!`, "achievement");
+            // Add some confetti logic here if time permits
+          }
+          this.save();
+          this.updateUI();
+        },
+
+        markSectionComplete(id) {
+          if (!this.completedSections.includes(id)) {
+            this.completedSections.push(id);
+            this.addXP(200, "Hoàn thành bài học");
+            this.checkBadges(id);
+
+            // Re-render nav to show checkmarks
+            App.renderNavigation();
+          }
+        },
+
+        checkBadges(contextStr) {
+          COURSE_DATA.badges.forEach((badge) => {
+            if (!this.unlockedBadges.includes(badge.id)) {
+              if (badge.req === contextStr) {
+                this.unlockedBadges.push(badge.id);
+                App.showToast(
+                  `🏆 Mở khóa huy hiệu: ${badge.name}`,
+                  "achievement",
+                );
+                document
+                  .getElementById("badge-notify")
+                  .classList.remove("hidden");
+                this.save();
+              }
+            }
+          });
+        },
+
+        updateUI() {
+          document.getElementById("user-level").textContent = this.level;
+          document.getElementById("user-xp").textContent = this.xp;
+          document.getElementById("user-next-xp").textContent =
+            this.level * 1000;
+          const pct = (this.xp / (this.level * 1000)) * 100;
+          document.getElementById("xp-bar").style.width = `${pct}%`;
+        },
+      };
+
+      // --- 3. UI COMPONENTS & RENDERING ENGINE ---
+      const UI = {
+        createCard(title, content, classes = "") {
+          return `
+                    <div class="glass-panel p-6 rounded-2xl ${classes} mb-6 transform transition-all hover:scale-[1.01] duration-300">
+                        ${title ? `<h3 class="text-xl font-display font-bold mb-4 text-primary">${title}</h3>` : ""}
+                        <div class="text-slate-700 dark:text-slate-300 leading-relaxed">${content}</div>
+                    </div>
+                `;
+        },
+
+        createQuiz(sectionId, quizData) {
+          if (!quizData || quizData.length === 0) return "";
+          const q = quizData[0]; // Take first for simplicity in this demo
+
+          let optionsHtml = q.options
+            .map(
+              (opt, idx) => `
+                    <button onclick="Simulations.checkQuiz('${sectionId}', ${idx}, ${q.correct})" 
+                            class="w-full text-left p-4 rounded-xl border border-slate-300 dark:border-dark_border bg-white/5 dark:bg-black/20 hover:bg-primary/10 hover:border-primary transition-colors quiz-opt-${sectionId}">
+                        ${String.fromCharCode(65 + idx)}. ${opt}
+                    </button>
+                `,
+            )
+            .join("");
+
+          return this.createCard(
+            "Kiểm tra nhanh",
+            `
+                    <p class="mb-4 font-medium text-lg">${q.q}</p>
+                    <div class="space-y-3" id="quiz-container-${sectionId}">
+                        ${optionsHtml}
+                    </div>
+                    <div id="quiz-result-${sectionId}" class="mt-4 font-bold text-center hidden"></div>
+                `,
+            "border-l-4 border-l-accent",
+          );
+        },
+      };
+
+      // --- 4. SIMULATION ENGINE (The core logic for physics/visuals) ---
+      const Simulations = {
+        instances: {}, // Store chart instances to destroy them later
+        intervals: {}, // Store animation intervals
+
+        clearCurrent() {
+          // Cleanup function when switching sections
+          Object.values(this.instances).forEach((inst) => {
+            if (inst.destroy) inst.destroy();
+          });
+          this.instances = {};
+          Object.values(this.intervals).forEach(clearInterval);
+          this.intervals = {};
+        },
+
+        checkQuiz(sectionId, selectedIdx, correctIdx) {
+          const container = document.getElementById(
+            `quiz-container-${sectionId}`,
+          );
+          const result = document.getElementById(`quiz-result-${sectionId}`);
+          const opts = container.querySelectorAll(`button`);
+
+          opts.forEach((opt) => (opt.disabled = true));
+
+          if (selectedIdx === correctIdx) {
+            opts[selectedIdx].classList.add(
+              "bg-primary/20",
+              "border-primary",
+              "text-primary",
+            );
+            result.innerHTML =
+              '<i data-lucide="check-circle" class="inline text-primary"></i> Chính xác! +50 XP';
+            result.classList.remove("hidden", "text-red-500");
+            result.classList.add("text-primary");
+            State.addXP(50, "Trả lời đúng Quiz");
+            State.markSectionComplete(sectionId);
+          } else {
+            opts[selectedIdx].classList.add(
+              "bg-red-500/20",
+              "border-red-500",
+              "text-red-500",
+            );
+            opts[correctIdx].classList.add(
+              "bg-primary/20",
+              "border-primary",
+              "text-primary",
+            );
+            result.innerHTML =
+              '<i data-lucide="x-circle" class="inline text-red-500"></i> Chưa đúng. Bạn đã hoàn thành bài học này.';
+            result.classList.remove("hidden", "text-primary");
+            result.classList.add("text-red-500");
+            State.markSectionComplete(sectionId);
+          }
+          lucide.createIcons();
+        },
+
+        // --- SPECIFIC SIMULATIONS ---
+
+        render_hero(container) {
+          container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center min-h-[70vh] text-center relative z-10">
+                        <div class="inline-block p-4 rounded-full bg-primary/20 text-primary mb-6 animate-float">
+                            <i data-lucide="zap" class="w-12 h-12"></i>
+                        </div>
+                        <h1 class="text-5xl md:text-7xl font-display font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+                            NĂNG LƯỢNG VỚI CUỘC SỐNG
+                        </h1>
+                        <p class="text-xl md:text-2xl text-slate-600 dark:text-slate-300 max-w-3xl mb-10 leading-relaxed">
+                            Khám phá hành trình kỳ diệu của năng lượng từ lõi Mặt Trời đến sự sống trên Trái Đất và kiến tạo tương lai xanh.
+                        </p>
+                        <button onclick="App.navigateTo('s1')" class="px-8 py-4 bg-primary hover:bg-emerald-600 text-white font-bold rounded-full shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all transform hover:scale-105 flex items-center gap-2 text-lg">
+                            Bắt đầu hành trình <i data-lucide="arrow-right"></i>
+                        </button>
+                    </div>
+                `;
+          // Start Hero Background animation
+          this.initHeroCanvas();
+        },
+
+        initHeroCanvas() {
+          const canvas = document.getElementById("hero-canvas");
+          const ctx = canvas.getContext("2d");
+          let width = (canvas.width = window.innerWidth);
+          let height = (canvas.height = window.innerHeight);
+          let particles = [];
+
+          window.addEventListener("resize", () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+          });
+
+          for (let i = 0; i < 50; i++) {
+            particles.push({
+              x: Math.random() * width,
+              y: Math.random() * height,
+              radius: Math.random() * 2 + 1,
+              color: Math.random() > 0.5 ? "#10b981" : "#3b82f6",
+              vx: (Math.random() - 0.5) * 0.5,
+              vy: (Math.random() - 0.5) * 0.5,
+            });
+          }
+
+          function animate() {
+            ctx.clearRect(0, 0, width, height);
+
+            // Draw connections
+            for (let i = 0; i < particles.length; i++) {
+              for (let j = i + 1; j < particles.length; j++) {
+                let dx = particles[i].x - particles[j].x;
+                let dy = particles[i].y - particles[j].y;
+                let dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < 150) {
+                  ctx.beginPath();
+                  ctx.strokeStyle = `rgba(59, 130, 246, ${0.2 * (1 - dist / 150)})`;
+                  ctx.lineWidth = 1;
+                  ctx.moveTo(particles[i].x, particles[i].y);
+                  ctx.lineTo(particles[j].x, particles[j].y);
+                  ctx.stroke();
+                }
+              }
+            }
+
+            // Draw particles
+            particles.forEach((p) => {
+              p.x += p.vx;
+              p.y += p.vy;
+              if (p.x < 0 || p.x > width) p.vx *= -1;
+              if (p.y < 0 || p.y > height) p.vy *= -1;
+
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+              ctx.fillStyle = p.color;
+              ctx.fill();
+            });
+
+            Simulations.intervals["hero_canvas"] =
+              requestAnimationFrame(animate);
+          }
+          animate();
+        },
+
+        render_solar_origin(container) {
+          container.innerHTML = `
+                    <div class="h-[400px] w-full relative flex items-center justify-center overflow-hidden bg-black rounded-2xl mb-6 border border-slate-700">
+                        <!-- Sun -->
+                        <div class="absolute left-10 w-32 h-32 bg-yellow-400 rounded-full shadow-[0_0_60px_rgba(250,204,21,0.8)] flex items-center justify-center animate-pulse-glow z-10">
+                            <span class="font-bold text-yellow-900">MẶT TRỜI</span>
+                        </div>
+                        
+                        <!-- Energy Waves -->
+                        <div class="absolute left-40 right-1/4 h-full flex items-center justify-center opacity-50" id="energy-waves">
+                            <svg width="100%" height="100%" preserveAspectRatio="none">
+                                <path id="wavePath" d="M 0 200 Q 100 100, 200 200 T 400 200 T 600 200 T 800 200" fill="transparent" stroke="#f59e0b" stroke-width="3" stroke-dasharray="10 10">
+                                    <animate attributeName="stroke-dashoffset" from="100" to="0" dur="2s" repeatCount="indefinite" />
+                                </path>
+                            </svg>
+                        </div>
+
+                        <!-- Earth -->
+                        <div class="absolute right-10 w-24 h-24 bg-blue-500 rounded-full shadow-[inset_-10px_-10px_20px_rgba(0,0,0,0.5),_0_0_20px_rgba(59,130,246,0.6)] overflow-hidden flex items-center justify-center z-10 animate-spin-slow">
+                            <!-- Continents rough map -->
+                            <div class="absolute top-2 left-2 w-10 h-8 bg-green-500 rounded-full opacity-80 blur-[2px]"></div>
+                            <div class="absolute bottom-4 right-2 w-12 h-6 bg-green-500 rounded-full opacity-80 blur-[2px]"></div>
+                        </div>
+
+                        <!-- Interactive Overlays -->
+                        <div class="absolute top-4 w-full text-center text-white/70 text-sm">Năng lượng bức xạ truyền qua không gian (Hàng triệu km)</div>
+                    </div>
+                `;
+        },
+
+        render_photosynthesis_lab(container) {
+          container.innerHTML = `
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="glass-panel p-6 rounded-2xl flex flex-col items-center justify-center relative min-h-[300px]">
+                            <!-- SVG Plant -->
+                            <svg width="200" height="250" viewBox="0 0 200 250" id="plant-svg" class="transition-all duration-500">
+                                <!-- Soil -->
+                                <path d="M 20 230 Q 100 210, 180 230 L 180 250 L 20 250 Z" fill="#5c4033" />
+                                <!-- Stem -->
+                                <path d="M 100 220 Q 95 150, 100 80" fill="transparent" stroke="#22c55e" stroke-width="6" stroke-linecap="round"/>
+                                <!-- Leaves -->
+                                <path id="leaf1" d="M 100 180 Q 50 160, 40 120 Q 80 130, 100 180" fill="#16a34a" />
+                                <path id="leaf2" d="M 100 140 Q 150 120, 160 80 Q 120 90, 100 140" fill="#15803d" />
+                                <path id="leaf3" d="M 100 100 Q 60 70, 70 30 Q 90 60, 100 100" fill="#16a34a" />
+                            </svg>
+                            
+                            <!-- Animated Particles container -->
+                            <div id="photo-particles" class="absolute inset-0 pointer-events-none"></div>
+                        </div>
+                        
+                        <div class="glass-panel p-6 rounded-2xl flex flex-col gap-6">
+                            <h4 class="font-bold text-accent mb-2">Bảng điều khiển</h4>
+                            
+                            <div>
+                                <div class="flex justify-between mb-1 text-sm"><label>Ánh sáng Mặt Trời (Quang năng)</label> <span id="val-light">50%</span></div>
+                                <input type="range" id="sim-light" min="0" max="100" value="50">
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-1 text-sm"><label>Lượng Nước (H₂O)</label> <span id="val-water">50%</span></div>
+                                <input type="range" id="sim-water" min="0" max="100" value="50">
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-1 text-sm"><label>Khí CO₂</label> <span id="val-co2">50%</span></div>
+                                <input type="range" id="sim-co2" min="0" max="100" value="50">
+                            </div>
+
+                            <div class="mt-auto p-4 bg-dark_card rounded-xl border border-dark_border">
+                                <div class="text-xs text-slate-400 mb-1">Tốc độ quang hợp (Sinh ra Glucose & O₂)</div>
+                                <div class="w-full bg-slate-700 h-4 rounded-full overflow-hidden">
+                                    <div id="photo-rate" class="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 transition-all duration-300" style="width: 50%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+          const updateSim = () => {
+            const l = parseInt(document.getElementById("sim-light").value);
+            const w = parseInt(document.getElementById("sim-water").value);
+            const c = parseInt(document.getElementById("sim-co2").value);
+
+            document.getElementById("val-light").innerText = l + "%";
+            document.getElementById("val-water").innerText = w + "%";
+            document.getElementById("val-co2").innerText = c + "%";
+
+            // Limiting factor logic (Liebig's Law minimum)
+            const rate = Math.min(l, w, c);
+            document.getElementById("photo-rate").style.width = rate + "%";
+
+            // Update visual plant health
+            const plant = document.getElementById("plant-svg");
+            if (rate < 20) plant.style.filter = "grayscale(0.8) sepia(0.5)";
+            else if (rate < 50) plant.style.filter = "grayscale(0.3)";
+            else plant.style.filter = "grayscale(0) brightness(1.2)";
+
+            // Animate Oxygen (O2) release if rate > 0
+            if (rate > 10 && Math.random() > 0.5) {
+              const container = document.getElementById("photo-particles");
+              const p = document.createElement("div");
+              p.innerHTML = "O₂";
+              p.className = "absolute text-xs text-blue-300 font-bold";
+              p.style.left = 40 + Math.random() * 120 + "px";
+              p.style.top = 100 + Math.random() * 80 + "px";
+              container.appendChild(p);
+
+              gsap.to(p, {
+                y: -100,
+                x: (Math.random() - 0.5) * 50,
+                opacity: 0,
+                duration: 2,
+                onComplete: () => p.remove(),
+              });
+            }
+          };
+
+          ["sim-light", "sim-water", "sim-co2"].forEach((id) => {
+            document.getElementById(id).addEventListener("input", updateSim);
+          });
+
+          // Continuous animation loop for particles
+          this.intervals["photo"] = setInterval(updateSim, 500);
+        },
+
+        render_water_cycle(container) {
+          container.innerHTML = `
+                    <div class="h-[350px] bg-gradient-to-b from-sky-400 to-sky-200 dark:from-slate-800 dark:to-slate-600 rounded-2xl relative overflow-hidden mb-6 border border-slate-200 dark:border-slate-700">
+                        <!-- Sun -->
+                        <div class="absolute top-4 left-4 w-16 h-16 bg-yellow-400 rounded-full shadow-[0_0_30px_rgba(250,204,21,1)]"></div>
+                        
+                        <!-- Clouds -->
+                        <div class="absolute top-10 left-1/3 text-white opacity-80" id="cloud1">
+                            <svg width="100" height="60" viewBox="0 0 100 60"><path d="M10,40 Q10,20 30,20 Q40,0 60,10 Q80,0 90,20 Q100,40 80,50 L20,50 Z" fill="currentColor"/></svg>
+                        </div>
+                        <div class="absolute top-4 right-10 text-slate-300 dark:text-slate-500 opacity-90" id="cloud2">
+                            <svg width="120" height="70" viewBox="0 0 100 60"><path d="M10,40 Q10,20 30,20 Q40,0 60,10 Q80,0 90,20 Q100,40 80,50 L20,50 Z" fill="currentColor"/></svg>
+                        </div>
+
+                        <!-- Mountain -->
+                        <div class="absolute bottom-10 right-0 w-0 h-0 border-l-[150px] border-l-transparent border-b-[150px] border-b-emerald-700 border-r-[50px] border-r-transparent"></div>
+                        <div class="absolute bottom-10 right-20 w-0 h-0 border-l-[100px] border-l-transparent border-b-[120px] border-b-emerald-600 border-r-[100px] border-r-transparent"></div>
+
+                        <!-- Ocean -->
+                        <div class="absolute bottom-0 w-full h-12 bg-blue-600/80 backdrop-blur"></div>
+
+                        <!-- Animations containers -->
+                        <div id="evap-container" class="absolute bottom-12 left-10 w-40 h-40"></div>
+                        <div id="rain-container" class="absolute top-20 right-10 w-40 h-40"></div>
+                        
+                        <div class="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded backdrop-blur">Nhiệt năng -> Động năng -> Thế năng</div>
+                    </div>
+                `;
+
+          // GSAP Animations
+          gsap.to("#cloud1", {
+            x: 50,
+            duration: 10,
+            yoyo: true,
+            repeat: -1,
+            ease: "sine.inOut",
+          });
+
+          const evapCont = document.getElementById("evap-container");
+          const rainCont = document.getElementById("rain-container");
+
+          this.intervals["water_cycle"] = setInterval(() => {
+            // Evaporation arrows
+            const arrow = document.createElement("div");
+            arrow.innerHTML = "↑";
+            arrow.className = "absolute text-blue-200/50 text-lg font-bold";
+            arrow.style.left = Math.random() * 100 + "px";
+            arrow.style.bottom = "0px";
+            evapCont.appendChild(arrow);
+            gsap.to(arrow, {
+              y: -100,
+              opacity: 0,
+              duration: 2,
+              onComplete: () => arrow.remove(),
+            });
+
+            // Rain drops
+            if (Math.random() > 0.3) {
+              const drop = document.createElement("div");
+              drop.className =
+                "absolute w-0.5 h-3 bg-blue-400 rounded-full opacity-60";
+              drop.style.left = Math.random() * 100 + "px";
+              drop.style.top = "0px";
+              rainCont.appendChild(drop);
+              gsap.to(drop, {
+                y: 150,
+                opacity: 0,
+                duration: 1,
+                ease: "none",
+                onComplete: () => drop.remove(),
+              });
+            }
+          }, 200);
+        },
+
+        render_fossil_timeline(container) {
+          container.innerHTML = `
+                     <div class="glass-panel p-6 rounded-2xl mb-6">
+                        <div class="text-center mb-6">
+                            <h4 class="text-xl font-bold text-accent" id="fossil-year">300 Triệu Năm Trước</h4>
+                            <p class="text-sm text-slate-400" id="fossil-desc">Kỷ Than Đá: Thực vật khổng lồ chết đi và chìm vào đầm lầy.</p>
+                        </div>
+                        
+                        <div class="relative h-64 bg-sky-100 dark:bg-slate-800 rounded-xl overflow-hidden border border-slate-300 dark:border-slate-600 mb-8 transition-colors duration-1000" id="fossil-scene">
+                            <!-- Sun -->
+                            <div class="absolute top-4 left-4 w-12 h-12 bg-yellow-400 rounded-full transition-opacity duration-1000" id="fs-sun"></div>
+                            
+                            <!-- Surface / Swamp -->
+                            <div class="absolute bottom-32 w-full h-8 bg-green-600/80 transition-all duration-1000" id="fs-surface"></div>
+                            
+                            <!-- Trees/Dead matter -->
+                            <div class="absolute bottom-40 left-10 w-10 h-32 bg-emerald-800 rounded-t-full transition-all duration-1000 origin-bottom" id="fs-tree1"></div>
+                            <div class="absolute bottom-40 left-32 w-8 h-24 bg-emerald-800 rounded-t-full transition-all duration-1000 origin-bottom" id="fs-tree2"></div>
+                            
+                            <!-- Layers -->
+                            <div class="absolute bottom-16 w-full h-16 bg-amber-900/0 transition-all duration-1000 flex items-center justify-center text-xs font-bold text-white/50" id="fs-layer1"></div>
+                            <div class="absolute bottom-0 w-full h-16 bg-black/0 transition-all duration-1000 flex items-center justify-center text-xs font-bold text-white/50" id="fs-layer2"></div>
+                            
+                            <!-- Pump (modern) -->
+                            <div class="absolute bottom-32 left-1/2 -ml-4 w-8 h-16 bg-slate-400 hidden flex-col items-center" id="fs-pump">
+                                <div class="w-1 h-full bg-slate-600"></div>
+                                <div class="w-full h-2 bg-slate-800"></div>
+                            </div>
+                        </div>
+
+                        <input type="range" id="fossil-slider" min="0" max="100" value="0" class="w-full">
+                        <div class="flex justify-between text-xs text-slate-400 mt-2">
+                            <span>Quá khứ (300tr năm)</span>
+                            <span>Hiện tại</span>
+                        </div>
+                    </div>
+                `;
+
+          const slider = document.getElementById("fossil-slider");
+          slider.addEventListener("input", (e) => {
+            const val = parseInt(e.target.value);
+            const yearTxt = document.getElementById("fossil-year");
+            const descTxt = document.getElementById("fossil-desc");
+
+            const scene = document.getElementById("fossil-scene");
+            const tree1 = document.getElementById("fs-tree1");
+            const tree2 = document.getElementById("fs-tree2");
+            const layer1 = document.getElementById("fs-layer1"); // Peat/Sediment
+            const layer2 = document.getElementById("fs-layer2"); // Coal
+            const surface = document.getElementById("fs-surface");
+            const pump = document.getElementById("fs-pump");
+            const sun = document.getElementById("fs-sun");
+
+            if (val < 33) {
+              yearTxt.innerText = "Hàng trăm triệu năm trước";
+              descTxt.innerText =
+                "Thực vật khổng lồ quang hợp, tích trữ hóa năng từ Mặt Trời.";
+              tree1.style.transform = `scaleY(1)`;
+              tree2.style.transform = `scaleY(1)`;
+              tree1.style.opacity = 1;
+              tree2.style.opacity = 1;
+              layer1.style.backgroundColor = "rgba(120, 53, 15, 0)";
+              layer2.style.backgroundColor = "rgba(0, 0, 0, 0)";
+              surface.style.bottom = "128px";
+              pump.classList.add("hidden");
+              sun.style.opacity = 1;
+            } else if (val < 66) {
+              yearTxt.innerText = "Vài chục triệu năm trước";
+              descTxt.innerText =
+                "Sinh vật chết đi, bị vùi lấp dưới bùn đất. Áp suất và nhiệt độ phân hủy chúng thành than bùn.";
+              tree1.style.transform = `scaleY(0.2) rotate(90deg)`;
+              tree2.style.transform = `scaleY(0.2) rotate(-90deg)`;
+              tree1.style.opacity = 0.5;
+              tree2.style.opacity = 0.5;
+
+              layer1.style.backgroundColor = "rgba(120, 53, 15, 0.8)"; // Brown Peat
+              layer1.innerText = "Lớp trầm tích & Than bùn";
+              layer2.style.backgroundColor = "rgba(0, 0, 0, 0.2)";
+              surface.style.bottom = "160px"; // Ocean/earth rises
+              pump.classList.add("hidden");
+              sun.style.opacity = 0.5;
+            } else {
+              yearTxt.innerText = "Hiện tại";
+              descTxt.innerText =
+                "Hàng triệu năm nén ép tạo thành Than đá, Dầu mỏ. Con người khai thác để lấy năng lượng.";
+              tree1.style.opacity = 0;
+              tree2.style.opacity = 0;
+
+              layer1.style.backgroundColor = "rgba(100, 116, 139, 0.9)"; // Rock layer
+              layer1.innerText = "Lớp đất đá";
+              layer2.style.backgroundColor = "rgba(15, 23, 42, 1)"; // Deep Coal/Oil
+              layer2.innerText = "Than đá / Dầu mỏ";
+              surface.style.bottom = "128px";
+
+              pump.classList.remove("hidden");
+              sun.style.opacity = 1;
+            }
+          });
+        },
+
+        render_climate_simulator(container) {
+          container.innerHTML = `
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="glass-panel p-6 rounded-2xl flex flex-col items-center justify-center relative overflow-hidden">
+                            <!-- Background Sky -->
+                            <div class="absolute inset-0 bg-blue-200 transition-colors duration-500" id="clim-sky"></div>
+                            
+                            <!-- Sun -->
+                            <div class="absolute top-4 left-4 text-yellow-500"><i data-lucide="sun" size="48"></i></div>
+                            
+                            <!-- Factory -->
+                            <div class="absolute bottom-16 left-10 text-slate-700 z-10"><i data-lucide="factory" size="64"></i></div>
+                            
+                            <!-- Smoke particles -->
+                            <div id="clim-smoke" class="absolute bottom-32 left-16 w-10 h-32 pointer-events-none z-10"></div>
+
+                            <!-- Sea Level -->
+                            <div class="absolute bottom-0 w-full h-16 bg-blue-500/80 transition-all duration-500 z-20 flex items-center justify-center text-white/50 text-xs" id="clim-sea">Mực nước biển</div>
+                            
+                            <!-- Thermometer -->
+                            <div class="absolute top-4 right-4 bg-white/80 p-2 rounded-lg flex flex-col items-center z-30 shadow-lg">
+                                <i data-lucide="thermometer" class="text-red-500 mb-1"></i>
+                                <span class="font-bold text-red-600" id="clim-temp">15.0°C</span>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel p-6 rounded-2xl flex flex-col">
+                            <h4 class="font-bold text-accent mb-4">Mô phỏng Hiệu Ứng Nhà Kính</h4>
+                            
+                            <div class="mb-6">
+                                <div class="flex justify-between mb-1 text-sm"><label>Lượng khí thải CO₂</label> <span id="val-emission" class="font-bold text-red-400">Thấp</span></div>
+                                <input type="range" id="sim-emission" min="0" max="100" value="0">
+                            </div>
+
+                            <div class="mt-auto">
+                                <canvas id="climateChart" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                `;
+          lucide.createIcons();
+
+          // Setup Chart
+          const ctx = document.getElementById("climateChart").getContext("2d");
+          const chart = new Chart(ctx, {
+            type: "line",
+            data: {
+              labels: ["1800", "1900", "1950", "2000", "2026", "Tương lai"],
+              datasets: [
+                {
+                  label: "CO2 (ppm)",
+                  data: [280, 295, 310, 370, 420, 420],
+                  borderColor: "#f43f5e",
+                  yAxisID: "y",
+                },
+                {
+                  label: "Nhiệt độ (+°C)",
+                  data: [0, 0.1, 0.3, 0.6, 1.2, 1.2],
+                  borderColor: "#eab308",
+                  yAxisID: "y1",
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              scales: {
+                y: {
+                  type: "linear",
+                  display: true,
+                  position: "left",
+                  min: 250,
+                  max: 800,
+                },
+                y1: {
+                  type: "linear",
+                  display: true,
+                  position: "right",
+                  min: 0,
+                  max: 4,
+                },
+              },
+              plugins: { legend: { labels: { color: "#cbd5e1" } } },
+            },
+          });
+          this.instances["climateChart"] = chart;
+
+          // Logic
+          const updateClimate = () => {
+            const em = parseInt(document.getElementById("sim-emission").value);
+            const valTxt = document.getElementById("val-emission");
+            if (em < 30) valTxt.innerText = "Thấp (Tự nhiên)";
+            else if (em < 70) valTxt.innerText = "Trung bình (Báo động)";
+            else valTxt.innerText = "Rất cao (Nguy hiểm)";
+
+            // Math models (simplified)
+            const baseTemp = 15.0;
+            const tempIncrease = (em / 100) * 3; // Max +3 degrees
+            const currentTemp = (baseTemp + tempIncrease).toFixed(1);
+            document.getElementById("clim-temp").innerText = currentTemp + "°C";
+
+            // Sea level
+            const baseSea = 64; // px
+            const seaIncrease = (em / 100) * 100; // Max +100px
+            document.getElementById("clim-sea").style.height =
+              baseSea + seaIncrease + "px";
+
+            // Sky color (smog)
+            const sky = document.getElementById("clim-sky");
+            sky.style.backgroundColor = `rgba(${191 - em}, ${219 - em * 0.5}, ${254 - em}, 1)`;
+
+            // Update Chart projected future
+            const futureCO2 = 420 + em * 3;
+            const futureTemp = 1.2 + tempIncrease;
+            chart.data.datasets[0].data[5] = futureCO2;
+            chart.data.datasets[1].data[5] = futureTemp;
+            chart.update();
+
+            // Generate Smoke
+            const smokeCont = document.getElementById("clim-smoke");
+            if (em > 0 && Math.random() < em / 100) {
+              const s = document.createElement("div");
+              s.className =
+                "absolute bottom-0 w-4 h-4 bg-slate-600 rounded-full opacity-50 blur-sm";
+              s.style.left = Math.random() * 20 + "px";
+              smokeCont.appendChild(s);
+              gsap.to(s, {
+                y: -100 - Math.random() * 50,
+                x: 20 + Math.random() * 30,
+                scale: 3,
+                opacity: 0,
+                duration: 2 - em / 100,
+                onComplete: () => s.remove(),
+              });
+            }
+          };
+
+          document
+            .getElementById("sim-emission")
+            .addEventListener("input", updateClimate);
+          this.intervals["climate_smoke"] = setInterval(updateClimate, 100);
+        },
+
+        render_renewable_lab(container) {
+          // A complex tabbed lab for Wind, Solar, Hydro
+          container.innerHTML = `
+                    <div class="glass-panel p-2 rounded-2xl mb-6">
+                        <div class="flex border-b border-slate-700 mb-4" id="lab-tabs">
+                            <button class="px-4 py-2 font-bold text-primary border-b-2 border-primary" onclick="Simulations.switchLabTab('wind', this)">Điện Gió</button>
+                            <button class="px-4 py-2 text-slate-400 hover:text-white" onclick="Simulations.switchLabTab('solar', this)">Điện Mặt Trời</button>
+                            <button class="px-4 py-2 text-slate-400 hover:text-white" onclick="Simulations.switchLabTab('hydro', this)">Thủy Điện</button>
+                        </div>
+                        
+                        <div id="lab-content" class="p-4">
+                            <!-- Injected dynamically based on tab -->
+                        </div>
+                    </div>
+                `;
+          // Default init
+          setTimeout(
+            () =>
+              this.switchLabTab(
+                "wind",
+                document.querySelector("#lab-tabs button"),
+              ),
+            0,
+          );
+        },
+
+        switchLabTab(type, btn) {
+          // UI update
+          const tabs = document.getElementById("lab-tabs").children;
+          for (let t of tabs) {
+            t.className =
+              "px-4 py-2 text-slate-400 hover:text-white transition-colors";
+          }
+          btn.className =
+            "px-4 py-2 font-bold text-primary border-b-2 border-primary transition-colors";
+
+          const content = document.getElementById("lab-content");
+          clearInterval(this.intervals["lab_anim"]); // Clear previous
+
+          if (type === "wind") {
+            content.innerHTML = `
+                        <div class="grid md:grid-cols-2 gap-4 items-center">
+                            <div class="flex justify-center h-64 relative bg-sky-900/30 rounded-xl items-end pb-4 overflow-hidden border border-slate-700">
+                                <!-- Turbine SVG -->
+                                <svg width="100" height="200" viewBox="0 0 100 200" class="z-10">
+                                    <rect x="45" y="100" width="10" height="100" fill="#94a3b8" />
+                                    <circle cx="50" cy="100" r="8" fill="#cbd5e1" />
+                                    <g id="turbine-blades" class="svg-turbine-blade" style="transform-origin: 50px 100px;">
+                                        <path d="M 50 100 L 45 30 L 55 30 Z" fill="#e2e8f0" />
+                                        <path d="M 50 100 L 95 135 L 85 145 Z" fill="#e2e8f0" />
+                                        <path d="M 50 100 L 5 135 L 15 145 Z" fill="#e2e8f0" />
+                                    </g>
+                                </svg>
+                                <!-- Wind lines -->
+                                <div id="wind-particles" class="absolute inset-0 pointer-events-none opacity-50"></div>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="flex justify-between text-sm"><span>Tốc độ gió (v)</span> <span id="val-wind">0 m/s</span></label>
+                                    <input type="range" id="sim-wind-spd" min="0" max="30" value="0">
+                                </div>
+                                <div class="bg-dark_card p-4 rounded-xl border border-dark_border">
+                                    <div class="text-xs text-slate-400 mb-2">Công thức: P = ½ρAv³</div>
+                                    <div class="text-3xl font-display font-bold text-emerald-400" id="out-wind-p">0 kW</div>
+                                    <div class="text-xs text-slate-500 mt-1" id="wind-status">Đang dừng</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+            const updateWind = () => {
+              const v = parseFloat(
+                document.getElementById("sim-wind-spd").value,
+              );
+              document.getElementById("val-wind").innerText = v + " m/s";
+
+              let p = 0;
+              let status = "Hoạt động bình thường";
+              let color = "text-emerald-400";
+
+              // Simplified physics: Cut-in = 3m/s, Cut-out = 25m/s
+              if (v < 3) {
+                status = "Gió quá yếu (Cut-in)";
+                color = "text-slate-500";
+              } else if (v > 25) {
+                status = "Gió quá mạnh, phanh an toàn (Cut-out)";
+                color = "text-red-500";
+              } else {
+                // P proportional to v^3. K is a dummy constant for kW visual.
+                const k = 0.5;
+                p = Math.round(k * Math.pow(v, 3));
+              }
+
+              const pOut = document.getElementById("out-wind-p");
+              pOut.innerText = p + " kW";
+              pOut.className = `text-3xl font-display font-bold ${color}`;
+              document.getElementById("wind-status").innerText = status;
+
+              // Animation update
+              const blades = document.getElementById("turbine-blades");
+              // Use GSAP for smooth continuous rotation speed change
+              const currentRotation = gsap.getProperty(blades, "rotation") || 0;
+              let rotSpeed = 0;
+              if (v >= 3 && v <= 25) rotSpeed = v * 20; // 360 deg per timeframe based on v
+
+              gsap.to(blades, {
+                rotation: currentRotation + rotSpeed,
+                duration: 1,
+                ease: "none",
+                overwrite: true,
+              });
+
+              // Wind visual particles
+              const pCont = document.getElementById("wind-particles");
+              pCont.innerHTML = ""; // Clear old
+              if (v > 0) {
+                for (let i = 0; i < Math.min(v, 15); i++) {
+                  const line = document.createElement("div");
+                  line.className = "absolute h-px bg-white/40";
+                  line.style.width = 20 + Math.random() * 50 + "px";
+                  line.style.top = 20 + Math.random() * 80 + "%";
+                  line.style.left = "-50px";
+                  pCont.appendChild(line);
+                  gsap.to(line, {
+                    x: 500,
+                    duration: 30 / v,
+                    ease: "none",
+                    repeat: -1,
+                    delay: Math.random(),
+                  });
+                }
+              }
+            };
+
+            document
+              .getElementById("sim-wind-spd")
+              .addEventListener("input", updateWind);
+            this.intervals["lab_anim"] = setInterval(updateWind, 1000); // Trigger anim updates
+          } else if (type === "solar") {
+            // Solar PV implementation (Angle & Intensity)
+            content.innerHTML = `
+                        <div class="grid md:grid-cols-2 gap-4 items-center">
+                            <div class="flex justify-center h-64 relative bg-sky-500/20 rounded-xl items-end pb-10 overflow-hidden border border-slate-700" id="solar-bg">
+                                <!-- Sun -->
+                                <div class="absolute w-16 h-16 bg-yellow-400 rounded-full transition-all duration-300" id="solar-sun" style="top: 10%; left: 50%; transform: translate(-50%, -50%);"></div>
+                                
+                                <!-- Solar Panel -->
+                                <div class="w-40 h-20 bg-blue-900 border-4 border-slate-300 rounded relative z-10 grid grid-cols-4 grid-rows-2 gap-0.5 p-0.5 shadow-lg" id="solar-panel" style="transform-origin: bottom center;">
+                                    ${Array(8).fill('<div class="bg-blue-600 w-full h-full"></div>').join("")}
+                                </div>
+                                
+                                <!-- Rays -->
+                                <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-50" id="solar-rays"></svg>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="flex justify-between text-sm"><span>Cường độ nắng</span> <span id="val-solar-i">1000 W/m²</span></label>
+                                    <input type="range" id="sim-solar-i" min="0" max="1200" value="1000" step="100">
+                                </div>
+                                <div>
+                                    <label class="flex justify-between text-sm"><span>Góc chiếu (Mặt Trời)</span> <span id="val-solar-a">90° (Trực diện)</span></label>
+                                    <input type="range" id="sim-solar-a" min="0" max="180" value="90">
+                                </div>
+                                <div class="bg-dark_card p-4 rounded-xl border border-dark_border">
+                                    <div class="text-xs text-slate-400 mb-2">Công thức: P = I × A × η × sin(θ)</div>
+                                    <div class="text-3xl font-display font-bold text-yellow-400" id="out-solar-p">0 W</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+            const updateSolar = () => {
+              const i = parseInt(document.getElementById("sim-solar-i").value);
+              const angleDeg = parseInt(
+                document.getElementById("sim-solar-a").value,
+              );
+
+              document.getElementById("val-solar-i").innerText = i + " W/m²";
+              document.getElementById("val-solar-a").innerText = angleDeg + "°";
+
+              // Move Sun based on angle (0 = East, 90 = Zenith, 180 = West)
+              const sun = document.getElementById("solar-sun");
+              // Parametric equation for a semi-circle path
+              const rad = angleDeg * (Math.PI / 180);
+              const r = 120; // radius of path
+              const cx = 50; // center X (%)
+              const cy = 100; // center Y (%)
+
+              const x = cx - Math.cos(rad) * 40; // 40% width scaling
+              const y = cy - Math.sin(rad) * 80; // 80% height scaling
+
+              sun.style.left = `${x}%`;
+              sun.style.top = `${y}%`;
+
+              // Sky color based on intensity & angle (sunset/sunrise)
+              const bg = document.getElementById("solar-bg");
+              const isDay = angleDeg > 0 && angleDeg < 180 && i > 0;
+              if (isDay) {
+                bg.style.backgroundColor = `rgba(14, 165, 233, ${(i / 1200) * Math.sin(rad)})`;
+                sun.style.boxShadow = `0 0 ${i / 20}px rgba(250,204,21,1)`;
+              } else {
+                bg.style.backgroundColor = `rgba(15, 23, 42, 1)`;
+                sun.style.boxShadow = "none";
+              }
+
+              // Physics Math
+              // P = I * Area(1m2) * Efficiency(20%) * sin(angle)
+              const eff = 0.2;
+              let p = 0;
+              if (isDay) {
+                p = Math.round(i * 1 * eff * Math.sin(rad));
+              }
+
+              document.getElementById("out-solar-p").innerText = p + " W";
+
+              // Draw Rays if producing
+              const raysCont = document.getElementById("solar-rays");
+              raysCont.innerHTML = "";
+              if (p > 0) {
+                const rect = document
+                  .getElementById("solar-panel")
+                  .getBoundingClientRect();
+                const parentRect = document
+                  .getElementById("solar-bg")
+                  .getBoundingClientRect();
+                const pX = rect.left + rect.width / 2 - parentRect.left;
+                const pY = rect.top - parentRect.top;
+
+                const sunX = (x / 100) * parentRect.width;
+                const sunY = (y / 100) * parentRect.height;
+
+                const line = `<line x1="${sunX}" y1="${sunY}" x2="${pX}" y2="${pY}" stroke="#fef08a" stroke-width="2" stroke-dasharray="5,5" opacity="0.6">
+                                <animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.5s" repeatCount="indefinite" />
+                            </line>`;
+                raysCont.innerHTML = line;
+              }
+            };
+            document
+              .getElementById("sim-solar-i")
+              .addEventListener("input", updateSolar);
+            document
+              .getElementById("sim-solar-a")
+              .addEventListener("input", updateSolar);
+            updateSolar(); // init call
+          } else if (type === "hydro") {
+            content.innerHTML = `<div class="p-4 text-center text-slate-400">Đang xây dựng... Tính toán Q = m.g.h</div>`;
+            // Simplified placeholder due to constraints, demonstrating pattern
+          }
+        },
+
+        render_smart_city(container) {
+          // The Magnum Opus
+          container.innerHTML = `
+                    <div class="glass-panel p-4 rounded-2xl flex flex-col lg:flex-row gap-6 mb-6">
+                        <!-- City Map Visual -->
+                        <div class="flex-1 relative bg-slate-800 rounded-xl overflow-hidden border border-slate-600 min-h-[400px]" id="city-map">
+                            <!-- SVG Grid & Isometric blocks would go here. Using abstract shapes for performance/size -->
+                            <div class="absolute inset-0 opacity-10 bg-[linear-gradient(rgba(255,255,255,.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.1)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
+                            
+                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none" id="city-overlay">
+                                <h3 class="text-4xl font-display font-bold text-white/20" id="city-status-text">THÀNH PHỐ TƯƠNG LAI</h3>
+                            </div>
+
+                            <!-- Visual Indicators -->
+                            <div class="absolute top-4 left-4 flex gap-2">
+                                <div class="w-8 h-8 rounded-full bg-red-500/80 flex items-center justify-center text-xs" id="v-fossil"><i data-lucide="factory" size="16"></i></div>
+                                <div class="w-8 h-8 rounded-full bg-yellow-500/80 flex items-center justify-center text-xs" id="v-solar"><i data-lucide="sun" size="16"></i></div>
+                                <div class="w-8 h-8 rounded-full bg-cyan-500/80 flex items-center justify-center text-xs" id="v-wind"><i data-lucide="wind" size="16"></i></div>
+                            </div>
+                        </div>
+
+                        <!-- Dashboard Control -->
+                        <div class="w-full lg:w-96 flex flex-col gap-4">
+                            <h3 class="font-display font-bold text-xl text-primary"><i data-lucide="sliders" class="inline"></i> Bảng Phân Bổ Năng Lượng</h3>
+                            <p class="text-xs text-slate-400">Bạn có 100% ngân sách. Hãy phân bổ hợp lý để cân bằng giữa Chi phí, Điện năng và Môi trường.</p>
+                            
+                            <!-- Sliders -->
+                            <div class="space-y-4 bg-dark_card p-4 rounded-xl border border-dark_border">
+                                <div>
+                                    <label class="flex justify-between text-sm font-semibold text-red-400"><span>Hóa thạch (Than/Khí)</span> <span id="val-sc-fossil">70%</span></label>
+                                    <input type="range" id="sc-fossil" min="0" max="100" value="70" class="accent-red-500">
+                                </div>
+                                <div>
+                                    <label class="flex justify-between text-sm font-semibold text-yellow-400"><span>Điện Mặt Trời</span> <span id="val-sc-solar">20%</span></label>
+                                    <input type="range" id="sc-solar" min="0" max="100" value="20" class="accent-yellow-500">
+                                </div>
+                                <div>
+                                    <label class="flex justify-between text-sm font-semibold text-cyan-400"><span>Điện Gió</span> <span id="val-sc-wind">10%</span></label>
+                                    <input type="range" id="sc-wind" min="0" max="100" value="10" class="accent-cyan-500">
+                                </div>
+                                
+                                <div class="pt-2 border-t border-slate-700">
+                                    <div class="flex justify-between text-sm"><span>Tổng phân bổ:</span> <span id="sc-total" class="font-bold">100%</span></div>
+                                    <div class="text-[10px] text-red-500 hidden mt-1" id="sc-warning">Tổng phải bằng 100%! Vui lòng điều chỉnh lại.</div>
+                                </div>
+                            </div>
+
+                            <!-- Metrics -->
+                            <div class="grid grid-cols-2 gap-2 mt-auto">
+                                <div class="bg-slate-800 p-3 rounded-lg text-center border border-slate-700">
+                                    <div class="text-xs text-slate-400">Nhu cầu điện</div>
+                                    <div class="font-bold text-lg" id="met-power">Đủ</div>
+                                </div>
+                                <div class="bg-slate-800 p-3 rounded-lg text-center border border-slate-700">
+                                    <div class="text-xs text-slate-400">Ô nhiễm (AQI)</div>
+                                    <div class="font-bold text-lg text-red-400" id="met-aqi">Cao</div>
+                                </div>
+                                <div class="bg-slate-800 p-3 rounded-lg text-center border border-slate-700 col-span-2">
+                                    <div class="text-xs text-slate-400">Đánh giá chung</div>
+                                    <div class="font-bold text-xl text-primary" id="met-grade">Cấp B</div>
+                                </div>
+                            </div>
+                            
+                            <button class="w-full py-3 bg-primary hover:bg-emerald-600 text-white font-bold rounded-xl shadow-lg transition-colors mt-2 disabled:opacity-50" id="btn-submit-city" onclick="Simulations.submitCity()">
+                                XÁC NHẬN THIẾT KẾ
+                            </button>
+                        </div>
+                    </div>
+                `;
+          lucide.createIcons();
+
+          const updateCity = () => {
+            const f = parseInt(document.getElementById("sc-fossil").value);
+            const s = parseInt(document.getElementById("sc-solar").value);
+            const w = parseInt(document.getElementById("sc-wind").value);
+
+            document.getElementById("val-sc-fossil").innerText = f + "%";
+            document.getElementById("val-sc-solar").innerText = s + "%";
+            document.getElementById("val-sc-wind").innerText = w + "%";
+
+            const total = f + s + w;
+            const totalEl = document.getElementById("sc-total");
+            const warning = document.getElementById("sc-warning");
+            const btn = document.getElementById("btn-submit-city");
+
+            totalEl.innerText = total + "%";
+            if (total !== 100) {
+              totalEl.classList.add("text-red-500");
+              warning.classList.remove("hidden");
+              btn.disabled = true;
+              return; // Stop math if invalid
+            } else {
+              totalEl.classList.remove("text-red-500");
+              totalEl.classList.add("text-green-500");
+              warning.classList.add("hidden");
+              btn.disabled = false;
+            }
+
+            // Update Map Visuals
+            document.getElementById("v-fossil").style.transform =
+              `scale(${0.5 + f / 50})`;
+            document.getElementById("v-solar").style.transform =
+              `scale(${0.5 + s / 50})`;
+            document.getElementById("v-wind").style.transform =
+              `scale(${0.5 + w / 50})`;
+
+            const map = document.getElementById("city-map");
+            // Color mix: Fossil=Grey/Brown, Solar/Wind=Green/Blue
+            const r = 30 + f * 1.5;
+            const g = 41 + (s + w) * 1.5;
+            const b = 59 + w * 1.5;
+            map.style.backgroundColor = `rgba(${r}, ${g}, ${b}, 1)`;
+
+            // Math Models
+            // 1. Power Stability (Fossil provides stable base, Renewables fluctuate)
+            let powerStability = f * 1 + s * 0.7 + w * 0.8;
+            let powerText =
+              powerStability > 85
+                ? "Dư thừa"
+                : powerStability > 70
+                  ? "Đủ"
+                  : "Thiếu hụt (Cắt điện)";
+            let powerColor =
+              powerStability > 85
+                ? "text-primary"
+                : powerStability > 70
+                  ? "text-white"
+                  : "text-red-500";
+            const pEl = document.getElementById("met-power");
+            pEl.innerText = powerText;
+            pEl.className = `font-bold text-lg ${powerColor}`;
+
+            // 2. Pollution (AQI) - Heavily weighted on fossil
+            let aqi = f * 2.5;
+            let aqiText =
+              aqi < 50 ? "Tốt (Xanh)" : aqi < 100 ? "TB (Vàng)" : "Xấu (Đỏ)";
+            let aqiColor =
+              aqi < 50
+                ? "text-primary"
+                : aqi < 100
+                  ? "text-yellow-400"
+                  : "text-red-500";
+            const aEl = document.getElementById("met-aqi");
+            aEl.innerText = `${Math.round(aqi)} - ${aqiText}`;
+            aEl.className = `font-bold text-lg ${aqiColor}`;
+
+            // 3. Overall Grade
+            let grade = "C (Trung bình)";
+            let gColor = "text-yellow-500";
+            if (f > 80) {
+              grade = "D (Ô nhiễm nặng)";
+              gColor = "text-red-500";
+            } else if (f < 30 && powerStability > 75) {
+              grade = "A+ (Thành phố Xanh)";
+              gColor = "text-primary";
+            } else if (f < 50 && powerStability > 70) {
+              grade = "A (Bền vững)";
+              gColor = "text-primary";
+            } else if (powerStability < 70) {
+              grade = "F (Sụp đổ năng lượng)";
+              gColor = "text-red-600";
+            }
+
+            const gEl = document.getElementById("met-grade");
+            gEl.innerText = grade;
+            gEl.className = `font-bold text-xl ${gColor}`;
+          };
+
+          ["sc-fossil", "sc-solar", "sc-wind"].forEach((id) => {
+            document.getElementById(id).addEventListener("input", updateCity);
+          });
+          updateCity(); // initial call
+        },
+
+        submitCity() {
+          const f = parseInt(document.getElementById("sc-fossil").value);
+          const grade = document.getElementById("met-grade").innerText;
+
+          if (grade.includes("A") || grade.includes("A+")) {
+            App.showToast(
+              "Tuyệt vời! Bạn đã thiết kế thành công Thành phố Xanh.",
+              "success",
+            );
+            State.addXP(500, "Master: Thiết kế Thành phố Xanh");
+            State.markSectionComplete("s24");
+            // Check badge
+            State.checkBadges("s24");
+
+            // Celebration effect
+            const text = document.getElementById("city-status-text");
+            text.innerText = "THÀNH CÔNG!";
+            text.className =
+              "text-6xl font-display font-bold text-primary animate-pulse";
+          } else {
+            App.showToast(
+              `Chưa đạt. Đánh giá: ${grade}. Hãy cố gắng giảm hóa thạch và đảm bảo đủ điện!`,
+              "error",
+            );
+          }
+        },
+      };
+
+      // --- 5. MAIN APPLICATION CONTROLLER ---
+      const App = {
+        init() {
+          State.load();
+          this.renderNavigation();
+
+          // Handle initial routing (hash or default to hero)
+          const hash = window.location.hash.replace("#", "");
+          if (hash && hash !== "hero") {
+            this.navigateTo(hash);
+          } else {
+            this.navigateTo("hero");
+          }
+
+          // Setup Theme
+          const isDark = document.documentElement.classList.contains("dark");
+          if (!isDark)
+            document.getElementById("icon-light").classList.remove("hidden");
+
+          document
+            .getElementById("theme-toggle")
+            .addEventListener("click", () => {
+              document.documentElement.classList.toggle("dark");
+              const darkNow =
+                document.documentElement.classList.contains("dark");
+              document
+                .getElementById("icon-light")
+                .classList.toggle("hidden", darkNow);
+              document
+                .getElementById("icon-dark")
+                .classList.toggle("hidden", !darkNow);
+            });
+
+          // Pre-render Badges grid
+          const badgesGrid = document.getElementById("badges-grid");
+          COURSE_DATA.badges.forEach((b) => {
+            const isUnlocked = State.unlockedBadges.includes(b.id);
+            badgesGrid.innerHTML += `
+                        <div class="flex flex-col items-center p-4 rounded-xl border ${isUnlocked ? "border-accent bg-accent/10" : "border-slate-700 bg-black/20 opacity-50 grayscale"} text-center transition-all">
+                            <div class="w-12 h-12 rounded-full flex items-center justify-center bg-slate-800 text-${isUnlocked ? "accent" : "slate-500"} mb-2 shadow-lg">
+                                <i data-lucide="${b.icon}"></i>
+                            </div>
+                            <div class="font-bold text-sm mb-1">${b.name}</div>
+                            <div class="text-[10px] text-slate-400">${b.desc}</div>
+                        </div>
+                    `;
+          });
+          lucide.createIcons();
+        },
+
+        renderNavigation() {
+          const nav = document.getElementById("nav-menu");
+          nav.innerHTML = "";
+
+          COURSE_DATA.chapters.forEach((chapter) => {
+            let html = `
+                        <div class="mt-4 mb-1 px-3 text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                            <i data-lucide="${chapter.icon}" size="14"></i> ${chapter.title}
+                        </div>
+                    `;
+
+            chapter.sections.forEach((sec) => {
+              const isCompleted = State.completedSections.includes(sec.id);
+              const isActive = State.currentSection === sec.id;
+
+              html += `
+                            <a href="#${sec.id}" onclick="App.navigateTo('${sec.id}')" 
+                               class="flex items-center justify-between px-3 py-2 rounded-lg transition-colors cursor-pointer text-sm
+                                      ${isActive ? "bg-primary/20 text-primary font-bold" : "text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800/50"}">
+                                <span class="truncate">${sec.title}</span>
+                                ${isCompleted ? '<i data-lucide="check-circle" size="14" class="text-primary shrink-0"></i>' : ""}
+                            </a>
+                        `;
+            });
+            nav.innerHTML += html;
+          });
+          lucide.createIcons();
+        },
+
+        navigateTo(sectionId) {
+          State.currentSection = sectionId;
+          window.location.hash = sectionId;
+          this.renderNavigation();
+
+          // Hide sidebar on mobile after click
+          if (window.innerWidth < 768) {
+            toggleSidebar();
+          }
+
+          const container = document.getElementById("content-container");
+          container.innerHTML = ""; // Clear current
+          Simulations.clearCurrent(); // Clean up memory
+
+          // Find section data
+          let sectionData = null;
+          for (let chap of COURSE_DATA.chapters) {
+            const found = chap.sections.find((s) => s.id === sectionId);
+            if (found) {
+              sectionData = found;
+              break;
+            }
+          }
+
+          if (!sectionData) {
+            container.innerHTML = `<div class="text-center text-red-500 mt-20">Lỗi: Không tìm thấy nội dung bài học.</div>`;
+            return;
+          }
+
+          // Update Header Title
+          document.getElementById("header-title").innerText =
+            sectionData.title.toUpperCase();
+
+          // Build View based on section type
+          if (sectionData.type === "hero") {
+            Simulations.render_hero(container);
+            return; // Hero handles its own layout
+          }
+
+          // Standard Layout Build
+          let viewHTML = document.createElement("div");
+          viewHTML.className = "animate-[fade-in_0.5s_ease-out]";
+
+          // 1. Theory Block
+          if (sectionData.theory) {
+            viewHTML.innerHTML += UI.createCard(
+              `<i data-lucide="book-open" class="inline mr-2"></i> Khái niệm cốt lõi`,
+              `<p class="text-lg">${sectionData.theory}</p>`,
+              "border-l-4 border-l-primary",
+            );
+          }
+
+          // 2. Simulation Container
+          if (sectionData.simType) {
+            const simWrap = document.createElement("div");
+            simWrap.id = `sim-wrapper-${sectionData.id}`;
+            viewHTML.appendChild(simWrap);
+
+            // Append HTML to DOM first, then call render so specific scripts can find IDs
+            container.appendChild(viewHTML);
+
+            const simContainer = document.getElementById(
+              `sim-wrapper-${sectionData.id}`,
+            );
+            if (Simulations[`render_${sectionData.simType}`]) {
+              Simulations[`render_${sectionData.simType}`](simContainer);
+            } else {
+              simContainer.innerHTML = `<div class="p-4 border border-dashed border-slate-500 text-center text-slate-400 rounded-xl mb-6">Mô phỏng <b>${sectionData.simType}</b> đang được nạp...</div>`;
+            }
+          } else {
+            container.appendChild(viewHTML);
+          }
+
+          // 3. Quiz Block
+          if (sectionData.quiz) {
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = UI.createQuiz(sectionData.id, sectionData.quiz);
+            container.appendChild(tempDiv.firstElementChild);
+          }
+
+          // Scroll to top
+          document.getElementById("main-scroll").scrollTop = 0;
+          lucide.createIcons();
+        },
+
+        showModal(id) {
+          const modal = document.getElementById(id);
+          const content = document.getElementById(id + "-content");
+          modal.classList.remove("hidden");
+          // Trigger reflow
+          void modal.offsetWidth;
+          modal.classList.remove("opacity-0");
+          content.classList.remove("scale-95");
+
+          if (id === "achievement-modal") {
+            document.getElementById("badge-notify").classList.add("hidden");
+          }
+        },
+
+        hideModal(id) {
+          const modal = document.getElementById(id);
+          const content = document.getElementById(id + "-content");
+          modal.classList.add("opacity-0");
+          content.classList.add("scale-95");
+          setTimeout(() => modal.classList.add("hidden"), 300);
+        },
+
+        showToast(message, type = "info") {
+          const container = document.getElementById("toast-container");
+          const toast = document.createElement("div");
+
+          let bgColor = "bg-slate-800";
+          let iconColor = "text-blue-400";
+          let iconStr = "info";
+
+          if (type === "success") {
+            bgColor = "bg-emerald-900";
+            iconColor = "text-emerald-400";
+            iconStr = "check-circle";
+          }
+          if (type === "error") {
+            bgColor = "bg-red-900";
+            iconColor = "text-red-400";
+            iconStr = "alert-triangle";
+          }
+          if (type === "achievement") {
+            bgColor = "bg-amber-900";
+            iconColor = "text-amber-400";
+            iconStr = "award";
+          }
+
+          toast.className = `${bgColor} border border-slate-700 text-white px-4 py-3 rounded-lg shadow-xl flex items-center gap-3 toast-enter max-w-sm`;
+          toast.innerHTML = `<i data-lucide="${iconStr}" class="${iconColor}"></i> <div class="font-medium text-sm">${message}</div>`;
+
+          container.appendChild(toast);
+          lucide.createIcons();
+
+          // Animate in
+          requestAnimationFrame(() => {
+            toast.classList.remove("toast-enter");
+            toast.classList.add("toast-active");
+          });
+
+          // Remove after 3s
+          setTimeout(() => {
+            toast.classList.remove("toast-active");
+            toast.classList.add("toast-exit");
+            setTimeout(() => toast.remove(), 300);
+          }, 3000);
+        },
+      };
+
+      // UI Helpers
+      function toggleSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        if (sidebar.classList.contains("-translate-x-full")) {
+          sidebar.classList.remove("-translate-x-full");
+        } else {
+          sidebar.classList.add("-translate-x-full");
+        }
+      }
+
+      // Add CSS keyframes for fade in
+      const style = document.createElement("style");
+      style.innerHTML = `
+            @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        `;
+      document.head.appendChild(style);
+
+      // Bootstrap
+      document.addEventListener("DOMContentLoaded", () => App.init());
+    </script>
+  </body>
+</html>

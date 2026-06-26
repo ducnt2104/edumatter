@@ -1,0 +1,2070 @@
+<!doctype html>
+<html lang="vi" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EduMatter | Thế Giới Điện Học - Vật Lý 9</title>
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+              mono: ["JetBrains Mono", "monospace"],
+            },
+            colors: {
+              primary: {
+                50: "#eff6ff",
+                100: "#dbeafe",
+                200: "#bfdbfe",
+                300: "#93c5fd",
+                400: "#60a5fa",
+                500: "#3b82f6",
+                600: "#2563eb",
+                700: "#1d4ed8",
+                800: "#1e40af",
+                900: "#1e3a8a",
+                950: "#172554",
+              },
+              neon: {
+                blue: "#00f3ff",
+                green: "#00ff66",
+                purple: "#b500ff",
+                orange: "#ff5500",
+                yellow: "#ffcc00",
+              },
+              darkbg: "#0a0f1c",
+              panel: "#111827",
+              panel2: "#1f2937",
+            },
+            boxShadow: {
+              "neon-blue":
+                "0 0 10px rgba(0, 243, 255, 0.5), 0 0 20px rgba(0, 243, 255, 0.3)",
+              "neon-green":
+                "0 0 10px rgba(0, 255, 102, 0.5), 0 0 20px rgba(0, 255, 102, 0.3)",
+              "neon-orange":
+                "0 0 10px rgba(255, 85, 0, 0.5), 0 0 20px rgba(255, 85, 0, 0.3)",
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <style>
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0f172a;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #334155;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #475569;
+      }
+
+      body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        overflow-x: hidden;
+      }
+      .dark body {
+        --bg-color: #0a0f1c;
+        --text-color: #f8fafc;
+      }
+      body {
+        --bg-color: #f8fafc;
+        --text-color: #0f172a;
+      }
+
+      /* SVG Circuit Animations */
+      .wire {
+        fill: none;
+        stroke: #475569;
+        stroke-width: 4;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+      }
+      .dark .wire {
+        stroke: #334155;
+      }
+
+      .electron-flow {
+        fill: none;
+        stroke: #00f3ff;
+        stroke-width: 2;
+        stroke-dasharray: 8 12;
+        animation: flow 2s linear infinite;
+        filter: drop-shadow(0 0 4px #00f3ff);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      @keyframes flow {
+        from {
+          stroke-dashoffset: 40;
+        }
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+
+      /* Meter Animations */
+      .needle {
+        transform-origin: 50% 90%;
+        transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      /* UI Elements */
+      .glass-panel {
+        background: rgba(17, 24, 39, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .light .glass-panel {
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+
+      .math {
+        font-family: "JetBrains Mono", monospace;
+        color: #00f3ff;
+      }
+      .light .math {
+        color: #2563eb;
+      }
+
+      /* Range Slider Styling */
+      input[type="range"] {
+        -webkit-appearance: none;
+        width: 100%;
+        background: transparent;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        background: #00f3ff;
+        cursor: pointer;
+        margin-top: -8px;
+        box-shadow: 0 0 10px #00f3ff;
+      }
+      input[type="range"]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+        background: #334155;
+        border-radius: 2px;
+      }
+
+      /* Interactive Grid bg */
+      .grid-bg {
+        background-size: 40px 40px;
+        background-image:
+          linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0.05) 1px,
+            transparent 1px
+          ),
+          linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.05) 1px,
+            transparent 1px
+          );
+      }
+
+      /* Toast Container */
+      #toast-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .toast {
+        background: #1f2937;
+        border-left: 4px solid #00ff66;
+        color: white;
+        padding: 16px 24px;
+        border-radius: 8px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        transform: translateX(120%);
+        transition: transform 0.3s ease-out;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .toast.show {
+        transform: translateX(0);
+      }
+      .toast-icon {
+        font-size: 24px;
+      }
+      .toast-content h4 {
+        margin: 0;
+        font-weight: bold;
+        font-size: 14px;
+        color: #00ff66;
+      }
+      .toast-content p {
+        margin: 0;
+        font-size: 12px;
+        color: #9ca3af;
+      }
+
+      /* Section hidden state */
+      .section-content {
+        display: none;
+      }
+      .section-content.active {
+        display: block;
+        animation: fadeIn 0.5s ease;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Hero Canvas */
+      #heroCanvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        opacity: 0.6;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body
+    class="antialiased font-sans text-slate-300 transition-colors duration-300"
+  >
+    <!-- App Shell -->
+    <div class="flex h-screen overflow-hidden">
+      <!-- Sidebar Navigation -->
+      <aside
+        class="w-72 glass-panel border-r border-slate-700/50 flex flex-col z-20 flex-shrink-0 transition-transform duration-300"
+        id="sidebar"
+      >
+        <div class="p-6 border-b border-slate-700/50">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-neon-blue flex items-center justify-center shadow-neon-blue"
+            >
+              <svg
+                class="w-6 h-6 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                ></path>
+              </svg>
+            </div>
+            <div>
+              <h1 class="text-xl font-bold text-white tracking-tight">
+                EduMatter
+              </h1>
+              <p class="text-xs text-primary-400 font-mono">PHYS_9_CH3</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- User Progress -->
+        <div class="p-4 border-b border-slate-700/50 bg-slate-800/30">
+          <div class="flex justify-between items-end mb-2">
+            <div>
+              <p class="text-xs text-slate-400 uppercase tracking-wider">
+                Học viên
+              </p>
+              <p class="text-sm font-semibold text-white" id="userLevelDisplay">
+                Level 1: Tập Sự
+              </p>
+            </div>
+            <div class="text-right">
+              <p class="text-2xl font-bold text-neon-green" id="userXpDisplay">
+                0<span class="text-sm text-slate-400">XP</span>
+              </p>
+            </div>
+          </div>
+          <div class="w-full bg-slate-700 rounded-full h-2">
+            <div
+              class="bg-gradient-to-r from-neon-green to-neon-blue h-2 rounded-full transition-all duration-1000"
+              id="xpProgressBar"
+              style="width: 0%"
+            ></div>
+          </div>
+        </div>
+
+        <div
+          class="flex-1 overflow-y-auto p-4 space-y-1 custom-scrollbar"
+          id="navMenu"
+        >
+          <!-- Nav items generated via JS -->
+        </div>
+
+        <div class="p-4 border-t border-slate-700/50 flex gap-2">
+          <button
+            onclick="appEngine.resetProgress()"
+            class="flex-1 py-2 px-2 rounded bg-red-500/10 text-red-400 hover:bg-red-500/20 text-sm font-medium transition-colors border border-red-500/20"
+          >
+            Reset
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="flex-1 flex flex-col relative h-screen overflow-hidden">
+        <!-- Topbar -->
+        <header
+          class="h-16 glass-panel border-b border-slate-700/50 flex items-center justify-between px-6 z-10"
+        >
+          <div class="flex items-center gap-4">
+            <button
+              id="mobileMenuBtn"
+              class="lg:hidden text-slate-400 hover:text-white"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                ></path>
+              </svg>
+            </button>
+            <h2
+              class="text-lg font-semibold text-white hidden sm:block"
+              id="topbarTitle"
+            >
+              Bài 14: Thế Giới Điện Học
+            </h2>
+          </div>
+          <div class="flex items-center gap-4">
+            <button
+              id="themeToggle"
+              class="p-2 rounded-full hover:bg-slate-700 transition-colors"
+            >
+              <svg
+                class="w-5 h-5 text-yellow-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                ></path>
+              </svg>
+            </button>
+            <button
+              onclick="appEngine.navigateTo('achievements')"
+              class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-600 hover:border-neon-yellow transition-colors"
+            >
+              <span class="text-xl">🏆</span>
+              <span class="text-sm font-bold text-white" id="badgeCount"
+                >0</span
+              >
+            </button>
+          </div>
+        </header>
+
+        <!-- Scrollable Content Area -->
+        <div
+          class="flex-1 overflow-y-auto relative bg-darkbg grid-bg"
+          id="mainScrollArea"
+        >
+          <canvas id="heroCanvas"></canvas>
+
+          <div class="max-w-6xl mx-auto p-4 sm:p-8 pb-32" id="contentContainer">
+            <!-- Sections dynamically injected here -->
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- Application Logic -->
+    <script>
+      // --- CORE SYSTEM ENGINE ---
+      const appState = {
+        xp: 0,
+        level: 1,
+        currentSectionId: "hero",
+        unlockedSections: ["hero", "part1_intro"],
+        achievements: [],
+        labData: {
+          ohm: { dataPoints: [] },
+        },
+      };
+
+      const levels = [
+        { xp: 0, name: "Tập Sự" },
+        { xp: 500, name: "Thợ Điện" },
+        { xp: 1500, name: "Kỹ Thuật Viên" },
+        { xp: 3000, name: "Kỹ Sư Mạch" },
+        { xp: 5000, name: "Chuyên Gia Ohm" },
+        { xp: 10000, name: "Bậc Thầy Năng Lượng" },
+      ];
+
+      const achievementsList = [
+        {
+          id: "first_blood",
+          icon: "💡",
+          title: "Ánh Sáng Đầu Tiên",
+          desc: "Bắt đầu hành trình khám phá thế giới điện học.",
+          req: () => true,
+        },
+        {
+          id: "theory_reader",
+          icon: "📖",
+          title: "Học Giả",
+          desc: "Đọc và hoàn thành các phần lý thuyết cơ bản.",
+          req: () => false,
+        },
+        {
+          id: "ohm_master",
+          icon: "📐",
+          title: "Định Luật Ohm",
+          desc: "Hoàn thành mô phỏng phòng lab Ohm với 5 lần đo.",
+          req: () => appState.labData.ohm.dataPoints.length >= 5,
+        },
+        {
+          id: "series_pro",
+          icon: "⛓️",
+          title: "Trùm Nối Tiếp",
+          desc: "Giải quyết thành công bài tập mạch nối tiếp.",
+          req: () => false,
+        },
+        {
+          id: "parallel_pro",
+          icon: "🪜",
+          title: "Vua Song Song",
+          desc: "Thiết kế thành công mạch song song.",
+          req: () => false,
+        },
+        {
+          id: "saver",
+          icon: "🌱",
+          title: "Nhà Bảo Vệ Môi Trường",
+          desc: "Tính toán thành công hóa đơn tiền điện.",
+          req: () => false,
+        },
+      ];
+
+      // --- CONTENT STRUCTURE ---
+      const contentMap = [
+        { id: "hero", title: "Tổng Quan", type: "header", icon: "🏠" },
+
+        {
+          id: "part1_intro",
+          title: "Phần I: Điện Trở & Định Luật Ohm",
+          type: "chapter",
+          icon: "⚡",
+        },
+        {
+          id: "s1_theory",
+          title: "1. Điện trở & Đơn vị đo",
+          type: "lesson",
+          parent: "part1_intro",
+        },
+        {
+          id: "s7_ohm_theory",
+          title: "2. Định luật Ohm (Lý thuyết)",
+          type: "lesson",
+          parent: "part1_intro",
+        },
+        {
+          id: "s10_ohm_lab",
+          title: "3. Ohm Laboratory",
+          type: "lesson",
+          parent: "part1_intro",
+          isLab: true,
+        },
+
+        {
+          id: "part3_intro",
+          title: "Phần II: Điện Trở Dây Dẫn",
+          type: "chapter",
+          icon: "🧵",
+        },
+        {
+          id: "s11_factors",
+          title: "4. Yếu tố ảnh hưởng (l, S, ρ)",
+          type: "lesson",
+          parent: "part3_intro",
+          isLab: true,
+        },
+
+        {
+          id: "part4_intro",
+          title: "Phần III: Phân Tích Mạch Điện",
+          type: "chapter",
+          icon: "🔌",
+        },
+        {
+          id: "s16_series_theory",
+          title: "5. Mạch Nối Tiếp & Song Song",
+          type: "lesson",
+          parent: "part4_intro",
+        },
+        {
+          id: "s_circuit_builder",
+          title: "6. Super Circuit Builder",
+          type: "lesson",
+          parent: "part4_intro",
+          isLab: true,
+        },
+
+        {
+          id: "part6_intro",
+          title: "Phần IV: Năng Lượng & Công Suất",
+          type: "chapter",
+          icon: "🔋",
+        },
+        {
+          id: "s29_energy_theory",
+          title: "7. Điện năng & Công suất",
+          type: "lesson",
+          parent: "part6_intro",
+        },
+        {
+          id: "s35_home_lab",
+          title: "8. Home Energy Simulator",
+          type: "lesson",
+          parent: "part6_intro",
+          isLab: true,
+        },
+
+        {
+          id: "achievements",
+          title: "Bảng Thành Tựu",
+          type: "special",
+          icon: "🏆",
+        },
+      ];
+
+      const appEngine = {
+        init() {
+          this.loadState();
+          this.buildNavigation();
+          this.renderContentContainers();
+          this.initHeroCanvas();
+          this.navigateTo(appState.currentSectionId || "hero");
+          this.updateUI();
+
+          // Event Listeners
+          document
+            .getElementById("themeToggle")
+            .addEventListener("click", () => {
+              document.documentElement.classList.toggle("dark");
+            });
+
+          // Initialize AOS
+          AOS.init({ duration: 800, once: true });
+
+          this.grantAchievement("first_blood");
+        },
+
+        loadState() {
+          const saved = localStorage.getItem("phys_state");
+          if (saved) {
+            try {
+              Object.assign(appState, JSON.parse(saved));
+            } catch (e) {
+              console.error("Corrupted save data.");
+            }
+          }
+        },
+
+        saveState() {
+          localStorage.setItem("phys_state", JSON.stringify(appState));
+          this.updateUI();
+        },
+
+        resetProgress() {
+          if (confirm("Bạn có chắc muốn xóa toàn bộ tiến trình học tập?")) {
+            localStorage.removeItem("phys_state");
+            location.reload();
+          }
+        },
+
+        addXP(amount, reason) {
+          appState.xp += amount;
+          let currentLevelIdx = levels.findIndex((l) => appState.xp < l.xp) - 1;
+          if (currentLevelIdx < 0) currentLevelIdx = levels.length - 1;
+          if (appState.xp >= levels[levels.length - 1].xp)
+            currentLevelIdx = levels.length - 1;
+          else if (appState.xp < levels[1].xp) currentLevelIdx = 0;
+
+          if (currentLevelIdx > appState.level - 1) {
+            appState.level = currentLevelIdx + 1;
+            this.showToast(
+              "Tăng Cấp!",
+              `Bạn đã đạt cấp độ ${levels[currentLevelIdx].name}!`,
+              "⭐",
+            );
+          }
+
+          this.showToast("+" + amount + " XP", reason, "⚡");
+          this.saveState();
+        },
+
+        grantAchievement(id) {
+          if (!appState.achievements.includes(id)) {
+            appState.achievements.push(id);
+            const ach = achievementsList.find((a) => a.id === id);
+            this.showToast("Thành Tựu Mới!", ach.title, ach.icon);
+            this.addXP(200, "Mở khóa thành tựu");
+            this.saveState();
+          }
+        },
+
+        showToast(title, message, icon = "🔔") {
+          const container = document.getElementById("toast-container");
+          const toast = document.createElement("div");
+          toast.className = "toast";
+          toast.innerHTML = `
+                    <div class="toast-icon">${icon}</div>
+                    <div class="toast-content">
+                        <h4>${title}</h4>
+                        <p>${message}</p>
+                    </div>
+                `;
+          container.appendChild(toast);
+          setTimeout(() => toast.classList.add("show"), 10);
+          setTimeout(() => {
+            toast.classList.remove("show");
+            setTimeout(() => toast.remove(), 300);
+          }, 4000);
+        },
+
+        updateUI() {
+          // Update Top/Sidebar stats
+          document.getElementById("userXpDisplay").innerHTML =
+            `${appState.xp}<span class="text-sm text-slate-400">XP</span>`;
+
+          let currentLevelObj = levels[appState.level - 1] || levels[0];
+          let nextLevelObj =
+            levels[appState.level] || levels[levels.length - 1];
+
+          document.getElementById("userLevelDisplay").innerText =
+            `Level ${appState.level}: ${currentLevelObj.name}`;
+
+          let progress = 100;
+          if (appState.level < levels.length) {
+            let range = nextLevelObj.xp - currentLevelObj.xp;
+            let earned = appState.xp - currentLevelObj.xp;
+            progress = (earned / range) * 100;
+          }
+          document.getElementById("xpProgressBar").style.width = `${progress}%`;
+          document.getElementById("badgeCount").innerText =
+            appState.achievements.length;
+
+          // Update Nav active states
+          document.querySelectorAll(".nav-item").forEach((el) => {
+            el.classList.remove(
+              "bg-primary-500/20",
+              "text-primary-400",
+              "border-l-2",
+              "border-primary-500",
+            );
+            if (el.dataset.id === appState.currentSectionId) {
+              el.classList.add(
+                "bg-primary-500/20",
+                "text-primary-400",
+                "border-l-2",
+                "border-primary-500",
+              );
+            }
+          });
+        },
+
+        buildNavigation() {
+          const menu = document.getElementById("navMenu");
+          menu.innerHTML = "";
+
+          contentMap.forEach((item) => {
+            if (
+              item.type === "header" ||
+              item.type === "chapter" ||
+              item.type === "special"
+            ) {
+              const btn = document.createElement("button");
+              btn.className = `nav-item w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 transition-colors ${item.type === "chapter" ? "mt-4 bg-slate-800/50 font-bold" : "hover:bg-slate-800"}`;
+              btn.dataset.id = item.id;
+              btn.onclick = () => this.navigateTo(item.id);
+              btn.innerHTML = `<span class="text-xl">${item.icon || ""}</span><span class="text-sm">${item.title}</span>`;
+              menu.appendChild(btn);
+            } else if (item.type === "lesson") {
+              const btn = document.createElement("button");
+              btn.className = `nav-item w-full text-left pl-12 pr-4 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors flex items-center justify-between`;
+              btn.dataset.id = item.id;
+              btn.onclick = () => this.navigateTo(item.id);
+
+              let icon = item.isLab
+                ? '<span class="text-xs text-neon-orange border border-neon-orange px-1 rounded">LAB</span>'
+                : "";
+
+              btn.innerHTML = `<span>${item.title}</span> ${icon}`;
+              menu.appendChild(btn);
+            }
+          });
+        },
+
+        renderContentContainers() {
+          const container = document.getElementById("contentContainer");
+          contentMap.forEach((item) => {
+            const section = document.createElement("section");
+            section.id = `section_${item.id}`;
+            section.className = "section-content max-w-5xl mx-auto";
+            container.appendChild(section);
+          });
+
+          // Inject All Contents
+          this.injectHeroContent();
+          this.injectS1_Theory();
+          this.injectS7_OhmTheory();
+          this.injectS10_OhmLab();
+          this.injectS11_WireLab();
+          this.injectS16_SeriesParallelTheory();
+          this.injectSCircuitBuilder();
+          this.injectS29_EnergyTheory();
+          this.injectS35_HomeEnergyLab();
+          this.injectAchievementsView();
+        },
+
+        navigateTo(id) {
+          // Hide all
+          document
+            .querySelectorAll(".section-content")
+            .forEach((el) => el.classList.remove("active"));
+
+          // Show target
+          const target = document.getElementById(`section_${id}`);
+          if (target) {
+            target.classList.add("active");
+            appState.currentSectionId = id;
+            document.getElementById("topbarTitle").innerText = contentMap.find(
+              (i) => i.id === id,
+            ).title;
+            this.saveState();
+
+            // Trigger animations/re-renders if needed based on ID
+            if (id === "hero") this.animateHero();
+            if (id === "s10_ohm_lab") simEngine.initOhmLab();
+            if (id === "s11_factors") simEngine.initWireLab();
+            if (id === "s_circuit_builder") simEngine.initCircuitBuilder();
+            if (id === "s35_home_lab") simEngine.initHomeLab();
+            if (id === "achievements") this.renderAchievementsView();
+
+            // Scroll top
+            document.getElementById("mainScrollArea").scrollTo(0, 0);
+          }
+        },
+
+        // --- HTML INJECTION METHODS ---
+
+        injectHeroContent() {
+          const html = `
+                    <div class="flex flex-col items-center justify-center min-h-[70vh] text-center" data-aos="zoom-in">
+                        <div class="inline-block p-2 px-4 rounded-full bg-primary-500/10 border border-primary-500/30 text-primary-400 font-mono text-sm mb-6">
+                            ID: PHYS_9_CH3_14062026
+                        </div>
+                        <h1 class="text-5xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-neon-blue via-primary-400 to-neon-purple mb-6 drop-shadow-lg">
+                            THẾ GIỚI ĐIỆN HỌC
+                        </h1>
+                        <h2 class="text-2xl md:text-3xl font-light text-slate-300 mb-10 max-w-3xl leading-relaxed">
+                            Khám phá Điện trở, Định luật Ohm, phân tích Mạch điện nối tiếp - song song và làm chủ Năng lượng điện.
+                        </h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl mt-8">
+                            ${this.buildFeatureCard("Định Luật Ohm", "Mô phỏng điện áp, dòng điện và điện trở realtime.", "📐", "s10_ohm_lab")}
+                            ${this.buildFeatureCard("Mạch Điện Simulator", "Lắp ráp mạch nối tiếp, song song với SVG Engine.", "🔌", "s_circuit_builder")}
+                            ${this.buildFeatureCard("Quản Lý Năng Lượng", "Tính toán điện năng, công suất và tiền điện.", "💡", "s35_home_lab")}
+                        </div>
+                        
+                        <button onclick="appEngine.navigateTo('s1_theory')" class="mt-16 group relative px-8 py-4 bg-primary-600 hover:bg-primary-500 text-white font-bold rounded-xl text-lg transition-all shadow-neon-blue hover:shadow-[0_0_30px_rgba(0,243,255,0.6)] overflow-hidden">
+                            <span class="relative z-10 flex items-center gap-2">Bắt Đầu Bài Học <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg></span>
+                            <div class="absolute inset-0 h-full w-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                        </button>
+                    </div>
+                `;
+          document.getElementById("section_hero").innerHTML = html;
+        },
+
+        buildFeatureCard(title, desc, icon, targetId) {
+          return `
+                    <div onclick="appEngine.navigateTo('${targetId}')" class="glass-panel p-6 rounded-2xl cursor-pointer hover:-translate-y-2 hover:border-primary-500/50 transition-all duration-300 group">
+                        <div class="text-4xl mb-4 group-hover:scale-110 transition-transform origin-left">${icon}</div>
+                        <h3 class="text-xl font-bold text-white mb-2">${title}</h3>
+                        <p class="text-slate-400 text-sm">${desc}</p>
+                    </div>
+                `;
+        },
+
+        injectS1_Theory() {
+          const html = `
+                    <div class="space-y-8" data-aos="fade-up">
+                        <div class="glass-panel rounded-2xl p-8 border-l-4 border-neon-blue">
+                            <h2 class="text-3xl font-bold text-white mb-4">Điện trở là gì?</h2>
+                            <p class="text-lg leading-relaxed text-slate-300">
+                                Dòng điện trong kim loại là dòng chuyển dời có hướng của các electron tự do. Tuy nhiên, khi chuyển động, các electron này va chạm với các ion dương ở nút mạng tinh thể, làm cản trở chuyển động của chúng.
+                            </p>
+                            <p class="text-lg leading-relaxed text-slate-300 mt-4">
+                                Đại lượng đặc trưng cho <strong class="text-neon-blue">mức độ cản trở dòng điện</strong> của một vật dẫn được gọi là <strong class="text-white text-xl">Điện trở (R)</strong>.
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div class="glass-panel rounded-2xl p-6">
+                                <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><span class="text-neon-green">■</span> Water Flow Analogy</h3>
+                                <p class="text-sm text-slate-400 mb-6">So sánh dòng điện với dòng nước chảy trong ống.</p>
+                                
+                                <div class="relative h-64 bg-slate-900 rounded-xl overflow-hidden border border-slate-700 flex flex-col justify-center gap-8 p-4">
+                                    <!-- Wide Pipe -->
+                                    <div class="relative">
+                                        <div class="absolute -top-6 left-0 text-xs text-slate-400">Ống to (Điện trở nhỏ)</div>
+                                        <div class="w-full h-12 bg-slate-800 rounded border-y-4 border-slate-600 relative overflow-hidden">
+                                            <div class="absolute inset-0 bg-blue-500/30"></div>
+                                            <svg class="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+                                                <path d="M0,24 L1000,24" stroke="#3b82f6" stroke-width="20" stroke-dasharray="20 40" stroke-dashoffset="0">
+                                                    <animate attributeName="stroke-dashoffset" values="60;0" dur="0.5s" repeatCount="indefinite"/>
+                                                </path>
+                                            </svg>
+                                        </div>
+                                        <div class="absolute right-2 top-1/2 -translate-y-1/2 text-white font-bold bg-slate-900/80 px-2 py-1 rounded text-sm">Dòng chảy mạnh (I lớn)</div>
+                                    </div>
+                                    
+                                    <!-- Narrow Pipe -->
+                                    <div class="relative mt-4">
+                                        <div class="absolute -top-6 left-0 text-xs text-slate-400">Ống hẹp (Điện trở lớn)</div>
+                                        <div class="w-full h-12 bg-slate-800 rounded border-y-4 border-slate-600 relative overflow-hidden flex items-center justify-center">
+                                            <div class="w-full h-4 bg-slate-700 border-y border-slate-500 relative overflow-hidden">
+                                                 <div class="absolute inset-0 bg-blue-500/30"></div>
+                                                <svg class="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+                                                    <path d="M0,8 L1000,8" stroke="#3b82f6" stroke-width="4" stroke-dasharray="10 20" stroke-dashoffset="0">
+                                                        <animate attributeName="stroke-dashoffset" values="30;0" dur="2s" repeatCount="indefinite"/>
+                                                    </path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div class="absolute right-2 top-1/2 -translate-y-1/2 text-white font-bold bg-slate-900/80 px-2 py-1 rounded text-sm">Dòng chảy yếu (I nhỏ)</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="glass-panel rounded-2xl p-6 flex flex-col">
+                                <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><span class="text-neon-orange">■</span> Đơn vị đo & Chuyển đổi</h3>
+                                <div class="flex items-center justify-center h-24 mb-4 bg-slate-900 rounded-xl border border-slate-700">
+                                    <div class="text-5xl font-serif text-neon-orange drop-shadow-neon-orange">Ω</div>
+                                    <div class="ml-4 text-xl text-white font-mono">Ohm (Ôm)</div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 flex-1">
+                                    <div class="bg-slate-800 p-3 rounded-lg flex flex-col justify-center text-center">
+                                        <div class="text-sm text-slate-400 mb-2">Kilôôm (kΩ)</div>
+                                        <div class="text-lg font-mono text-neon-blue bg-slate-900 rounded py-1 border border-slate-700">1 kΩ = 10<sup>3</sup> Ω</div>
+                                    </div>
+                                    <div class="bg-slate-800 p-3 rounded-lg flex flex-col justify-center text-center">
+                                        <div class="text-sm text-slate-400 mb-2">Mêgaôm (MΩ)</div>
+                                        <div class="text-lg font-mono text-neon-purple bg-slate-900 rounded py-1 border border-slate-700">1 MΩ = 10<sup>6</sup> Ω</div>
+                                    </div>
+                                </div>
+                                <button onclick="appEngine.addXP(50, 'Đã đọc lý thuyết Điện Trở'); appEngine.grantAchievement('theory_reader'); this.disabled=true; this.innerText='Đã hoàn thành'; this.className='mt-6 w-full py-3 bg-green-600/50 text-white rounded-lg cursor-not-allowed'" class="mt-6 w-full py-3 bg-primary-600 hover:bg-primary-500 text-white rounded-lg transition-colors font-bold shadow-neon-blue">Đánh dấu hoàn thành (+50 XP)</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+          document.getElementById("section_s1_theory").innerHTML = html;
+        },
+
+        injectS7_OhmTheory() {
+          const html = `
+                    <div class="space-y-8" data-aos="fade-up">
+                        <div class="glass-panel rounded-2xl p-8 border-t-4 border-neon-purple text-center">
+                            <h2 class="text-3xl font-bold text-white mb-2">Định Luật Ohm</h2>
+                            <p class="text-slate-400 mb-8">Nền tảng của toàn bộ Điện học</p>
+
+                            <div class="text-2xl leading-relaxed text-slate-200 font-serif italic max-w-3xl mx-auto border-l-4 border-neon-purple pl-6 text-left bg-slate-800/30 p-6 rounded-r-xl">
+                                "Cường độ dòng điện chạy qua dây dẫn tỉ lệ thuận với hiệu điện thế đặt vào hai đầu dây và tỉ lệ nghịch với điện trở của dây."
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="glass-panel p-6 rounded-2xl md:col-span-1 flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700">
+                                <h3 class="text-lg font-bold text-slate-300 mb-6 uppercase tracking-widest">Công Thức</h3>
+                                <div class="text-6xl font-mono text-white mb-4">
+                                    <span class="text-neon-blue">I</span> = <span class="text-neon-orange">U</span> / <span class="text-neon-green">R</span>
+                                </div>
+                                <div class="text-sm text-slate-400 flex flex-col gap-2 w-full mt-4">
+                                    <div class="flex justify-between bg-slate-900 p-2 rounded"><span class="text-neon-blue font-bold">I (Ampe - A)</span><span>Cường độ dòng</span></div>
+                                    <div class="flex justify-between bg-slate-900 p-2 rounded"><span class="text-neon-orange font-bold">U (Vôn - V)</span><span>Hiệu điện thế</span></div>
+                                    <div class="flex justify-between bg-slate-900 p-2 rounded"><span class="text-neon-green font-bold">R (Ôm - Ω)</span><span>Điện trở</span></div>
+                                </div>
+                            </div>
+
+                            <div class="glass-panel p-6 rounded-2xl md:col-span-2 flex flex-col justify-center">
+                                <h3 class="text-lg font-bold text-white mb-4">Mối quan hệ I - U - R</h3>
+                                
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 relative overflow-hidden">
+                                        <div class="absolute -right-4 -top-4 text-6xl opacity-10">📈</div>
+                                        <h4 class="font-bold text-neon-orange mb-2">Tỉ lệ thuận với U</h4>
+                                        <p class="text-sm text-slate-300">Khi R không đổi, nếu tăng hiệu điện thế U lên bao nhiêu lần thì cường độ dòng điện I tăng lên bấy nhiêu lần.</p>
+                                    </div>
+                                    
+                                    <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 relative overflow-hidden">
+                                        <div class="absolute -right-4 -top-4 text-6xl opacity-10">📉</div>
+                                        <h4 class="font-bold text-neon-green mb-2">Tỉ lệ nghịch với R</h4>
+                                        <p class="text-sm text-slate-300">Với cùng một hiệu điện thế U, nếu điện trở R của dây dẫn càng lớn thì cường độ dòng điện I đi qua càng nhỏ.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-6 flex justify-end">
+                                    <button onclick="appEngine.navigateTo('s10_ohm_lab')" class="px-6 py-2 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-lg transition-colors flex items-center gap-2">
+                                        Vào Phòng Lab Ohm <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+          document.getElementById("section_s7_ohm_theory").innerHTML = html;
+        },
+
+        injectS10_OhmLab() {
+          const html = `
+                    <div class="space-y-6" data-aos="fade-up">
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-3xl font-bold text-white">Ohm Laboratory</h2>
+                            <div class="px-4 py-2 bg-slate-800 rounded-lg border border-slate-700 font-mono text-neon-blue">
+                                <span class="math">I = U / R</span>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <!-- Controls -->
+                            <div class="glass-panel p-6 rounded-2xl flex flex-col gap-8 col-span-1">
+                                <div>
+                                    <label class="flex justify-between text-sm font-bold text-slate-300 mb-2">
+                                        Hiệu điện thế (U) <span id="ohmLab_U_val" class="text-neon-orange font-mono">12 V</span>
+                                    </label>
+                                    <input type="range" id="ohmLab_U" min="0" max="24" step="1" value="12" class="w-full" oninput="simEngine.updateOhmLab()">
+                                </div>
+                                
+                                <div>
+                                    <label class="flex justify-between text-sm font-bold text-slate-300 mb-2">
+                                        Điện trở (R) <span id="ohmLab_R_val" class="text-neon-green font-mono">10 Ω</span>
+                                    </label>
+                                    <input type="range" id="ohmLab_R" min="1" max="100" step="1" value="10" class="w-full" oninput="simEngine.updateOhmLab()">
+                                </div>
+
+                                <div class="mt-auto p-4 bg-slate-900 rounded-xl border border-slate-700">
+                                    <div class="text-xs text-slate-400 mb-1">Kết quả đo:</div>
+                                    <div class="flex justify-between items-baseline mb-2">
+                                        <span class="text-slate-300">Cường độ dòng (I)</span>
+                                        <span id="ohmLab_I_res" class="text-3xl font-bold text-neon-blue font-mono">1.20 A</span>
+                                    </div>
+                                    <div class="flex justify-between items-baseline border-t border-slate-800 pt-2">
+                                        <span class="text-slate-300">Công suất (P)</span>
+                                        <span id="ohmLab_P_res" class="text-xl font-bold text-neon-purple font-mono">14.4 W</span>
+                                    </div>
+                                </div>
+                                
+                                <button onclick="simEngine.recordOhmData()" class="w-full py-2 bg-primary-600 hover:bg-primary-500 rounded-lg text-white font-bold transition-colors">Ghi lại số liệu</button>
+                            </div>
+
+                            <!-- SVG Circuit Simulation -->
+                            <div class="glass-panel p-6 rounded-2xl col-span-1 flex flex-col items-center justify-center bg-[#0a0f1c]">
+                                <svg id="ohmCircuitSvg" viewBox="0 0 400 300" class="w-full h-auto drop-shadow-lg">
+                                    <!-- Wires -->
+                                    <path d="M 50 150 L 50 50 L 350 50 L 350 150 M 50 150 L 50 250 L 150 250 M 250 250 L 350 250 L 350 150" class="wire" />
+                                    <!-- Flow animation -->
+                                    <path id="ohmFlow" d="M 150 250 L 50 250 L 50 50 L 350 50 L 350 250 L 250 250" class="electron-flow" />
+                                    
+                                    <!-- Battery -->
+                                    <g transform="translate(150, 230)">
+                                        <rect x="0" y="0" width="100" height="40" fill="#1e293b" stroke="#475569" stroke-width="2" rx="4"/>
+                                        <rect x="10" y="-5" width="20" height="10" fill="#ef4444"/> <!-- + -->
+                                        <rect x="70" y="-5" width="20" height="10" fill="#3b82f6"/> <!-- - -->
+                                        <text x="50" y="25" fill="white" font-size="16" text-anchor="middle" font-family="monospace" id="svg_batt_val">12V</text>
+                                    </g>
+
+                                    <!-- Resistor -->
+                                    <g transform="translate(170, 30)">
+                                        <path d="M 0 20 L 10 5 L 20 35 L 30 5 L 40 35 L 50 5 L 60 20" fill="none" stroke="#ffcc00" stroke-width="4" stroke-linejoin="bevel"/>
+                                        <text x="30" y="-10" fill="#ffcc00" font-size="16" text-anchor="middle" font-family="monospace" id="svg_res_val">10Ω</text>
+                                    </g>
+
+                                    <!-- Ammeter -->
+                                    <g transform="translate(50, 150)">
+                                        <circle cx="0" cy="0" r="25" fill="#1e293b" stroke="#00f3ff" stroke-width="3"/>
+                                        <text x="0" y="5" fill="#00f3ff" font-size="20" font-weight="bold" text-anchor="middle">A</text>
+                                    </g>
+                                    
+                                    <!-- Voltmeter (Parallel to Resistor) -->
+                                    <path d="M 120 50 L 120 100 L 280 100 L 280 50" class="wire" stroke-dasharray="4 4"/>
+                                    <g transform="translate(200, 100)">
+                                        <circle cx="0" cy="0" r="20" fill="#1e293b" stroke="#ff5500" stroke-width="2"/>
+                                        <text x="0" y="5" fill="#ff5500" font-size="16" font-weight="bold" text-anchor="middle">V</text>
+                                    </g>
+                                </svg>
+                                <p class="text-center text-xs text-slate-500 mt-4">Sự chuyển động của dòng electron mô phỏng cường độ dòng điện.</p>
+                            </div>
+
+                            <!-- Chart -->
+                            <div class="glass-panel p-4 rounded-2xl col-span-1 lg:col-span-1 flex flex-col">
+                                <h3 class="text-sm font-bold text-slate-300 mb-2">Đồ thị I = f(U)</h3>
+                                <div class="flex-1 relative w-full h-48">
+                                    <canvas id="ohmChartCanvas"></canvas>
+                                </div>
+                                <div class="mt-4 text-xs text-slate-400">
+                                    <p>Ghi lại số liệu khi thay đổi U để vẽ đồ thị. Đường biểu diễn là một đường thẳng đi qua gốc tọa độ, chứng tỏ I tỉ lệ thuận với U.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+          document.getElementById("section_s10_ohm_lab").innerHTML = html;
+        },
+
+        injectS11_WireLab() {
+          const html = `
+                    <div class="space-y-6" data-aos="fade-up">
+                        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                            <div>
+                                <h2 class="text-3xl font-bold text-white">Wire Design Lab</h2>
+                                <p class="text-slate-400">Điện trở của dây dẫn: <span class="math text-lg ml-2">R = ρ.l / S</span></p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <!-- Controls -->
+                            <div class="glass-panel p-6 rounded-2xl space-y-6">
+                                
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-300 mb-2">Vật liệu (ρ)</label>
+                                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                                        <button onclick="simEngine.setWireMaterial('cu')" id="mat_cu" class="mat-btn active py-2 rounded bg-slate-800 border-2 border-orange-500 text-orange-400 text-sm font-bold">Đồng</button>
+                                        <button onclick="simEngine.setWireMaterial('al')" id="mat_al" class="mat-btn py-2 rounded bg-slate-800 border-2 border-transparent hover:border-slate-400 text-slate-300 text-sm font-bold">Nhôm</button>
+                                        <button onclick="simEngine.setWireMaterial('fe')" id="mat_fe" class="mat-btn py-2 rounded bg-slate-800 border-2 border-transparent hover:border-slate-400 text-slate-400 text-sm font-bold">Sắt</button>
+                                        <button onclick="simEngine.setWireMaterial('ni')" id="mat_ni" class="mat-btn py-2 rounded bg-slate-800 border-2 border-transparent hover:border-slate-400 text-neutral-200 text-sm font-bold">Nichrome</button>
+                                    </div>
+                                    <p class="text-xs text-slate-500 mt-2 font-mono">ρ = <span id="wire_rho_val">1.7 × 10⁻⁸</span> Ω.m</p>
+                                </div>
+
+                                <div>
+                                    <label class="flex justify-between text-sm font-bold text-slate-300 mb-2">
+                                        Chiều dài (l) <span id="wire_l_val" class="text-neon-blue font-mono">10 m</span>
+                                    </label>
+                                    <input type="range" id="wire_l" min="1" max="100" step="1" value="10" class="w-full" oninput="simEngine.updateWireLab()">
+                                </div>
+
+                                <div>
+                                    <label class="flex justify-between text-sm font-bold text-slate-300 mb-2">
+                                        Tiết diện (S) <span id="wire_s_val" class="text-neon-green font-mono">1.0 mm²</span>
+                                    </label>
+                                    <input type="range" id="wire_s" min="0.1" max="5" step="0.1" value="1" class="w-full" oninput="simEngine.updateWireLab()">
+                                </div>
+
+                                <div class="p-4 bg-slate-900 rounded-xl border border-neon-purple shadow-[0_0_15px_rgba(181,0,255,0.2)]">
+                                    <div class="text-center">
+                                        <div class="text-sm text-slate-400 mb-1">Điện trở thực tế R</div>
+                                        <div class="text-4xl font-bold text-neon-purple font-mono" id="wire_R_res">0.170 Ω</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Visualization -->
+                            <div class="glass-panel p-6 rounded-2xl flex flex-col items-center justify-center bg-slate-900 relative overflow-hidden">
+                                <!-- Background grid -->
+                                <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(#3b82f6 1px, transparent 1px); background-size: 20px 20px;"></div>
+                                
+                                <div class="relative w-full h-64 flex items-center justify-center">
+                                    <div id="wireVisual" class="bg-gradient-to-r from-orange-600 to-orange-400 rounded-full shadow-lg transition-all duration-300" style="width: 20%; height: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.3);"></div>
+                                </div>
+                                <div class="flex justify-between w-full px-8 text-xs text-slate-500 font-mono mt-4">
+                                    <span>L min</span>
+                                    <span>Trực quan hóa Dây dẫn</span>
+                                    <span>L max</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                 `;
+          document.getElementById("section_s11_factors").innerHTML = html;
+        },
+
+        injectS16_SeriesParallelTheory() {
+          const html = `
+                    <div class="space-y-6" data-aos="fade-up">
+                        <div class="glass-panel rounded-2xl p-6 border-l-4 border-neon-blue">
+                            <h2 class="text-3xl font-bold text-white mb-2">Đoạn Mạch Nối Tiếp & Song Song</h2>
+                            <p class="text-slate-400">Các công thức cơ bản và hệ quả khi ghép nhiều điện trở.</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- NỐI TIẾP -->
+                            <div class="glass-panel rounded-2xl p-6 border border-slate-700 bg-slate-800/50 hover:bg-slate-800 transition-colors">
+                                <h3 class="text-xl font-bold text-white mb-4 border-b border-slate-700 pb-2 text-center">Ghép Nối Tiếp</h3>
+                                
+                                <div class="flex justify-center mb-6 py-4 bg-slate-900 rounded-xl border border-slate-700">
+                                    <svg width="200" height="50" viewBox="0 0 200 50">
+                                        <path d="M 10 25 L 40 25 M 160 25 L 190 25 M 90 25 L 110 25" stroke="#475569" stroke-width="3" fill="none"/>
+                                        <rect x="40" y="10" width="50" height="30" fill="#0f172a" stroke="#ff5500" stroke-width="2"/>
+                                        <text x="65" y="30" fill="#ff5500" font-size="14" text-anchor="middle" font-family="monospace">R1</text>
+                                        <rect x="110" y="10" width="50" height="30" fill="#0f172a" stroke="#00ff66" stroke-width="2"/>
+                                        <text x="135" y="30" fill="#00ff66" font-size="14" text-anchor="middle" font-family="monospace">R2</text>
+                                    </svg>
+                                </div>
+                                
+                                <div class="space-y-3 font-mono text-sm">
+                                    <div class="bg-slate-900 p-3 rounded flex justify-between border-l-2 border-neon-blue">
+                                        <span class="text-slate-400">Cường độ:</span>
+                                        <span class="text-white">I = I₁ = I₂</span>
+                                    </div>
+                                    <div class="bg-slate-900 p-3 rounded flex justify-between border-l-2 border-neon-orange">
+                                        <span class="text-slate-400">Hiệu điện thế:</span>
+                                        <span class="text-white">U = U₁ + U₂</span>
+                                    </div>
+                                    <div class="bg-slate-900 p-3 rounded flex justify-between border-l-2 border-neon-green">
+                                        <span class="text-slate-400">Điện trở TĐ:</span>
+                                        <span class="text-white">R<sub>tđ</sub> = R₁ + R₂</span>
+                                    </div>
+                                    <div class="mt-4 p-3 border border-dashed border-slate-600 rounded text-center text-xs text-slate-400">
+                                        Hệ quả: <span class="text-neon-yellow">U₁ / U₂ = R₁ / R₂</span><br>
+                                        (Điện áp tỉ lệ thuận với điện trở)
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- SONG SONG -->
+                            <div class="glass-panel rounded-2xl p-6 border border-slate-700 bg-slate-800/50 hover:bg-slate-800 transition-colors">
+                                <h3 class="text-xl font-bold text-white mb-4 border-b border-slate-700 pb-2 text-center">Ghép Song Song</h3>
+                                
+                                <div class="flex justify-center mb-6 py-4 bg-slate-900 rounded-xl border border-slate-700">
+                                    <svg width="200" height="80" viewBox="0 0 200 80">
+                                        <path d="M 20 40 L 50 40 M 50 15 L 50 65 M 150 15 L 150 65 M 150 40 L 180 40" stroke="#475569" stroke-width="3" fill="none"/>
+                                        <path d="M 50 15 L 75 15 M 125 15 L 150 15 M 50 65 L 75 65 M 125 65 L 150 65" stroke="#475569" stroke-width="3" fill="none"/>
+                                        
+                                        <rect x="75" y="0" width="50" height="30" fill="#0f172a" stroke="#ff5500" stroke-width="2"/>
+                                        <text x="100" y="20" fill="#ff5500" font-size="14" text-anchor="middle" font-family="monospace">R1</text>
+                                        
+                                        <rect x="75" y="50" width="50" height="30" fill="#0f172a" stroke="#00ff66" stroke-width="2"/>
+                                        <text x="100" y="70" fill="#00ff66" font-size="14" text-anchor="middle" font-family="monospace">R2</text>
+                                        
+                                        <circle cx="50" cy="40" r="3" fill="white"/>
+                                        <circle cx="150" cy="40" r="3" fill="white"/>
+                                    </svg>
+                                </div>
+                                
+                                <div class="space-y-3 font-mono text-sm">
+                                    <div class="bg-slate-900 p-3 rounded flex justify-between border-l-2 border-neon-blue">
+                                        <span class="text-slate-400">Cường độ:</span>
+                                        <span class="text-white">I = I₁ + I₂</span>
+                                    </div>
+                                    <div class="bg-slate-900 p-3 rounded flex justify-between border-l-2 border-neon-orange">
+                                        <span class="text-slate-400">Hiệu điện thế:</span>
+                                        <span class="text-white">U = U₁ = U₂</span>
+                                    </div>
+                                    <div class="bg-slate-900 p-3 rounded flex justify-between border-l-2 border-neon-green">
+                                        <span class="text-slate-400">Điện trở TĐ:</span>
+                                        <span class="text-white">1/R<sub>tđ</sub> = 1/R₁ + 1/R₂</span>
+                                    </div>
+                                    <div class="mt-4 p-3 border border-dashed border-slate-600 rounded text-center text-xs text-slate-400">
+                                        Hệ quả: <span class="text-neon-yellow">I₁ / I₂ = R₂ / R₁</span><br>
+                                        (Dòng điện tỉ lệ nghịch với điện trở)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 flex justify-center">
+                            <button onclick="appEngine.navigateTo('s_circuit_builder')" class="px-8 py-3 bg-gradient-to-r from-primary-600 to-neon-blue text-white font-bold rounded-xl shadow-neon-blue hover:scale-105 transition-transform">
+                                Bắt đầu Phân tích Mạch 🚀
+                            </button>
+                        </div>
+                    </div>
+                `;
+          document.getElementById("section_s16_series_theory").innerHTML = html;
+        },
+
+        injectSCircuitBuilder() {
+          const html = `
+                    <div class="space-y-6" data-aos="fade-up">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <div>
+                                <h2 class="text-3xl font-bold text-white">Super Circuit Builder</h2>
+                                <p class="text-slate-400">Phân tích chuyên sâu Mạch Nối Tiếp & Song Song</p>
+                            </div>
+                            <div class="flex gap-2 bg-slate-800 p-1 rounded-lg">
+                                <button onclick="simEngine.setCircuitMode('series')" id="btn_mode_series" class="px-4 py-2 rounded-md bg-primary-600 text-white font-bold text-sm transition-colors">Nối Tiếp</button>
+                                <button onclick="simEngine.setCircuitMode('parallel')" id="btn_mode_parallel" class="px-4 py-2 rounded-md text-slate-400 hover:text-white font-bold text-sm transition-colors">Song Song</button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <!-- SVG Workspace -->
+                            <div class="glass-panel p-4 rounded-2xl col-span-1 lg:col-span-2 bg-[#050810] min-h-[400px] flex items-center justify-center relative overflow-hidden">
+                                <div class="absolute top-4 left-4 text-xs font-mono text-neon-blue" id="circuitTypeLabel">SƠ ĐỒ: MẠCH NỐI TIẾP</div>
+                                
+                                <!-- The Dynamic SVG -->
+                                <svg id="builderSvg" viewBox="0 0 600 400" class="w-full h-full max-h-[400px]">
+                                    <!-- Content generated by JS simEngine.renderCircuit() -->
+                                </svg>
+                            </div>
+
+                            <!-- Analysis Panel -->
+                            <div class="glass-panel p-6 rounded-2xl flex flex-col space-y-6">
+                                <h3 class="text-lg font-bold text-white border-b border-slate-700 pb-2">Thông Số Đầu Vào</h3>
+                                
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-slate-400">U toàn mạch (V)</span>
+                                        <input type="number" id="cb_U" value="12" class="w-20 bg-slate-800 border border-slate-600 rounded px-2 py-1 text-white font-mono text-right" onchange="simEngine.updateCircuitCalculations()">
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-slate-400">R1 (Ω)</span>
+                                        <input type="number" id="cb_R1" value="10" class="w-20 bg-slate-800 border border-slate-600 rounded px-2 py-1 text-white font-mono text-right text-neon-orange" onchange="simEngine.updateCircuitCalculations()">
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-slate-400">R2 (Ω)</span>
+                                        <input type="number" id="cb_R2" value="20" class="w-20 bg-slate-800 border border-slate-600 rounded px-2 py-1 text-white font-mono text-right text-neon-green" onchange="simEngine.updateCircuitCalculations()">
+                                    </div>
+                                </div>
+
+                                <h3 class="text-lg font-bold text-white border-b border-slate-700 pb-2 mt-4">Kết Quả Phân Tích</h3>
+                                
+                                <div class="bg-slate-900 rounded-lg p-4 space-y-3 font-mono text-sm">
+                                    <div class="flex justify-between">
+                                        <span class="text-slate-400">R tương đương:</span>
+                                        <span id="cb_Rt" class="text-white font-bold">30.00 Ω</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-slate-400">I toàn mạch:</span>
+                                        <span id="cb_It" class="text-neon-blue font-bold">0.40 A</span>
+                                    </div>
+                                    
+                                    <div class="border-t border-slate-700 my-2 pt-2"></div>
+                                    
+                                    <div id="cb_details" class="space-y-2">
+                                        <!-- Dynamically filled -->
+                                    </div>
+                                </div>
+                                
+                                <button onclick="simEngine.checkCircuitAchievement()" class="mt-auto py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl text-white text-sm font-bold transition-all shadow-[0_4px_14px_0_rgba(0,0,0,0.39)]">Xác nhận Hiểu biết</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+          document.getElementById("section_s_circuit_builder").innerHTML = html;
+        },
+
+        injectS29_EnergyTheory() {
+          const html = `
+                    <div class="space-y-8" data-aos="fade-up">
+                        <div class="glass-panel rounded-2xl p-8 border-l-4 border-neon-yellow">
+                            <h2 class="text-3xl font-bold text-white mb-4">Điện Năng & Công của dòng điện</h2>
+                            <p class="text-lg leading-relaxed text-slate-300">
+                                Dòng điện có mang năng lượng vì nó có khả năng thực hiện công, cũng như có thể làm thay đổi nhiệt năng của các vật. Năng lượng của dòng điện được gọi là <strong class="text-neon-yellow">điện năng</strong>.
+                            </p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="glass-panel p-6 rounded-2xl border border-slate-700">
+                                <h3 class="text-xl font-bold text-white mb-4">Sự chuyển hóa điện năng</h3>
+                                <ul class="space-y-4">
+                                    <li class="flex items-start gap-3 bg-slate-800 p-3 rounded-lg">
+                                        <span class="text-2xl">💡</span>
+                                        <div>
+                                            <strong class="text-slate-200">Đèn điện:</strong>
+                                            <p class="text-sm text-slate-400">Điện năng ➔ Quang năng (và Nhiệt năng vô ích)</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start gap-3 bg-slate-800 p-3 rounded-lg">
+                                        <span class="text-2xl">🌀</span>
+                                        <div>
+                                            <strong class="text-slate-200">Quạt điện, máy bơm:</strong>
+                                            <p class="text-sm text-slate-400">Điện năng ➔ Cơ năng (và Nhiệt năng vô ích)</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start gap-3 bg-slate-800 p-3 rounded-lg">
+                                        <span class="text-2xl">🔥</span>
+                                        <div>
+                                            <strong class="text-slate-200">Nồi cơm điện, mỏ hàn:</strong>
+                                            <p class="text-sm text-slate-400">Điện năng ➔ Nhiệt năng</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <div class="glass-panel p-6 rounded-2xl border border-slate-700 flex flex-col justify-center">
+                                <h3 class="text-xl font-bold text-white mb-4 text-center">Công thức tính Công & Công suất</h3>
+                                <div class="space-y-6">
+                                    <div class="bg-slate-900 p-4 rounded-xl text-center border border-slate-600">
+                                        <div class="text-sm text-slate-400 mb-2">Công suất điện (P)</div>
+                                        <div class="text-3xl font-mono text-neon-orange font-bold">P = U.I</div>
+                                        <div class="text-xs text-slate-500 mt-2">Đơn vị: Watt (W)</div>
+                                    </div>
+                                    <div class="bg-slate-900 p-4 rounded-xl text-center border border-slate-600">
+                                        <div class="text-sm text-slate-400 mb-2">Công của dòng điện / Điện năng tiêu thụ (A)</div>
+                                        <div class="text-3xl font-mono text-neon-green font-bold">A = P.t = U.I.t</div>
+                                        <div class="text-xs text-slate-500 mt-2">Đơn vị: Joule (J) hoặc kWh</div>
+                                        <div class="mt-2 py-1 bg-slate-800 text-neon-yellow font-mono text-sm rounded">1 kWh = 3.6 × 10⁶ J</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+          document.getElementById("section_s29_energy_theory").innerHTML = html;
+        },
+
+        injectS35_HomeEnergyLab() {
+          const html = `
+                    <div class="space-y-6" data-aos="fade-up">
+                        <div class="text-center max-w-2xl mx-auto mb-8">
+                            <h2 class="text-3xl font-bold text-white mb-2">Home Energy Simulator</h2>
+                            <p class="text-slate-400">Trải nghiệm quản lý tiêu thụ điện năng và tính toán hóa đơn tiền điện dựa trên các thiết bị gia dụng thực tế.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                            <!-- Devices Grid -->
+                            <div class="lg:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+                                ${this.buildApplianceCard("tv", "Tivi", "📺", 150, 4)}
+                                ${this.buildApplianceCard("fridge", "Tủ lạnh", "🧊", 200, 24)}
+                                ${this.buildApplianceCard("ac", "Điều hòa", "❄️", 1200, 8)}
+                                ${this.buildApplianceCard("fan", "Quạt điện", "🌀", 60, 10)}
+                                ${this.buildApplianceCard("light", "Đèn LED", "💡", 20, 6)}
+                                ${this.buildApplianceCard("iron", "Bàn là", "👔", 1000, 0.5)}
+                                ${this.buildApplianceCard("wmachine", "Máy giặt", "👕", 500, 1.5)}
+                                ${this.buildApplianceCard("pc", "Máy tính", "💻", 300, 5)}
+                            </div>
+
+                            <!-- Meter & Bill Panel -->
+                            <div class="lg:col-span-4 flex flex-col gap-6">
+                                <!-- Electric Meter SVG -->
+                                <div class="glass-panel p-6 rounded-2xl flex flex-col items-center bg-slate-900 border-t-4 border-neon-blue">
+                                    <h3 class="text-sm font-bold text-slate-400 mb-4 uppercase tracking-wider">Công Tơ Điện</h3>
+                                    
+                                    <div class="relative w-48 h-32 bg-slate-800 rounded-lg border-2 border-slate-600 flex flex-col items-center justify-center shadow-inner overflow-hidden">
+                                        <!-- Spinning disk -->
+                                        <div class="absolute top-4 w-32 h-4 bg-slate-700 rounded-full border border-slate-500 overflow-hidden perspective-1000">
+                                            <div id="meterDisk" class="w-full h-full bg-gradient-to-r from-slate-600 via-slate-400 to-slate-600" style="animation: spinDisk 5s linear infinite; animation-play-state: paused;"></div>
+                                        </div>
+                                        <!-- Display numbers -->
+                                        <div class="mt-8 bg-black p-2 border-2 border-slate-700 flex gap-1 rounded font-mono text-xl text-white" id="meterDisplay">
+                                            <span class="bg-slate-900 px-1">0</span>
+                                            <span class="bg-slate-900 px-1">0</span>
+                                            <span class="bg-slate-900 px-1">0</span>
+                                            <span class="bg-slate-900 px-1">0</span>
+                                            <span class="bg-slate-900 px-1 text-red-500 border-l border-slate-700">0</span>
+                                        </div>
+                                        <div class="text-[10px] text-slate-500 mt-1">kWh</div>
+                                    </div>
+                                    
+                                    <div class="mt-4 w-full flex justify-between text-xs font-mono text-slate-400">
+                                        <span>Công suất hiện tại:</span>
+                                        <span id="currentPowerWatt" class="text-neon-orange font-bold">0 W</span>
+                                    </div>
+                                </div>
+
+                                <!-- Bill Calculation -->
+                                <div class="glass-panel p-6 rounded-2xl flex-1 flex flex-col">
+                                    <h3 class="text-lg font-bold text-white mb-4">Hóa Đơn Ước Tính (30 ngày)</h3>
+                                    
+                                    <div class="space-y-3 flex-1">
+                                        <div class="flex justify-between border-b border-slate-700 pb-2">
+                                            <span class="text-slate-400">Tổng điện năng:</span>
+                                            <span class="font-mono text-white font-bold"><span id="bill_kwh">0.0</span> kWh</span>
+                                        </div>
+                                        <div class="flex justify-between border-b border-slate-700 pb-2">
+                                            <span class="text-slate-400">Đơn giá (Bậc 1):</span>
+                                            <span class="font-mono text-slate-300">~1,678 VNĐ/kWh</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-4 pt-4 border-t-2 border-dashed border-slate-600">
+                                        <div class="flex justify-between items-end">
+                                            <span class="text-sm text-slate-400 uppercase">Thành tiền</span>
+                                            <span class="text-3xl font-bold text-neon-green font-mono" id="bill_total">0 ₫</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <button onclick="simEngine.checkoutEnergyLab()" class="mt-6 w-full py-3 bg-neon-green/20 hover:bg-neon-green/30 border border-neon-green text-neon-green rounded-xl font-bold transition-colors">Hoàn thành Đánh giá</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <style>
+                        @keyframes spinDisk { from { transform: translateX(0); } to { transform: translateX(100%); } }
+                        .appliance-card.active { border-color: #00f3ff; background-color: rgba(0, 243, 255, 0.1); box-shadow: 0 0 15px rgba(0, 243, 255, 0.2); }
+                    </style>
+                 `;
+          document.getElementById("section_s35_home_lab").innerHTML = html;
+        },
+
+        buildApplianceCard(id, name, icon, watts, hours) {
+          return `
+                    <div id="app_${id}" onclick="simEngine.toggleAppliance('${id}')" class="appliance-card glass-panel p-4 rounded-xl cursor-pointer transition-all flex flex-col items-center text-center border border-slate-700 hover:border-slate-500">
+                        <div class="text-4xl mb-2">${icon}</div>
+                        <h4 class="font-bold text-white text-sm mb-1">${name}</h4>
+                        <div class="text-xs text-slate-400 font-mono"><span class="text-neon-orange">${watts}W</span></div>
+                        <div class="text-xs text-slate-500 mt-1 flex items-center gap-1">
+                            🕒 <input type="number" id="app_h_${id}" value="${hours}" class="w-10 bg-slate-800 rounded px-1 text-center text-white outline-none" onclick="event.stopPropagation()" onchange="simEngine.calcEnergy()"> h/ngày
+                        </div>
+                    </div>
+                `;
+        },
+
+        injectAchievementsView() {
+          document.getElementById("section_achievements").innerHTML = `
+                    <div class="max-w-4xl mx-auto" data-aos="fade-up">
+                        <h2 class="text-3xl font-bold text-white mb-8 text-center flex items-center justify-center gap-3">
+                            <span class="text-4xl">🏆</span> Bảng Thành Tựu
+                        </h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" id="achievementsGrid">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                `;
+        },
+
+        renderAchievementsView() {
+          const grid = document.getElementById("achievementsGrid");
+          grid.innerHTML = "";
+          achievementsList.forEach((a) => {
+            const isUnlocked = appState.achievements.includes(a.id);
+            const html = `
+                        <div class="glass-panel p-6 rounded-2xl border ${isUnlocked ? "border-neon-yellow shadow-neon-orange/20" : "border-slate-700 opacity-50 grayscale"} flex flex-col items-center text-center transition-all duration-500">
+                            <div class="w-16 h-16 rounded-full ${isUnlocked ? "bg-gradient-to-br from-yellow-400 to-orange-500" : "bg-slate-800"} flex items-center justify-center text-3xl mb-4 shadow-lg">
+                                ${a.icon}
+                            </div>
+                            <h3 class="font-bold text-white mb-2">${a.title}</h3>
+                            <p class="text-xs text-slate-400">${a.desc}</p>
+                            ${isUnlocked ? '<div class="mt-4 text-xs font-bold text-neon-green bg-neon-green/10 px-3 py-1 rounded-full">Đã Mở Khóa</div>' : '<div class="mt-4 text-xs text-slate-500 flex items-center gap-1">🔒 Chưa mở</div>'}
+                        </div>
+                    `;
+            grid.innerHTML += html;
+          });
+        },
+
+        // --- ANIMATIONS ---
+        initHeroCanvas() {
+          const canvas = document.getElementById("heroCanvas");
+          const ctx = canvas.getContext("2d");
+          let width, height;
+          let particles = [];
+
+          function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+          }
+          window.addEventListener("resize", resize);
+          resize();
+
+          class Particle {
+            constructor() {
+              this.x = Math.random() * width;
+              this.y = Math.random() * height;
+              this.vx = (Math.random() - 0.5) * 2;
+              this.vy = (Math.random() - 0.5) * 2;
+              this.radius = Math.random() * 2 + 1;
+              this.color = Math.random() > 0.5 ? "#00f3ff" : "#00ff66";
+            }
+            update() {
+              this.x += this.vx;
+              this.y += this.vy;
+              if (this.x < 0 || this.x > width) this.vx *= -1;
+              if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+            draw() {
+              ctx.beginPath();
+              ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+              ctx.fillStyle = this.color;
+              ctx.fill();
+              ctx.shadowBlur = 10;
+              ctx.shadowColor = this.color;
+            }
+          }
+
+          for (let i = 0; i < 50; i++) particles.push(new Particle());
+
+          function animate() {
+            ctx.clearRect(0, 0, width, height);
+            ctx.globalAlpha = 0.5;
+            particles.forEach((p) => {
+              p.update();
+              p.draw();
+            });
+
+            ctx.beginPath();
+            ctx.strokeStyle = "rgba(71, 85, 105, 0.2)";
+            ctx.lineWidth = 1;
+            ctx.moveTo(0, height * 0.3);
+            ctx.lineTo(width * 0.4, height * 0.3);
+            ctx.lineTo(width * 0.4, height * 0.8);
+            ctx.lineTo(width, height * 0.8);
+            ctx.stroke();
+
+            requestAnimationFrame(animate);
+          }
+          animate();
+        },
+
+        animateHero() {
+          gsap.from("#section_hero h1", {
+            y: -50,
+            opacity: 0,
+            duration: 1,
+            ease: "back.out(1.7)",
+          });
+        },
+      };
+
+      // --- SIMULATION PHYSICS ENGINE ---
+      const simEngine = {
+        ohmChart: null,
+
+        // --- OHM LAB ---
+        initOhmLab() {
+          if (!this.ohmChart) {
+            const ctx = document
+              .getElementById("ohmChartCanvas")
+              .getContext("2d");
+            Chart.defaults.color = "#94a3b8";
+            Chart.defaults.font.family = "'JetBrains Mono', monospace";
+            this.ohmChart = new Chart(ctx, {
+              type: "line",
+              data: {
+                datasets: [
+                  {
+                    label: "I (A) theo U (V)",
+                    data: appState.labData.ohm.dataPoints,
+                    borderColor: "#00f3ff",
+                    backgroundColor: "rgba(0, 243, 255, 0.1)",
+                    borderWidth: 2,
+                    pointBackgroundColor: "#00f3ff",
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    fill: true,
+                    tension: 0.1,
+                  },
+                ],
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                  x: {
+                    type: "linear",
+                    position: "bottom",
+                    title: { display: true, text: "U (V)" },
+                    min: 0,
+                    max: 25,
+                  },
+                  y: { title: { display: true, text: "I (A)" }, min: 0 },
+                },
+                plugins: { legend: { display: false } },
+              },
+            });
+          }
+          this.updateOhmLab();
+        },
+
+        updateOhmLab() {
+          const U = parseFloat(document.getElementById("ohmLab_U").value);
+          const R = parseFloat(document.getElementById("ohmLab_R").value);
+          const I = U / R;
+          const P = U * I;
+
+          document.getElementById("ohmLab_U_val").innerText = U + " V";
+          document.getElementById("ohmLab_R_val").innerText = R + " Ω";
+          document.getElementById("ohmLab_I_res").innerText =
+            I.toFixed(2) + " A";
+          document.getElementById("ohmLab_P_res").innerText =
+            P.toFixed(1) + " W";
+
+          document.getElementById("svg_batt_val").innerText = U + "V";
+          document.getElementById("svg_res_val").innerText = R + "Ω";
+
+          const flowPath = document.getElementById("ohmFlow");
+          if (I > 0) {
+            flowPath.style.opacity = 1;
+            let duration = Math.max(0.2, Math.min(5, 2 / I));
+            flowPath.style.animationDuration = duration + "s";
+          } else {
+            flowPath.style.opacity = 0;
+          }
+        },
+
+        recordOhmData() {
+          const U = parseFloat(document.getElementById("ohmLab_U").value);
+          const R = parseFloat(document.getElementById("ohmLab_R").value);
+          const I = U / R;
+
+          if (!appState.labData.ohm.dataPoints.find((p) => p.x === U)) {
+            appState.labData.ohm.dataPoints.push({ x: U, y: I });
+            appState.labData.ohm.dataPoints.sort((a, b) => a.x - b.x);
+
+            if (this.ohmChart) {
+              this.ohmChart.data.datasets[0].data =
+                appState.labData.ohm.dataPoints;
+              let maxI = Math.max(
+                ...appState.labData.ohm.dataPoints.map((p) => p.y),
+              );
+              this.ohmChart.options.scales.y.max = Math.ceil(maxI * 1.2) || 1;
+              this.ohmChart.update();
+            }
+
+            appEngine.showToast(
+              "Đã ghi",
+              `U = ${U}V, I = ${I.toFixed(2)}A`,
+              "📝",
+            );
+
+            if (appState.labData.ohm.dataPoints.length >= 5) {
+              appEngine.grantAchievement("ohm_master");
+            }
+          } else {
+            appEngine.showToast(
+              "Cảnh báo",
+              `Giá trị U=${U}V đã được ghi.`,
+              "⚠️",
+            );
+          }
+        },
+
+        // --- WIRE LAB ---
+        wireMaterials: {
+          cu: { name: "Đồng", rho: 1.7e-8, color: "#f97316" },
+          al: { name: "Nhôm", rho: 2.8e-8, color: "#94a3b8" },
+          fe: { name: "Sắt", rho: 12.0e-8, color: "#64748b" },
+          ni: { name: "Nichrome", rho: 110e-8, color: "#d4d4d8" },
+        },
+        currentWireMat: "cu",
+
+        initWireLab() {
+          this.updateWireLab();
+        },
+
+        setWireMaterial(mat) {
+          this.currentWireMat = mat;
+          document.querySelectorAll(".mat-btn").forEach((btn) => {
+            btn.classList.remove(
+              "active",
+              "border-orange-500",
+              "border-slate-400",
+            );
+            btn.classList.add("border-transparent");
+          });
+          const activeBtn = document.getElementById("mat_" + mat);
+          activeBtn.classList.remove("border-transparent");
+          activeBtn.classList.add(
+            "active",
+            mat === "cu" ? "border-orange-500" : "border-slate-400",
+          );
+
+          const rho = this.wireMaterials[mat].rho;
+          const coeff = rho * 1e8;
+          document.getElementById("wire_rho_val").innerHTML =
+            `${coeff.toFixed(1)} &times; 10&puncsp;<sup class="-ml-1">-8</sup>`;
+
+          this.updateWireLab();
+        },
+
+        updateWireLab() {
+          const l = parseFloat(document.getElementById("wire_l").value);
+          const s = parseFloat(document.getElementById("wire_s").value);
+          const s_m2 = s * 1e-6;
+          const rho = this.wireMaterials[this.currentWireMat].rho;
+
+          const R = rho * (l / s_m2);
+
+          document.getElementById("wire_l_val").innerText = l + " m";
+          document.getElementById("wire_s_val").innerText =
+            s.toFixed(1) + " mm²";
+
+          let displayR = R < 0.1 ? R.toExponential(2) : R.toFixed(3);
+          document.getElementById("wire_R_res").innerText = displayR + " Ω";
+
+          const visual = document.getElementById("wireVisual");
+          const wPercent = 10 + (l / 100) * 80;
+          const hPx = 4 + (s / 5) * 36;
+
+          visual.style.width = wPercent + "%";
+          visual.style.height = hPx + "px";
+
+          const colorMap = {
+            cu: "from-orange-600 to-orange-400",
+            al: "from-slate-400 to-slate-300",
+            fe: "from-slate-600 to-slate-500",
+            ni: "from-neutral-400 to-neutral-200",
+          };
+          visual.className = `rounded-full shadow-lg transition-all duration-300 bg-gradient-to-r ${colorMap[this.currentWireMat]}`;
+        },
+
+        // --- CIRCUIT BUILDER ---
+        circuitMode: "series",
+
+        initCircuitBuilder() {
+          this.renderCircuitSvg();
+          this.updateCircuitCalculations();
+        },
+
+        setCircuitMode(mode) {
+          this.circuitMode = mode;
+
+          const btnS = document.getElementById("btn_mode_series");
+          const btnP = document.getElementById("btn_mode_parallel");
+
+          if (mode === "series") {
+            btnS.className =
+              "px-4 py-2 rounded-md bg-primary-600 text-white font-bold text-sm transition-colors";
+            btnP.className =
+              "px-4 py-2 rounded-md text-slate-400 hover:text-white font-bold text-sm transition-colors";
+            document.getElementById("circuitTypeLabel").innerText =
+              "SƠ ĐỒ: MẠCH NỐI TIẾP";
+          } else {
+            btnP.className =
+              "px-4 py-2 rounded-md bg-primary-600 text-white font-bold text-sm transition-colors";
+            btnS.className =
+              "px-4 py-2 rounded-md text-slate-400 hover:text-white font-bold text-sm transition-colors";
+            document.getElementById("circuitTypeLabel").innerText =
+              "SƠ ĐỒ: MẠCH SONG SONG";
+          }
+
+          this.renderCircuitSvg();
+          this.updateCircuitCalculations();
+        },
+
+        renderCircuitSvg() {
+          const svg = document.getElementById("builderSvg");
+          let html = "";
+
+          const w = "class='wire'";
+          const flow = "class='electron-flow' id='cb_flow' stroke-width='3'";
+
+          html += `
+                    <g transform="translate(100, 180)">
+                        <rect x="-20" y="-30" width="40" height="60" fill="#1e293b" stroke="#475569" stroke-width="2" rx="4"/>
+                        <rect x="-10" y="-35" width="20" height="5" fill="#ef4444"/>
+                        <text x="0" y="5" fill="white" font-size="14" text-anchor="middle" font-family="monospace" id="svg_cb_U">12V</text>
+                    </g>
+                `;
+
+          if (this.circuitMode === "series") {
+            html += `
+                        <path d="M 100 150 L 100 80 L 250 80 M 350 80 L 450 80 M 550 80 L 550 210 L 100 210" ${w} />
+                        <path d="M 100 210 L 550 210 L 550 80 L 450 80 M 350 80 L 250 80 M 100 80 L 100 150" ${flow} />
+                        
+                        <g transform="translate(250, 60)">
+                            <rect x="0" y="0" width="100" height="40" fill="#0f172a" stroke="#ff5500" stroke-width="3" rx="4"/>
+                            <text x="50" y="25" fill="#ff5500" font-size="16" text-anchor="middle" font-family="monospace">R1</text>
+                            <text x="50" y="55" fill="#9ca3af" font-size="12" text-anchor="middle" font-family="monospace" id="svg_cb_R1">10Ω</text>
+                        </g>
+
+                        <g transform="translate(450, 60)">
+                            <rect x="0" y="0" width="100" height="40" fill="#0f172a" stroke="#00ff66" stroke-width="3" rx="4"/>
+                            <text x="50" y="25" fill="#00ff66" font-size="16" text-anchor="middle" font-family="monospace">R2</text>
+                            <text x="50" y="55" fill="#9ca3af" font-size="12" text-anchor="middle" font-family="monospace" id="svg_cb_R2">20Ω</text>
+                        </g>
+                        
+                        <path d="M 270 100 L 270 140 L 330 140 L 330 100" class="wire" stroke-dasharray="4 4"/>
+                        <circle cx="300" cy="140" r="15" fill="#1e293b" stroke="#ff5500" stroke-width="2"/>
+                        <text x="300" y="145" fill="#ff5500" font-size="12" font-weight="bold" text-anchor="middle">V1</text>
+                        
+                        <path d="M 470 100 L 470 140 L 530 140 L 530 100" class="wire" stroke-dasharray="4 4"/>
+                        <circle cx="500" cy="140" r="15" fill="#1e293b" stroke="#00ff66" stroke-width="2"/>
+                        <text x="500" y="145" fill="#00ff66" font-size="12" font-weight="bold" text-anchor="middle">V2</text>
+                    `;
+          } else {
+            html += `
+                        <path d="M 100 150 L 100 80 L 200 80 M 100 210 L 100 280 L 200 280" ${w} />
+                        <path d="M 200 80 L 400 80 M 500 80 L 550 80 L 550 280 L 500 280" ${w} />
+                        <path d="M 200 80 L 200 280 L 400 280" ${w} />
+                        
+                        <path d="M 100 210 L 100 280 L 200 280" ${flow} id="cb_flow_main_in" />
+                        <path d="M 550 280 L 550 80 L 500 80 M 400 80 L 200 80 L 100 80 L 100 150" ${flow} id="cb_flow_main_out" />
+                        
+                        <path d="M 200 80 L 400 80" ${flow} stroke="#ff5500" id="cb_flow_b1"/>
+                        <path d="M 200 280 L 400 280" ${flow} stroke="#00ff66" id="cb_flow_b2"/>
+
+                        <circle cx="200" cy="80" r="4" fill="white"/>
+                        <circle cx="200" cy="280" r="4" fill="white"/>
+
+                        <g transform="translate(400, 60)">
+                            <rect x="0" y="0" width="100" height="40" fill="#0f172a" stroke="#ff5500" stroke-width="3" rx="4"/>
+                            <text x="50" y="25" fill="#ff5500" font-size="16" text-anchor="middle" font-family="monospace">R1</text>
+                            <text x="50" y="-10" fill="#9ca3af" font-size="12" text-anchor="middle" font-family="monospace" id="svg_cb_R1">10Ω</text>
+                        </g>
+
+                        <g transform="translate(400, 260)">
+                            <rect x="0" y="0" width="100" height="40" fill="#0f172a" stroke="#00ff66" stroke-width="3" rx="4"/>
+                            <text x="50" y="25" fill="#00ff66" font-size="16" text-anchor="middle" font-family="monospace">R2</text>
+                            <text x="50" y="55" fill="#9ca3af" font-size="12" text-anchor="middle" font-family="monospace" id="svg_cb_R2">20Ω</text>
+                        </g>
+                    `;
+          }
+
+          svg.innerHTML = html;
+        },
+
+        updateCircuitCalculations() {
+          const U = parseFloat(document.getElementById("cb_U").value) || 0;
+          const R1 = parseFloat(document.getElementById("cb_R1").value) || 0;
+          const R2 = parseFloat(document.getElementById("cb_R2").value) || 0;
+
+          if (R1 <= 0 || R2 <= 0) return;
+
+          let Rt, It, I1, I2, U1, U2;
+
+          if (document.getElementById("svg_cb_U"))
+            document.getElementById("svg_cb_U").innerText = U + "V";
+          if (document.getElementById("svg_cb_R1"))
+            document.getElementById("svg_cb_R1").innerText = R1 + "Ω";
+          if (document.getElementById("svg_cb_R2"))
+            document.getElementById("svg_cb_R2").innerText = R2 + "Ω";
+
+          const detailsDiv = document.getElementById("cb_details");
+          let detailsHtml = "";
+
+          if (this.circuitMode === "series") {
+            Rt = R1 + R2;
+            It = U / Rt;
+            I1 = It;
+            I2 = It;
+            U1 = I1 * R1;
+            U2 = I2 * R2;
+
+            detailsHtml = `
+                        <div class="flex justify-between"><span class="text-slate-400">Đặc điểm:</span><span class="text-yellow-400">I = I1 = I2</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Đặc điểm:</span><span class="text-yellow-400">U = U1 + U2</span></div>
+                        <div class="flex justify-between mt-2"><span class="text-neon-orange">U1 (qua R1):</span><span class="text-neon-orange">${U1.toFixed(2)} V</span></div>
+                        <div class="flex justify-between"><span class="text-neon-green">U2 (qua R2):</span><span class="text-neon-green">${U2.toFixed(2)} V</span></div>
+                    `;
+
+            const flow = document.getElementById("cb_flow");
+            if (flow) {
+              flow.style.opacity = It > 0 ? 1 : 0;
+              flow.style.animationDuration = Math.max(0.2, 2 / It) + "s";
+            }
+          } else {
+            Rt = (R1 * R2) / (R1 + R2);
+            U1 = U;
+            U2 = U;
+            I1 = U1 / R1;
+            I2 = U2 / R2;
+            It = I1 + I2;
+
+            detailsHtml = `
+                        <div class="flex justify-between"><span class="text-slate-400">Đặc điểm:</span><span class="text-yellow-400">U = U1 = U2</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Đặc điểm:</span><span class="text-yellow-400">I = I1 + I2</span></div>
+                        <div class="flex justify-between mt-2"><span class="text-neon-orange">I1 (qua nhánh 1):</span><span class="text-neon-orange">${I1.toFixed(2)} A</span></div>
+                        <div class="flex justify-between"><span class="text-neon-green">I2 (qua nhánh 2):</span><span class="text-neon-green">${I2.toFixed(2)} A</span></div>
+                    `;
+
+            const f_in = document.getElementById("cb_flow_main_in");
+            const f_out = document.getElementById("cb_flow_main_out");
+            const f_b1 = document.getElementById("cb_flow_b1");
+            const f_b2 = document.getElementById("cb_flow_b2");
+
+            if (f_in) {
+              [f_in, f_out].forEach((f) => {
+                f.style.opacity = It > 0 ? 1 : 0;
+                f.style.animationDuration = Math.max(0.2, 2 / It) + "s";
+              });
+              f_b1.style.opacity = I1 > 0 ? 1 : 0;
+              f_b1.style.animationDuration = Math.max(0.2, 2 / I1) + "s";
+
+              f_b2.style.opacity = I2 > 0 ? 1 : 0;
+              f_b2.style.animationDuration = Math.max(0.2, 2 / I2) + "s";
+            }
+          }
+
+          document.getElementById("cb_Rt").innerText = Rt.toFixed(2) + " Ω";
+          document.getElementById("cb_It").innerText = It.toFixed(2) + " A";
+          detailsDiv.innerHTML = detailsHtml;
+        },
+
+        checkCircuitAchievement() {
+          const badgeId =
+            this.circuitMode === "series" ? "series_pro" : "parallel_pro";
+          appEngine.grantAchievement(badgeId);
+          appEngine.addXP(
+            100,
+            `Hoàn thành thực hành ${this.circuitMode === "series" ? "Mạch nối tiếp" : "Mạch song song"}`,
+          );
+        },
+
+        // --- HOME ENERGY LAB ---
+        activeAppliances: {},
+        applianceData: {
+          tv: { w: 150 },
+          fridge: { w: 200 },
+          ac: { w: 1200 },
+          fan: { w: 60 },
+          light: { w: 20 },
+          iron: { w: 1000 },
+          wmachine: { w: 500 },
+          pc: { w: 300 },
+        },
+
+        initHomeLab() {
+          this.activeAppliances = {};
+          document
+            .querySelectorAll(".appliance-card")
+            .forEach((c) => c.classList.remove("active"));
+          this.calcEnergy();
+        },
+
+        toggleAppliance(id) {
+          const card = document.getElementById("app_" + id);
+          if (this.activeAppliances[id]) {
+            delete this.activeAppliances[id];
+            card.classList.remove("active");
+          } else {
+            this.activeAppliances[id] = true;
+            card.classList.add("active");
+          }
+          this.calcEnergy();
+        },
+
+        calcEnergy() {
+          let currentPowerW = 0;
+          let dailyWh = 0;
+
+          for (const [id, isActive] of Object.entries(this.activeAppliances)) {
+            if (isActive) {
+              const w = this.applianceData[id].w;
+              const h =
+                parseFloat(document.getElementById("app_h_" + id).value) || 0;
+              currentPowerW += w;
+              dailyWh += w * h;
+            }
+          }
+
+          const monthlyKwh = (dailyWh * 30) / 1000;
+
+          document.getElementById("currentPowerWatt").innerText =
+            currentPowerW + " W";
+          document.getElementById("bill_kwh").innerText = monthlyKwh.toFixed(1);
+
+          const disk = document.getElementById("meterDisk");
+          if (currentPowerW > 0) {
+            disk.style.animationPlayState = "running";
+            disk.style.animationDuration =
+              Math.max(0.5, 10000 / currentPowerW) + "s";
+          } else {
+            disk.style.animationPlayState = "paused";
+          }
+
+          let cost = 0;
+          let k = monthlyKwh;
+
+          if (k > 0) {
+            let b1 = Math.min(k, 50);
+            cost += b1 * 1678;
+            k -= b1;
+            if (k > 0) {
+              let b2 = Math.min(k, 50);
+              cost += b2 * 1734;
+              k -= b2;
+              if (k > 0) {
+                cost += k * 2014;
+              }
+            }
+          }
+
+          const strKwh = Math.floor(monthlyKwh).toString().padStart(4, "0");
+          const decimal = Math.floor((monthlyKwh % 1) * 10);
+          const meterHtml = `
+                    <span class="bg-slate-900 px-1">${strKwh[0]}</span>
+                    <span class="bg-slate-900 px-1">${strKwh[1]}</span>
+                    <span class="bg-slate-900 px-1">${strKwh[2]}</span>
+                    <span class="bg-slate-900 px-1">${strKwh[3]}</span>
+                    <span class="bg-slate-900 px-1 text-red-500 border-l border-slate-700">${decimal}</span>
+                `;
+          document.getElementById("meterDisplay").innerHTML = meterHtml;
+
+          const formattedCost = new Intl.NumberFormat("vi-VN").format(
+            Math.round(cost),
+          );
+          document.getElementById("bill_total").innerText =
+            formattedCost + " ₫";
+        },
+
+        checkoutEnergyLab() {
+          const currentKwh = parseFloat(
+            document.getElementById("bill_kwh").innerText,
+          );
+          if (currentKwh > 0) {
+            appEngine.grantAchievement("saver");
+            appEngine.addXP(150, "Hoàn thành tính toán Hóa đơn điện");
+          } else {
+            appEngine.showToast(
+              "Thông báo",
+              "Hãy bật thử vài thiết bị trước nhé.",
+              "ℹ️",
+            );
+          }
+        },
+      };
+
+      window.onload = () => {
+        appEngine.init();
+      };
+    </script>
+  </body>
+</html>

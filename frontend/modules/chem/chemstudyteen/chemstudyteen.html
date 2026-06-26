@@ -3,99 +3,77 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Favicon bắt buộc -->
     <link rel="icon" href="../../favicon/educhem.svg" type="image/svg+xml" />
     <title>EDUCHEM - THPT | ChemStudy-Expert</title>
 
-    <!-- Font & Icons -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <link
-      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;900&family=Orbitron:wght@500;700;900&family=Space+Grotesk:wght@300;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;900&family=Orbitron:wght@500;700;900&family=Space+Grotesk:wght@300;400;700&display=swap"
       rel="stylesheet"
     />
-
-    <!-- Libraries -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script
-      crossorigin
-      src="https://unpkg.com/react@18/umd/react.production.min.js"
-    ></script>
-    <script
-      crossorigin
-      src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
-    ></script>
-    <script src="https://unpkg.com/framer-motion@10.12.16/dist/framer-motion.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- Animation Library for Footer -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ["Be Vietnam Pro", "sans-serif"],
-              tech: ["Orbitron", "sans-serif"],
-            },
-            colors: {
-              bgDark: "#050511",
-              cardDark: "#0f1126",
-              bgLight: "#f8fafc",
-              cardLight: "#ffffff",
-              textLight: "#1e293b",
-              accent: "#00f2ff",
-              primary: "#7000ff",
-              secondary: "#ff0055",
-              success: "#0aff60",
-            },
-            animation: {
-              float: "float 15s infinite linear",
-            },
-            keyframes: {
-              float: {
-                "0%": {
-                  transform: "translateY(100vh) rotate(0deg)",
-                  opacity: "0",
-                },
-                "10%": { opacity: "0.2" },
-                "90%": { opacity: "0.2" },
-                "100%": {
-                  transform: "translateY(-20vh) rotate(360deg)",
-                  opacity: "0",
-                },
-              },
-            },
-          },
-        },
-      };
-    </script>
     <style>
+      /* ── Reset & Base ─────────────────────────────────────── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
       :root {
+        --bg: #f8fafc;
+        --bg2: #ffffff;
+        --text: #1e293b;
+        --text2: #64748b;
+        --border: rgba(0, 0, 0, 0.08);
+        --card-bg: #ffffff;
+        --card-brd: rgba(0, 0, 0, 0.08);
+        --accent: #00f2ff;
+        --primary: #7000ff;
+        --secondary: #ff0055;
+        --success: #0aff60;
+        --header-bg: rgba(255, 255, 255, 0.85);
         --footer-bg: #f8fafc;
-        --footer-text: #1e293b;
-        --p-primary: #7000ff;
+        --footer-txt: #1e293b;
+        --grid-line: rgba(0, 0, 0, 0.05);
       }
-      .dark :root {
-        --footer-bg: #050511;
-        --footer-text: #e2e8f0;
-        --p-primary: #7000ff;
-      }
-      /* Sync Footer variables with Tailwind Dark Mode logic manually for pure CSS parts */
       html.dark {
+        --bg: #050511;
+        --bg2: #0f1126;
+        --text: #f1f5f9;
+        --text2: #94a3b8;
+        --border: rgba(255, 255, 255, 0.08);
+        --card-bg: rgba(15, 17, 38, 0.9);
+        --card-brd: rgba(255, 255, 255, 0.08);
+        --header-bg: rgba(5, 5, 17, 0.85);
         --footer-bg: #050511;
-        --footer-text: #e2e8f0;
+        --footer-txt: #e2e8f0;
+        --grid-line: rgba(0, 242, 255, 0.03);
       }
 
       html {
         scroll-behavior: smooth;
+        font-family: "Be Vietnam Pro", sans-serif;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        transition:
+          background 0.3s,
+          color 0.3s;
       }
 
-      /* Custom Scrollbar */
+      /* Scrollbar */
       ::-webkit-scrollbar {
         width: 6px;
       }
@@ -106,152 +84,771 @@
         background: #94a3b8;
         border-radius: 10px;
       }
-      .dark ::-webkit-scrollbar-thumb {
+      html.dark ::-webkit-scrollbar-thumb {
         background: linear-gradient(to bottom, #7000ff, #00f2ff);
       }
 
-      /* Background Patterns */
-      .bg-grid-light {
-        background-size: 40px 40px;
-        background-image:
-          linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-          linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+      /* ── Grid BG ──────────────────────────────────────────── */
+      #bg-layer {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        overflow: hidden;
       }
-      .bg-grid-dark {
-        background-size: 50px 50px;
+      #bg-layer .grid {
+        position: absolute;
+        inset: 0;
+        background-size: 48px 48px;
         background-image:
-          linear-gradient(
-            to right,
-            rgba(0, 242, 255, 0.03) 1px,
-            transparent 1px
-          ),
-          linear-gradient(
-            to bottom,
-            rgba(0, 242, 255, 0.03) 1px,
-            transparent 1px
-          );
+          linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+          linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+      }
+      html.dark #bg-layer .grid {
         mask-image: radial-gradient(
-          circle at center,
-          black 40%,
-          transparent 100%
+          circle at 50% 40%,
+          black 30%,
+          transparent 80%
         );
       }
-
-      /* =========================================================
-         FOOTER CSS (CỐ ĐỊNH THEO YÊU CẦU)
-         ========================================================= */
-      footer {
-        background: var(--footer-bg);
-        color: var(--footer-text);
-        padding: 100px 5% 40px;
-        position: relative;
-        overflow: hidden;
-        -webkit-transition:
-          background-color 0.8s ease,
-          color 0.8s ease;
-        -o-transition:
-          background-color 0.8s ease,
-          color 0.8s ease;
-        transition:
-          background-color 0.8s ease,
-          color 0.8s ease;
-        z-index: 10;
+      #bg-layer .glow1 {
+        position: absolute;
+        top: -15%;
+        left: -10%;
+        width: 520px;
+        height: 520px;
+        border-radius: 50%;
+        background: rgba(112, 0, 255, 0.18);
+        filter: blur(110px);
+      }
+      #bg-layer .glow2 {
+        position: absolute;
+        bottom: -15%;
+        right: -10%;
+        width: 480px;
+        height: 480px;
+        border-radius: 50%;
+        background: rgba(255, 0, 85, 0.08);
+        filter: blur(110px);
       }
 
-      .footer-waves {
-        position: absolute;
+      /* ── Floating particles ───────────────────────────────── */
+      @keyframes floatUp {
+        0% {
+          transform: translateY(100vh) rotate(0deg);
+          opacity: 0;
+        }
+        10% {
+          opacity: 0.15;
+        }
+        90% {
+          opacity: 0.15;
+        }
+        100% {
+          transform: translateY(-15vh) rotate(360deg);
+          opacity: 0;
+        }
+      }
+      .particle {
+        position: fixed;
+        pointer-events: none;
+        color: var(--primary);
+        font-size: 16px;
+        animation: floatUp linear infinite;
+      }
+
+      /* ── Header ───────────────────────────────────────────── */
+      header {
+        position: fixed;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 60px;
-        background: var(--footer-bg);
-        -webkit-clip-path: polygon(
-          0% 45%,
-          16% 44%,
-          33% 50%,
-          54% 60%,
-          70% 61%,
-          84% 59%,
-          100% 52%,
-          100% 100%,
-          0% 100%
-        );
-        clip-path: polygon(
-          0% 45%,
-          16% 44%,
-          33% 50%,
-          54% 60%,
-          70% 61%,
-          84% 59%,
-          100% 52%,
-          100% 100%,
-          0% 100%
-        );
-        -webkit-transition: background-color 0.8s;
-        -o-transition: background-color 0.8s;
-        transition: background-color 0.8s;
+        right: 0;
+        z-index: 50;
+        height: 64px;
+        background: var(--header-bg);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--border);
+        transition:
+          background 0.3s,
+          border-color 0.3s;
+      }
+      @media (min-width: 768px) {
+        header {
+          height: 80px;
+        }
+      }
+      .header-inner {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 16px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      /* Logo */
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .logo-icon {
+        font-size: 28px;
+        color: var(--accent);
+        transition: transform 0.4s;
+      }
+      .logo:hover .logo-icon {
+        transform: rotate(180deg);
+      }
+      .logo-text {
+        font-family: "Orbitron", sans-serif;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--text);
+        letter-spacing: 0.08em;
+      }
+      .logo-text span {
+        background: linear-gradient(135deg, var(--accent), var(--primary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .logo-sub {
+        font-size: 9px;
+        color: var(--text2);
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        margin-top: 1px;
       }
 
-      .footer-grid {
-        display: -ms-grid;
+      /* Desktop nav */
+      nav.desk {
+        display: none;
+        align-items: center;
+        gap: 8px;
+      }
+      @media (min-width: 768px) {
+        nav.desk {
+          display: flex;
+        }
+      }
+      nav.desk a {
+        padding: 6px 14px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text2);
+        text-decoration: none;
+        transition:
+          background 0.2s,
+          color 0.2s;
+      }
+      nav.desk a:hover {
+        background: var(--border);
+        color: var(--text);
+      }
+      nav.desk a.active {
+        background: var(--border);
+        color: var(--primary);
+      }
+      .nav-sep {
+        width: 1px;
+        height: 24px;
+        background: var(--border);
+        margin: 0 4px;
+      }
+      .btn-theme {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--border);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        color: var(--text2);
+        transition:
+          background 0.2s,
+          color 0.2s;
+      }
+      html.dark .btn-theme {
+        color: #fde68a;
+      }
+      .btn-theme:hover {
+        background: rgba(112, 0, 255, 0.15);
+        color: var(--primary);
+      }
+
+      /* Mobile header right */
+      .mob-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      @media (min-width: 768px) {
+        .mob-right {
+          display: none;
+        }
+      }
+      .btn-mob {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--border);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        color: var(--text2);
+      }
+
+      /* Mobile drawer */
+      #mob-menu {
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        display: none;
+      }
+      #mob-menu.open {
+        display: block;
+      }
+      #mob-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+      }
+      #mob-panel {
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 80%;
+        max-width: 300px;
+        background: var(--card-bg);
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+      }
+      #mob-menu.open #mob-panel {
+        transform: translateX(0);
+      }
+      #mob-panel h2 {
+        font-family: "Orbitron", sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 32px;
+      }
+      #mob-panel nav {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      #mob-panel nav a {
+        padding: 12px;
+        border-radius: 12px;
+        color: var(--text2);
+        text-decoration: none;
+        font-weight: 500;
+        transition: background 0.2s;
+      }
+      #mob-panel nav a:hover {
+        background: var(--border);
+      }
+      #mob-panel nav a.active {
+        background: rgba(112, 0, 255, 0.1);
+        color: var(--primary);
+        font-weight: 700;
+      }
+      .mob-close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--border);
+        border: none;
+        cursor: pointer;
+        color: var(--text2);
+        font-size: 14px;
+      }
+
+      /* ── Main ─────────────────────────────────────────────── */
+      main {
+        flex: 1;
+        position: relative;
+        z-index: 1;
+        padding-top: 96px;
+        padding-bottom: 80px;
+      }
+      @media (min-width: 768px) {
+        main {
+          padding-top: 112px;
+        }
+      }
+      .container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 16px;
+      }
+
+      /* ── Hero ─────────────────────────────────────────────── */
+      .hero {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 16px;
+        border-radius: 999px;
+        border: 1px solid rgba(0, 242, 255, 0.3);
+        background: rgba(0, 242, 255, 0.06);
+        color: var(--accent);
+        font-family: "Orbitron", sans-serif;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        margin-bottom: 20px;
+      }
+      .hero h1 {
+        font-family: "Orbitron", sans-serif;
+        font-size: clamp(32px, 6vw, 60px);
+        font-weight: 900;
+        line-height: 1.1;
+        color: var(--text);
+        margin-bottom: 16px;
+      }
+      .hero h1 span {
+        background: linear-gradient(
+          135deg,
+          var(--accent) 0%,
+          var(--primary) 50%,
+          var(--secondary) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .hero p {
+        color: var(--text2);
+        font-size: 16px;
+        max-width: 520px;
+        margin: 0 auto 32px;
+        font-weight: 300;
+      }
+
+      /* ── Progress bar ─────────────────────────────────────── */
+      .prog-wrap {
+        max-width: 500px;
+        margin: 0 auto 40px;
+      }
+      .prog-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+      .prog-label {
+        font-family: "Orbitron", sans-serif;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: var(--text2);
+      }
+      .prog-count {
+        font-family: "Orbitron", sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--accent);
+      }
+      .prog-track {
+        height: 10px;
+        background: var(--border);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .prog-fill {
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(
+          90deg,
+          var(--primary),
+          var(--accent),
+          var(--secondary)
+        );
+        transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .prog-fill.done {
+        background: var(--success);
+        box-shadow: 0 0 14px rgba(10, 255, 96, 0.5);
+      }
+
+      /* ── Stats strip ──────────────────────────────────────── */
+      .stats-strip {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 60px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        max-width: 440px;
+        margin: 0 auto 40px;
+      }
+      .stat-box {
+        border-radius: 14px;
+        padding: 14px 10px;
+        text-align: center;
+        border: 1px solid var(--card-brd);
+        background: var(--card-bg);
+      }
+      .stat-box .stat-grade {
+        font-family: "Orbitron", sans-serif;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        margin-bottom: 4px;
+      }
+      .stat-box .stat-pct {
+        font-family: "Orbitron", sans-serif;
+        font-size: 26px;
+        font-weight: 900;
+        line-height: 1;
+      }
+      .stat-box .stat-sub {
+        font-size: 10px;
+        color: var(--text2);
+        margin-top: 2px;
+      }
+      .stat-10 .stat-grade,
+      .stat-10 .stat-pct {
+        color: #22d3ee;
+      }
+      .stat-11 .stat-grade,
+      .stat-11 .stat-pct {
+        color: #a78bfa;
+      }
+      .stat-12 .stat-grade,
+      .stat-12 .stat-pct {
+        color: #fb7185;
+      }
+
+      /* ── Tab bar ──────────────────────────────────────────── */
+      .tabs {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 48px;
+      }
+      .tabs-inner {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 6px;
+        padding: 6px;
+        border-radius: 18px;
+        background: var(--border);
+        border: 1px solid var(--card-brd);
+      }
+      .tab-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 20px;
+        border-radius: 12px;
+        border: none;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        background: transparent;
+        color: var(--text2);
+        transition:
+          background 0.2s,
+          color 0.2s,
+          box-shadow 0.2s;
+      }
+      .tab-btn:hover {
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.06);
+      }
+      .tab-btn.active {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: #fff;
+        box-shadow: 0 4px 20px rgba(112, 0, 255, 0.4);
+      }
+
+      /* ── Grade section ────────────────────────────────────── */
+      .grade-section {
+        margin-bottom: 56px;
+      }
+      .grade-head {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 24px;
+      }
+      .grade-tag {
+        font-family: "Orbitron", sans-serif;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        padding: 4px 14px;
+        border-radius: 999px;
+        border: 1px solid;
+        white-space: nowrap;
+      }
+      .tag-10 {
+        color: #22d3ee;
+        border-color: rgba(34, 211, 238, 0.35);
+        background: rgba(34, 211, 238, 0.08);
+      }
+      .tag-11 {
+        color: #a78bfa;
+        border-color: rgba(167, 139, 250, 0.35);
+        background: rgba(167, 139, 250, 0.08);
+      }
+      .tag-12 {
+        color: #fb7185;
+        border-color: rgba(251, 113, 133, 0.35);
+        background: rgba(251, 113, 133, 0.08);
+      }
+      .grade-line {
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+      .grade-done-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--text2);
+        white-space: nowrap;
+      }
+
+      /* ── Cards grid ───────────────────────────────────────── */
+      .cards-grid {
+        display: grid;
+        gap: 18px;
+        grid-template-columns: 1fr;
+      }
+      @media (min-width: 540px) {
+        .cards-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (min-width: 900px) {
+        .cards-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      @media (min-width: 1200px) {
+        .cards-grid {
+          grid-template-columns: repeat(4, 1fr);
+        }
+      }
+
+      /* ── Single card ──────────────────────────────────────── */
+      .card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        border-radius: 20px;
+        overflow: hidden;
+        cursor: pointer;
+        background: var(--card-bg);
+        border: 1px solid var(--card-brd);
+        text-decoration: none;
+        color: inherit;
+        transition:
+          transform 0.22s ease,
+          box-shadow 0.22s ease,
+          border-color 0.22s;
+      }
+      .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+      }
+      html.dark .card:hover {
+        box-shadow:
+          0 12px 40px rgba(0, 0, 0, 0.5),
+          0 0 30px rgba(0, 242, 255, 0.08);
+      }
+      .card.done {
+        border-color: rgba(10, 255, 96, 0.3);
+      }
+
+      /* Top strip */
+      .card-strip {
+        height: 3px;
+        width: 100%;
+      }
+
+      .card-body {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+
+      /* Icon + badges row */
+      .card-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+      .card-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: #fff;
+        flex-shrink: 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+        transition: transform 0.3s;
+      }
+      .card:hover .card-icon {
+        transform: rotate(12deg) scale(1.08);
+      }
+      .card-badges {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 6px;
+      }
+      .badge-grade {
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        padding: 3px 10px;
+        border-radius: 999px;
+        border: 1px solid;
+      }
+      .check-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 1.5px solid var(--card-brd);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        cursor: pointer;
+        color: transparent;
+        font-size: 11px;
+        transition: all 0.25s;
+        flex-shrink: 0;
+      }
+      .check-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .card.done .check-btn {
+        background: var(--success);
+        border-color: var(--success);
+        color: #000;
+        box-shadow: 0 0 12px rgba(10, 255, 96, 0.4);
+      }
+
+      /* Title */
+      .card-title {
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1.35;
+        color: var(--text);
+        margin-bottom: 12px;
+        flex: 1;
+        transition: color 0.2s;
+      }
+      .card:hover .card-title {
+        color: var(--accent);
+      }
+      .card.done .card-title {
+        color: var(--success);
+      }
+
+      /* Footer row */
+      .card-foot {
+        margin-top: auto;
+        padding-top: 12px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .card-cta {
+        font-size: 11px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--text2);
+      }
+      .card.done .card-cta {
+        color: var(--success);
+      }
+      .card-arrow {
+        font-size: 11px;
+        color: var(--border);
+        transition:
+          transform 0.2s,
+          color 0.2s;
+      }
+      .card:hover .card-arrow {
+        transform: translateX(4px);
+        color: var(--accent);
+      }
+      .card.done .card-arrow {
+        color: var(--success);
+      }
+
+      /* hidden when tab filtered */
+      .grade-section.hidden {
+        display: none;
+      }
+
+      /* ── Footer ───────────────────────────────────────────── */
+      footer {
+        background: var(--footer-bg);
+        color: var(--footer-txt);
+        padding: 80px 5% 40px;
+        position: relative;
+        z-index: 10;
+        transition:
+          background 0.8s,
+          color 0.8s;
+      }
+      .footer-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 48px;
         max-width: 1200px;
         margin: 0 auto;
       }
-
       .footer-brand h2 {
         font-family: "Space Grotesk", sans-serif;
         font-size: 2rem;
-        margin-bottom: 20px;
+        margin-bottom: 16px;
       }
-
-      .footer-links h4,
-      h3 {
-        margin-bottom: 25px;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        color: var(--p-primary);
-      }
-
-      .contact-item {
-        margin-bottom: 15px;
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
-        gap: 15px;
+      .footer-brand p {
         color: #94a3b8;
-        -webkit-transition: 0.3s;
-        -o-transition: 0.3s;
-        transition: 0.3s;
+        line-height: 1.8;
+        font-size: 14px;
       }
-      .contact-item i {
-        color: var(--p-primary);
+      .footer-socials {
+        display: flex;
+        gap: 12px;
+        margin-top: 24px;
       }
-      .contact-item:hover {
-        color: white; /* Note: In light mode this might need adjustment, but sticking to requested CSS */
-        -webkit-transform: translateX(5px);
-        -ms-transform: translateX(5px);
-        transform: translateX(5px);
-      }
-      /* Dark/Light mode adjustment for hover text in footer if needed, keeping requested CSS priority */
-      html:not(.dark) .contact-item:hover {
-        color: #000;
-      }
-
-      .copyright {
-        margin-top: 80px;
-        text-align: center;
-        padding-top: 30px;
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
-        color: #475569;
-        font-size: 0.9rem;
-      }
-
       .icon-btn {
         width: 40px;
         height: 40px;
@@ -262,200 +859,1036 @@
         justify-content: center;
         transition: 0.3s;
         color: #94a3b8;
+        text-decoration: none;
       }
       .icon-btn:hover {
-        background: var(--p-primary);
-        color: white;
+        background: var(--primary);
+        color: #fff;
         transform: translateY(-3px);
+      }
+      .footer-links h3,
+      .footer-links h4 {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--primary);
+        margin-bottom: 20px;
+        font-weight: 700;
+      }
+      .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 14px;
+        color: #94a3b8;
+        font-size: 14px;
+        transition: 0.3s;
+      }
+      .contact-item i {
+        color: var(--primary);
+      }
+      .contact-item:hover {
+        transform: translateX(5px);
+        color: #fff;
+      }
+      html:not(.dark) .contact-item:hover {
+        color: #000;
+      }
+      .footer-note {
+        margin-top: 16px;
+        padding: 14px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 14px;
+      }
+      .footer-note p {
+        font-size: 13px;
+        color: #fff;
+      }
+      .copyright {
+        margin-top: 60px;
+        text-align: center;
+        padding-top: 24px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        color: #475569;
+        font-size: 13px;
       }
     </style>
   </head>
-  <body
-    class="bg-bgLight text-textLight dark:bg-bgDark dark:text-white min-h-screen flex flex-col transition-colors duration-300"
-  >
-    <!-- =========================================================
-           1. STYLE (CSS)
-           ========================================================= -->
-    <link rel="stylesheet" href="style.css" />
-    <!-- =========================================================
-           2. HEADER (STATIC HTML)
-           ========================================================= -->
-    <header
-      class="fixed w-full z-50 top-0 left-0 border-b border-slate-200 dark:border-white/10 bg-white/80 dark:bg-bgDark/80 backdrop-blur-md transition-colors duration-300"
-    >
-      <div
-        class="max-w-7xl mx-auto px-4 h-16 md:h-20 flex items-center justify-between"
-      >
-        <!-- Logo -->
-        <div
-          class="flex items-center gap-3 cursor-pointer group"
-          onclick="window.location.href = '../../index.html'"
-        >
-          <div
-            class="relative w-8 h-8 md:w-10 md:h-10 flex items-center justify-center"
-          >
-            <i
-              class="fas fa-atom text-2xl md:text-3xl text-accent group-hover:animate-spin"
-            ></i>
-          </div>
+  <body>
+    <!-- BG layer -->
+    <div id="bg-layer">
+      <div class="grid"></div>
+      <div class="glow1"></div>
+      <div class="glow2"></div>
+    </div>
+
+    <!-- ═══ HEADER ═════════════════════════════════════════════════ -->
+    <header>
+      <div class="header-inner">
+        <a class="logo" href="../../index.html">
+          <i class="fas fa-atom logo-icon"></i>
           <div>
-            <h1
-              class="font-tech font-bold text-xl md:text-2xl tracking-wider text-slate-800 dark:text-white"
-            >
-              EDU
-              <span
-                class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-primary"
-                >CHEM</span
-              >
-            </h1>
-            <p
-              class="hidden md:block text-[10px] text-slate-500 dark:text-gray-400 uppercase tracking-[0.2em]"
-            >
-              ChemStudy-Expert
-            </p>
+            <div class="logo-text">EDU<span>CHEM</span></div>
+            <div class="logo-sub">ChemStudy-Expert</div>
           </div>
-        </div>
+        </a>
 
-        <!-- Desktop Nav -->
-        <div class="hidden md:flex items-center gap-4">
-          <nav class="flex items-center gap-2">
-            <a
-              href="../educhem.html"
-              class="px-4 py-2 rounded-lg text-sm font-semibold text-slate-500 hover:text-primary dark:text-gray-400 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-white/5 transition-all"
-              >EduChem</a
-            >
-            <a
-              href="../chemstudybaby/chemstudybaby.html"
-              class="px-4 py-2 rounded-lg text-sm font-semibold text-slate-500 hover:text-primary dark:text-gray-400 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-white/5 transition-all"
-              >CS Junior</a
-            >
-            <a
-              href="#"
-              class="px-4 py-2 rounded-lg text-sm font-semibold bg-slate-100 dark:bg-white/10 text-primary dark:text-white"
-              >CS Expert</a
-            >
-            <a
-              href="../chemforum/chemforum.html"
-              class="px-4 py-2 rounded-lg text-sm font-semibold text-slate-500 hover:text-primary dark:text-gray-400 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-white/5 transition-all"
-              >Forum</a
-            >
-            <a
-              href="../chemverse/chemverse.html"
-              class="px-4 py-2 rounded-lg text-sm font-semibold text-slate-500 hover:text-primary dark:text-gray-400 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-white/5 transition-all"
-              >ChemVerse</a
-            >
-          </nav>
-          <div class="h-6 w-px bg-slate-300 dark:bg-white/10"></div>
-
-          <!-- Theme Toggle Button -->
-          <button
-            id="theme-toggle"
-            class="w-10 h-10 rounded-full bg-slate-200 dark:bg-white/10 flex items-center justify-center text-slate-600 dark:text-yellow-300 hover:bg-slate-300 dark:hover:bg-white/20 transition-all shadow-md"
-          >
+        <nav class="desk">
+          <a href="../educhem.html">EduChem</a>
+          <a href="../chemstudybaby/chemstudybaby.html">CS Junior</a>
+          <a href="#" class="active">CS Expert</a>
+          <a href="../chemforum/chemforum.html">Forum</a>
+          <a href="../chemverse/chemverse.html">ChemVerse</a>
+          <div class="nav-sep"></div>
+          <button class="btn-theme" id="theme-toggle" title="Đổi giao diện">
             <i class="fas fa-moon" id="theme-icon"></i>
           </button>
-        </div>
+        </nav>
 
-        <!-- Mobile Menu Button -->
-        <div class="flex md:hidden items-center gap-3">
-          <button
-            id="mobile-theme-toggle"
-            class="w-10 h-10 rounded-full bg-slate-200 dark:bg-white/10 flex items-center justify-center text-slate-600 dark:text-yellow-300"
-          >
+        <div class="mob-right">
+          <button class="btn-mob" id="mob-theme" title="Đổi giao diện">
             <i class="fas fa-moon"></i>
           </button>
-          <button
-            id="mobile-menu-btn"
-            class="w-10 h-10 flex items-center justify-center text-slate-700 dark:text-white text-xl"
-          >
+          <button class="btn-mob" id="mob-open">
             <i class="fas fa-bars"></i>
           </button>
         </div>
       </div>
-
-      <!-- Mobile Menu Dropdown (Hidden by default) -->
-      <div id="mobile-menu" class="fixed inset-0 z-[60] hidden">
-        <div
-          class="absolute inset-0 bg-black/50 backdrop-blur-sm"
-          id="mobile-menu-overlay"
-        ></div>
-        <div
-          class="absolute top-0 right-0 h-full w-[80%] max-w-xs bg-white dark:bg-cardDark shadow-2xl p-6 flex flex-col transform transition-transform translate-x-full"
-          id="mobile-menu-panel"
-        >
-          <div class="flex justify-between items-center mb-8">
-            <h2
-              class="font-tech text-xl font-bold text-slate-800 dark:text-white"
-            >
-              MENU
-            </h2>
-            <button
-              id="mobile-menu-close"
-              class="w-8 h-8 rounded-full bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-white flex items-center justify-center"
-            >
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-          <nav class="flex flex-col gap-4">
-            <a
-              href="../chemstudybaby/chemstudybaby.html"
-              class="p-3 rounded-xl text-slate-600 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-white/5"
-              >CS Junior</a
-            >
-            <a
-              href="#"
-              class="p-3 rounded-xl bg-primary/10 text-primary font-bold"
-              >CS Expert</a
-            >
-            <a
-              href="../chemforum/chemforum.html"
-              class="p-3 rounded-xl text-slate-600 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-white/5"
-              >Chem Forum</a
-            >
-            <a
-              href="../chemverse/chemverse.html"
-              class="p-3 rounded-xl text-slate-600 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-white/5"
-              >Chem Verse</a
-            >
-            <a
-              href="../../index.html"
-              class="p-3 rounded-xl text-slate-600 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-white/5"
-              >Về EduChem</a
-            >
-          </nav>
-        </div>
-      </div>
     </header>
 
-    <!-- =========================================================
-           3. MAIN (REACT ROOT)
-           ========================================================= -->
-    <main id="root" class="flex-grow pt-28 md:pt-32 pb-20 relative z-0">
-      <!-- React will mount here -->
+    <!-- Mobile drawer -->
+    <div id="mob-menu">
+      <div id="mob-overlay"></div>
+      <div id="mob-panel">
+        <h2>MENU</h2>
+        <button class="mob-close" id="mob-close">
+          <i class="fas fa-times"></i>
+        </button>
+        <nav>
+          <a href="../chemstudybaby/chemstudybaby.html">CS Junior</a>
+          <a href="#" class="active">CS Expert</a>
+          <a href="../chemforum/chemforum.html">Chem Forum</a>
+          <a href="../chemverse/chemverse.html">Chem Verse</a>
+          <a href="../../index.html">Về EduChem</a>
+        </nav>
+      </div>
+    </div>
+
+    <!-- ═══ MAIN ════════════════════════════════════════════════════ -->
+    <main>
+      <div class="container">
+        <!-- Hero -->
+        <div class="hero" data-aos="fade-up">
+          <div class="hero-badge">
+            <i class="fas fa-flask-vial"></i> Chương trình THPT · Lớp 10 – 12
+          </div>
+          <h1>ChemStudy <span>Expert</span></h1>
+          <p>
+            Hệ thống kiến thức Hóa học THPT toàn diện — từ đại cương đến hữu cơ,
+            vô cơ và hóa phân tích.
+          </p>
+
+          <!-- Progress -->
+          <div class="prog-wrap">
+            <div class="prog-head">
+              <span class="prog-label">Tiến độ học tập</span>
+              <span class="prog-count" id="prog-count">0 / 21</span>
+            </div>
+            <div class="prog-track">
+              <div class="prog-fill" id="prog-fill" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="stats-strip">
+            <div class="stat-box stat-10">
+              <div class="stat-grade">Lớp 10</div>
+              <div class="stat-pct" id="stat10">0%</div>
+              <div class="stat-sub" id="stat10-sub">0/7 bài</div>
+            </div>
+            <div class="stat-box stat-11">
+              <div class="stat-grade">Lớp 11</div>
+              <div class="stat-pct" id="stat11">0%</div>
+              <div class="stat-sub" id="stat11-sub">0/6 bài</div>
+            </div>
+            <div class="stat-box stat-12">
+              <div class="stat-grade">Lớp 12</div>
+              <div class="stat-pct" id="stat12">0%</div>
+              <div class="stat-sub" id="stat12-sub">0/8 bài</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs" data-aos="fade-up" data-aos-delay="100">
+          <div class="tabs-inner">
+            <button class="tab-btn active" data-tab="all">
+              <i class="fas fa-th-large"></i> Tất cả
+            </button>
+            <button class="tab-btn" data-tab="10">
+              <i class="fas fa-seedling"></i> Lớp 10
+            </button>
+            <button class="tab-btn" data-tab="11">
+              <i class="fas fa-leaf"></i> Lớp 11
+            </button>
+            <button class="tab-btn" data-tab="12">
+              <i class="fas fa-graduation-cap"></i> Lớp 12
+            </button>
+          </div>
+        </div>
+
+        <!-- ═══ Grade 10 ═══════════════════════════════════════════ -->
+        <div
+          class="grade-section"
+          id="sec-10"
+          data-aos="fade-up"
+          data-aos-delay="150"
+        >
+          <div class="grade-head">
+            <span class="grade-tag tag-10">Lớp 10</span>
+            <div class="grade-line"></div>
+            <span class="grade-done-label" id="done-10">0/7 bài</span>
+          </div>
+          <div class="cards-grid">
+            <a
+              class="card"
+              href="cau_tao_nguyen_tu/cau_tao_nguyen_tu.html"
+              data-id="10_1"
+              data-grade="10"
+            >
+              <div
+                class="card-strip"
+                style="background: linear-gradient(90deg, #3b82f6, #22d3ee)"
+              ></div>
+              <div class="card-body">
+                <div class="card-top">
+                  <div
+                    class="card-icon"
+                    style="
+                      background: linear-gradient(135deg, #3b82f6, #22d3ee);
+                    "
+                  >
+                    <i class="fas fa-atom"></i>
+                  </div>
+                  <div class="card-badges">
+                    <span class="badge-grade tag-10">Lớp 10</span>
+                    <button class="check-btn" title="Đánh dấu hoàn thành">
+                      <i class="fas fa-check"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-title">Cấu tạo nguyên tử</div>
+                <div class="card-foot">
+                  <span class="card-cta"
+                    ><i class="fas fa-play-circle"></i> Bắt đầu học</span
+                  >
+                  <i class="fas fa-arrow-right card-arrow"></i>
+                </div>
+              </div>
+            </a>
+
+            <a
+              class="card"
+              href="bang_tuan_hoan_cac_nguyen_to_hoa_hoc/bang_tuan_hoan_cac_nguyen_to_hoa_hoc.html"
+              data-id="10_2"
+              data-grade="10"
+            >
+              <div
+                class="card-strip"
+                style="background: linear-gradient(90deg, #06b6d4, #14b8a6)"
+              ></div>
+              <div class="card-body">
+                <div class="card-top">
+                  <div
+                    class="card-icon"
+                    style="
+                      background: linear-gradient(135deg, #06b6d4, #14b8a6);
+                    "
+                  >
+                    <i class="fas fa-table-cells"></i>
+                  </div>
+                  <div class="card-badges">
+                    <span class="badge-grade tag-10">Lớp 10</span>
+                    <button class="check-btn" title="Đánh dấu hoàn thành">
+                      <i class="fas fa-check"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-title">Bảng tuần hoàn các nguyên tố</div>
+                <div class="card-foot">
+                  <span class="card-cta"
+                    ><i class="fas fa-play-circle"></i> Bắt đầu học</span
+                  >
+                  <i class="fas fa-arrow-right card-arrow"></i>
+                </div>
+              </div>
+            </a>
+
+            <a
+              class="card"
+              href="lien_ket_hoa_hoc/lien_ket_hoa_hoc.html"
+              data-id="10_3"
+              data-grade="10"
+            >
+              <div
+                class="card-strip"
+                style="background: linear-gradient(90deg, #10b981, #22c55e)"
+              ></div>
+              <div class="card-body">
+                <div class="card-top">
+                  <div
+                    class="card-icon"
+                    style="
+                      background: linear-gradient(135deg, #10b981, #22c55e);
+                    "
+                  >
+                    <i class="fas fa-link"></i>
+                  </div>
+                  <div class="card-badges">
+                    <span class="badge-grade tag-10">Lớp 10</span>
+                    <button class="check-btn" title="Đánh dấu hoàn thành">
+                      <i class="fas fa-check"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-title">Liên kết hóa học</div>
+                <div class="card-foot">
+                  <span class="card-cta"
+                    ><i class="fas fa-play-circle"></i> Bắt đầu học</span
+                  >
+                  <i class="fas fa-arrow-right card-arrow"></i>
+                </div>
+              </div>
+            </a>
+
+            <a
+              class="card"
+              href="phan_ung_oxi_hoa_khu/phan_ung_oxi_hoa_khu.html"
+              data-id="10_4"
+              data-grade="10"
+            >
+              <div
+                class="card-strip"
+                style="background: linear-gradient(90deg, #f97316, #ef4444)"
+              ></div>
+              <div class="card-body">
+                <div class="card-top">
+                  <div
+                    class="card-icon"
+                    style="
+                      background: linear-gradient(135deg, #f97316, #ef4444);
+                    "
+                  >
+                    <i class="fas fa-fire-flame-curved"></i>
+                  </div>
+                  <div class="card-badges">
+                    <span class="badge-grade tag-10">Lớp 10</span>
+                    <button class="check-btn" title="Đánh dấu hoàn thành">
+                      <i class="fas fa-check"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-title">Phản ứng Oxi hóa – Khử</div>
+                <div class="card-foot">
+                  <span class="card-cta"
+                    ><i class="fas fa-play-circle"></i> Bắt đầu học</span
+                  >
+                  <i class="fas fa-arrow-right card-arrow"></i>
+                </div>
+              </div>
+            </a>
+
+            <a
+              class="card"
+              href="nang_luong_hoa_hoc/nang_luong_hoa_hoc.html"
+              data-id="10_5"
+              data-grade="10"
+            >
+              <div
+                class="card-strip"
+                style="background: linear-gradient(90deg, #eab308, #f97316)"
+              ></div>
+              <div class="card-body">
+                <div class="card-top">
+                  <div
+                    class="card-icon"
+                    style="
+                      background: linear-gradient(135deg, #eab308, #f97316);
+                    "
+                  >
+                    <i class="fas fa-bolt"></i>
+                  </div>
+                  <div class="card-badges">
+                    <span class="badge-grade tag-10">Lớp 10</span>
+                    <button class="check-btn" title="Đánh dấu hoàn thành">
+                      <i class="fas fa-check"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-title">Năng lượng hóa học</div>
+                <div class="card-foot">
+                  <span class="card-cta"
+                    ><i class="fas fa-play-circle"></i> Bắt đầu học</span
+                  >
+                  <i class="fas fa-arrow-right card-arrow"></i>
+                </div>
+              </div>
+            </a>
+
+            <a
+              class="card"
+              href="toc_do_phan_ung_hoa_hoc/toc_do_phan_ung_hoa_hoc.html"
+              data-id="10_6"
+              data-grade="10"
+            >
+              <div
+                class="card-strip"
+                style="background: linear-gradient(90deg, #6366f1, #3b82f6)"
+              ></div>
+              <div class="card-body">
+                <div class="card-top">
+                  <div
+                    class="card-icon"
+                    style="
+                      background: linear-gradient(135deg, #6366f1, #3b82f6);
+                    "
+                  >
+                    <i class="fas fa-gauge-high"></i>
+                  </div>
+                  <div class="card-badges">
+                    <span class="badge-grade tag-10">Lớp 10</span>
+                    <button class="check-btn" title="Đánh dấu hoàn thành">
+                      <i class="fas fa-check"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-title">Tốc độ phản ứng hóa học</div>
+                <div class="card-foot">
+                  <span class="card-cta"
+                    ><i class="fas fa-play-circle"></i> Bắt đầu học</span
+                  >
+                  <i class="fas fa-arrow-right card-arrow"></i>
+                </div>
+              </div>
+            </a>
+
+            <a
+              class="card"
+              href="nguyen_to_nhom_viia_halogen/nguyen_to_nhom_viia_halogen.html"
+              data-id="10_7"
+              data-grade="10"
+            >
+              <div
+                class="card-strip"
+                style="background: linear-gradient(90deg, #a855f7, #ec4899)"
+              ></div>
+              <div class="card-body">
+                <div class="card-top">
+                  <div
+                    class="card-icon"
+                    style="
+                      background: linear-gradient(135deg, #a855f7, #ec4899);
+                    "
+                  >
+                    <i class="fas fa-flask"></i>
+                  </div>
+                  <div class="card-badges">
+                    <span class="badge-grade tag-10">Lớp 10</span>
+                    <button class="check-btn" title="Đánh dấu hoàn thành">
+                      <i class="fas fa-check"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-title">Halogen (Nhóm VIIA)</div>
+                <div class="card-foot">
+                  <span class="card-cta"
+                    ><i class="fas fa-play-circle"></i> Bắt đầu học</span
+                  >
+                  <i class="fas fa-arrow-right card-arrow"></i>
+                </div>
+              </div>
+            </a>
+          </div>
+          <!-- /cards-grid -->
+        </div>
+        <!-- /sec-10 -->
+
+        <!-- ═══ Grade 11 ═══════════════════════════════════════════ -->
+        <div
+          class="grade-section"
+          id="sec-11"
+          data-aos="fade-up"
+          data-aos-delay="200"
+        >
+          <div class="grade-head">
+            <span class="grade-tag tag-11">Lớp 11</span>
+            <div class="grade-line"></div>
+            <span class="grade-done-label" id="done-11">0/6 bài</span>
+          </div>
+          <div class="cards-grid">
+            <a
+              class="card"
+              href="can_bang_hoa_hoc/can_bang_hoa_hoc.html"
+              data-id="11_1"
+              data-grade="11"
+            >
+              <div
+                class="card-strip"
+                style="background: linear-gradient(90deg, #f43f5e, #ec4899)"
+              ></div>
+              <div class="card-body">
+                <div class="card-top">
+                  <div
+                    class="card-icon"
+                    style="
+                      background: linear-gradient(135deg, #f43f5e, #ec4899);
+                    "
+                  >
+                    <i class="fas fa-scale-balanced"></i>
+                  </div>
+                  <div class="card-badges">
+                    <span class="badge-grade tag-11">Lớp 11</span>
+                    <button class="check-btn" title="Đánh dấu hoàn thành">
+                      <i class="fas fa-check"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-title">Cân bằng hóa học</div>
+                <div class="card-foot">
+                  <span class="card-cta"
+                    ><i class="fas fa-play-circle"></i> Bắt đầu học</span
+                  >
+                  <i class="fas fa-arrow-right card-arrow"></i>
+                </div>
+              </div>
+            </a>
+
+            <a
+              class="card"
+              href="nitrogen_sulfur/nitrogen_sulfur.html"
+              data-id="11_2"
+              data-grade="11"
+            >
+              <div
+                class="card-strip"
+                style="background: linear-gradient(90deg, #0ea5e9, #3b82f6)"
+              ></div>
+              <div class="card-body">
+                <div class="card-top">
+                  <div
+                    class="card-icon"
+                    style="
+                      background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+                    "
+                  >
+                    <i class="fas fa-cloud"></i>
+                  </div>
+                  <div class="card-badges">
+                    <span class="badge-grade tag-11">Lớp 11</span>
+                    <button class="check-btn" title="Đánh dấu hoàn thành">
+                      <i class="fas fa-check"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-title">Nitrogen &amp; Sulfur</div>
+                <div class="card-foot">
+                  <span class="card-cta"
+                    ><i class="fas fa-play-circle"></i> Bắt đầu học</span
+                  >
+                  <i class="fas fa-arrow-right card-arrow"></i>
+                </div>
+              </div>
+            </a>
+
+            <a
+              class="card"
+              href="dai_cuong_hoa_hoc_huu_co/dai_cuong_hoa_hoc_huu_co.html"
+              data-id="11_3"
+              data-grade="11"
+            >
+              <div
+                class="card-strip"
+                style="background: linear-gradient(90deg, #d946ef, #a855f7)"
+              ></div>
+              <div class="card-body">
+                <div class="card-top">
+                  <div
+                    class="card-icon"
+                    style="
+                      background: linear-gradient(135deg, #d946ef, #a855f7);
+                    "
+                  >
+                    <i class="fas fa-book-open"></i>
+                  </div>
+                  <div class="card-badges">
+                    <span class="badge-grade tag-11">Lớp 11</span>
+                    <button class="check-btn" title="Đánh dấu hoàn thành">
+                      <i class="fas fa-check"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-title">Đại cương Hóa học Hữu cơ</div>
+                <div class="card-foot">
+                  <span class="card-cta"
+                    ><i class="fas fa-play-circle"></i> Bắt đầu học</span
+                  >
+                  <i class="fas fa-arrow-right card-arrow"></i>
+                </div>
+              </div>
+            </a>
+
+            <a
+              class="card"
+              href="hydrocarbon/hydrocarbon.html"
+              data-id="11_4"
+              data-grade="11"
+            >
+              <div
+                class="card-strip"
+                style="background: linear-gradient(90deg, #f59e0b, #f97316)"
+              ></div>
+              <div class="card-body">
+                <div class="card-top">
+                  <div
+                    class="card-icon"
+                    style="
+                      background: linear-gradient(135deg, #f59e0b, #f97316);
+                    "
+                  >
+                    <i class="fas fa-fire"></i>
+                  </div>
+                  <div class="card-badges">
+                    <span class="badge-grade tag-11">Lớp 11</span>
+                    <button class="check-btn" title="Đánh dấu hoàn thành">
+                      <i class="fas fa-check"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-title">Hydrocarbon</div>
+                <div class="card-foot">
+                  <span class="card-cta"
+                    ><i class="fas fa-play-circle"></i> Bắt đầu học</span
+                  >
+                  <i class="fas fa-arrow-right card-arrow"></i>
+                </div>
+              </div>
+            </a>
+
+            <a
+              class="card"
+              href="dan_xuat_halogen_alcohol_phenol/dan_xuat_halogen_alcohol_phenol.html"
+              data-id="11_5"
+              data-grade="11"
+            >
+              <div
+                class="card-strip"
+                style="background: linear-gradient(90deg, #14b8a6, #10b981)"
+              ></div>
+              <div class="card-body">
+                <div class="card-top">
+                  <div
+                    class="card-icon"
+                    style="
+                      background: linear-gradient(135deg, #14b8a6, #10b981);
+                    "
+                  >
+                    <i class="fas fa-vial"></i>
+                  </div>
+                  <div class="card-badges">
+                    <span class="badge-grade tag-11">Lớp 11</span>
+                    <button class="check-btn" title="Đánh dấu hoàn thành">
+                      <i class="fas fa-check"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-title">
+                  Dẫn xuất Halogen · Alcohol · Phenol
+                </div>
+                <div class="card-foot">
+                  <span class="card-cta"
+                    ><i class="fas fa-play-circle"></i> Bắt đầu học</span
+                  >
+                  <i class="fas fa-arrow-right card-arrow"></i>
+                </div>
+              </div>
+            </a>
+
+            <a
+              class="card"
+              href="hop_chat_carbonyl(aldehyde_ketone)_carboxylic_acid/hop_chat_carbonyl(aldehyde_ketone)_carboxylic_acid.html"
+              data-id="11_6"
+              data-grade="11"
+            >
+              <div
+                class="card-strip"
+                style="background: linear-gradient(90deg, #8b5cf6, #6366f1)"
+              ></div>
+              <div class="card-body">
+                <div class="card-top">
+                  <div
+                    class="card-icon"
+                    style="
+                      background: linear-gradient(135deg, #8b5cf6, #6366f1);
+                    "
+                  >
+                    <i class="fas fa-cube"></i>
+                  </div>
+                  <div class="card-badges">
+                    <span class="badge-grade tag-11">Lớp 11</span>
+                    <button class="check-btn" title="Đánh dấu hoàn thành">
+                      <i class="fas fa-check"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-title">
+                  Hợp chất Carbonyl · Aldehyde · Ketone · Acid Carboxylic
+                </div>
+                <div class="card-foot">
+                  <span class="card-cta"
+                    ><i class="fas fa-play-circle"></i> Bắt đầu học</span
+                  >
+                  <i class="fas fa-arrow-right card-arrow"></i>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+        <!-- /sec-11 -->
+
+        <!-- ═══ Grade 12 ═══════════════════════════════════════════ -->
+        <div
+          class="grade-section"
+          id="sec-12"
+          data-aos="fade-up"
+          data-aos-delay="250"
+        >
+          <div class="grade-head">
+            <span class="grade-tag tag-12">Lớp 12</span>
+            <div class="grade-line"></div>
+            <span class="grade-done-label" id="done-12">0/8 bài</span>
+          </div>
+          <div class="cards-grid">
+            <a
+              class="card"
+              href="ester_lipid/ester_lipid.html"
+              data-id="12_1"
+              data-grade="12"
+            >
+              <div
+                class="card-strip"
+                style="background: linear-gradient(90deg, #ec4899, #f43f5e)"
+              ></div>
+              <div class="card-body">
+                <div class="card-top">
+                  <div
+                    class="card-icon"
+                    style="
+                      background: linear-gradient(135deg, #ec4899, #f43f5e);
+                    "
+                  >
+                    <i class="fas fa-vials"></i>
+                  </div>
+                  <div class="card-badges">
+                    <span class="badge-grade tag-12">Lớp 12</span>
+                    <button class="check-btn" title="Đánh dấu hoàn thành">
+                      <i class="fas fa-check"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-title">Ester · Lipid</div>
+                <div class="card-foot">
+                  <span class="card-cta"
+                    ><i class="fas fa-play-circle"></i> Bắt đầu học</span
+                  >
+                  <i class="fas fa-arrow-right card-arrow"></i>
+                </div>
+              </div>
+            </a>
+
+            <a
+              class="card"
+              href="carbohydrate/carbohydrate.html"
+              data-id="12_3"
+              data-grade="12"
+            >
+              <div
+                class="card-strip"
+                style="background: linear-gradient(90deg, #fbbf24, #f59e0b)"
+              ></div>
+              <div class="card-body">
+                <div class="card-top">
+                  <div
+                    class="card-icon"
+                    style="
+                      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+                    "
+                  >
+                    <i class="fas fa-cookie-bite"></i>
+                  </div>
+                  <div class="card-badges">
+                    <span class="badge-grade tag-12">Lớp 12</span>
+                    <button class="check-btn" title="Đánh dấu hoàn thành">
+                      <i class="fas fa-check"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-title">Carbohydrate</div>
+                <div class="card-foot">
+                  <span class="card-cta"
+                    ><i class="fas fa-play-circle"></i> Bắt đầu học</span
+                  >
+                  <i class="fas fa-arrow-right card-arrow"></i>
+                </div>
+              </div>
+            </a>
+
+            <a
+              class="card"
+              href="hop_chat_chua_nitrogen/hop_chat_chua_nitrogen.html"
+              data-id="12_4"
+              data-grade="12"
+            >
+              <div
+                class="card-strip"
+                style="background: linear-gradient(90deg, #22c55e, #10b981)"
+              ></div>
+              <div class="card-body">
+                <div class="card-top">
+                  <div
+                    class="card-icon"
+                    style="
+                      background: linear-gradient(135deg, #22c55e, #10b981);
+                    "
+                  >
+                    <i class="fas fa-dna"></i>
+                  </div>
+                  <div class="card-badges">
+                    <span class="badge-grade tag-12">Lớp 12</span>
+                    <button class="check-btn" title="Đánh dấu hoàn thành">
+                      <i class="fas fa-check"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-title">Hợp chất chứa Nitrogen</div>
+                <div class="card-foot">
+                  <span class="card-cta"
+                    ><i class="fas fa-play-circle"></i> Bắt đầu học</span
+                  >
+                  <i class="fas fa-arrow-right card-arrow"></i>
+                </div>
+              </div>
+            </a>
+
+            <a
+              class="card"
+              href="polymer/polymer.html"
+              data-id="12_5"
+              data-grade="12"
+            >
+              <div
+                class="card-strip"
+                style="background: linear-gradient(90deg, #3b82f6, #6366f1)"
+              ></div>
+              <div class="card-body">
+                <div class="card-top">
+                  <div
+                    class="card-icon"
+                    style="
+                      background: linear-gradient(135deg, #3b82f6, #6366f1);
+                    "
+                  >
+                    <i class="fas fa-circle-nodes"></i>
+                  </div>
+                  <div class="card-badges">
+                    <span class="badge-grade tag-12">Lớp 12</span>
+                    <button class="check-btn" title="Đánh dấu hoàn thành">
+                      <i class="fas fa-check"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-title">Polymer</div>
+                <div class="card-foot">
+                  <span class="card-cta"
+                    ><i class="fas fa-play-circle"></i> Bắt đầu học</span
+                  >
+                  <i class="fas fa-arrow-right card-arrow"></i>
+                </div>
+              </div>
+            </a>
+
+            <a
+              class="card"
+              href="pin_dien_va_dien_phan/pin_dien_va_dien_phan.html"
+              data-id="12_6"
+              data-grade="12"
+            >
+              <div
+                class="card-strip"
+                style="background: linear-gradient(90deg, #ef4444, #f43f5e)"
+              ></div>
+              <div class="card-body">
+                <div class="card-top">
+                  <div
+                    class="card-icon"
+                    style="
+                      background: linear-gradient(135deg, #ef4444, #f43f5e);
+                    "
+                  >
+                    <i class="fas fa-plug-circle-bolt"></i>
+                  </div>
+                  <div class="card-badges">
+                    <span class="badge-grade tag-12">Lớp 12</span>
+                    <button class="check-btn" title="Đánh dấu hoàn thành">
+                      <i class="fas fa-check"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-title">Pin điện &amp; Điện phân</div>
+                <div class="card-foot">
+                  <span class="card-cta"
+                    ><i class="fas fa-play-circle"></i> Bắt đầu học</span
+                  >
+                  <i class="fas fa-arrow-right card-arrow"></i>
+                </div>
+              </div>
+            </a>
+
+            <a
+              class="card"
+              href="dai_cuong_kim_loai/dai_cuong_kim_loai.html"
+              data-id="12_7"
+              data-grade="12"
+            >
+              <div
+                class="card-strip"
+                style="background: linear-gradient(90deg, #94a3b8, #64748b)"
+              ></div>
+              <div class="card-body">
+                <div class="card-top">
+                  <div
+                    class="card-icon"
+                    style="
+                      background: linear-gradient(135deg, #94a3b8, #64748b);
+                    "
+                  >
+                    <i class="fas fa-industry"></i>
+                  </div>
+                  <div class="card-badges">
+                    <span class="badge-grade tag-12">Lớp 12</span>
+                    <button class="check-btn" title="Đánh dấu hoàn thành">
+                      <i class="fas fa-check"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-title">Đại cương Kim loại</div>
+                <div class="card-foot">
+                  <span class="card-cta"
+                    ><i class="fas fa-play-circle"></i> Bắt đầu học</span
+                  >
+                  <i class="fas fa-arrow-right card-arrow"></i>
+                </div>
+              </div>
+            </a>
+
+            <a
+              class="card"
+              href="nguyen_to_nhom_ia_va_nhom_iia/nguyen_to_nhom_ia_va_nhom_iia.html"
+              data-id="12_8"
+              data-grade="12"
+            >
+              <div
+                class="card-strip"
+                style="background: linear-gradient(90deg, #c084fc, #a855f7)"
+              ></div>
+              <div class="card-body">
+                <div class="card-top">
+                  <div
+                    class="card-icon"
+                    style="
+                      background: linear-gradient(135deg, #c084fc, #a855f7);
+                    "
+                  >
+                    <i class="fas fa-layer-group"></i>
+                  </div>
+                  <div class="card-badges">
+                    <span class="badge-grade tag-12">Lớp 12</span>
+                    <button class="check-btn" title="Đánh dấu hoàn thành">
+                      <i class="fas fa-check"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-title">Kim loại nhóm IA &amp; IIA</div>
+                <div class="card-foot">
+                  <span class="card-cta"
+                    ><i class="fas fa-play-circle"></i> Bắt đầu học</span
+                  >
+                  <i class="fas fa-arrow-right card-arrow"></i>
+                </div>
+              </div>
+            </a>
+
+            <a
+              class="card"
+              href="so_luoc_ve_day_kim_loai_chuyen_tiep_thu_nhat_va_phuc_chat/so_luoc_ve_day_kim_loai_chuyen_tiep_thu_nhat_va_phuc_chat.html"
+              data-id="12_9"
+              data-grade="12"
+            >
+              <div
+                class="card-strip"
+                style="background: linear-gradient(90deg, #fbbf24, #f59e0b)"
+              ></div>
+              <div class="card-body">
+                <div class="card-top">
+                  <div
+                    class="card-icon"
+                    style="
+                      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+                    "
+                  >
+                    <i class="fas fa-gem"></i>
+                  </div>
+                  <div class="card-badges">
+                    <span class="badge-grade tag-12">Lớp 12</span>
+                    <button class="check-btn" title="Đánh dấu hoàn thành">
+                      <i class="fas fa-check"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-title">
+                  Kim loại chuyển tiếp &amp; Phức chất
+                </div>
+                <div class="card-foot">
+                  <span class="card-cta"
+                    ><i class="fas fa-play-circle"></i> Bắt đầu học</span
+                  >
+                  <i class="fas fa-arrow-right card-arrow"></i>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+        <!-- /sec-12 -->
+      </div>
+      <!-- /container -->
     </main>
 
-    <!-- =========================================================
-           4. FOOTER (HTML CỐ ĐỊNH)
-           ========================================================= -->
+    <!-- ═══ FOOTER ══════════════════════════════════════════════════ -->
     <footer>
       <div class="footer-grid">
         <div class="footer-brand" data-aos="fade-right">
           <h2>EDUMATTER</h2>
-          <p style="color: #94a3b8; line-height: 1.8">
+          <p>
             Kiến tạo môi trường học tập cảm xúc, nơi tri thức được số hóa và
             truyền tải đầy cảm hứng.
           </p>
-          <div style="display: flex; gap: 15px; margin-top: 30px">
+          <div class="footer-socials">
             <a href="https://www.facebook.com/ducnt214" class="icon-btn"
-              ><i class="fab fa-facebook" alt="facebook"></i
+              ><i class="fab fa-facebook"></i
             ></a>
-            <a href="https://github.com/ducnt2104" class="icon-btn" alt="github"
+            <a href="https://github.com/ducnt2104" class="icon-btn"
               ><i class="fab fa-github"></i
             ></a>
-            <a
-              href="https://www.tiktok.com/@ktbtcthm210"
-              class="icon-btn"
-              alt="tiktok"
+            <a href="https://www.tiktok.com/@ktbtcthm210" class="icon-btn"
               ><i class="fab fa-tiktok"></i
             ></a>
           </div>
@@ -463,32 +1896,23 @@
         <div class="footer-links" data-aos="fade-up">
           <h3>Liên hệ nhanh</h3>
           <div class="contact-item">
-            <i class="fas fa-envelope"></i>
-            <span>ducnt21042010@gmail.com</span>
+            <i class="fas fa-envelope"></i><span>ducnt21042010@gmail.com</span>
           </div>
           <div class="contact-item">
-            <i class="fas fa-phone"></i>
-            <span>034 226 6204</span>
+            <i class="fas fa-phone"></i><span>034 226 6204</span>
           </div>
           <div class="contact-item">
-            <i class="fas fa-location-dot"></i>
-            <span>THPT Tôn Đức Thắng, Đồng Nai</span>
+            <i class="fas fa-location-dot"></i
+            ><span>THPT Tôn Đức Thắng, Đồng Nai</span>
           </div>
         </div>
         <div class="footer-links" data-aos="fade-left">
           <h4>Đội ngũ DNT</h4>
           <p style="color: #94a3b8">
-            "Sáng tạo không ngừng - Vươn tầm tri thức"
+            "Sáng tạo không ngừng – Vươn tầm tri thức"
           </p>
-          <div
-            style="
-              margin-top: 20px;
-              padding: 15px;
-              background: rgba(255, 255, 255, 0.05);
-              border-radius: 15px;
-            "
-          >
-            <p style="font-size: 0.8rem; color: #fff">
+          <div class="footer-note">
+            <p>
               Dự án được phát triển bởi các thành viên đam mê công nghệ tại Việt
               Nam.
             </p>
@@ -503,537 +1927,156 @@
       </div>
     </footer>
 
-    <!-- =========================================================
-           5. SCRIPT (LOGIC & REACT)
-           ========================================================= -->
-
-    <!-- 5.1 Vanilla JS for Header/Footer Interactions -->
+    <!-- ═══ SCRIPT ══════════════════════════════════════════════════ -->
     <script>
-      // Initialize AOS for footer animations
-      AOS.init({
-        duration: 800,
-        once: true,
-      });
+      AOS.init({ duration: 700, once: true });
 
-      // --- Theme Logic ---
-      const htmlEl = document.documentElement;
-      const themeToggleBtn = document.getElementById("theme-toggle");
-      const mobileThemeBtn = document.getElementById("mobile-theme-toggle");
-      const themeIcons = document.querySelectorAll(".fa-moon, .fa-sun"); // All theme icons
+      /* ── Theme ─────────────────────────────────────────────── */
+      const html = document.documentElement;
+      function setTheme(dark) {
+        html.classList.toggle("dark", dark);
+        localStorage.setItem("theme", dark ? "dark" : "light");
+        document.querySelectorAll(".fa-moon,.fa-sun").forEach((i) => {
+          i.classList.toggle("fa-moon", dark);
+          i.classList.toggle("fa-sun", !dark);
+        });
+      }
+      setTheme(localStorage.getItem("theme") !== "light");
+      document.getElementById("theme-toggle").onclick = () =>
+        setTheme(!html.classList.contains("dark"));
+      document.getElementById("mob-theme").onclick = () =>
+        setTheme(!html.classList.contains("dark"));
 
-      function updateThemeIcons(isDark) {
-        themeIcons.forEach((icon) => {
-          if (isDark) {
-            icon.classList.remove("fa-sun");
-            icon.classList.add("fa-moon");
-          } else {
-            icon.classList.remove("fa-moon");
-            icon.classList.add("fa-sun");
-          }
+      /* ── Mobile menu ────────────────────────────────────────── */
+      const mobMenu = document.getElementById("mob-menu");
+      document.getElementById("mob-open").onclick = () =>
+        mobMenu.classList.add("open");
+      document.getElementById("mob-close").onclick = () =>
+        mobMenu.classList.remove("open");
+      document.getElementById("mob-overlay").onclick = () =>
+        mobMenu.classList.remove("open");
+
+      /* ── Floating particles ─────────────────────────────────── */
+      const icons = [
+        "fa-flask",
+        "fa-atom",
+        "fa-vial",
+        "fa-fire",
+        "fa-bolt",
+        "fa-hexagon",
+        "fa-star-of-david",
+      ];
+      const count = window.innerWidth < 768 ? 6 : 13;
+      for (let i = 0; i < count; i++) {
+        const el = document.createElement("div");
+        el.className = "particle";
+        el.innerHTML = `<i class="fas ${icons[i % icons.length]}"></i>`;
+        el.style.cssText = `left:${Math.random() * 100}%;font-size:${12 + Math.random() * 16}px;animation-duration:${14 + Math.random() * 12}s;animation-delay:${Math.random() * 14}s;`;
+        document.getElementById("bg-layer").appendChild(el);
+      }
+
+      /* ── Progress & Check ───────────────────────────────────── */
+      const TOTALS = { 10: 7, 11: 6, 12: 8 };
+      const TOTAL = 21;
+      const KEY = "chemstudy_thpt_progress";
+
+      let done = new Set(JSON.parse(localStorage.getItem(KEY) || "[]"));
+
+      function save() {
+        localStorage.setItem(KEY, JSON.stringify([...done]));
+      }
+
+      function countByGrade(g) {
+        return [...document.querySelectorAll(`.card[data-grade="${g}"].done`)]
+          .length;
+      }
+
+      function updateUI() {
+        const total = done.size;
+        const pct = Math.round((total / TOTAL) * 100);
+
+        // progress bar
+        const fill = document.getElementById("prog-fill");
+        fill.style.width = pct + "%";
+        fill.classList.toggle("done", pct === 100);
+        document.getElementById("prog-count").textContent =
+          total + " / " + TOTAL;
+
+        // per-grade stats
+        [10, 11, 12].forEach((g) => {
+          const cards = [
+            ...document.querySelectorAll(`.card[data-grade="${g}"]`),
+          ];
+          const d = cards.filter((c) => c.classList.contains("done")).length;
+          const t = TOTALS[g];
+          const p = Math.round((d / t) * 100);
+          document.getElementById("stat" + g).textContent = p + "%";
+          document.getElementById("stat" + g + "-sub").textContent =
+            d + "/" + t + " bài";
+          document.getElementById("done-" + g).textContent =
+            d + "/" + t + " bài";
         });
       }
 
-      function setTheme(isDark) {
-        if (isDark) {
-          htmlEl.classList.add("dark");
-          localStorage.setItem("theme", "dark");
-          updateThemeIcons(true);
+      // init card states
+      document.querySelectorAll(".card").forEach((card) => {
+        const id = card.dataset.id;
+        const btn = card.querySelector(".check-btn");
+
+        if (done.has(id)) applyDone(card, true);
+
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const isDone = done.has(id);
+          if (isDone) {
+            done.delete(id);
+            applyDone(card, false);
+          } else {
+            done.add(id);
+            applyDone(card, true);
+          }
+          save();
+          updateUI();
+        });
+
+        // navigate on card click (not button)
+        card.addEventListener("click", (e) => {
+          if (e.target.closest(".check-btn")) return;
+          window.location.href = card.getAttribute("href");
+        });
+      });
+
+      function applyDone(card, state) {
+        card.classList.toggle("done", state);
+        const cta = card.querySelector(".card-cta");
+        const arrow = card.querySelector(".card-arrow");
+        if (state) {
+          cta.innerHTML = '<i class="fas fa-circle-check"></i> Đã hoàn thành';
+          arrow.style.color = "var(--success)";
         } else {
-          htmlEl.classList.remove("dark");
-          localStorage.setItem("theme", "light");
-          updateThemeIcons(false);
+          cta.innerHTML = '<i class="fas fa-play-circle"></i> Bắt đầu học';
+          arrow.style.color = "";
         }
       }
 
-      // Check Saved Theme
-      const savedTheme = localStorage.getItem("theme");
-      if (savedTheme === "light") {
-        setTheme(false);
-      } else {
-        setTheme(true); // Default dark
-      }
+      updateUI();
 
-      // Toggle Event
-      function toggleThemeHandler() {
-        const isDark = htmlEl.classList.contains("dark");
-        setTheme(!isDark);
-      }
-
-      themeToggleBtn.addEventListener("click", toggleThemeHandler);
-      mobileThemeBtn.addEventListener("click", toggleThemeHandler);
-
-      // --- Mobile Menu Logic ---
-      const menuBtn = document.getElementById("mobile-menu-btn");
-      const closeBtn = document.getElementById("mobile-menu-close");
-      const overlay = document.getElementById("mobile-menu-overlay");
-      const menuDiv = document.getElementById("mobile-menu");
-      const menuPanel = document.getElementById("mobile-menu-panel");
-
-      function openMenu() {
-        menuDiv.classList.remove("hidden");
-        // Small delay to allow display:block to apply before transform
-        setTimeout(() => {
-          menuPanel.classList.remove("translate-x-full");
-        }, 10);
-      }
-
-      function closeMenu() {
-        menuPanel.classList.add("translate-x-full");
-        setTimeout(() => {
-          menuDiv.classList.add("hidden");
-        }, 300); // Match transition duration
-      }
-
-      menuBtn.addEventListener("click", openMenu);
-      closeBtn.addEventListener("click", closeMenu);
-      overlay.addEventListener("click", closeMenu);
-    </script>
-
-    <!-- 5.2 React Logic for Main Content -->
-    <script type="text/babel">
-      const { useState, useEffect, useMemo } = React;
-      const { motion, AnimatePresence } = window.Motion;
-
-      // --- DỮ LIỆU BÀI HỌC THPT ---
-      const coursesData = [
-        // LỚP 10
-        {
-          id: "10_1",
-          grade: 10,
-          title: "Cấu tạo nguyên tử",
-          icon: "fa-atom",
-          link: "cau_tao_nguyen_tu/cau_tao_nguyen_tu.html",
-          color: "from-blue-400 to-cyan-300",
-        },
-        {
-          id: "10_2",
-          grade: 10,
-          title: "Bảng tuần hoàn",
-          icon: "fa-table",
-          link: "bang_tuan_hoan_cac_nguyen_to_hoa_hoc/bang_tuan_hoan_cac_nguyen_to_hoa_hoc.html",
-          color: "from-cyan-400 to-teal-300",
-        },
-        {
-          id: "10_3",
-          grade: 10,
-          title: "Liên kết hóa học",
-          icon: "fa-link",
-          link: "lien_ket_hoa_hoc/lien_ket_hoa_hoc.html",
-          color: "from-emerald-400 to-green-300",
-        },
-        {
-          id: "10_4",
-          grade: 10,
-          title: "Phản ứng Oxi hóa - Khử",
-          icon: "fa-fire",
-          link: "phan_ung_oxi_hoa_khu/phan_ung_oxi_hoa_khu.html",
-          color: "from-orange-400 to-red-400",
-        },
-        {
-          id: "10_5",
-          grade: 10,
-          title: "Năng lượng hóa học",
-          icon: "fa-bolt",
-          link: "nang_luong_hoa_hoc/nang_luong_hoa_hoc.html",
-          color: "from-yellow-400 to-orange-300",
-        },
-        {
-          id: "10_6",
-          grade: 10,
-          title: "Tốc độ phản ứng",
-          icon: "fa-tachometer-alt",
-          link: "toc_do_phan_ung_hoa_hoc/toc_do_phan_ung_hoa_hoc.html",
-          color: "from-indigo-400 to-blue-400",
-        },
-        {
-          id: "10_7",
-          grade: 10,
-          title: "Halogen (Nhóm VIIA)",
-          icon: "fa-flask",
-          link: "nguyen_to_nhom_viia_halogen/nguyen_to_nhom_viia_halogen.html",
-          color: "from-purple-400 to-pink-400",
-        },
-
-        // LỚP 11
-        {
-          id: "11_1",
-          grade: 11,
-          title: "Cân bằng hóa học",
-          icon: "fa-balance-scale",
-          link: "can_bang_hoa_hoc/can_bang_hoa_hoc.html",
-          color: "from-rose-400 to-pink-500",
-        },
-        {
-          id: "11_2",
-          grade: 11,
-          title: "Nitrogen & Sulfur",
-          icon: "fa-cloud",
-          link: "nitrogen_sulfur/nitrogen_sulfur.html",
-          color: "from-sky-400 to-blue-500",
-        },
-        {
-          id: "11_3",
-          grade: 11,
-          title: "Đại cương Hữu cơ",
-          icon: "fa-book-sparkles",
-          link: "dai_cuong_hoa_hoc_huu_co/dai_cuong_hoa_hoc_huu_co.html",
-          color: "from-fuchsia-400 to-purple-500",
-        },
-        {
-          id: "11_4",
-          grade: 11,
-          title: "Hydrocarbon",
-          icon: "fa-burn",
-          link: "hydrocarbon/hydrocarbon.html",
-          color: "from-amber-400 to-orange-500",
-        },
-        {
-          id: "11_5",
-          grade: 11,
-          title: "Dẫn xuất Halogen - Alcohol",
-          icon: "fa-vial",
-          link: "dan_xuat_halogen_alcohol_phenol/dan_xuat_halogen_alcohol_phenol.html",
-          color: "from-teal-400 to-emerald-500",
-        },
-        {
-          id: "11_6",
-          grade: 11,
-          title: "Hợp chất Carbonyl",
-          icon: "fa-cube",
-          link: "hop_chat_carbonyl(aldehyde_ketone)_carboxylic_acid/hop_chat_carbonyl(aldehyde_ketone)_carboxylic_acid.html",
-          color: "from-violet-400 to-indigo-500",
-        },
-
-        // LỚP 12
-        {
-          id: "12_1",
-          grade: 12,
-          title: "Ester - Lipid",
-          icon: "fa-vials",
-          link: "ester_lipid/ester_lipid.html",
-          color: "from-pink-400 to-rose-500",
-        },
-        {
-          id: "12_3",
-          grade: 12,
-          title: "Carbohydrate",
-          icon: "fa-cookie-bite",
-          link: "carbohydrate/carbohydrate.html",
-          color: "from-yellow-300 to-amber-400",
-        },
-        {
-          id: "12_4",
-          grade: 12,
-          title: "Hợp chất chứa Nitrogen",
-          icon: "fa-dna",
-          link: "hop_chat_chua_nitrogen/hop_chat_chua_nitrogen.html",
-          color: "from-green-300 to-emerald-400",
-        },
-        {
-          id: "12_5",
-          grade: 12,
-          title: "Polymer",
-          icon: "fa-project-diagram",
-          link: "polymer/polymer.html",
-          color: "from-blue-400 to-indigo-500",
-        },
-        {
-          id: "12_6",
-          grade: 12,
-          title: "Pin điện & Điện phân",
-          icon: "fa-battery-bolt",
-          link: "pin_dien_va_dien_phan/pin_dien_va_dien_phan.html",
-          color: "from-red-400 to-rose-500",
-        },
-        {
-          id: "12_7",
-          grade: 12,
-          title: "Đại cương kim loại",
-          icon: "fa-industry",
-          link: "dai_cuong_kim_loai/dai_cuong_kim_loai.html",
-          color: "from-gray-300 to-slate-400",
-        },
-        {
-          id: "12_8",
-          grade: 12,
-          title: "Kim loại nhóm IA & IIA",
-          icon: "fa-layer-group",
-          link: "nguyen_to_nhom_ia_va_nhom_iia/nguyen_to_nhom_ia_va_nhom_iia.html",
-          color: "from-purple-300 to-violet-400",
-        },
-        {
-          id: "12_9",
-          grade: 12,
-          title: "Kim loại chuyển tiếp",
-          icon: "fa-gem",
-          link: "so_luoc_ve_day_kim_loai_chuyen_tiep_thu_nhat_va_phuc_chat/so_luoc_ve_day_kim_loai_chuyen_tiep_thu_nhat_va_phuc_chat.html",
-          color: "from-gold-300 to-yellow-500",
-        },
-      ];
-
-      // --- COMPONENTS ---
-
-      const Background = () => {
-        const particleCount = window.innerWidth < 768 ? 8 : 15;
-        // Background particles sit inside React Main, but styled to be fixed
-        return (
-          <div className="fixed inset-0 overflow-hidden pointer-events-none z-[-1]">
-            <div className="absolute inset-0 bg-grid-light dark:bg-grid-dark transition-all duration-500"></div>
-            {/* Ambient Glows */}
-            <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[100px]"></div>
-            <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-secondary/10 rounded-full blur-[100px]"></div>
-
-            {/* Particles - Tailwind 'dark:' class handles color switching based on HTML class */}
-            {[...Array(particleCount)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute text-slate-300 dark:text-primary opacity-20"
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  fontSize: `${Math.random() * 20 + 15}px`,
-                  animation: `float ${Math.random() * 10 + 15}s infinite linear`,
-                  animationDelay: `${Math.random() * 10}s`,
-                }}
-              >
-                <i className="fas fa-hexagon"></i>
-              </div>
-            ))}
-          </div>
-        );
-      };
-
-      const CourseCard = ({ course, isDone, onToggleDone }) => {
-        return (
-          <motion.div
-            layout
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            whileHover={{ y: -5 }}
-            transition={{ duration: 0.2 }}
-            className="group relative h-full"
-          >
-            <div
-              className={`
-                relative h-full flex flex-col p-6 rounded-2xl border transition-all duration-300 shadow-sm hover:shadow-xl cursor-pointer
-                bg-white/70 border-slate-200 
-                dark:bg-cardDark/90 dark:border-white/10 dark:backdrop-blur-xl
-                ${isDone ? "border-success/50 ring-1 ring-success/30" : ""}
-              `}
-              onClick={() => (window.location.href = course.link)}
-            >
-              {/* Checkbox */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onToggleDone(course.id);
-                }}
-                className={`absolute top-4 right-4 z-20 w-8 h-8 rounded-full flex items-center justify-center border transition-all duration-300
-                  ${
-                    isDone
-                      ? "bg-success text-black border-success shadow-[0_0_10px_rgba(10,255,96,0.4)]"
-                      : "bg-slate-100 border-slate-300 text-slate-300 hover:border-accent hover:text-accent dark:bg-white/5 dark:border-white/20 dark:text-white/20"
-                  }
-                `}
-              >
-                <i className="fas fa-check text-xs"></i>
-              </button>
-
-              {/* Icon */}
-              <div className="flex justify-between items-start mb-4">
-                <div
-                  className={`w-12 h-12 rounded-xl bg-gradient-to-br ${course.color} flex items-center justify-center text-white text-xl shadow-lg group-hover:rotate-12 transition-transform duration-300`}
-                >
-                  <i className={`fas ${course.icon}`}></i>
-                </div>
-                <span className="mt-1 px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  Lớp {course.grade}
-                </span>
-              </div>
-
-              {/* Title */}
-              <h3
-                className={`text-lg font-bold mb-2 leading-tight transition-colors ${
-                  isDone
-                    ? "text-success"
-                    : "text-slate-800 dark:text-white group-hover:text-accent"
-                }`}
-              >
-                {course.title}
-              </h3>
-
-              <div className="flex-grow"></div>
-
-              {/* Footer */}
-              <div className="mt-4 pt-4 border-t border-slate-100 dark:border-white/5 flex items-center justify-between">
-                <span
-                  className={`text-xs font-semibold ${
-                    isDone
-                      ? "text-success"
-                      : "text-slate-500 dark:text-gray-400"
-                  }`}
-                >
-                  {isDone ? "Hoàn thành" : "Bắt đầu học"}
-                </span>
-                <i
-                  className={`fas fa-arrow-right text-xs transform group-hover:translate-x-1 transition-transform ${
-                    isDone
-                      ? "text-success"
-                      : "text-slate-300 dark:text-white/30"
-                  }`}
-                ></i>
-              </div>
-            </div>
-          </motion.div>
-        );
-      };
-
-      const ProgressBar = ({ percent }) => (
-        <div className="w-full max-w-md mx-auto mb-10 px-4">
-          <div className="flex justify-between text-xs font-tech text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">
-            <span>Tiến độ học tập</span>
-            <span className={percent === 100 ? "text-success" : "text-accent"}>
-              {percent}%
-            </span>
-          </div>
-          <div className="h-2 w-full bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden relative">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${percent}%` }}
-              transition={{ duration: 1, ease: "easeOut" }}
-              className={`h-full absolute top-0 left-0 rounded-full ${
-                percent === 100
-                  ? "bg-success shadow-[0_0_10px_#0aff60]"
-                  : "bg-gradient-to-r from-primary to-accent"
-              }`}
-            ></motion.div>
-          </div>
-        </div>
-      );
-
-      // --- MAIN REACT APP ---
-      const App = () => {
-        const [activeTab, setActiveTab] = useState("all");
-        const [completed, setCompleted] = useState([]);
-
-        // Progress Persistence
-        useEffect(() => {
-          const saved = JSON.parse(
-            localStorage.getItem("chemstudy_thpt_progress") || "[]",
-          );
-          setCompleted(saved);
-        }, []);
-
-        useEffect(() => {
-          localStorage.setItem(
-            "chemstudy_thpt_progress",
-            JSON.stringify(completed),
-          );
-        }, [completed]);
-
-        const toggleDone = (id) => {
-          setCompleted((prev) =>
-            prev.includes(id)
-              ? prev.filter((item) => item !== id)
-              : [...prev, id],
-          );
-        };
-
-        const filteredCourses = useMemo(() => {
-          if (activeTab === "all") return coursesData;
-          return coursesData.filter((c) => c.grade === parseInt(activeTab));
-        }, [activeTab]);
-
-        const progressPercent = Math.round(
-          (completed.length / coursesData.length) * 100,
-        );
-
-        const tabs = [
-          { id: "all", label: "Tổng quan" },
-          { id: "10", label: "Lớp 10" },
-          { id: "11", label: "Lớp 11" },
-          { id: "12", label: "Lớp 12" },
-        ];
-
-        return (
-          <>
-            <Background />
-
-            <div className="max-w-7xl mx-auto w-full px-4">
-              {/* Intro & Title */}
-              <div className="text-center mb-10 relative">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8 }}
-                >
-                  <h2 className="text-4xl md:text-6xl font-tech font-bold text-slate-800 dark:text-white mb-4 leading-tight">
-                    ChemStudy{" "}
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent via-primary to-secondary">
-                      Expert
-                    </span>
-                  </h2>
-                  <p className="text-slate-500 dark:text-gray-400 text-base md:text-lg max-w-2xl mx-auto font-light mb-8">
-                    Hệ thống kiến thức Hóa học THPT toàn diện (Lớp 10 - 12).
-                  </p>
-                </motion.div>
-                <ProgressBar percent={progressPercent} />
-              </div>
-
-              {/* Tabs */}
-              <div className="flex justify-center mb-12">
-                <div className="bg-slate-200/50 dark:bg-white/5 p-1.5 rounded-full border border-slate-300 dark:border-white/10 backdrop-blur-md flex flex-wrap justify-center gap-1 shadow-inner">
-                  {tabs.map((tab) => (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`relative px-4 md:px-6 py-2 rounded-full text-xs md:text-sm font-bold transition-all duration-300 z-10 ${
-                        activeTab === tab.id
-                          ? "text-white"
-                          : "text-slate-500 dark:text-gray-400 hover:text-primary dark:hover:text-white"
-                      }`}
-                    >
-                      {activeTab === tab.id && (
-                        <motion.div
-                          layoutId="activeTab"
-                          className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-full -z-10 shadow-lg"
-                        ></motion.div>
-                      )}
-                      {tab.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Grid */}
-              <motion.div
-                layout
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-              >
-                <AnimatePresence mode="popLayout">
-                  {filteredCourses.map((course) => (
-                    <CourseCard
-                      key={course.id}
-                      course={course}
-                      isDone={completed.includes(course.id)}
-                      onToggleDone={toggleDone}
-                    />
-                  ))}
-                </AnimatePresence>
-              </motion.div>
-
-              {filteredCourses.length === 0 && (
-                <div className="text-center py-20 text-slate-400">
-                  <p>Không tìm thấy bài học nào.</p>
-                </div>
-              )}
-            </div>
-          </>
-        );
-      };
-
-      const root = ReactDOM.createRoot(document.getElementById("root"));
-      root.render(<App />);
+      /* ── Tab filter ─────────────────────────────────────────── */
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document
+            .querySelectorAll(".tab-btn")
+            .forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          const tab = btn.dataset.tab;
+          [10, 11, 12].forEach((g) => {
+            document
+              .getElementById("sec-" + g)
+              .classList.toggle("hidden", tab !== "all" && tab !== String(g));
+          });
+        });
+      });
     </script>
   </body>
 </html>
